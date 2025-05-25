@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+exclude = ["assets"]
+include = ["mtp"]
+
+[project]
+name = "Model Train Protocol"
+version = "1.0.0"
+description = "Create a Model Train Protocol JSON file"
+requires-python = ">=3.9"
+readme = {file = "README.md", content-type = "text/markdown"}
+authors = [
+  {name = "Databiomes Inc.", email = "dev@databiomes.com"}
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+]
