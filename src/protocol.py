@@ -51,8 +51,9 @@ class Protocol:
         tokens = tuple(tokens)
         flat_tokens = self.flatten_tuple(tokens)
         assert not flat_tokens[-1][-1].num, "Last token in a set cannot be a number."
-        if result is None and self.none is None:
+        if self.none is None:
             self.none = self.add_token("<NON>", "🫙", default=True, special="none")
+            self.special_tokens.append("🫙")
         instruction = Instruction(flat_tokens, self.none if result is None else result, self.memory)
         self.instructions.append(instruction)
         return instruction
@@ -140,6 +141,8 @@ class Protocol:
         self.special_tokens.append("🎬")
         self.add_token("<RUN>", "🏃", default=True, special="infer")
         self.special_tokens.append("🏃")
+        self.add_token("<PAD>", "🗒", default=True, special="pad")
+        self.special_tokens.append("🗒")
         if self.guardrails is not None:
             self.add_token("<UNK>", "🛑", default=True, special="unknown")
             self.special_tokens.append("🛑")
