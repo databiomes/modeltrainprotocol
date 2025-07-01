@@ -100,6 +100,8 @@ class Protocol:
     def create_template(self, path):
         unique_sets = {i: [] for i in range(self.memory)}
         unique_results = dict()
+        valid_input_list = ["🏁",]
+        valid_output_list = ["<string>",]
         for token_set in self.instructions:
             for idx, token in enumerate(token_set.tokens):
                 token_user = [t.user for t in token]
@@ -108,19 +110,35 @@ class Protocol:
                 for t in token:
                     token_emojis.append(t.emoji + (self.numbers[t.string] if t.num else ""))
                 token_emojis = "".join(token_emojis)
-                unique_sets[idx].append(str(token_strings) + ": " + ((str(token_emojis) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(token_emojis)) + "\n" + "<String>")
+                unique_sets[idx].append(str(token_strings) + ": " + ((str(token_emojis) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(token_emojis)) + "\n" + ("<string>" if idx != (len(token_set.tokens) - 1) else ""))
+                if len(valid_input_list) < (((int(self.memory) * 2) - 1) + 2):
+                    valid_input_list.append(((str(token_emojis) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(token_emojis)))
+                    if idx == (len(token_set.tokens) - 1):
+                        valid_input_list.append("🏃\n")
+                    else:
+                        valid_input_list.append("<string>")
             unique_results[str(token_set.result.string)] = str(token_set.result.emoji)
+            if len(valid_output_list) < 3:
+                valid_output_list.append(str(token_set.result.emoji))
+                valid_output_list.append("🎬")
+
         template = {
-            "model_input": {},
-            "model_output": {}
+            "example_usage": {
+                "valid_input": "\n".join(valid_input_list),
+                "valid_output": "\n".join(valid_output_list)
+            },
+            "all_combinations": {
+                "model_input": {},
+                "model_output": {}
+            }
         }
-        template['model_input']["<BOS>"] = "🏁"
+        template['all_combinations']['model_input']["<BOS>"] = "🏁"
         for i in range(int(self.memory)):
-            template['model_input'][f"{i}"] = unique_sets[i]
-        template['model_input']["<RUN>"] = "🏃"
-        template['model_output']["model_response"] = "<String>"
-        template['model_output']["model_results"] = unique_results
-        template['model_output']["<EOS>"] = "🎬"
+            template['all_combinations']['model_input'][f"{i}"] = unique_sets[i]
+        template['all_combinations']['model_input']["<RUN>"] = "🏃"
+        template['all_combinations']['model_output']["model_response"] = "<string>"
+        template['all_combinations']['model_output']["model_results"] = unique_results
+        template['all_combinations']['model_output']["<EOS>"] = "🎬"
         filename = f"{path}/template.json"
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(template, file, indent=4, ensure_ascii=False)

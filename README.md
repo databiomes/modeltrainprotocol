@@ -16,6 +16,7 @@ pip install .
 - `mtp.create_guardrail` is used to create guardrails for instances that require user prompts. `mtp.create_guardrail.add_sample` can then be used to add examples of bad prompts to guardrail against.
 - `mtp.add_number` is used to add a range of possible numbers to a token that is set to use numbers as a model input.
 - `mtp.add_number_list` is used to add a list of possible numbers, each with a range, to a token that is set to use a list of numbers as a model input.
+- `mtp.create_template` is used to create an outline of valid inputs and outputs of the created model.
 - `mtp.save` is used to save the model train protocol as a JSON file.
 
 ### Example Tokens
@@ -249,4 +250,5 @@ guardrail.add_sample("Why is the sky blue?")
 DIRECTORY = "DIRECTORY GOES HERE"
 FILENAME = "FILENAME GOES HERE"
 mtp.save(DIRECTORY, FILENAME)
+mtp.create_template(DIRECTORY)
 ```
