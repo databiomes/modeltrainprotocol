@@ -152,6 +152,7 @@ class Protocol:
             "instruction": {'memory': self.memory, 'sets': []},
             "guardrails": {'None': ''},
             "numbers": {'None': ''},
+            "batches": {'pretrain': [], 'instruct': [], 'judge': [], 'ppo': []},
         }
         self.add_token("<BOS>", "🏁", default=True, special="start")
         self.special_tokens.append("🏁")
