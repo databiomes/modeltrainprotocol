@@ -1,7 +1,7 @@
 <img src="assets/banner.png" alt="Screenshot" width="512"/>
 
-MTP is an open-source protocol that standardizes how to train Language Models. MTP contains all the data that a model is trained on, including but not limited to the special tokens, context, instructions, ppo, and guardrails. This is a responsible path forward to allow models to be audited and understood.
-Due to the limiting nature of quality data, this protocol is recommended, but not limited, to be used to train language models of under ~100M parameters. 
+MTP is an open-source protocol for training custom Language Models on Databiomes. MTP contains all the data that a model is trained on, including but not limited to the special tokens, context, instructions, ppo, and guardrails. This is a responsible path forward to allow models to be audited and understood.
+Due to the limiting nature of quality data, this protocol is recommended, but not limited, to be used to train specialized language models. 
 
 ## Install
 
