@@ -10,7 +10,7 @@ pip install .
 ```
 
 ### Creating a model
-- `mtp.set_memory`. is used to set the number of input rows to the model. All examples below use a memory set to 3.
+- `mtp.set_memory` is used to set the number of input rows to the model. All examples below use a memory set to 3.
 - `mtp.add_context` is used to add context data. A minimum requirement of 5 context examples must be added.
 - `mtp.add_token` is used to add special tokens to be used within instructions sets.
 - `mtp.create_instruction` is used to create instruction sets of special tokens to show possible input combinations for a model. `mtp.create_instruction.add_sample` can then be used to add samples to each instruction set created. There is a minimum requirement of 3 samples per instruction set. `mtp.create_instruction.add_ppo_sample` can optionally be used to add ppo samples to each instruction set created.
