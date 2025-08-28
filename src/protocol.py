@@ -7,38 +7,41 @@ from src.methods.util import get_possible_emojis
 
 
 class Protocol:
-    def __init__(self):
-        self.name: str
-        self.memory: int
-        self.context = []
-        self.tokens = []
-        self.instructions = []
-        self.guardrails = dict()
-        self.numbers = dict()
+    def __init__(self, name: str, instruction_sample_lines: int):
+        """Initialize the Model Training Protocol (MTP)"""
+        self.name: str = name
+        self.instruction_sample_lines: int = instruction_sample_lines  # Number of lines in instruction samples
+
+        self.context: list[str] = []
+        self.tokens: set[Token] = set()
+        self.instructions: set[Instruction] = set()
+        self.guardrails: dict[str: Guardrail] = dict()
+        self.numbers: dict[str: str] = None
         self.none = None
-        self.special_tokens = []
+        self.special_tokens: list[str] = []
         self.possible_emojis = get_possible_emojis()
 
-    def add_context(self, prompt):
-        self.context.append(prompt)
+    def add_context(self, context: str):
+        """Adds a line of context to the model."""
+        self.context.append(context)
 
-    def add_token(self, string, emoji=None, default=False, user=False, num=False, desc=None, special=None):
+    def add_token(self, string, emoji=None, default=False, user=False, num=False, desc=None, special=None) -> Token:
         assert not any(token.string[:-1] in string for token in self.tokens), f"Token name '{string}' already used."
         if emoji is None:
             used_emojis = {token.emoji for token in self.tokens if token.emoji}
             available_emojis = list(set(self.possible_emojis) - used_emojis)
             emoji = random.choice(available_emojis) if available_emojis else None
         token = Token((string + "_") if not default else string, emoji, user, num, desc, special)
-        self.tokens.append(token)
+        self.tokens.add(token)
         return token
 
     def set_memory(self, memory):
-        self.memory = memory
+        self.instruction_sample_lines = memory
 
     def create_instruction(self, tokens, result=None, auto=False):
         if auto:
             tokens = tuple(inner_tuple for inner_tuple, count in tokens for _ in range(count))
-        assert len(tokens) == self.memory, "The number of sets does not match the memory size."
+        assert len(tokens) == self.instruction_sample_lines, "The number of sets does not match the memory size."
         tokens = list(tokens)
         for idx, token in enumerate(tokens):
             if not isinstance(token, tuple):
@@ -54,8 +57,8 @@ class Protocol:
         if self.none is None:
             self.none = self.add_token("<NON>", "🫙", default=True, special="none")
             self.special_tokens.append("🫙")
-        instruction = Instruction(flat_tokens, self.none if result is None else result, self.memory)
-        self.instructions.append(instruction)
+        instruction = Instruction(flat_tokens, self.none if result is None else result, self.instruction_sample_lines)
+        self.instructions.add(instruction)
         return instruction
 
     def flatten_tuple(self, tokens):
@@ -98,10 +101,10 @@ class Protocol:
         self.numbers[key] = value
 
     def create_template(self, path):
-        unique_sets = {i: [] for i in range(self.memory)}
+        unique_sets = {i: [] for i in range(self.instruction_sample_lines)}
         unique_results = dict()
-        valid_input_list = ["🏁",]
-        valid_output_list = ["<string>",]
+        valid_input_list = ["🏁", ]
+        valid_output_list = ["<string>", ]
         for token_set in self.instructions:
             for idx, token in enumerate(token_set.tokens):
                 token_user = [t.user for t in token]
@@ -110,9 +113,12 @@ class Protocol:
                 for t in token:
                     token_emojis.append(t.emoji + (self.numbers[t.string] if t.num else ""))
                 token_emojis = "".join(token_emojis)
-                unique_sets[idx].append(str(token_strings) + ": " + ((str(token_emojis) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(token_emojis)) + "\n" + ("<string>" if idx != (len(token_set.tokens) - 1) else ""))
-                if len(valid_input_list) < (((int(self.memory) * 2) - 1) + 2):
-                    valid_input_list.append(((str(token_emojis) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(token_emojis)))
+                unique_sets[idx].append(str(token_strings) + ": " + (
+                    (str(token_emojis) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(
+                        token_emojis)) + "\n" + ("<string>" if idx != (len(token_set.tokens) - 1) else ""))
+                if len(valid_input_list) < (((int(self.instruction_sample_lines) * 2) - 1) + 2):
+                    valid_input_list.append(((str(token_emojis) + "USER PROMPT") if any(token_user) and (
+                            idx == (len(unique_sets) - 1)) else str(token_emojis)))
                     if idx == (len(token_set.tokens) - 1):
                         valid_input_list.append("🏃\n")
                     else:
@@ -133,7 +139,7 @@ class Protocol:
             }
         }
         template['all_combinations']['model_input']["<BOS>"] = "🏁"
-        for i in range(int(self.memory)):
+        for i in range(int(self.instruction_sample_lines)):
             template['all_combinations']['model_input'][f"{i}"] = unique_sets[i]
         template['all_combinations']['model_input']["<RUN>"] = "🏃"
         template['all_combinations']['model_output']["model_response"] = "<string>"
@@ -149,7 +155,7 @@ class Protocol:
             "context": self.context,
             "tokens": {},
             "special_tokens": [],
-            "instruction": {'memory': self.memory, 'sets': []},
+            "instruction": {'memory': self.instruction_sample_lines, 'sets': []},
             "guardrails": {'None': ''},
             "numbers": {'None': ''},
             "batches": {'pretrain': [], 'instruct': [], 'judge': [], 'ppo': []},
@@ -166,7 +172,8 @@ class Protocol:
             self.add_token("<UNK>", "🛑", default=True, special="unknown")
             self.special_tokens.append("🛑")
         for token in self.tokens:
-            template['tokens'][token.string] = {'emoji': token.emoji, 'num': token.num, 'user': token.user, 'desc': token.desc, 'special': token.special}
+            template['tokens'][token.string] = {'emoji': token.emoji, 'num': token.num, 'user': token.user,
+                                                'desc': token.desc, 'special': token.special}
             if token.num:
                 assert self.numbers is not None, f"{token.string} token was set to have numbers, but no numbers added."
         for special_token in self.special_tokens:
@@ -189,7 +196,8 @@ class Protocol:
             ppo_a_samples = [sample['a_sample'] for sample in token_set.ppo]
             ppo_b_samples = [sample['b_sample'] for sample in token_set.ppo]
             ppo_pref = [sample['pref'] for sample in token_set.ppo]
-            for s, p, n, r, v, a, b, pr in zip(ppo_strings, ppo_prompts, ppo_numbers, ppo_results, ppo_values, ppo_a_samples, ppo_b_samples, ppo_pref):
+            for s, p, n, r, v, a, b, pr in zip(ppo_strings, ppo_prompts, ppo_numbers, ppo_results, ppo_values,
+                                               ppo_a_samples, ppo_b_samples, ppo_pref):
                 ppo.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v, 'a': a, 'b': b, 'pref': pr})
             memory_set = []
             for token_tuple in token_set.tokens:
@@ -215,11 +223,7 @@ class Protocol:
 
     def save(self, path, name):
         filename = f"{path}/{name}.json"
-        self.name = name
         print(f"Saving Model Train Protocol to {filename}...")
         mtp_template = self.serialize()
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(mtp_template, file, indent=4, ensure_ascii=False)
-
-
-
