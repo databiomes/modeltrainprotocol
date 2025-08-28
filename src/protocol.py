@@ -8,8 +8,8 @@ from src.methods.util import get_possible_emojis
 
 class Protocol:
     def __init__(self):
-        self.name = str
-        self.memory = int
+        self.name: str
+        self.memory: int
         self.context = []
         self.tokens = []
         self.instructions = []
