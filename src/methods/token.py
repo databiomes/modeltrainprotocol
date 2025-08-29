@@ -33,6 +33,10 @@ class Token:
         """
         return isinstance(other, Token) and self.value == other.value
 
+    def __dict__(self):
+        """Dictionary representation of the token."""
+        return self.to_dict()
+
     def to_dict(self):
         """Convert the token to a dictionary representation."""
         return {'value': self.value, 'key': self.key, 'user': self.user, 'num': self.num, 'desc': self.desc,
