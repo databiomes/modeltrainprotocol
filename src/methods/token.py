@@ -1,14 +1,39 @@
 class Token:
-    def __init__(self, string, emoji, user=False, num=False, desc=None, special=None):
-        self.string = string
-        self.emoji = emoji
-        self.user = user
-        self.num = num
-        self.desc = desc
-        self.special = special
+    def __init__(self, value: str, key: str, user: bool = False, num: bool = False,
+                 desc: str | None = None, special: str | None = None):
+        """
+        Initializes a Token instance.
+
+        :param value: The string representing the token's value.
+        :param key: The key associated with the token, a symbol, emoji, or short string.
+        :param user: Boolean indicating if this token represents a user input.
+        :param num: Boolean indicating if this token is associated with a numerical value.
+        :param desc: Optional description of the token. Extends the value to contextualize its use.
+        :param special: Optional special attribute to identify special tokens.
+        """
+        self.value: str = value
+        self.key: str = key
+        self.user: bool = user
+        self.num: bool = num
+        self.desc: str = desc
+        self.special: str = special
 
     def __str__(self):
-        return f"Token(String: '{self.string}', Emoji: '{self.emoji}', User: {self.user}, Num: {self.num}, Desc: {self.desc}, Special: {self.special})"
+        """String representation of the token."""
+        return f"Token(Value: '{self.value}', Key: '{self.key}', User: {self.user}, Num: {self.num}, Desc: {self.desc}, Special: {self.special})"
+
+    def __hash__(self):
+        """Hash based on the string representation of the token."""
+        return hash(self.value)
+
+    def __eq__(self, other):
+        """
+        Defines equality based on the string.
+        Returns True if the other object is a Token and its string matches this token's string.
+        """
+        return isinstance(other, Token) and self.value == other.value
 
     def to_dict(self):
-        return {'string': self.string, 'emoji': self.emoji, 'user': self.user, 'num': self.num, 'desc': self.desc, 'special': self.special}
+        """Convert the token to a dictionary representation."""
+        return {'value': self.value, 'key': self.key, 'user': self.user, 'num': self.num, 'desc': self.desc,
+                'special': self.special}

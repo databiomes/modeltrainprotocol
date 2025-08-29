@@ -10,7 +10,7 @@ class Guardrail:
         for token in self.token_set:
             if token.user:
                 user_check = True
-            self.key += token.string
+            self.key += token.value
         assert user_check, "Guardrail requires a user token in the token set."
 
     def add_sample(self, sample):
