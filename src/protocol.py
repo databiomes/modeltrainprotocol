@@ -55,9 +55,6 @@ class Protocol:
         self.used_keys.add(token.key)
         return token
 
-    def set_memory(self, memory):
-        self.instruction_sample_lines = memory
-
     def create_instruction(self, tokens, result=None, auto=False):
         if auto:
             tokens = tuple(inner_tuple for inner_tuple, count in tokens for _ in range(count))
