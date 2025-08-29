@@ -1,4 +1,4 @@
-from src.methods.token import Token
+from src.common.token import Token
 
 
 class Instruction:

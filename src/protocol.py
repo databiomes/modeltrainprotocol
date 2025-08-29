@@ -1,9 +1,9 @@
 import random
 import json
-from src.methods.token import Token
-from src.methods.instruction import Instruction
-from src.methods.guardrail import Guardrail
-from src.methods.util import get_possible_emojis
+from src.common.token import Token
+from src.common.instruction import Instruction
+from src.common.guardrail import Guardrail
+from src.common.util import get_possible_emojis
 
 
 class Protocol:
