@@ -1,12 +1,16 @@
+from src.common.token import Token
+
+
 class Guardrail:
-    def __init__(self, token_set, good_prompt, bad_prompt, output):
-        self.token_set = token_set
-        self.good_prompt = good_prompt
-        self.bad_prompt = bad_prompt
-        self.output = output
-        self.bad_samples = []
-        self.key = ""
-        user_check = False
+    """Defines a guardrail response to bad prompts."""
+    def __init__(self, token_set: set[Token] | list[Token], good_prompt: str, bad_prompt: str, bad_output: str):
+        self.token_set: set[Token] | list[Token] = token_set
+        self.good_prompt: str = good_prompt
+        self.bad_prompt: str = bad_prompt
+        self.bad_output: str = bad_output
+        self.bad_samples: list[str] = []
+        self.key: str = ""
+        user_check: bool = False
         for token in self.token_set:
             if token.user:
                 user_check = True
@@ -18,4 +22,4 @@ class Guardrail:
 
     def __call__(self):
         assert all(all(not char.isdigit() for char in s) for s in self.bad_samples), "Sample prompts cannot contain a digit."
-        return [self.output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.bad_samples]
+        return [self.bad_output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.bad_samples]
