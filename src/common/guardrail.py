@@ -1,4 +1,4 @@
-from src.common.instruction import Instruction
+from src.common.instructions.instruction import Instruction
 from src.common.token import Token
 
 

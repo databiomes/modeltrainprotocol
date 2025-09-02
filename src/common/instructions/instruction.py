@@ -3,8 +3,6 @@ from src.common.token import Token
 
 class Instruction:
     """
-    Class representing an instruction with tokens, result, memory, and samples.
-
     An Instruction is a set of tokens that show possible input combinations for a model.
 
     Samples must be added to the Instruction to provide context for the model.
@@ -18,11 +16,12 @@ class Instruction:
         self.memory: int = memory
         self.samples: list[dict] = []
 
-    def add_sample(self, strings: list[str], prompt=None, numbers=None, value=None):
+    def add_sample(self, strings: list[str], prompt: str | None = None,
+                   numbers: list[list[int]] | None = None, value: int | float | None = None):
         """Add a sample to the Instruction."""
         assert len(strings) >= self.memory, "The number of lines does not match the memory size."
         if numbers is not None:
-            self.number_check(numbers)
+            self._number_check(numbers)
         if value is not None:
             assert type(value) == int or type(value) == float, "Value is not a number."
         else:
@@ -30,7 +29,12 @@ class Instruction:
         self.samples.append({'strings': strings, 'prompt': prompt, 'number': numbers, 'result': self.result,
                              'value': value})
 
-    def number_check(self, numbers):
+    def _number_check(self, numbers: list[list[int]]):
+        """
+        Checks that the provided numbers match the number of tokens that require numbers.
+        :param numbers: List of numbers provided in the sample.
+        :return:
+        """
         assert isinstance(numbers, list), "The number is not set as a list."
         num_check = sum(
             [element if isinstance(element, list) else [element] for sublist in numbers for element in sublist], [])
@@ -46,7 +50,9 @@ class Instruction:
     def __str__(self):
         """String representation of the Instruction."""
         tokens_str = ', '.join([''.join([token.key for token in token_tuple]) for token_tuple in self.tokens])
-        samples_str = ',\n'.join([f"Sample(Strings: {sample['strings']}, Result: {sample['result'].key + sample['value'] if sample['value'] is not None else ''}" for sample in self.samples])
+        samples_str = ',\n'.join([
+                                     f"Sample(Strings: {sample['strings']}, Result: {sample['result'].key + sample['value'] if sample['value'] is not None else ''}"
+                                     for sample in self.samples])
         return f"Token Set(Tokens: {tokens_str}, Result: {self.result.key}, Samples:\n{samples_str})"
 
     def to_dict(self):

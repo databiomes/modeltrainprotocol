@@ -1,7 +1,6 @@
-import random
 import json
 from src.common.token import Token
-from src.common.instruction import Instruction
+from src.common.instructions.instruction import Instruction
 from src.common.guardrail import Guardrail
 from src.common.util import get_possible_emojis
 
