@@ -1,5 +1,5 @@
 from src.common.instructions.Instruction import Instruction
-from src.common.Token import Token
+from src.common.tokens.Token import Token
 
 
 class Guardrail:

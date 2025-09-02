@@ -1,5 +1,5 @@
 import json
-from src.common.Token import Token
+from src.common.tokens.Token import Token
 from src.common.instructions.Instruction import Instruction
 from src.common.Guardrail import Guardrail
 from src.common.util import get_possible_emojis
