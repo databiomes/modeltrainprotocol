@@ -1,5 +1,5 @@
 import dataclasses
-from typing import Sequence
+from typing import Sequence, Iterable
 
 from dataclasses import dataclass
 
@@ -22,9 +22,16 @@ class TokenSet:
         self.required_numbers: int = sum(1 for token in tokens if token.num)  # Count of tokens that require numbers
         self.key: str = ''.join(token.key for token in tokens)
 
-    def create_snippet(self, sample: str, numbers: list[int] = None) -> Snippet:
+    def create_snippet(self, sample: str, numbers: Iterable[int] | int | None = None) -> Snippet:
         """Create a snippet for the TokenSet"""
-        numbers = numbers if numbers is not None else []
+        if numbers is None:
+            numbers = []
+        elif isinstance(numbers, int):
+            numbers = [numbers]
+        elif isinstance(numbers, Iterable) and not isinstance(numbers, str):
+            numbers = list(numbers)
+        else:
+            raise TypeError("Numbers must be an int, an Iterable of ints, or None.")
         assert len(numbers) == self.required_numbers, \
             f"{self} requires {self.required_numbers} numbers but {len(numbers)} were provided."
         return Snippet(sample=sample, numbers=numbers)
