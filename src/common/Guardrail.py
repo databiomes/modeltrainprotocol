@@ -1,11 +1,10 @@
-from src.common.instructions.Instruction import Instruction
-from src.common.tokens.Token import Token
+from src.common.instructions.UserInstruction import UserInstruction
 
 
 class Guardrail:
-    """Defines a guardrail response to bad prompts. Guardrails are set on an Instruction."""
+    """Defines a guardrail response to bad prompts. Guardrails are set on a UserInstruction."""
 
-    def __init__(self, instruction: Instruction, good_prompt: str, bad_prompt: str, bad_output: str):
+    def __init__(self, instruction: UserInstruction, good_prompt: str, bad_prompt: str, bad_output: str):
         """
         Initializes a Guardrail.
         :param instruction: The Instruction the guardrail is set on.
@@ -18,19 +17,12 @@ class Guardrail:
             bad_prompt="Quote being spoken that is irrelevant and off-topic with 1-20 words",
             output="I have no idea what you're talking about."
         """
-        self.instruction: Instruction = instruction
-        self.token_set: tuple[Token] = instruction.tokens[-1]
+        self.instruction: UserInstruction = instruction
         self.good_prompt: str = good_prompt
         self.bad_prompt: str = bad_prompt
         self.bad_output: str = bad_output
         self.bad_samples: list[str] = []
         self.key: str = ""
-        user_check: bool = False
-        for token in self.token_set:
-            if token.user:
-                user_check = True
-            self.key += token.value
-        assert user_check, "Guardrail requires a user token in the token set."
 
     def add_sample(self, sample: str):
         """Add an example of a bad sample prompt to the guardrail."""
