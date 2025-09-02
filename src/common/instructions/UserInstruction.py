@@ -1,4 +1,4 @@
-from src.common.Token import Token
+from src.common.tokens.Token import Token
 from src.common.instructions.Instruction import Instruction
 
 
@@ -9,16 +9,16 @@ class UserInstruction(Instruction):
     This Instruction type includes a prompt provided by the user to guide the model's response.
     """
 
-    def __init__(self, tokens: list[tuple[Token]], result: Token, memory: int, prompt: str):
+    def __init__(self, token_sets: list[tuple[Token]], final: Token, memory: int, prompt: str):
         """
         Initializes a UserInstruction instance.
 
-        :param tokens: List of tuples containing Token instances that define the input structure.
-        :param result: A Token instance representing the expected output.
+        :param token_sets: List of tuples containing Token instances that define the input structure.
+        :param final: A Token instance representing the expected output.
         :param memory: An integer indicating how many previous inputs the model should consider.
         :param prompt: A string provided by the user to guide the model's response.
         """
-        super().__init__(tokens, result, memory)
+        super().__init__(token_sets, final, memory)
         self.prompt: str = prompt
         user_check: bool = False
         for token in self.tokens[-1]:
