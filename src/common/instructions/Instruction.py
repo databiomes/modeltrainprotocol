@@ -3,7 +3,7 @@ from abc import ABC
 from typing import Sequence
 
 from src.common.tokens.Token import Token
-from src.common.tokens.TokenSet import TokenSet
+from src.common.tokens.TokenSet import TokenSet, Snippet
 
 
 class Instruction(ABC):
@@ -42,22 +42,31 @@ class Instruction(ABC):
         all_tokens.append(self.response)
         return all_tokens
 
-    def _contains_user(self) -> bool:
+    def contains_user(self) -> bool:
         """
         Returns True if the response contains a user token, else False
         """
         return self.response.is_user
 
-    def _create_base_sample(self, strings: list[str], numbers: list[list[int]] | None = None,
-                            value: int | float | None = None):
-        """Create a base sample dictionary"""
-        if numbers is not None:
-            self._assert_numbers(numbers)
+    def _create_base_sample(self, snippets: list[Snippet], value: int | float | None = None) -> dict:
+        """Create a base sample dictionary without a prompt."""
         if value is not None:
             assert type(value) == int or type(value) == float, "Value is not a number."
         else:
             value = "None"
-        return {'strings': strings, 'number': numbers, 'result': self.result, 'value': value}
+
+        # format sample
+        strings: list[str] = []
+        numbers: list[list[int]] = []
+        for snippet in snippets:
+            strings.append(snippet.sample)
+            numbers.append(snippet.numbers)
+            if snippet.numbers is not None:
+                numbers.append(snippet.numbers)
+            else:
+                numbers.append([])
+
+        return {'strings': snippets, 'number': numbers, 'result': self.result, 'value': value, 'prompt': None}
 
     def _assert_numbers(self, numbers: list[list[int]]):
         """
