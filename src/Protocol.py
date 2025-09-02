@@ -1,6 +1,6 @@
 import json
 from src.common.Token import Token
-from src.common.instructions.BaseInstruction import BaseInstruction
+from src.common.instructions.Instruction import Instruction
 from src.common.Guardrail import Guardrail
 from src.common.util import get_possible_emojis
 
@@ -15,7 +15,7 @@ class Protocol:
 
         self.context: list[str] = []
         self.tokens: set[Token] = set()
-        self.instructions: set[BaseInstruction] = set()
+        self.instructions: set[Instruction] = set()
         self.guardrails: dict[str: Guardrail] = dict()
         self.numbers: dict[str: str] = None
         self.none = None
@@ -73,7 +73,7 @@ class Protocol:
         if self.none is None:
             self.none = self.add_token("<NON>", "🫙", default=True, special="none")
             self.special_tokens.append("🫙")
-        instruction = BaseInstruction(flat_tokens, self.none if result is None else result, self.instruction_sample_lines)
+        instruction = Instruction(flat_tokens, self.none if result is None else result, self.instruction_sample_lines)
         self.instructions.add(instruction)
         return instruction
 
