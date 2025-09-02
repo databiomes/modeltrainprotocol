@@ -1,10 +1,12 @@
-from typing import Iterable
+import abc
+from abc import ABC
+from typing import Sequence
 
 from src.common.tokens.Token import Token
 from src.common.tokens.TokenSet import TokenSet
 
 
-class Instruction:
+class Instruction(ABC):
     """
     An Instruction is a set of tokens that show possible input combinations for a model.
 
@@ -12,48 +14,50 @@ class Instruction:
     A minimum of 3 samples must be added to an Instruction.
 
     Example:
-        tokens= [
+        context = TokenSet(
+        context = [
                  ( Token("SentenceLength", num=True), Token("Greeting")),
                  ( Token("CurtResponse")),
                  ( Token("SentenceLength", num=True), Token("Goodbye")),
 
     """
 
-    def __init__(self, context: Iterable[TokenSet], response: TokenSet, final: Token, memory: int):
-        """Initializes an Instruction instance."""
-        self.tokens: Iterable[TokenSet] = context
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token):
+        """Initializes the common attributes to all Instructions."""
+        self.context: Sequence[TokenSet] = context
         self.response: TokenSet = response
         self.result: Token = final
-        self.memory: int = memory
         self.samples: list[dict] = []
+
+    @abc.abstractmethod
+    def add_sample(self):
+        """Add a sample to the Instruction."""
+        raise NotImplementedError("Subclasses must implement add_sample method.")
+
+    def get_token_sets(self) -> list[TokenSet]:
+        """Returns all tokens in the instruction as a list of tuples."""
+        all_tokens: list = []
+        for token_set in self.context:
+            all_tokens.append(token_set)
+        all_tokens.append(self.response)
+        return all_tokens
+
+    def _contains_user(self) -> bool:
+        """
+        Returns True if the response contains a user token, else False
+        """
+        return self.response.is_user
 
     def _create_base_sample(self, strings: list[str], numbers: list[list[int]] | None = None,
                             value: int | float | None = None):
-        """Create a base sample dictionary without a prompt."""
-        assert len(strings) >= self.memory, "The number of lines does not match the memory size."
+        """Create a base sample dictionary"""
         if numbers is not None:
             self._assert_numbers(numbers)
         if value is not None:
             assert type(value) == int or type(value) == float, "Value is not a number."
         else:
             value = "None"
-        return {'strings': strings, 'number': numbers, 'result': self.result, 'value': value, 'prompt': None}
-
-    def add_sample(self, strings: list[str], numbers: list[list[int]] | None = None, value: int | float | None = None):
-        """Add a sample to the Instruction.
-
-        :param strings: List of strings representing the input lines.
-        :param numbers: Optional list of lists of integers representing numbers associated with the input tokens. Each sublist corresponds to a line of tokens when defining the instruction
-        :param value: Optional integer or float representing the expected output value.
-
-        Example:
-            strings=["Hello, how are you?", "I'm fine.", "It was great to meet you, goodbye!"]
-            numbers=[[10], [], [20]]
-            value=42
-
-        """
-        sample = self._create_base_sample(strings, numbers, value)
-        self.samples.append(sample)
+        return {'strings': strings, 'number': numbers, 'result': self.result, 'value': value}
 
     def _assert_numbers(self, numbers: list[list[int]]):
         """
@@ -63,18 +67,21 @@ class Instruction:
         assert isinstance(numbers, list), "The number is not set as a list."
         num_check: list[int] = sum(
             [element if isinstance(element, list) else [element] for sublist in numbers for element in sublist], [])
+        # TODO: Update assertion for clarity and speed using TokenSets and is_number attribute in token set
         assert all(isinstance(num, (int, float)) for num in num_check), "Not all elements are numbers."
-        num_tokens: list[list[str]] = [[token.key] for tokens in self.tokens for token in tokens if token.num]
+        num_tokens: list[list[str]] = [[token.key] for token_set in self.get_token_sets()
+                                       for token in token_set.tokens if token.num]
         num_numbers: list[int] = [item for sublist in numbers for item in sublist if item or item == 0]
         assert len(num_tokens) == len(num_numbers), "Number samples don't match memory count."
-        for num, tok in zip(numbers, self.tokens):
+        for num, tok in zip(numbers, self.context):
             num_token: list[str] = [token.key for token in tok if token.num]
             num_array: list[int] = [num for num in num if num or num == 0]
             assert len(num_array) == len(num_token), "Not all numbers provided."
 
     def __str__(self) -> str:
         """String representation of the Instruction."""
-        tokens_str: str = ', '.join([''.join([token.key for token in token_tuple]) for token_tuple in self.tokens])
+        tokens_str: str = ', '.join(
+            [''.join([token.key for token in token_set.tokens]) for token_set in self.get_token_sets()])
         samples_str: str = ',\n'.join([
             f"Sample(Strings: {sample['strings']}, Result: {sample['result'].key + sample['value'] if sample['value'] is not None else ''}"
             for sample in self.samples])
@@ -83,7 +90,7 @@ class Instruction:
     def to_dict(self):
         """Convert the Instruction to a dictionary representation."""
         return {
-            'tokens': [[token.to_dict() for token in token_tuple] for token_tuple in self.tokens],
+            'tokens': [[token.to_dict() for token in token_set.tokens] for token_set in self.get_token_sets()],
             'result': self.result.to_dict() if self.result else None,
             'samples': self.samples
         }
