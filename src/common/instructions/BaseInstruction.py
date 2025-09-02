@@ -1,7 +1,7 @@
-from src.common.token import Token
+from src.common.Token import Token
 
 
-class Instruction:
+class BaseInstruction:
     """
     An Instruction is a set of tokens that show possible input combinations for a model.
 
@@ -51,8 +51,8 @@ class Instruction:
         """String representation of the Instruction."""
         tokens_str = ', '.join([''.join([token.key for token in token_tuple]) for token_tuple in self.tokens])
         samples_str = ',\n'.join([
-                                     f"Sample(Strings: {sample['strings']}, Result: {sample['result'].key + sample['value'] if sample['value'] is not None else ''}"
-                                     for sample in self.samples])
+            f"Sample(Strings: {sample['strings']}, Result: {sample['result'].key + sample['value'] if sample['value'] is not None else ''}"
+            for sample in self.samples])
         return f"Token Set(Tokens: {tokens_str}, Result: {self.result.key}, Samples:\n{samples_str})"
 
     def to_dict(self):
