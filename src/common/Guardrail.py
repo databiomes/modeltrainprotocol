@@ -1,11 +1,11 @@
-from src.common.instructions.BaseInstruction import BaseInstruction
+from src.common.instructions.Instruction import Instruction
 from src.common.Token import Token
 
 
 class Guardrail:
     """Defines a guardrail response to bad prompts. Guardrails are set on an Instruction."""
 
-    def __init__(self, instruction: BaseInstruction, good_prompt: str, bad_prompt: str, bad_output: str):
+    def __init__(self, instruction: Instruction, good_prompt: str, bad_prompt: str, bad_output: str):
         """
         Initializes a Guardrail.
         :param instruction: The Instruction the guardrail is set on.
@@ -18,7 +18,7 @@ class Guardrail:
             bad_prompt="Quote being spoken that is irrelevant and off-topic with 1-20 words",
             output="I have no idea what you're talking about."
         """
-        self.instruction: BaseInstruction = instruction
+        self.instruction: Instruction = instruction
         self.token_set: tuple[Token] = instruction.tokens[-1]
         self.good_prompt: str = good_prompt
         self.bad_prompt: str = bad_prompt
