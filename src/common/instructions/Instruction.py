@@ -1,4 +1,7 @@
-from src.common.Token import Token
+from typing import Iterable
+
+from src.common.tokens.Token import Token
+from src.common.tokens.TokenSet import TokenSet
 
 
 class Instruction:
@@ -7,12 +10,20 @@ class Instruction:
 
     Samples must be added to the Instruction to provide context for the model.
     A minimum of 3 samples must be added to an Instruction.
+
+    Example:
+        tokens= [
+                 ( Token("SentenceLength", num=True), Token("Greeting")),
+                 ( Token("CurtResponse")),
+                 ( Token("SentenceLength", num=True), Token("Goodbye")),
+
     """
 
-    def __init__(self, tokens: list[tuple[Token]], result: Token, memory: int):
+    def __init__(self, context: Iterable[TokenSet], response: TokenSet, final: Token, memory: int):
         """Initializes an Instruction instance."""
-        self.tokens: list[tuple[Token]] = tokens
-        self.result: Token = result
+        self.tokens: Iterable[TokenSet] = context
+        self.response: TokenSet = response
+        self.result: Token = final
         self.memory: int = memory
         self.samples: list[dict] = []
 
@@ -36,8 +47,8 @@ class Instruction:
         :param value: Optional integer or float representing the expected output value.
 
         Example:
-            strings=["Hello, how are you?", "I'm fine, thank you.", "What about you?"]
-            numbers=[[1], [2], [3, 4]]
+            strings=["Hello, how are you?", "I'm fine.", "It was great to meet you, goodbye!"]
+            numbers=[[10], [], [20]]
             value=42
 
         """
