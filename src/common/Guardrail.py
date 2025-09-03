@@ -21,15 +21,22 @@ class Guardrail:
         self.good_prompt: str = good_prompt
         self.bad_prompt: str = bad_prompt
         self.bad_output: str = bad_output
-        self.bad_samples: list[str] = []
+        self.samples: list[str] = []
         self.key: str = ""
 
     def add_sample(self, sample: str):
-        """Add an example of a bad sample prompt to the guardrail."""
-        assert all(not char.isdigit() for char in sample), "Sample prompt cannot contain digits."
-        self.bad_samples.append(sample)
+        """
+        Add an example of a bad sample prompt to the guardrail.
 
-    def __call__(self) -> list[str]:
+        :param sample: An example of a bad prompt that should trigger the guardrail.
+
+        Example:
+            sample="Tell me a joke about politics."
+        """
+        assert all(not char.isdigit() for char in sample), "Sample prompt cannot contain digits."
+        self.samples.append(sample)
+
+    def format_samples(self) -> list[str]:
         """Return the guardrail as a list of strings for JSON formatting."""
-        assert len(self.bad_samples) >= 3, "At least 3 sample prompts are required. Call add_sample() to add more."
-        return [self.bad_output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.bad_samples]
+        assert len(self.samples) >= 3, "At least 3 sample prompts are required. Call add_sample() to add more."
+        return [self.bad_output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.samples]
