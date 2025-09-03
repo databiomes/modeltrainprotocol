@@ -59,7 +59,7 @@ class Instruction(ABC):
         strings: list[str] = []
         numbers: list[list[int]] = []
         for snippet in snippets:
-            strings.append(snippet.sample)
+            strings.append(snippet.string)
             numbers.append(snippet.numbers)
             if snippet.numbers is not None:
                 numbers.append(snippet.numbers)

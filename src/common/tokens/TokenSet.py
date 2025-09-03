@@ -8,7 +8,7 @@ from src.common.tokens.Token import Token
 
 @dataclass
 class Snippet:
-    sample: str
+    string: str
     numbers: list[int] = dataclasses.field(default_factory=list)
 
 
@@ -22,7 +22,7 @@ class TokenSet:
         self.required_numbers: int = sum(1 for token in tokens if token.num)  # Count of tokens that require numbers
         self.key: str = ''.join(token.key for token in tokens)
 
-    def create_snippet(self, sample: str, numbers: Iterable[int] | int | None = None) -> Snippet:
+    def create_snippet(self, string: str, numbers: Iterable[int] | int | None = None) -> Snippet:
         """Create a snippet for the TokenSet"""
         if numbers is None:
             numbers = []
@@ -34,7 +34,7 @@ class TokenSet:
             raise TypeError("Numbers must be an int, an Iterable of ints, or None.")
         assert len(numbers) == self.required_numbers, \
             f"{self} requires {self.required_numbers} numbers but {len(numbers)} were provided."
-        return Snippet(sample=sample, numbers=numbers)
+        return Snippet(string=string, numbers=numbers)
 
     def __repr__(self):
         """String representation of the TokenSet."""
