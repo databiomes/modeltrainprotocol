@@ -25,17 +25,19 @@ class SimpleInstruction(Instruction):
         assert not self.contains_user(), "Instruction cannot contain a user token in response. Use UserInstruction for user inputs."
 
     # noinspection PyMethodOverriding
-    def add_sample(self, snippets: list[Snippet], value: int | float | None = None):
-        """Add a sample to the Instruction.
-
-        :param snippets: List of Snippet - each Snippet corresponds to a TokenSet in the context and response.
-        :param value: Optional integer or float.
-
-        Example:
-            strings=["Hello, how are you?", "I'm fine.", "It was great to meet you, goodbye!"]
-            numbers=[[10], [], [20]]
-            value=42
-
+    def add_sample(self, context_snippets: list[Snippet], prompt: str, output_snippet: Snippet,
+                   value: int | float | None = None):
         """
-        sample: dict = self._create_base_sample(snippets=snippets, value=value)
+        Add a sample to the Instruction.
+
+        :param context_snippets: List of context snippets that will be added to the Instruction.
+        :param prompt: The prompt provided by the user.
+        :param output_snippet: The model's output snippet.
+        :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
+        """
+        self._assert_valid_value(value=value)
+
+        all_snippets: list[Snippet] = context_snippets + [output_snippet]
+        sample: dict = self._create_base_sample(snippets=all_snippets, value=value)
+        sample['prompt'] = prompt
         self.samples.append(sample)

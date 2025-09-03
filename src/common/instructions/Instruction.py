@@ -68,24 +68,18 @@ class Instruction(ABC):
 
         return {'strings': snippets, 'number': numbers, 'result': self.final, 'value': value, 'prompt': None}
 
-    def _assert_numbers(self, numbers: list[list[int]]):
+    def _assert_valid_value(self, value: int | float | None):
         """
-        Asserts that the provided numbers match the number of tokens that require numbers.
-        :param numbers: List of numbers provided in the sample.
+        Assert value is provided if self.final is a number Token, else assert value is None
+        :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
+        :raises: AssertionError if value is not valid:
         """
-        assert isinstance(numbers, list), "The number is not set as a list."
-        num_check: list[int] = sum(
-            [element if isinstance(element, list) else [element] for sublist in numbers for element in sublist], [])
-        # TODO: Update assertion for clarity and speed using TokenSets and is_number attribute in token set
-        assert all(isinstance(num, (int, float)) for num in num_check), "Not all elements are numbers."
-        num_tokens: list[list[str]] = [[token.key] for token_set in self.get_token_sets()
-                                       for token in token_set.tokens if token.num]
-        num_numbers: list[int] = [item for sublist in numbers for item in sublist if item or item == 0]
-        assert len(num_tokens) == len(num_numbers), "Number samples don't match memory count."
-        for num, tok in zip(numbers, self.context):
-            num_token: list[str] = [token.key for token in tok if token.num]
-            num_array: list[int] = [num for num in num if num or num == 0]
-            assert len(num_array) == len(num_token), "Not all numbers provided."
+        if self.final.num and value is None:
+            raise ValueError("Value must be provided when final token is a number.")
+        if self.final.num and not (isinstance(value, int) or isinstance(value, float)):
+            raise TypeError("Value must be an int or float when final token is a number.")
+        if not self.final.num and value is not None:
+            raise ValueError("Value must be None when final token is not a number.")
 
     def __str__(self) -> str:
         """String representation of the Instruction."""

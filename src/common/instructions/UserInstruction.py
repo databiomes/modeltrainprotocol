@@ -38,8 +38,7 @@ class UserInstruction(Instruction):
         :param output_snippet: The model's output snippet.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         """
-        # Assert value is provided if self.final is a number Token, else assert value is None
-        assert (value is not None and isinstance(value, (int, float))) if self.final.num else value is None
+        self._assert_valid_value(value=value)
 
         all_snippets: list[Snippet] = context_snippets + [output_snippet]
         sample: dict = self._create_base_sample(snippets=all_snippets, value=value)
