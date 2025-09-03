@@ -2,7 +2,13 @@ from src.common.tokens.TokenSet import TokenSet
 
 
 class Guardrail:
-    """Defines a guardrail response to bad prompts. Guardrails are set on a TokenSet."""
+    """
+    Defines a guardrail response to bad prompts.
+
+    Guardrails are set on a user TokenSet. A user TokenSet is one where any of the sub-Tokens have user=True.
+
+    A user TokenSet can also be identified by calling the is_user property on the TokenSet.
+    """
 
     def __init__(self, token_set: TokenSet, good_prompt: str, bad_prompt: str, bad_output: str):
         """
@@ -19,6 +25,9 @@ class Guardrail:
         """
         if not isinstance(token_set, TokenSet):
             raise TypeError("Guardrails can only be set on a TokenSet.")
+
+        if not token_set.is_user:
+            raise ValueError("Guardrails can only be set on a user TokenSet.")
 
         self.token_set: TokenSet = token_set
         self.good_prompt: str = good_prompt
