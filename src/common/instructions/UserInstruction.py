@@ -14,7 +14,7 @@ class UserInstruction(Instruction):
     This Instruction type includes a prompt provided by the user to guide the model's response.
 
     Note: The response TokenSet is not set in a UserInstruction.
-    The user TokenSet sets the context for the user's prompt. The model's response is not predefined.
+    The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
 
     def __init__(self, context: Sequence[TokenSet], user: TokenSet, prompt: str, final: Token):
