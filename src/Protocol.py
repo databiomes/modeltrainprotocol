@@ -1,7 +1,8 @@
 import json
-from src.common.tokens.Token import Token
-from src.common.instructions.Instruction import Instruction
+
 from src.common.Guardrail import Guardrail
+from src.common.instructions.Instruction import Instruction
+from src.common.tokens.Token import Token
 from src.common.util import get_possible_emojis
 
 
@@ -12,6 +13,7 @@ class Protocol:
         """Initialize the Model Training Protocol (MTP)"""
         self.name: str = name
         self.instruction_sample_lines: int = instruction_sample_lines  # Number of lines in instruction samples
+        assert self.instruction_sample_lines >= 3, "A minimum of 3 sample lines is required for all instructions."
 
         self.context: list[str] = []
         self.tokens: set[Token] = set()
@@ -19,7 +21,7 @@ class Protocol:
         self.guardrails: dict[str: Guardrail] = dict()
         self.numbers: dict[str: str] = None
         self.none = None
-        self.special_tokens: list[str] = []
+        self.special_tokens: set[str] = set()
         self.possible_emoji_keys: set[str] = get_possible_emojis()
         self.used_keys: set[str] = set()
 
@@ -54,44 +56,27 @@ class Protocol:
         self.used_keys.add(token.key)
         return token
 
-    def create_instruction(self, tokens, result=None, auto=False):
-        if auto:
-            tokens = tuple(inner_tuple for inner_tuple, count in tokens for _ in range(count))
-        assert len(tokens) == self.instruction_sample_lines, "The number of sets does not match the memory size."
-        tokens = list(tokens)
-        for idx, token in enumerate(tokens):
-            if not isinstance(token, tuple):
-                tokens[idx] = (token, ())
-                token = [token]
-            if "".join([tok.key for tok in token]) not in self.special_tokens:
-                self.special_tokens.append("".join([tok.key for tok in token]))
-            if result is not None and result.key not in self.special_tokens:
-                self.special_tokens.append(result.key)
-        tokens = tuple(tokens)
-        flat_tokens = self.flatten_tuple(tokens)
-        assert not flat_tokens[-1][-1].num, "Last token in a set cannot be a number."
-        if self.none is None:
-            self.none = self.add_token("<NON>", "🫙", default=True, special="none")
-            self.special_tokens.append("🫙")
-        instruction = Instruction(flat_tokens, self.none if result is None else result, self.instruction_sample_lines)
-        self.instructions.add(instruction)
-        return instruction
+    def add_instruction(self, instruction: Instruction):
+        """
+        Adds an Instruction (and its components) to the protocol.
 
-    def flatten_tuple(self, tokens):
-        tuple_groups = []
-        if isinstance(tokens, tuple):
-            current_group = []
-            for item in tokens:
-                if isinstance(item, tuple):
-                    if current_group:
-                        tuple_groups.append(tuple(current_group))
-                        current_group = []
-                    tuple_groups.extend(self.flatten_tuple(item))
-                else:
-                    current_group.append(item)
-            if current_group:
-                tuple_groups.append(tuple(current_group))
-        return tuple_groups
+        Asserts that all samples in the instruction match the defined sample line size.
+        """
+        # Assert all samples match the defined sample line size
+        for sample in instruction.samples:
+            assert len(sample['strings']) == self.instruction_sample_lines,\
+                "The number of sample lines does not match the memory size."
+
+        # Add all token combos as special tokens
+        for token_set in instruction.get_token_sets():
+            self.special_tokens.add(token_set.key)
+
+        # Add the result token as a special token
+        if instruction.result.key is not None:
+            self.special_tokens.add(instruction.result.key)
+
+        # Add the instruction to the protocol
+        self.instructions.add(instruction)
 
     def create_guardrail(self, token_set, good_prompt, bad_prompt, output):
         guardrail = Guardrail(token_set, good_prompt, bad_prompt, output)
@@ -122,7 +107,7 @@ class Protocol:
         valid_input_list = ["🏁", ]
         valid_output_list = ["<string>", ]
         for token_set in self.instructions:
-            for idx, token in enumerate(token_set.tokens):
+            for idx, token in enumerate(token_set.context):
                 token_user = [t.user for t in token]
                 token_strings = "".join([t.value for t in token])
                 token_keys = []
@@ -131,11 +116,11 @@ class Protocol:
                 token_keys = "".join(token_keys)
                 unique_sets[idx].append(str(token_strings) + ": " + (
                     (str(token_keys) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(
-                        token_keys)) + "\n" + ("<string>" if idx != (len(token_set.tokens) - 1) else ""))
+                        token_keys)) + "\n" + ("<string>" if idx != (len(token_set.context) - 1) else ""))
                 if len(valid_input_list) < (((int(self.instruction_sample_lines) * 2) - 1) + 2):
                     valid_input_list.append(((str(token_keys) + "USER PROMPT") if any(token_user) and (
                             idx == (len(unique_sets) - 1)) else str(token_keys)))
-                    if idx == (len(token_set.tokens) - 1):
+                    if idx == (len(token_set.context) - 1):
                         valid_input_list.append("🏃\n")
                     else:
                         valid_input_list.append("<string>")
@@ -189,7 +174,7 @@ class Protocol:
             self.special_tokens.append("🛑")
         for token in self.tokens:
             template['tokens'][token.value] = {'key': token.key, 'num': token.num, 'user': token.user,
-                                                'desc': token.desc, 'special': token.special}
+                                               'desc': token.desc, 'special': token.special}
             if token.num:
                 assert self.numbers is not None, f"{token.value} token was set to have numbers, but no numbers added."
         for special_token in self.special_tokens:
@@ -216,7 +201,7 @@ class Protocol:
                                                ppo_a_samples, ppo_b_samples, ppo_pref):
                 ppo.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v, 'a': a, 'b': b, 'pref': pr})
             memory_set = []
-            for token_tuple in token_set.tokens:
+            for token_tuple in token_set.context:
                 token_strings = [t.value for t in token_tuple]
                 memory_set.append(token_strings)
             template['instruction']['sets'].append(
