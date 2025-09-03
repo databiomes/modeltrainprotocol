@@ -29,32 +29,26 @@ class Protocol:
         """Adds a line of context to the model."""
         self.context.append(context)
 
-    def add_token(self, value: str, key: str | None = None, default: bool = False, user: bool = False,
-                  num: bool = False, desc: str | None = None, special: str | None = None) -> Token:
+    def add_token(self, token: Token):
         """
         Adds a unique token to the protocol.
 
-        Validates that a token string is unique. Creates a Token object and adds it to the protocol's token set.
-
-        :param value: The string representing the token's value.
-        :param key: The key associated with the token, a symbol, emoji, or short string.
-        :param default: Boolean indicating if this is a default token (like <BOS>, <EOS>).
-        :param user: Boolean indicating if this token represents a user input.
-        :param num: Boolean indicating if this token is associated with a numerical value.
-        :param desc: Optional description of the token. Extends the value to contextualize its use.
-        :param special: Optional special attribute to identify special tokens.
+        Validates that the token's value and key are unique.
+        :param token: The Token instance to add.
         """
-        if key is None:
+        if token in self.tokens:
+            raise ValueError(f"Token value '{token.value}' already used.")
+
+        if token.key in self.used_keys:
+            raise ValueError(f"Token key '{token.key}' already used.")
+
+        if token.key is None:
             available_keys: set[str] = self.possible_emoji_keys - self.used_keys
             key = available_keys.pop() if available_keys else None
+            token.key = key
 
-        token: Token = Token(value=(value + "_") if not default else value,
-                             key=key, user=user, num=num, desc=desc, special=special)
-
-        assert token not in self.tokens, f"Token value '{value}' already used."
         self.tokens.add(token)
         self.used_keys.add(token.key)
-        return token
 
     def add_instruction(self, instruction: Instruction):
         """
@@ -64,7 +58,7 @@ class Protocol:
         """
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            assert len(sample['strings']) == self.instruction_sample_lines,\
+            assert len(sample['strings']) == self.instruction_sample_lines, \
                 "The number of sample lines does not match the memory size."
 
         # Add all token combos as special tokens
@@ -77,6 +71,12 @@ class Protocol:
 
         # Add the instruction to the protocol
         self.instructions.add(instruction)
+
+    def add_guardrail(self, guardrail: Guardrail):
+        """Adds a Guardrail (and its components) to the protocol."""
+        # One Guardrail per Instruction set
+        # User must be part of Instruction yet
+        # Instruction set must be added to protocol
 
     def create_guardrail(self, token_set, good_prompt, bad_prompt, output):
         guardrail = Guardrail(token_set, good_prompt, bad_prompt, output)
