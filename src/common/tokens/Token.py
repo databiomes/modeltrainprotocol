@@ -1,17 +1,18 @@
 class Token:
-    def __init__(self, value: str, key: str, user: bool = False, num: bool = False,
-                 desc: str | None = None, special: str | None = None):
+    def __init__(self, value: str, key: str, desc: str | None = None, special: str | None = None,
+                 user: bool = False, num: bool = False, default: bool = False):
         """
         Initializes a Token instance.
 
         :param value: The string representing the token's value.
         :param key: The key associated with the token, a symbol, emoji, or short string.
-        :param user: Boolean indicating if this token represents a user input.
-        :param num: Boolean indicating if this token is associated with a numerical value.
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         :param special: Optional special attribute to identify special tokens.
+        :param user: Boolean indicating if this token represents a user input.
+        :param num: Boolean indicating if this token is associated with a numerical value.
+        :param default: Boolean indicating if this is a default token (like <BOS>, <EOS>).
         """
-        self.value: str = value
+        self.value: str = value + "_" if not default else value
         self.key: str = key
         self.user: bool = user
         self.num: bool = num
