@@ -9,26 +9,22 @@ class UserInstruction(Instruction):
     """
     A UserInstruction is a specialized Instruction that includes at least one user token in the user token set.
 
-    Note: The response is not set in a UserInstruction.
-
     This Instruction type includes a prompt provided by the user to guide the model's response.
 
     Note: The response TokenSet is not set in a UserInstruction.
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
 
-    def __init__(self, context: Sequence[TokenSet], user: TokenSet, prompt: str, final: Token):
+    def __init__(self, context: Sequence[TokenSet], user: TokenSet, final: Token):
         """
         Initializes a UserInstruction instance.
 
         :param context: List of tuples containing Token instances that define the input structure. This precedes the user input.
         :param user: A TokenSet instance that must include at least one user token.
-        :param prompt: A string provided by the user to prompt the model's response.
         :param final: A Token instance designating the final action by the model.
         """
         super().__init__(context=context, response=user, final=final)
         assert self.contains_user(), "UserInstruction requires a user token in the response. Use Instruction for non-user inputs."
-        self.prompt: str = prompt
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], prompt: str, output_snippet: Snippet,
