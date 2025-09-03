@@ -71,8 +71,7 @@ class Instruction(ABC):
     def _assert_valid_value(self, value: int | float | None):
         """
         Assert value is provided if self.final is a number Token, else assert value is None
-        :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
-        :raises: AssertionError if value is not valid:
+        :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number
         """
         if self.final.num and value is None:
             raise ValueError("Value must be provided when final token is a number.")
