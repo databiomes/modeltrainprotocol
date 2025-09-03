@@ -26,7 +26,7 @@ class Instruction(ABC):
         """Initializes the common attributes to all Instructions."""
         self.context: Sequence[TokenSet] = context
         self.response: TokenSet = response
-        self.result: Token = final
+        self.final: Token = final
         self.samples: list[dict] = []
 
     @abc.abstractmethod
@@ -66,7 +66,7 @@ class Instruction(ABC):
             else:
                 numbers.append([])
 
-        return {'strings': snippets, 'number': numbers, 'result': self.result, 'value': value, 'prompt': None}
+        return {'strings': snippets, 'number': numbers, 'result': self.final, 'value': value, 'prompt': None}
 
     def _assert_numbers(self, numbers: list[list[int]]):
         """
@@ -94,12 +94,12 @@ class Instruction(ABC):
         samples_str: str = ',\n'.join([
             f"Sample(Strings: {sample['strings']}, Result: {sample['result'].key + sample['value'] if sample['value'] is not None else ''}"
             for sample in self.samples])
-        return f"Token Set(Tokens: {tokens_str}, Result: {self.result.key}, Samples:\n{samples_str})"
+        return f"Token Set(Tokens: {tokens_str}, Result: {self.final.key}, Samples:\n{samples_str})"
 
     def to_dict(self):
         """Convert the Instruction to a dictionary representation."""
         return {
             'tokens': [[token.to_dict() for token in token_set.tokens] for token_set in self.get_token_sets()],
-            'result': self.result.to_dict() if self.result else None,
+            'result': self.final.to_dict() if self.final else None,
             'samples': self.samples
         }

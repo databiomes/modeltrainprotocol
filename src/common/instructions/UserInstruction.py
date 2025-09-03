@@ -28,8 +28,22 @@ class UserInstruction(Instruction):
         self.prompt: str = prompt
 
     # noinspection PyMethodOverriding
-    def add_sample(self, snippets: list[Snippet], prompt: str, value: int | float | None = None):
-        """Add a sample to the Instruction."""
-        sample: dict = self._create_base_sample(snippets=snippets, value=value)
+    def add_sample(self, context_snippets: list[Snippet], prompt: str, output_snippet: Snippet,
+                   value: int | float | None = None):
+        """
+        Add a sample to the Instruction.
+
+        :param context_snippets: List of context snippets that will be added to the Instruction.
+        :param prompt: The prompt provided by the user.
+        :param output_snippet: The model's output snippet.
+        :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
+        """
+        if self.final.num:
+            assert value is not None and (isinstance(value, int) or isinstance(value, float))
+        else:
+            assert value is None
+
+        all_snippets: list[Snippet] = context_snippets + [output_snippet]
+        sample: dict = self._create_base_sample(snippets=all_snippets, value=value)
         sample['prompt'] = prompt
         self.samples.append(sample)

@@ -72,8 +72,8 @@ class Protocol:
             self.special_tokens.add(token_set.key)
 
         # Add the result token as a special token
-        if instruction.result.key is not None:
-            self.special_tokens.add(instruction.result.key)
+        if instruction.final.key is not None:
+            self.special_tokens.add(instruction.final.key)
 
         # Add the instruction to the protocol
         self.instructions.add(instruction)
@@ -124,9 +124,9 @@ class Protocol:
                         valid_input_list.append("🏃\n")
                     else:
                         valid_input_list.append("<string>")
-            unique_results[str(token_set.result.value)] = str(token_set.result.key)
+            unique_results[str(token_set.final.value)] = str(token_set.final.key)
             if len(valid_output_list) < 3:
-                valid_output_list.append(str(token_set.result.key))
+                valid_output_list.append(str(token_set.final.key))
                 valid_output_list.append("🎬")
 
         template = {
@@ -207,7 +207,7 @@ class Protocol:
             template['instruction']['sets'].append(
                 {
                     "set": memory_set,
-                    "result": token_set.result.value,
+                    "result": token_set.final.value,
                     "samples": samples,
                     "ppo": ppo,
                 }
