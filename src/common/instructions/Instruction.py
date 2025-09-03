@@ -61,10 +61,6 @@ class Instruction(ABC):
         for snippet in snippets:
             strings.append(snippet.string)
             numbers.append(snippet.numbers)
-            if snippet.numbers is not None:
-                numbers.append(snippet.numbers)
-            else:
-                numbers.append([])
 
         return {'strings': snippets, 'number': numbers, 'result': self.final, 'value': value, 'prompt': None}
 
