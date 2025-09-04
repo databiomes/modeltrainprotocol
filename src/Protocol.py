@@ -10,7 +10,12 @@ class Protocol:
     """Model Training Protocol (MTP) class for creating the training configuration."""
 
     def __init__(self, name: str, instruction_sample_lines: int):
-        """Initialize the Model Training Protocol (MTP)"""
+        """
+        Initialize the Model Training Protocol (MTP)
+
+        :param name: The name of the protocol.
+        :param instruction_sample_lines: The number of lines in each instruction sample. Must be at least 3.
+        """
         self.name: str = name
         self.instruction_sample_lines: int = instruction_sample_lines  # Number of lines in instruction samples
         assert self.instruction_sample_lines >= 3, "A minimum of 3 sample lines is required for all instructions."
@@ -90,36 +95,31 @@ class Protocol:
         value = f"<List of length {length} of numbers between {min_value} and {max_value}>"
         self.numbers[key] = value
 
-    def _set_guardrails(self):
-        """Sets all guardrails from TokenSets into the protocol."""
-        # Add all guardrails to the protocol
-        for instruction in self.instructions:
-            if instruction.response.guardrail is not None:
-                # instruction.response is the user TokenSet
-                self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
+    def save(self, name: str | None = None, path: str | None = None):
+        """
+        Saves the protocol to a JSON file. This file can be submitted to Databiomes for model training.
 
-    def _create_special_tokens(self):
-        """Adds all special tokens to the protocol."""
-        bos_token: Token = Token(value="<BOS>", key="🏁", default=True, special="start")
-        eos_token: Token = Token(value="<EOS>", key="🎬", default=True, special="end")
-        run_token: Token = Token(value="<RUN>", key="🏃", default=True, special="infer")
-        pad_token: Token = Token(value="<PAD>", key="🗒", default=True, special="pad")
-        self.special_tokens.add(bos_token.key)
-        self.special_tokens.add(eos_token.key)
-        self.special_tokens.add(run_token.key)
-        self.special_tokens.add(pad_token.key)
+        :param name: The name of the file (without extension). If None, uses the protocol's name.
+        :param path: The directory path where the file will be saved. If None, saves in the current directory.
+        """
+        if name is None:
+            name = self.name
+        if path is None:
+            path = os.getcwd()
+        os.makedirs(path, exist_ok=True)
+        filename = f"{path}\\{name}_model.json"
+        print(f"Saving Model Train Protocol to {filename}...")
+        mtp_template = self._serialize()
+        mtp_template = self._rename_template_elements(mtp_template)
+        with open(filename, 'w', encoding="utf-8") as file:
+            json.dump(mtp_template, file, indent=4, ensure_ascii=False)
 
-        if len(self.guardrails) > 0:
-            unk_token: Token = Token(value="<UNK>", key="🛑", default=True, special="unknown")
-            self.special_tokens.add(unk_token.key)
-
-        if self.none is None:
-            non_token: Token = Token(value="<NON>", key="🫙", default=True, special="none")
-            self.special_tokens.add(non_token.key)
-
-    def create_template(self, path: str | None = None):
+    def template(self, path: str | None = None):
         """
         Create a template JSON file for the model training protocol.
+
+        The template json file includes example usage and all possible combinations of model inputs and
+        outputs based on the defined tokens and instructions.
 
         :param path: The directory path where the template file will be saved. If None, saves in the current directory.
         """
@@ -171,9 +171,37 @@ class Protocol:
         template['all_combinations']['model_output']["model_response"] = "<string>"
         template['all_combinations']['model_output']["model_results"] = unique_results
         template['all_combinations']['model_output']["<EOS>"] = "🎬"
-        filename = f"{path}/template.json"
+        filename = f"{path}/{self.name}_template.json"
+        print(f"Creating Model Train Protocol Template to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(template, file, indent=4, ensure_ascii=False)
+
+    def _set_guardrails(self):
+        """Sets all guardrails from TokenSets into the protocol."""
+        # Add all guardrails to the protocol
+        for instruction in self.instructions:
+            if instruction.response.guardrail is not None:
+                # instruction.response is the user TokenSet
+                self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
+
+    def _create_special_tokens(self):
+        """Adds all special tokens to the protocol."""
+        bos_token: Token = Token(value="<BOS>", key="🏁", default=True, special="start")
+        eos_token: Token = Token(value="<EOS>", key="🎬", default=True, special="end")
+        run_token: Token = Token(value="<RUN>", key="🏃", default=True, special="infer")
+        pad_token: Token = Token(value="<PAD>", key="🗒", default=True, special="pad")
+        self.special_tokens.add(bos_token.key)
+        self.special_tokens.add(eos_token.key)
+        self.special_tokens.add(run_token.key)
+        self.special_tokens.add(pad_token.key)
+
+        if len(self.guardrails) > 0:
+            unk_token: Token = Token(value="<UNK>", key="🛑", default=True, special="unknown")
+            self.special_tokens.add(unk_token.key)
+
+        if self.none is None:
+            non_token: Token = Token(value="<NON>", key="🫙", default=True, special="none")
+            self.special_tokens.add(non_token.key)
 
     def _serialize(self):
         """Serializes the protocol to a dictionary."""
@@ -250,21 +278,3 @@ class Protocol:
                     sample['number'] = None
 
         return template
-
-    def save(self, name: str | None = None, path: str | None = None):
-        """
-        Saves the protocol to a JSON file.
-        :param name: The name of the file (without extension). If None, uses the protocol's name.
-        :param path: The directory path where the file will be saved. If None, saves in the current directory.
-        """
-        if name is None:
-            name = self.name
-        if path is None:
-            path = os.getcwd()
-        os.makedirs(path, exist_ok=True)
-        filename = f"{path}\\{name}.json"
-        print(f"Saving Model Train Protocol to {filename}...")
-        mtp_template = self._serialize()
-        mtp_template = self._rename_template_elements(mtp_template)
-        with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(mtp_template, file, indent=4, ensure_ascii=False)
