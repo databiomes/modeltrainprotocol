@@ -1,4 +1,5 @@
 import json
+import os
 
 from src.common.instructions.Instruction import Instruction
 from src.common.tokens.Token import Token
@@ -112,8 +113,15 @@ class Protocol:
             unk_token: Token = Token(value="<UNK>", key="🛑", default=True, special="unknown")
             self.special_tokens.add(unk_token.key)
 
-    def create_template(self, path):
-        """Create a template JSON file for the model training protocol."""
+    def create_template(self, path: str | None = None):
+        """
+        Create a template JSON file for the model training protocol.
+
+        :param path: The directory path where the template file will be saved. If None, saves in the current directory.
+        """
+        if path is None:
+            path = os.getcwd()
+
         self._set_guardrails()
 
         unique_sets = {i: [] for i in range(self.instruction_sample_lines)}
@@ -213,7 +221,17 @@ class Protocol:
 
         return template
 
-    def save(self, path, name):
+    def save(self, name: str | None = None, path: str | None = None):
+        """
+        Saves the protocol to a JSON file.
+        :param name: The name of the file (without extension). If None, uses the protocol's name.
+        :param path: The directory path where the file will be saved. If None, saves in the current directory.
+        """
+        if name is None:
+            name = self.name
+        if path is None:
+            path = os.getcwd()
+        os.makedirs(path, exist_ok=True)
         filename = f"{path}/{name}.json"
         print(f"Saving Model Train Protocol to {filename}...")
         mtp_template = self._serialize()
