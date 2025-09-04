@@ -113,6 +113,10 @@ class Protocol:
             unk_token: Token = Token(value="<UNK>", key="🛑", default=True, special="unknown")
             self.special_tokens.add(unk_token.key)
 
+        if self.none is None:
+            non_token: Token = Token(value="<NON>", key="🫙", default=True, special="none")
+            self.special_tokens.add(non_token.key)
+
     def create_template(self, path: str | None = None):
         """
         Create a template JSON file for the model training protocol.
