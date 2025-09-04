@@ -99,7 +99,7 @@ class Instruction(ABC):
             strings.append(snippet.string)
             numbers.append(snippet.numbers)
 
-        return {'strings': snippets, 'number': numbers, 'result': self.final, 'value': value, 'prompt': None}
+        return {'strings': strings, 'number': numbers, 'result': self.final, 'value': value, 'prompt': None}
 
     def _assert_valid_value(self, value: int | float | None):
         """
@@ -124,7 +124,7 @@ class Instruction(ABC):
 
     def __hash__(self) -> int:
         """Hash based on the attributes of the Instruction."""
-        return hash(tuple(sorted(self.to_dict().items())))
+        return hash(str(sorted(self.to_dict().items())))
 
     def __eq__(self, other) -> bool:
         """
