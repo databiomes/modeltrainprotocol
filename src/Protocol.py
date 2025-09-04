@@ -232,7 +232,7 @@ class Protocol:
         if path is None:
             path = os.getcwd()
         os.makedirs(path, exist_ok=True)
-        filename = f"{path}/{name}.json"
+        filename = f"{path}\\{name}.json"
         print(f"Saving Model Train Protocol to {filename}...")
         mtp_template = self._serialize()
         with open(filename, 'w', encoding="utf-8") as file:
