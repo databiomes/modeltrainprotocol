@@ -94,9 +94,9 @@ class Protocol:
         """Sets all guardrails from TokenSets into the protocol."""
         # Add all guardrails to the protocol
         for instruction in self.instructions:
-            if instruction.response._guardrail is not None:
+            if instruction.response.guardrail is not None:
                 # instruction.response is the user TokenSet
-                self.guardrails[instruction.response.key] = instruction.response._guardrail.format_samples()
+                self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
 
     def _create_special_tokens(self):
         """Adds all special tokens to the protocol."""
@@ -151,7 +151,7 @@ class Protocol:
                 valid_output_list.append(str(token_set.final.key))
                 valid_output_list.append("🎬")
 
-        template = {
+        template: dict[str, dict] = {
             "example_usage": {
                 "valid_input": "\n".join(valid_input_list),
                 "valid_output": "\n".join(valid_output_list)
