@@ -41,26 +41,34 @@ mtp.add_context(
     "Down, down, down. There was nothing else to do, so Alice soon began talking again. “Dinahll miss me very much to-night, I should think!” (Dinah was the cat.) “I hope theyll remember her saucer of milk at tea-time. Dinah my dear! I wish you were down here with me! There are no mice in the air, Im afraid, but you might catch a bat, and thats very like a mouse, you know. But do cats eat bats, I wonder?” And here Alice began to get rather sleepy, and went on saying to herself, in a dreamy sort of way, “Do cats eat bats? Do cats eat bats?” and sometimes, “Do bats eat cats?” for, you see, as she couldnt answer either question, it didnt much matter which way she put it. She felt that she was dozing off, and had just begun to dream that she was walking hand in hand with Dinah, and saying to her very earnestly, “Now, Dinah, tell me the truth: did you ever eat a bat?” when suddenly, thump! thump! down she came upon a heap of sticks and dry leaves, and the fall was over.")
 
 # Language
-token_english: Token = mtp.add_token("English", key="🇨")
+token_english: Token = Token("English", key="🇨")
+mtp.add_token(token_english)
 
 # Characters
-token_alice: Token = mtp.add_token("Alice", key="😁", user=True)
-token_cat: Token = mtp.add_token("Cat", key="🐱")
+token_alice: Token = Token("Alice", key="😁", user=True)
+token_cat: Token = Token("Cat", key="🐱")
+mtp.add_token(token_alice)
+mtp.add_token(token_cat)
 
 # Scenes
-token_tree: Token = mtp.add_token(
-    "Tree", key="🪾", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past"
-                          " a few feet, the Cheshire Cat sits smiling on a branch.")
+token_tree: Token = Token("Tree", key="🪾", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
+mtp.add_token(token_tree)
 
 # Actions
-token_talk: Token = mtp.add_token("Talk", key="🗣")
+token_talk: Token = Token("Talk", key="🗣")
+mtp.add_token(token_talk)
 
 # Game Functions
-token_continue = mtp.add_token("Continue", key="🔄")
-token_appear = mtp.add_token("Appear", key="👀")
-token_disappear = mtp.add_token("Disappear", key="🫥")
-token_answer = mtp.add_token("Answer", key="🔎")
-token_leave = mtp.add_token("Leave", key="💥")
+token_continue: Token = Token("Continue", key="🔄")
+token_appear: Token = Token("Appear", key="👀")
+token_disappear: Token = Token("Disappear", key="🫥")
+token_answer: Token = Token("Answer", key="🔎")
+token_leave: Token = Token("Leave", key="💥")
+mtp.add_token(token_continue)
+mtp.add_token(token_appear)
+mtp.add_token(token_disappear)
+mtp.add_token(token_answer)
+mtp.add_token(token_leave)
 
 
 # Create the token sets for the instructions
@@ -127,5 +135,5 @@ guardrail_english.add_sample("what is the capital of Spain?")
 # Add Guardrail onto user TokenSet
 tree_english_alice_talk.set_guardrail(guardrail_english)
 
-mtp.save("demo", "cat")
-mtp.create_template("demo")
+mtp.save()
+mtp.create_template()
