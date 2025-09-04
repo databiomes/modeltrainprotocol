@@ -243,6 +243,12 @@ class Protocol:
             if 'key' in token_info:
                 token_info['emoji'] = token_info.pop('key')
 
+        # Rename sample number to None if an array of empty arrays
+        for instruction in template.get('instruction', {}).get('sets', []):
+            for sample in instruction['samples']:
+                if all(num == [] for num in sample['numbers']):
+                    sample['numbers'] = None
+
         return template
 
     def save(self, name: str | None = None, path: str | None = None):
