@@ -126,8 +126,7 @@ class Protocol:
         if path is None:
             path = os.getcwd()
 
-        self._set_guardrails()
-
+        self._set_all_elements()
         unique_sets = {i: [] for i in range(self.instruction_sample_lines)}
         unique_results = dict()
         valid_input_list = ["🏁", ]
@@ -177,6 +176,8 @@ class Protocol:
             json.dump(template, file, indent=4, ensure_ascii=False)
 
     def _serialize(self):
+        """Serializes the protocol to a dictionary."""
+        self._set_all_elements()
         template = {
             "name": self.name,
             "context": self.context,
@@ -222,6 +223,25 @@ class Protocol:
         # Add numbers to the template
         for key, value in self.numbers.items():
             template['numbers'][key] = value
+
+        return template
+
+    def _set_all_elements(self):
+        """Sets all elements in the protocol before serialization."""
+        self._set_guardrails()
+        self._create_special_tokens()
+
+    @classmethod
+    def _rename_template_elements(cls, template: dict):
+        """
+        Renames elements in the template to match the previous output format for backwards compatibility.
+        :param template: The original template dictionary.
+        :return: The modified template dictionary with renamed elements.
+        """
+        # Rename Token 'key' to 'emoji'
+        for token_value, token_info in template.get('tokens', {}).items():
+            if 'key' in token_info:
+                token_info['emoji'] = token_info.pop('key')
 
         return template
 
