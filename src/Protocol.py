@@ -246,8 +246,8 @@ class Protocol:
         # Rename sample number to None if an array of empty arrays
         for instruction in template.get('instruction', {}).get('sets', []):
             for sample in instruction['samples']:
-                if all(num == [] for num in sample['numbers']):
-                    sample['numbers'] = None
+                if all(num == [] for num in sample['number']):
+                    sample['number'] = None
 
         return template
 
@@ -265,5 +265,6 @@ class Protocol:
         filename = f"{path}\\{name}.json"
         print(f"Saving Model Train Protocol to {filename}...")
         mtp_template = self._serialize()
+        mtp_template = self._rename_template_elements(mtp_template)
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(mtp_template, file, indent=4, ensure_ascii=False)
