@@ -48,6 +48,43 @@ class Instruction(ABC):
         """
         return self.response.is_user
 
+    def serialize_samples(self) -> list[dict]:
+        """Serializes the Instruction samples"""
+        samples = []
+        sample_strings = [sample['strings'] for sample in self.samples]
+        sample_prompts = [sample['prompt'] for sample in self.samples]
+        sample_numbers = [sample['number'] for sample in self.samples]
+        sample_results = [sample['result'].value for sample in self.samples]
+        sample_values = [sample['value'] for sample in self.samples]
+        for s, p, n, r, v in zip(sample_strings, sample_prompts, sample_numbers, sample_results, sample_values):
+            samples.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v})
+        return samples
+
+    def serialize_ppo(self) -> list[dict]:
+        """Serialize the Instruction for PPO training."""
+        # To be implemented when ppo introduced
+        # ppo = []
+        # ppo_strings = [sample['strings'] for sample in self.ppo]
+        # ppo_prompts = [sample['prompt'] for sample in self.ppo]
+        # ppo_numbers = [sample['number'] for sample in self.ppo]
+        # ppo_results = [sample['result'].value for sample in self.ppo]
+        # ppo_values = [sample['value'] for sample in self.ppo]
+        # ppo_a_samples = [sample['a_sample'] for sample in self.ppo]
+        # ppo_b_samples = [sample['b_sample'] for sample in self.ppo]
+        # ppo_pref = [sample['pref'] for sample in self.ppo]
+        # for s, p, n, r, v, a, b, pr in zip(ppo_strings, ppo_prompts, ppo_numbers, ppo_results, ppo_values,
+        #                                    ppo_a_samples, ppo_b_samples, ppo_pref):
+        #     ppo.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v, 'a': a, 'b': b, 'pref': pr})
+        return []
+
+    def serialize_memory_set(self) -> list[list[str]]:
+        """Serialize the Instruction token memory set training."""
+        memory_set = []
+        for token_set in self.get_token_sets():
+            token_strings = [t.value for t in token_set.tokens]
+            memory_set.append(token_strings)
+        return memory_set
+
     def _create_base_sample(self, snippets: list[Snippet], value: int | float | None = None) -> dict:
         """Create a base sample dictionary without a prompt."""
         if value is not None:
@@ -85,7 +122,22 @@ class Instruction(ABC):
             for sample in self.samples])
         return f"Token Set(Tokens: {tokens_str}, Result: {self.final.key}, Samples:\n{samples_str})"
 
-    def to_dict(self):
+    def __hash__(self) -> int:
+        """Hash based on the attributes of the Instruction."""
+        return hash(tuple(sorted(self.to_dict().items())))
+
+    def __eq__(self, other) -> bool:
+        """
+        Defines equality based on the attributes of the Instruction.
+        Returns True if the other object is an Instruction and its attributes match this Instruction's attributes.
+        """
+        return isinstance(other, Instruction) and self.__dict__ == other.__dict__
+
+    def __dict__(self) -> dict:
+        """Dictionary representation of the Instruction."""
+        return self.to_dict()
+
+    def to_dict(self) -> dict:
         """Convert the Instruction to a dictionary representation."""
         return {
             'tokens': [[token.to_dict() for token in token_set.tokens] for token_set in self.get_token_sets()],

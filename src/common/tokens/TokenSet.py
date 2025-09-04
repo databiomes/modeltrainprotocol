@@ -3,6 +3,7 @@ from typing import Sequence, Iterable
 
 from dataclasses import dataclass
 
+from src.common.Guardrail import Guardrail
 from src.common.tokens.Token import Token
 
 
@@ -21,6 +22,20 @@ class TokenSet:
         self.is_user: bool = any(token.user for token in tokens)
         self.required_numbers: int = sum(1 for token in tokens if token.num)  # Count of tokens that require numbers
         self.key: str = ''.join(token.key for token in tokens)
+        self._guardrail: Guardrail | None = None
+
+    @property
+    def guardrail(self) -> Guardrail | None:
+        """Returns the guardrail for the TokenSet, if any."""
+        return self._guardrail
+
+    def set_guardrail(self, guardrail: Guardrail):
+        """Sets a guardrail for the TokenSet."""
+        if not self.is_user:
+            raise ValueError("Guardrails can only be added to a user TokenSet.")
+        if not isinstance(guardrail, Guardrail):
+            raise TypeError("Guardrail must be an instance of the Guardrail class.")
+        self._guardrail = guardrail
 
     def create_snippet(self, string: str, numbers: Iterable[int] | int | None = None) -> Snippet:
         """Create a snippet for the TokenSet"""

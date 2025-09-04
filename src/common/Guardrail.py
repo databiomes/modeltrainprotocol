@@ -1,19 +1,13 @@
-from src.common.tokens.TokenSet import TokenSet
-
-
 class Guardrail:
     """
     Defines a guardrail response to bad prompts.
 
-    Guardrails are set on a user TokenSet. A user TokenSet is one where any of the sub-Tokens have user=True.
-
-    A user TokenSet can also be identified by calling the is_user property on the TokenSet.
+    Guardrails are set on TokenSets. Each TokenSet can have at most one guardrail, but guardrails can be reused.
     """
 
-    def __init__(self, token_set: TokenSet, good_prompt: str, bad_prompt: str, bad_output: str):
+    def __init__(self, good_prompt: str, bad_prompt: str, bad_output: str):
         """
         Initializes a Guardrail.
-        :param token_set: The TokenSet the guardrail is set on.
         :param good_prompt: Description of a good prompt.
         :param bad_prompt: Description of a bad prompt.
         :param bad_output: The output the model should produce when a bad prompt is detected.
@@ -23,18 +17,10 @@ class Guardrail:
             bad_prompt="Quote being spoken that is irrelevant and off-topic with 1-20 words",
             output="I have no idea what you're talking about."
         """
-        if not isinstance(token_set, TokenSet):
-            raise TypeError("Guardrails can only be set on a TokenSet.")
-
-        if not token_set.is_user:
-            raise ValueError("Guardrails can only be set on a user TokenSet.")
-
-        self.token_set: TokenSet = token_set
         self.good_prompt: str = good_prompt
         self.bad_prompt: str = bad_prompt
         self.bad_output: str = bad_output
         self.samples: list[str] = []
-        self.key: str = self.token_set.key
 
     def add_sample(self, sample: str):
         """

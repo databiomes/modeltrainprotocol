@@ -1,6 +1,5 @@
 import json
 
-from src.common.Guardrail import Guardrail
 from src.common.instructions.Instruction import Instruction
 from src.common.tokens.Token import Token
 from src.common.util import get_possible_emojis
@@ -18,8 +17,8 @@ class Protocol:
         self.context: list[str] = []
         self.tokens: set[Token] = set()
         self.instructions: set[Instruction] = set()
-        self.guardrails: dict[str: Guardrail] = dict()
-        self.numbers: dict[str: str] = None
+        self.guardrails: dict[str, list[str]] = dict()
+        self.numbers: dict[str, str] = dict()
         self.none = None
         self.special_tokens: set[str] = set()
         self.possible_emoji_keys: set[str] = get_possible_emojis()
@@ -44,7 +43,9 @@ class Protocol:
 
         if token.key is None:
             available_keys: set[str] = self.possible_emoji_keys - self.used_keys
-            key = available_keys.pop() if available_keys else None
+            if len(available_keys) == 0:
+                raise ValueError("No available emoji keys left to assign. Please specify a key for the token.")
+            key = available_keys.pop()
             token.key = key
 
         self.tokens.add(token)
@@ -72,22 +73,8 @@ class Protocol:
         # Add the instruction to the protocol
         self.instructions.add(instruction)
 
-    def add_guardrail(self, guardrail: Guardrail):
-        """Adds a Guardrail (and its components) to the protocol."""
-        # One Guardrail per Instruction set
-        # User must be part of Instruction yet
-        # Instruction set must be added to protocol
-
-    def create_guardrail(self, token_set, good_prompt, bad_prompt, output):
-        guardrail = Guardrail(token_set, good_prompt, bad_prompt, output)
-        self.guardrails[guardrail.key] = guardrail()
-        return guardrail
-
-    def add_guardrail_sample(self, guardrail, sample):
-        guardrail.add_sample(sample)
-        self.guardrails[guardrail.key] = guardrail()
-
     def add_number(self, num, min_value, max_value):
+        """Adds a number range to the protocol."""
         if self.numbers is None:
             self.numbers = {"None": ''}
         key = num.value
@@ -95,13 +82,40 @@ class Protocol:
         self.numbers[key] = value
 
     def add_number_list(self, num, min_value, max_value, length):
+        """Adds a number list range to the protocol."""
         if self.numbers is None:
             self.numbers = {"None": ''}
         key = num.value
         value = f"<List of length {length} of numbers between {min_value} and {max_value}>"
         self.numbers[key] = value
 
+    def _set_guardrails(self):
+        """Sets all guardrails from TokenSets into the protocol."""
+        # Add all guardrails to the protocol
+        for instruction in self.instructions:
+            if instruction.response._guardrail is not None:
+                # instruction.response is the user TokenSet
+                self.guardrails[instruction.response.key] = instruction.response._guardrail.format_samples()
+
+    def _create_special_tokens(self):
+        """Adds all special tokens to the protocol."""
+        bos_token: Token = Token(value="<BOS>", key="🏁", default=True, special="start")
+        eos_token: Token = Token(value="<EOS>", key="🎬", default=True, special="end")
+        run_token: Token = Token(value="<RUN>", key="🏃", default=True, special="infer")
+        pad_token: Token = Token(value="<PAD>", key="🗒", default=True, special="pad")
+        self.special_tokens.add(bos_token.key)
+        self.special_tokens.add(eos_token.key)
+        self.special_tokens.add(run_token.key)
+        self.special_tokens.add(pad_token.key)
+
+        if len(self.guardrails) > 0:
+            unk_token: Token = Token(value="<UNK>", key="🛑", default=True, special="unknown")
+            self.special_tokens.add(unk_token.key)
+
     def create_template(self, path):
+        """Create a template JSON file for the model training protocol."""
+        self._set_guardrails()
+
         unique_sets = {i: [] for i in range(self.instruction_sample_lines)}
         unique_results = dict()
         valid_input_list = ["🏁", ]
@@ -150,7 +164,7 @@ class Protocol:
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(template, file, indent=4, ensure_ascii=False)
 
-    def serialize(self):
+    def _serialize(self):
         template = {
             "name": self.name,
             "context": self.context,
@@ -161,70 +175,47 @@ class Protocol:
             "numbers": {'None': ''},
             "batches": {'pretrain': [], 'instruct': [], 'judge': [], 'ppo': []},
         }
-        self.add_token("<BOS>", "🏁", default=True, special="start")
-        self.special_tokens.append("🏁")
-        self.add_token("<EOS>", "🎬", default=True, special="end")
-        self.special_tokens.append("🎬")
-        self.add_token("<RUN>", "🏃", default=True, special="infer")
-        self.special_tokens.append("🏃")
-        self.add_token("<PAD>", "🗒", default=True, special="pad")
-        self.special_tokens.append("🗒")
-        if self.guardrails is not None:
-            self.add_token("<UNK>", "🛑", default=True, special="unknown")
-            self.special_tokens.append("🛑")
+
+        # Add tokens to the template
+        tokens_dict: dict[str, dict] = {}
         for token in self.tokens:
-            template['tokens'][token.value] = {'key': token.key, 'num': token.num, 'user': token.user,
-                                               'desc': token.desc, 'special': token.special}
-            if token.num:
-                assert self.numbers is not None, f"{token.value} token was set to have numbers, but no numbers added."
+            token_dict: dict[str, dict] = token.to_dict()
+            token_dict.pop("value")
+            tokens_dict[token.value] = token_dict
+        template['tokens'] = tokens_dict
+        # TODO: Refactor Tokens to have UserToken and NumberToken and SpecialToken subclasses.
+        # if token.num:
+        #     assert self.numbers is not None, f"{token.value} token was set to have numbers, but no numbers added."
+
+        # Add special tokens to the template
+        self._create_special_tokens()
         for special_token in self.special_tokens:
             template['special_tokens'].append(special_token)
-        for token_set in self.instructions:
-            samples = []
-            ppo = []
-            sample_strings = [sample['strings'] for sample in token_set.samples]
-            sample_prompts = [sample['prompt'] for sample in token_set.samples]
-            sample_numbers = [sample['number'] for sample in token_set.samples]
-            sample_results = [sample['result'].value for sample in token_set.samples]
-            sample_values = [sample['value'] for sample in token_set.samples]
-            for s, p, n, r, v in zip(sample_strings, sample_prompts, sample_numbers, sample_results, sample_values):
-                samples.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v})
-            ppo_strings = [sample['strings'] for sample in token_set.ppo]
-            ppo_prompts = [sample['prompt'] for sample in token_set.ppo]
-            ppo_numbers = [sample['number'] for sample in token_set.ppo]
-            ppo_results = [sample['result'].value for sample in token_set.ppo]
-            ppo_values = [sample['value'] for sample in token_set.ppo]
-            ppo_a_samples = [sample['a_sample'] for sample in token_set.ppo]
-            ppo_b_samples = [sample['b_sample'] for sample in token_set.ppo]
-            ppo_pref = [sample['pref'] for sample in token_set.ppo]
-            for s, p, n, r, v, a, b, pr in zip(ppo_strings, ppo_prompts, ppo_numbers, ppo_results, ppo_values,
-                                               ppo_a_samples, ppo_b_samples, ppo_pref):
-                ppo.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v, 'a': a, 'b': b, 'pref': pr})
-            memory_set = []
-            for token_tuple in token_set.context:
-                token_strings = [t.value for t in token_tuple]
-                memory_set.append(token_strings)
+
+        # Add instructions to the template
+        for instruction in self.instructions:
             template['instruction']['sets'].append(
                 {
-                    "set": memory_set,
-                    "result": token_set.final.value,
-                    "samples": samples,
-                    "ppo": ppo,
+                    "set": instruction.serialize_memory_set(),
+                    "result": instruction.final.value,
+                    "samples": instruction.serialize_samples(),
+                    "ppo": instruction.serialize_ppo(),
                 }
             )
+
+        # Add guardrails to the template
         for key, value in self.guardrails.items():
-            if key == "None":
-                continue
             template['guardrails'][key] = value
+
+        # Add numbers to the template
         for key, value in self.numbers.items():
-            if key == "None":
-                continue
             template['numbers'][key] = value
+
         return template
 
     def save(self, path, name):
         filename = f"{path}/{name}.json"
         print(f"Saving Model Train Protocol to {filename}...")
-        mtp_template = self.serialize()
+        mtp_template = self._serialize()
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(mtp_template, file, indent=4, ensure_ascii=False)
