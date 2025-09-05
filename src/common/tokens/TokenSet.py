@@ -21,7 +21,7 @@ class TokenSet:
         self.tokens: Sequence[Token] = tokens
         self.is_user: bool = any(token.user for token in tokens)
         self.required_numbers: int = sum(1 for token in tokens if token.num)  # Count of tokens that require numbers
-        self.key: str = ''.join(token.key for token in tokens)
+        self.key: str = ''.join(token.value for token in tokens)
         self._guardrail: Guardrail | None = None
 
     @property

@@ -245,6 +245,7 @@ class Protocol:
             )
 
         # Add guardrails to the template
+        template['guardrails'] = {'None': ''}
         for key, value in self.guardrails.items():
             template['guardrails'][key] = value
 
