@@ -1,4 +1,5 @@
 import dataclasses
+import warnings
 from typing import Sequence, Iterable
 
 from dataclasses import dataclass
@@ -31,6 +32,8 @@ class TokenSet:
 
     def set_guardrail(self, guardrail: Guardrail):
         """Sets a guardrail for the TokenSet."""
+        if self.guardrail is not None:
+            warnings.warn("Overwriting existing guardrail for TokenSet.")
         if not self.is_user:
             raise ValueError("Guardrails can only be added to a user TokenSet.")
         if not isinstance(guardrail, Guardrail):
