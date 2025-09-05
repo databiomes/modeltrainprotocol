@@ -20,4 +20,6 @@ class DefaultSpecialToken(Token):
         :param special: Special attribute to identify special tokens.
         """
         super().__init__(value, key, desc)
+        # Overwrite value to not have trailing underscore
+        self.value: str = self.value[:-1]
         self.special: str = special
