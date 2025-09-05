@@ -172,8 +172,8 @@ class Protocol:
         template['all_combinations']['model_output']["model_response"] = "<string>"
         template['all_combinations']['model_output']["model_results"] = unique_results
         template['all_combinations']['model_output']["<EOS>"] = "🎬"
-        filename = f"{path}/{self.name}_template.json"
-        print(f"Creating Model Train Protocol Template to {filename}...")
+        filename = f"{path}\\{self.name}_template.json"
+        print(f"Saving Model Train Protocol Template to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(template, file, indent=4, ensure_ascii=False)
 
