@@ -21,7 +21,7 @@ class TokenSet:
         self.tokens: Sequence[Token] = tokens
         self.is_user: bool = any(token.user for token in tokens)
         self.required_numbers: int = sum(1 for token in tokens if token.num)  # Count of tokens that require numbers
-        self.key: str = ''.join(token.value for token in tokens)
+        self.key: str = ''.join(token.value for token in tokens) # Note this key is based on the value of the tokens and not the keys of the tokens
         self._guardrail: Guardrail | None = None
 
     @property
@@ -50,6 +50,13 @@ class TokenSet:
         assert len(numbers) == self.required_numbers, \
             f"{self} requires {self.required_numbers} numbers but {len(numbers)} were provided."
         return Snippet(string=string, numbers=numbers)
+
+    def get_token_key_set(self) -> str:
+        """Returns a string representing the combined token keys of the individual Tokens in the TokenSet."""
+        token_key_set = ''
+        for token in self.tokens:
+            token_key_set += token.key
+        return token_key_set
 
     def __repr__(self):
         """String representation of the TokenSet."""
