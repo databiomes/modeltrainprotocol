@@ -2,6 +2,7 @@ import json
 import os
 
 from src.common.instructions.Instruction import Instruction
+from src.common.tokens.DefaultSpecialToken import DefaultSpecialToken
 from src.common.tokens.Token import Token
 from src.common.util import get_possible_emojis
 
@@ -185,23 +186,23 @@ class Protocol:
                 # instruction.response is the user TokenSet
                 self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
 
-    def _create_special_tokens(self):
+    def _create_default_special_tokens(self):
         """Adds all special tokens to the protocol."""
-        bos_token: Token = Token(value="<BOS>", key="🏁", default=True, special="start")
-        eos_token: Token = Token(value="<EOS>", key="🎬", default=True, special="end")
-        run_token: Token = Token(value="<RUN>", key="🏃", default=True, special="infer")
-        pad_token: Token = Token(value="<PAD>", key="🗒", default=True, special="pad")
+        bos_token: DefaultSpecialToken = DefaultSpecialToken(value="<BOS>", key="🏁", special="start")
+        eos_token: DefaultSpecialToken = DefaultSpecialToken(value="<EOS>", key="🎬", special="end")
+        run_token: DefaultSpecialToken = DefaultSpecialToken(value="<RUN>", key="🏃", special="infer")
+        pad_token: DefaultSpecialToken = DefaultSpecialToken(value="<PAD>", key="🗒", special="pad")
         self.special_tokens.add(bos_token)
         self.special_tokens.add(eos_token)
         self.special_tokens.add(run_token)
         self.special_tokens.add(pad_token)
 
         if len(self.guardrails) > 0:
-            unk_token: Token = Token(value="<UNK>", key="🛑", default=True, special="unknown")
+            unk_token: DefaultSpecialToken = DefaultSpecialToken(value="<UNK>", key="🛑", special="unknown")
             self.special_tokens.add(unk_token)
 
         if self.none is None:
-            non_token: Token = Token(value="<NON>", key="🫙", default=True, special="none")
+            non_token: DefaultSpecialToken = DefaultSpecialToken(value="<NON>", key="🫙", special="none")
             self.special_tokens.add(non_token)
 
     def _serialize(self):
@@ -224,17 +225,15 @@ class Protocol:
             token_dict: dict[str, dict] = token.to_dict()
             token_dict.pop("value")
             tokens_dict[token.value] = token_dict
+
         for token in self.special_tokens:
             token_dict: dict[str, dict] = token.to_dict()
             token_dict.pop("value")
             tokens_dict[token.value] = token_dict
         template['tokens'] = tokens_dict
-        # TODO: Refactor Tokens to have UserToken and NumberToken and SpecialToken subclasses.
-        # if token.num:
-        #     assert self.numbers is not None, f"{token.value} token was set to have numbers, but no numbers added."
 
         # Add special tokens to the template
-        self._create_special_tokens()
+        self._create_default_special_tokens()
         for special_token in self.special_tokens:
             template['special_tokens'].append(special_token.key)
 
@@ -267,7 +266,7 @@ class Protocol:
     def _set_all_elements(self):
         """Sets all elements in the protocol before serialization."""
         self._set_guardrails()
-        self._create_special_tokens()
+        self._create_default_special_tokens()
 
     @classmethod
     def _rename_template_elements(cls, template: dict):
