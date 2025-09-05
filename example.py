@@ -3,6 +3,7 @@ from src.common.Guardrail import Guardrail
 from src.common.instructions.UserInstruction import UserInstruction
 from src.common.tokens.Token import Token
 from src.common.tokens.TokenSet import TokenSet, Snippet
+from src.common.tokens.UserToken import UserToken
 
 # Cheshire NPC
 
@@ -30,7 +31,7 @@ token_english: Token = Token("English", key="🇨")
 mtp.add_token(token_english)
 
 # Characters
-token_alice: Token = Token("Alice", key="😁", user=True)
+token_alice: UserToken = UserToken("Alice", key="😁")
 token_cat: Token = Token("Cat", key="🐱")
 mtp.add_token(token_alice)
 mtp.add_token(token_cat)
