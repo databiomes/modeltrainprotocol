@@ -2,20 +2,26 @@
 
 MTP is an open-source protocol for training custom Language Models on Databiomes. MTP contains all the data that a model is trained on.
 
-## Installation
+## Getting Started
 
-Install the required dependencies:
+Install the package:
 
 ```bash
 pip install -e .
 ```
 
-## Getting Started
+Or install from PyPI (once published):
+
+```bash
+pip install model-train-protocol
+```
+
+See examples/example.py to follow along with these steps.
 
 The first step in creating a model training protocol is to initialize the Protocol:
 
 ```python
-from src.Protocol import Protocol
+from model_train_protocol import Protocol
 
 # Initialize the protocol
 mtp = Protocol(name="my_model", instruction_sample_lines=3)
@@ -42,7 +48,7 @@ Tokens are the base building blocks of the MTP system. They represent words, sym
 The standard token for representing concepts, actions, or entities:
 
 ```python
-from src.common.tokens.Token import Token
+from model_train_protocol.common.tokens import Token
 
 # Create a basic token
 cat = Token("Cat", key="🐱", desc="The Cheshire Cat")
@@ -58,7 +64,7 @@ disappear = Token("Disappear", key="🫥")
 A specialized token that represents user input. These tokens are used when the model needs to respond to user prompts:
 
 ```python
-from src.common.tokens.UserToken import UserToken
+from model_train_protocol.common.tokens import UserToken
 
 # Create a user token
 alice = UserToken("Alice")
@@ -68,7 +74,7 @@ alice = UserToken("Alice")
 A token that can be associated with numerical values:
 
 ```python
-from src.common.tokens.NumToken import NumToken
+from model_train_protocol.common.tokens import NumToken
 
 # Create a number token for sentence length
 sentence_length = NumToken("SentenceLength", key="📏")
@@ -95,7 +101,7 @@ Tokensets are the basic building blocks of instructions.
 ### Creating TokenSets
 
 ```python
-from src.common.tokens.TokenSet import TokenSet
+from model_train_protocol.common.tokens import TokenSet
 
 # Create a TokenSet combining multiple tokens
 tree_alice_talk = TokenSet(tokens=(tree, alice, talk))
@@ -139,7 +145,7 @@ Instructions define how the model should respond to different input patterns. Th
 For scenarios where the model responds without user input:
 
 ```python
-from src.common.instructions.SimpleInstruction import SimpleInstruction
+from model_train_protocol.common.instructions import SimpleInstruction
 
 # Create TokenSets
 cat_pondering = TokenSet(tokens=(tree, cat, ponder))
@@ -188,7 +194,7 @@ instruction.add_sample(
 For scenarios where the model responds to user prompts:
 
 ```python
-from src.common.instructions.UserInstruction import UserInstruction
+from model_train_protocol.common.instructions import UserInstruction
 
 # Create TokenSets for Alice and Cat interaction
 alice_talk = TokenSet(tokens=(tree, alice, talk))
@@ -233,7 +239,7 @@ Guardrails provide safety mechanisms for user interactions by defining what cons
 ### Creating Guardrails
 
 ```python
-from src.common.guardrails.Guardrail import Guardrail
+from model_train_protocol.common.guardrails import Guardrail
 
 # Create a guardrails
 guardrail = Guardrail(

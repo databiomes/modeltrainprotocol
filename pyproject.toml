@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["src*"]
+include = ["model_train_protocol*"]
 exclude = ["assets", "examples"]
 
 [project]
-name = "mtp"
+name = "model-train-protocol"
 version = "1.0.0"
 description = "Create a Model Train Protocol JSON file"
 requires-python = ">=3.9"
