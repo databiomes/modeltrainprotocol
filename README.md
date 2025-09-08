@@ -90,7 +90,7 @@ Tokensets are the basic building blocks of instructions.
 from src.common.tokens.TokenSet import TokenSet
 
 # Create a TokenSet combining multiple tokens
-tree_lice_talk = TokenSet(tokens=(tree, alice, talk))
+tree_alice_talk = TokenSet(tokens=(tree, alice, talk))
 
 # Create a TokenSet with sentence length
 character_context_sentence = TokenSet(tokens=(character, context, sentence_length))
@@ -108,7 +108,7 @@ A Snippet is a example of a TokenSet. Snippets tell the model the context of the
 
 ```python
 # Create a snippet with just text
-snippet = tree_lice_talk.create_snippet(string="Where am I?")
+snippet = tree_alice_talk.create_snippet(string="Where am I?")
 
 # Create a snippet with text and sentence length
 snippet_with_length = character_context_sentence.create_snippet(string="The enemy must be here somewhere.", numbers=[11])
