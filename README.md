@@ -2,6 +2,14 @@
 
 MTP is an open-source protocol for training custom Language Models on Databiomes. MTP contains all the data that a model is trained on.
 
+## Installation
+
+Install the required dependencies:
+
+```bash
+pip install -e .
+```
+
 ## Getting Started
 
 The first step in creating a model training protocol is to initialize the Protocol:
