@@ -280,7 +280,7 @@ class Protocol:
         :return: The modified template dictionary with renamed elements.
         """
         # Rename Token 'key' to 'emoji'
-        for token_value, token_info in template.get('tokens', {}).items():
+        for token_value, token_info in template.get('common/tokens', {}).items():
             if 'key' in token_info:
                 token_info['emoji'] = token_info.pop('key')
 
