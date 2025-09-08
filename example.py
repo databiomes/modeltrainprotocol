@@ -38,14 +38,14 @@ token_tree: Token = Token("Tree", key="🪾",
                           desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
 
 # Actions
-token_talk: Token = Token("Talk", key="🗣")
-token_disappear: Token = Token("Disappear", key="🫥")
+token_talk: Token = Token("Talk")
+token_disappear: Token = Token("Disappear")
 
 # Game Functions
-token_continue: Token = Token("Continue", key="🔄")
-token_appear: Token = Token("Appear", key="👀")
-token_answer: Token = Token("Answer", key="🔎")
-token_leave: Token = Token("Leave", key="💥")
+token_continue: Token = Token("Continue")
+token_appear: Token = Token("Appear")
+token_answer: Token = Token("Answer")
+token_leave: Token = Token("Leave", key="💥") # Optional key for template readability
 
 # Create the token sets for the instructions
 tree_english_alice_talk: TokenSet = TokenSet(tokens=(token_tree, token_english, token_alice, token_talk))
