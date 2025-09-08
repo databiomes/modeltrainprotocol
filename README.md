@@ -225,9 +225,9 @@ Guardrails provide safety mechanisms for user interactions by defining what cons
 ### Creating Guardrails
 
 ```python
-from src.common.Guardrail import Guardrail
+from src.common.guardrails.Guardrail import Guardrail
 
-# Create a guardrail
+# Create a guardrails
 guardrail = Guardrail(
     good_prompt="Quote being spoken with 1-20 words",
     bad_prompt="Quote being spoken that is irrelevant and off topic with 1-20 words",
@@ -247,7 +247,7 @@ Guardrails are applied to TokenSets that contain user tokens.
 A TokenSet can have at most one guardrail, but guardrails can be reused.
 
 ```python
-# Apply guardrail to a user TokenSet
+# Apply guardrails to a user TokenSet
 tree_alice_talk.set_guardrail(guardrail)
 ```
 

@@ -1,5 +1,5 @@
 from src.Protocol import Protocol
-from src.common.Guardrail import Guardrail
+from src.common.guardrails.Guardrail import Guardrail
 from src.common.instructions.UserInstruction import UserInstruction
 from src.common.tokens.Token import Token
 from src.common.tokens.TokenSet import TokenSet, Snippet
