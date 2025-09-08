@@ -28,34 +28,24 @@ mtp.add_context("Alice was not a bit hurt, and she jumped up on to her feet in a
 
 # Language
 token_english: Token = Token("English", key="🇨")
-mtp.add_token(token_english)
 
 # Characters
 token_alice: UserToken = UserToken("Alice", key="😁")
 token_cat: Token = Token("Cat", key="🐱")
-mtp.add_token(token_alice)
-mtp.add_token(token_cat)
 
 # Scenes
 token_tree: Token = Token("Tree", key="🪾",
                           desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
-mtp.add_token(token_tree)
 
 # Actions
 token_talk: Token = Token("Talk", key="🗣")
-mtp.add_token(token_talk)
 token_disappear: Token = Token("Disappear", key="🫥")
-mtp.add_token(token_disappear)
 
 # Game Functions
 token_continue: Token = Token("Continue", key="🔄")
 token_appear: Token = Token("Appear", key="👀")
 token_answer: Token = Token("Answer", key="🔎")
 token_leave: Token = Token("Leave", key="💥")
-mtp.add_token(token_continue)
-mtp.add_token(token_appear)
-mtp.add_token(token_answer)
-mtp.add_token(token_leave)
 
 # Create the token sets for the instructions
 tree_english_alice_talk: TokenSet = TokenSet(tokens=(token_tree, token_english, token_alice, token_talk))
