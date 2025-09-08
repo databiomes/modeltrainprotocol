@@ -111,7 +111,7 @@ class Protocol:
             path = os.getcwd()
 
         self._set_all_elements()
-        unique_sets = {i: [] for i in range(self.instruction_sample_lines)}
+        unique_sets = {i: set() for i in range(self.instruction_sample_lines)}
         unique_results = dict()
         valid_input_list = ["🏁", ]
         valid_output_list = ["<string>", ]
@@ -123,7 +123,7 @@ class Protocol:
                 for t in token_set:
                     token_keys.append(t.key + (self.numbers[t.value] if t.num else ""))
                 token_keys = "".join(token_keys)
-                unique_sets[idx].append(str(token_strings) + ": " + (
+                unique_sets[idx].add(str(token_strings) + ": " + (
                     (str(token_keys) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(
                         token_keys)) + "\n" + ("<string>" if idx != (len(instruction.context) - 1) else ""))
                 if len(valid_input_list) < (((int(self.instruction_sample_lines) * 2) - 1) + 2):
@@ -150,7 +150,7 @@ class Protocol:
         }
         template['all_combinations']['model_input']["<BOS>"] = "🏁"
         for i in range(int(self.instruction_sample_lines)):
-            template['all_combinations']['model_input'][f"{i}"] = unique_sets[i]
+            template['all_combinations']['model_input'][f"{i}"] = list(unique_sets[i])
         template['all_combinations']['model_input']["<RUN>"] = "🏃"
         template['all_combinations']['model_output']["model_response"] = "<string>"
         template['all_combinations']['model_output']["model_results"] = unique_results
