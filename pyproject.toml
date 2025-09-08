@@ -3,11 +3,12 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-exclude = ["assets"]
-include = ["mtp"]
+where = ["."]
+include = ["src*"]
+exclude = ["assets", "examples"]
 
 [project]
-name = "Model Train Protocol"
+name = "mtp"
 version = "1.0.0"
 description = "Create a Model Train Protocol JSON file"
 requires-python = ">=3.9"
@@ -21,6 +22,5 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-  
     "emoji>=2.0.0",
 ]
