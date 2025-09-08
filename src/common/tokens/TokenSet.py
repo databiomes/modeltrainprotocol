@@ -4,7 +4,7 @@ from typing import Sequence, Iterable
 
 from dataclasses import dataclass
 
-from src.common.Guardrail import Guardrail
+from src.common.guardrails.Guardrail import Guardrail
 from src.common.tokens.Token import Token
 
 
@@ -27,13 +27,13 @@ class TokenSet:
 
     @property
     def guardrail(self) -> Guardrail | None:
-        """Returns the guardrail for the TokenSet, if any."""
+        """Returns the guardrails for the TokenSet, if any."""
         return self._guardrail
 
     def set_guardrail(self, guardrail: Guardrail):
-        """Sets a guardrail for the TokenSet."""
+        """Sets a guardrails for the TokenSet."""
         if self.guardrail is not None:
-            warnings.warn("Overwriting existing guardrail for TokenSet.")
+            warnings.warn("Overwriting existing guardrails for TokenSet.")
         if not self.is_user:
             raise ValueError("Guardrails can only be added to a user TokenSet.")
         if not isinstance(guardrail, Guardrail):
