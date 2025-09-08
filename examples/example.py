@@ -1,9 +1,8 @@
-from src.Protocol import Protocol
-from src.common.guardrails.Guardrail import Guardrail
-from src.common.instructions.UserInstruction import UserInstruction
-from src.common.tokens.Token import Token
-from src.common.tokens.TokenSet import TokenSet, Snippet
-from src.common.tokens.UserToken import UserToken
+from model_train_protocol import Protocol
+from model_train_protocol.common.guardrails import Guardrail
+from model_train_protocol.common.instructions import UserInstruction
+from model_train_protocol.common.tokens import Token, TokenSet, UserToken
+from model_train_protocol.common.tokens.TokenSet import Snippet
 
 # Cheshire NPC
 
