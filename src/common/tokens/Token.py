@@ -1,7 +1,10 @@
+import emoji
+
+
 class Token:
     """The lowest level unit for a model. Represents a word, symbol, or concept."""
 
-    def __init__(self, value: str, key: str, desc: str | None = None):
+    def __init__(self, value: str, key: str | None = None, desc: str | None = None):
         """
         Initializes a Token instance.
 
@@ -10,11 +13,30 @@ class Token:
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         self.value: str = value + "_"
-        self.key: str = key
+        self.key: str | None = key
         self.desc: str = desc
         self.user: bool = False
         self.num: bool = False
         self.special: str | None = None
+
+    def validate_key(self):
+        """
+        Validates that all characters in the key are valid according to the emoji library.
+
+        :return: True if all characters in the string are valid characters or emojis, False otherwise.
+        """
+        if self.key is None:
+            raise ValueError("Key is None, cannot validate.")
+
+        invalid_emojis = []
+
+        for char in self.key:
+            # Uses the emoji library to check if the character is a valid emoji recommended by Unicode
+            if emoji.emoji_count(char) >= 1 and not emoji.is_emoji(char):
+                invalid_emojis.append(char)
+
+        if len(invalid_emojis) > 0:
+            raise ValueError(f"Invalid emojis found in key '{self.key}': {invalid_emojis}")
 
     def __str__(self):
         """String representation of the token."""
