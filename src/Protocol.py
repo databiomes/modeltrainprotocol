@@ -56,6 +56,8 @@ class Protocol:
                 if token not in self.tokens:
                     self._add_token(token)
 
+            self.instruction_token_key_sets.add(token_set.get_token_key_set())
+
         # Add the result token as a special token
         if instruction.final.key is not None:
             self.instruction_token_key_sets.add(instruction.final.key)
