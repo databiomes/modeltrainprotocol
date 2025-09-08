@@ -36,29 +36,6 @@ class Protocol:
         """Adds a line of context to the model."""
         self.context.append(context)
 
-    def add_token(self, token: Token):
-        """
-        Adds a unique token to the protocol.
-
-        Validates that the token's value and key are unique.
-        :param token: The Token instance to add.
-        """
-        if token in self.tokens:
-            raise ValueError(f"Token value '{token.value}' already used.")
-
-        if token.key in self.used_keys:
-            raise ValueError(f"Token key '{token.key}' already used.")
-
-        if token.key is None:
-            available_keys: set[str] = self.possible_emoji_keys - self.used_keys
-            if len(available_keys) == 0:
-                raise ValueError("No available emoji keys left to assign. Please specify a key for the token.")
-            key = available_keys.pop()
-            token.key = key
-
-        self.tokens.add(token)
-        self.used_keys.add(token.key)
-
     def add_instruction(self, instruction: Instruction):
         """
         Adds an Instruction (and its components) to the protocol.
@@ -73,6 +50,11 @@ class Protocol:
         # Add all token combos as special tokens
         for token_set in instruction.get_token_sets():
             self.instruction_token_key_sets.add(token_set.get_token_key_set())
+
+            # Add all tokens in the instruction to the protocol
+            for token in token_set.tokens:
+                if token not in self.tokens:
+                    self._add_token(token)
 
         # Add the result token as a special token
         if instruction.final.key is not None:
@@ -177,6 +159,29 @@ class Protocol:
         print(f"Saving Model Train Protocol Template to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(template, file, indent=4, ensure_ascii=False)
+
+    def _add_token(self, token: Token):
+        """
+        Adds a unique token to the protocol.
+
+        Validates that the token's value and key are unique.
+        :param token: The Token instance to add.
+        """
+        if token in self.tokens:
+            raise ValueError(f"Token value '{token.value}' already used.")
+
+        if token.key in self.used_keys:
+            raise ValueError(f"Token key '{token.key}' already used.")
+
+        if token.key is None:
+            available_keys: set[str] = self.possible_emoji_keys - self.used_keys
+            if len(available_keys) == 0:
+                raise ValueError("No available emoji keys left to assign. Please specify a key for the token.")
+            key = available_keys.pop()
+            token.key = key
+
+        self.tokens.add(token)
+        self.used_keys.add(token.key)
 
     def _set_guardrails(self):
         """Sets all guardrails from TokenSets into the protocol."""
