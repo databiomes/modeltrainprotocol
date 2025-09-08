@@ -75,6 +75,7 @@ class Instruction(ABC):
         # for s, p, n, r, v, a, b, pr in zip(ppo_strings, ppo_prompts, ppo_numbers, ppo_results, ppo_values,
         #                                    ppo_a_samples, ppo_b_samples, ppo_pref):
         #     ppo.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v, 'a': a, 'b': b, 'pref': pr})
+        # TODO: implement PPO training
         return []
 
     def serialize_memory_set(self) -> list[list[str]]:
