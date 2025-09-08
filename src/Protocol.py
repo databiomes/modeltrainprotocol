@@ -115,27 +115,27 @@ class Protocol:
         unique_results = dict()
         valid_input_list = ["🏁", ]
         valid_output_list = ["<string>", ]
-        for token_set in self.instructions:
-            for idx, token in enumerate(token_set.context):
-                token_user = [t.user for t in token]
-                token_strings = "".join([t.value for t in token])
+        for instruction in self.instructions:
+            for idx, token_set in enumerate(instruction.get_token_sets()):
+                token_user = [t.user for t in token_set]
+                token_strings = "".join([t.value for t in token_set])
                 token_keys = []
-                for t in token:
+                for t in token_set:
                     token_keys.append(t.key + (self.numbers[t.value] if t.num else ""))
                 token_keys = "".join(token_keys)
                 unique_sets[idx].append(str(token_strings) + ": " + (
                     (str(token_keys) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(
-                        token_keys)) + "\n" + ("<string>" if idx != (len(token_set.context) - 1) else ""))
+                        token_keys)) + "\n" + ("<string>" if idx != (len(instruction.context) - 1) else ""))
                 if len(valid_input_list) < (((int(self.instruction_sample_lines) * 2) - 1) + 2):
                     valid_input_list.append(((str(token_keys) + "USER PROMPT") if any(token_user) and (
                             idx == (len(unique_sets) - 1)) else str(token_keys)))
-                    if idx == (len(token_set.context) - 1):
+                    if idx == (len(instruction.context) - 1):
                         valid_input_list.append("🏃\n")
                     else:
                         valid_input_list.append("<string>")
-            unique_results[str(token_set.final.value)] = str(token_set.final.key)
+            unique_results[str(instruction.final.value)] = str(instruction.final.key)
             if len(valid_output_list) < 3:
-                valid_output_list.append(str(token_set.final.key))
+                valid_output_list.append(str(instruction.final.key))
                 valid_output_list.append("🎬")
 
         template: dict[str, dict] = {
