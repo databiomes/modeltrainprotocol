@@ -1,10 +1,12 @@
+import itertools
 import json
 import os
+import string
 
 from src.common.instructions.Instruction import Instruction
 from src.common.tokens.DefaultSpecialToken import DefaultSpecialToken
 from src.common.tokens.Token import Token
-from src.common.util import get_possible_emojis
+from src.common.util import get_possible_emojis, get_extended_possible_emojis
 
 
 class Protocol:
@@ -49,7 +51,6 @@ class Protocol:
 
         # Add all token combos as special tokens
         for token_set in instruction.get_token_sets():
-            self.instruction_token_key_sets.add(token_set.get_token_key_set())
 
             # Add all tokens in the instruction to the protocol
             for token in token_set.tokens:
@@ -176,11 +177,7 @@ class Protocol:
             raise ValueError(f"Token key '{token.key}' already used.")
 
         if token.key is None:
-            available_keys: set[str] = self.possible_emoji_keys - self.used_keys
-            if len(available_keys) == 0:
-                raise ValueError("No available emoji keys left to assign. Please specify a key for the token.")
-            key = available_keys.pop()
-            token.key = key
+            token.key = self._get_random_key()
 
         self.tokens.add(token)
         self.used_keys.add(token.key)
@@ -294,3 +291,44 @@ class Protocol:
                     sample['number'] = None
 
         return template
+
+    def _get_random_key(self) -> str:
+        """
+        Generates a random key that is not already used in the protocol.
+
+        Prioritizes single-character emojis, then expands to multi-character emojis,
+        and finally uses alphanumeric characters if all emojis are exhausted.
+
+        :return: A unique key as a string.
+        """
+        available_keys: set[str] = self.possible_emoji_keys - self.used_keys
+
+        if len(available_keys) == 0:
+            self.possible_emoji_keys = get_extended_possible_emojis()
+            available_keys: set = self.possible_emoji_keys - self.used_keys
+
+            if len(available_keys) == 0:
+                # If no available emoji keys, begin assigning alphanumeric keys
+                alphanumeric_chars: str = string.ascii_letters + string.digits
+
+                # Calculate how many alphanumeric keys have already been used
+                already_used_alphanumeric: int = len(self.used_keys) - len(self.possible_emoji_keys)
+
+                # Progressively generate combinations, skipping the first 'already_used_alphanumeric' keys
+                key_generator = itertools.islice(
+                    itertools.chain.from_iterable(
+                        itertools.product(alphanumeric_chars, repeat=length)
+                        for length in itertools.count(1)
+                    ),
+                    already_used_alphanumeric,  # Skip this many keys
+                    None  # No upper limit
+                )
+
+                # Find the first unused key
+                for combo in key_generator:
+                    key: str = ''.join(combo)
+                    if key not in self.used_keys:  # Failsafe, will be True unless user has manually added the specific key
+                        return key
+
+        key: str = available_keys.pop()
+        return key
