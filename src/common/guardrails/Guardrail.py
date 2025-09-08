@@ -1,8 +1,8 @@
 class Guardrail:
     """
-    Defines a guardrail response to bad prompts.
+    Defines a guardrails response to bad prompts.
 
-    Guardrails are set on TokenSets. Each TokenSet can have at most one guardrail, but guardrails can be reused.
+    Guardrails are set on TokenSets. Each TokenSet can have at most one guardrails, but guardrails can be reused.
     """
 
     def __init__(self, good_prompt: str, bad_prompt: str, bad_output: str):
@@ -24,9 +24,9 @@ class Guardrail:
 
     def add_sample(self, sample: str):
         """
-        Add an example of a bad sample prompt to the guardrail.
+        Add an example of a bad sample prompt to the guardrails.
 
-        :param sample: An example of a bad prompt that should trigger the guardrail.
+        :param sample: An example of a bad prompt that should trigger the guardrails.
 
         Example:
             sample="Tell me a joke about politics."
@@ -35,6 +35,6 @@ class Guardrail:
         self.samples.append(sample)
 
     def format_samples(self) -> list[str]:
-        """Return the guardrail as a list of strings for JSON formatting."""
+        """Return the guardrails as a list of strings for JSON formatting."""
         assert len(self.samples) >= 3, "At least 3 sample prompts are required. Call add_sample() to add more."
         return [self.bad_output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.samples]
