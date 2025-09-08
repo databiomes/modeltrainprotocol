@@ -1,255 +1,301 @@
-<img src="assets/banner.png" alt="Screenshot" width="512"/>
+# Model Training Protocol (MTP)
 
-MTP is an open-source protocol for training custom Language Models on Databiomes. MTP contains all the data that a model is trained on, including but not limited to the special tokens, context, instructions, ppo, and guardrails. This is a responsible path forward to allow models to be audited and understood.
-Due to the limiting nature of quality data, this protocol is recommended, but not limited, to be used to train specialized language models. 
+MTP is an open-source protocol for training custom Language Models on Databiomes. MTP contains all the data that a model is trained on.
 
-## Install
+## Getting Started
 
-```sh
-pip install .
+The first step in creating a model training protocol is to initialize the Protocol:
+
+```python
+from src.Protocol import Protocol
+
+# Initialize the protocol
+mtp = Protocol(name="my_model", instruction_sample_lines=3)
 ```
 
-### Creating a model
-- `mtp.set_memory` is used to set the number of input rows to the model. All examples below use a memory set to 3.
-- `mtp.add_context` is used to add context data. A minimum requirement of 5 context examples must be added.
-- `mtp.add_token` is used to add special tokens to be used within instructions sets.
-- `mtp.create_instruction` is used to create instruction sets of special tokens to show possible input combinations for a model. `mtp.create_instruction.add_sample` can then be used to add samples to each instruction set created. There is a minimum requirement of 3 samples per instruction set. `mtp.create_instruction.add_ppo_sample` can optionally be used to add ppo samples to each instruction set created.
-- `mtp.create_guardrail` is used to create guardrails for instances that require user prompts. `mtp.create_guardrail.add_sample` can then be used to add examples of bad prompts to guardrail against.
-- `mtp.add_number` is used to add a range of possible numbers to a token that is set to use numbers as a model input.
-- `mtp.add_number_list` is used to add a list of possible numbers, each with a range, to a token that is set to use a list of numbers as a model input.
-- `mtp.create_template` is used to create an outline of valid inputs and outputs of the created model.
-- `mtp.save` is used to save the model train protocol as a JSON file.
+The parameter `instruction_sample_lines` is the number of lines in each instruction sample. This is required and must be at least 3.
 
-### Example Tokens
-This token function has one required input of the name of the token (using CamelCase) which is a unique string. No words in a token's name can be used in another token's name. An optional desc='' input can be used to add more context to a token when the token name isn't descriptive. Use max 3 words in the name of the token but aim for 1. Also limit the length of the desc if used to around 100 words. Sparingly add a description if the token is too complicated to be understood by the name used.
-```
-mtp.add_token(name=str, num=bool, user=bool, desc=str(optional))
-```
+## System Architecture
 
-### Example Instruction Sets
-Creating an instruction set (`mtp.create_instruction`) defines a set of inputs to the model you are creating.
-The horizontal axis is how many special tokens (`mtp.add_token`) you have as an input per row.
-An instruction set can be horizontally as long as you want (1 to N) and there is no limit to how many different instruction sets a model can be trained on.
+The MTP system is built on a hierarchical structure of four main components:
 
-The arguments to pass to `mtp.create_instruction` are the required tokens, a tuple of tuples, and an optional result that can be single token or left as None.
+1. **Tokens** - The fundamental building blocks
+2. **TokenSets** - Combinations of tokens that define input patterns
+3. **Instructions** - Training patterns that inform the model what to do
+4. **Guardrails** - Safety mechanisms for bad user prompts
 
-#### Example of a 3x1 instruction set
+## Tokens: The Foundation
 
-```
-token_instruction = mtp.add_token("Instruction")
-token_response = mtp.add_token("Response")
+Tokens are the base building blocks of the MTP system. They represent words, symbols, concepts, or actions that the model will understand and use.
 
-3x1_input_example = mtp.create_instruction(
-    (token_instruction),
-    (token_instruction), 
-    (token_response))
-) 
-# token_instruction is the 2 past inputs to the model and token_response is the new 1 output.
+### Token Types
 
-3x1_input_example.add_sample((
-    "What is log",
-    "And what is log with the numbers provided",
-    "In mathematics, a logarithm (log) is the inverse operation of exponentiation."
-))
-# a minimum of 3 samples is required per instruction set.
+#### Basic Token
+The standard token for representing concepts, actions, or entities:
 
+```python
+from src.common.tokens.Token import Token
+
+# Create a basic token
+cat = Token("Cat", key="🐱", desc="The Cheshire Cat")
+talk = Token("Talk", key="🗣")
+tree = Token("Tree", key="🌳", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
+add = Token("Add", key="🔢")
+ponder = Token("Ponder", key="🤔")
+grin = Token("Grin", key="😏")
+disappear = Token("Disappear", key="🫥")
 ```
 
-#### Example of a 3x2 instruction set
+#### UserToken
+A specialized token that represents user input. These tokens are used when the model needs to respond to user prompts:
 
-```
-token_instruction = mtp.add_token("Instruction")
-token_response = mtp.add_token("Response")
-token_calculator = mtp.add_token("Calculator")
+```python
+from src.common.tokens.UserToken import UserToken
 
-3x2_input_example = mtp.create_instruction(
-    ((token_calculator, token_instruction),
-    (token_calculator, token_instruction),
-    (token_calculator, token_response))
-) 
-# the first two rows have 2 tokens, token_numbers followed by (token_instruction/token_response).
-# the last row (token_response) is the new output.
-
-3x2_input_example.add_sample((
-    "What is log",
-    "And what is log with the numbers provided",
-    "In mathematics, a logarithm (log) is the inverse operation of exponentiation."
-))
-# even with multiple tokens per row, a maximum of 1 string can be used per row.
+# Create a user token
+alice = UserToken("Alice")
 ```
 
-#### Example of a 3xN instruction set with numbers
+#### NumToken
+A token that can be associated with numerical values:
 
+```python
+from src.common.tokens.NumToken import NumToken
+
+# Create a number token for sentence length
+sentence_length = NumToken("SentenceLength", key="📏")
 ```
 
-token_instruction = mtp.add_token("Instruction")
-token_response = mtp.add_token("Response")
-token_calculator = mtp.add_token("Calculator")
-# num is False by default
-token_variables = mtp.add_token("Variable", num=True)
-token_numbers = mtp.add_token("Numbers", num=True)
-# Tokens with num=True must be used with other tokens in an inner tuple, and cannot be used in the last index of the inner tuple.
-
-
-3xN_input_example = mtp.create_instruction(
-    ((token_calculator, token_instruction),
-    (token_calculator, token_numbers, token_variables, token_instruction),
-    (token_calculator, token_response))
-) 
-# each row can have a varying amount of tokens, you can have 1 to N amount.
-
-3xN_input_example.add_sample((
-    "What is log",
-    "And what is log with the numbers provided",
-    "In mathematics, a logarithm (log) is the inverse operation of exponentiation."
-), numbers= [[], [6, 82], []])
-# if a token is set to include numbers, those numbers are to be added in each sample.
-# the first row no numbers.
-# the second row has numbers, token_numbers is 82 and token_variables is 6.
-# the last row has no numbers.
-# rows without numbers are represented by an empty list.
-
+When using NumTokens, you must add number ranges to the protocol using the `add_number` method:
+```python
+# Add number range to the protocol
+mtp.add_number(sentence_length, min_value=1, max_value=100)
 ```
 
-#### Example of 3xN instruction set with result
+### Token Properties
 
+- **value**: The string identifier
+- **key**: Optional unique symbol or emoji associated with the token
+- **desc**: Optional description for complex tokens. Extends the value to contextualize its use.
+
+## TokenSets: Combining Tokens
+
+TokenSets group multiple Tokens together to define specific input patterns. They represent the structure of data that will be fed to the model. 
+
+Tokensets are the basic building blocks of instructions.
+
+### Creating TokenSets
+
+```python
+from src.common.tokens.TokenSet import TokenSet
+
+# Create a TokenSet combining multiple tokens
+tree_lice_talk = TokenSet(tokens=(tree, alice, talk))
+
+# Create a TokenSet with sentence length
+character_context_sentence = TokenSet(tokens=(character, context, sentence_length))
 ```
-token_instruction = mtp.add_token("Instruction")
-token_response = mtp.add_token("Response")
-token_calculator = mtp.add_token("Calculator")
-token_variables = mtp.add_token("Variable", num=True)
-token_numbers = mtp.add_token("Numbers", num=True)
 
-3xN_input_example = mtp.create_instruction(
-    ((token_calculator, token_instruction),
-    (token_calculator, token_numbers, token_variables, token_instruction),
-    (token_calculator, token_response)), result=token_calculator
+### TokenSet Properties
+
+- **tokens**: The tokens in the set (unordered)
+
+### Creating Snippets
+
+Snippets are created on TokenSets to create training samples.
+
+A Snippet is a example of a TokenSet. Snippets tell the model the context of the input patters.
+
+```python
+# Create a snippet with just text
+snippet = tree_lice_talk.create_snippet(string="Where am I?")
+
+# Create a snippet with text and sentence length
+snippet_with_length = character_context_sentence.create_snippet(string="The enemy must be here somewhere.", numbers=[11])
+```
+
+## Instructions: Training Patterns
+
+Instructions define how the model should respond to different input patterns. There are two main types of instructions.
+
+### SimpleInstruction
+
+#### Parameters
+
+- **context**: Sequence of TokenSets that provide background information
+- **response**: The TokenSet that defines the model's response pattern (cannot contain UserTokens)
+- **final**: A Token that represents the final action or result
+
+#### Create the SimpleInstruction
+
+For scenarios where the model responds without user input:
+
+```python
+from src.common.instructions.SimpleInstruction import SimpleInstruction
+
+# Create TokenSets
+cat_pondering = TokenSet(tokens=(tree, cat, ponder))
+cat_grinning = TokenSet(tokens=(tree, cat, grin))
+
+# Create a simple instruction for the Cat's internal thoughts
+instruction = SimpleInstruction(
+    context=(cat_pondering,),
+    response=cat_grinning,
+    final=disappear
 )
-# You can only have one token for argument result.
-# Result is set to None by default.
-
-3xN_input_example.add_sample((
-    "What is log",
-    "And what is log with the numbers provided",
-    "In mathematics, a logarithm (log) is the inverse operation of exponentiation."
-), numbers= [[], [6, 82], []], value=1)
-# You can add a number along with a result by using the argument value. 
-# In this example the result is the token_calculator and the value 1.
-# Value inputs can only be floats or integers. They cannot be strings.
 ```
 
-#### Example of 3xN instruction set with prompts
+#### Adding Samples
 
-```
-token_instruction = mtp.add_token("Instruction")
-token_variables = mtp.add_token("Variable", num=True)
-token_numbers = mtp.add_token("Numbers", num=True)
-token_prompt = mtp.add_token("Prompt", user=True)
-# user is False by default
+- **add_sample() parameters**:
+  - **context_snippets**: List of context snippets that will be added to the Instruction
+  - **output_snippet**: The model's output snippet
+  - **value**: Optional numerical value (required if final Token is a NumToken)
 
-3xN_input_example = mtp.create_instruction(
-    ((token_instruction),
-    (token_numbers, token_variables, token_instruction),
-    (token_prompt)), result=token_calculator
+```python
+# Samples must be made on their associated TokenSets
+sample_context = cat_pondering.create_snippet(
+    string="Why do I keep vanishing and reappearing so suddenly?"
 )
-# when you use a token with user set to True in the final row of a set, the set will require an example of a user prompt in each added sample.
-
-3xN_input_example.add_sample((
-    "What is log",
-    "And what is log with the numbers provided",
-    "In mathematics, a logarithm (log) is the inverse operation of exponentiation."
-), prompt="with the following instructions, what is the answer?", numbers= [[], [6, 82], []], value=1)
-```
-
-#### Example of adding RAG to a token
-
-```
-mtp.set_memory(3)
-token_rag = mtp.add_token("RAG", desc="RAG description goes here")
-# To flag an input to be used for RAG set the input token argument of desc with a description. By default this is left blank.
-
-```
-
-#### Example of adding guardrails
-
-```
-token_equation = mtp.add_token("Equation")
-token_prompt = mtp.add_token("UserPrompt", user=True)
-token_response = mtp.add_token("Response")
-
-3xN_input_example = mtp.create_instruction(
-    ((token_equation, token_prompt),
-    (token_response),
-    (token_equation, token_prompt)), result=token_calculator
+sample_output = cat_grinning.create_snippet(
+    string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
 )
 
-guardrail = mtp.create_guardrail(
-                    token_set=[token_equation, token_prompt],
-                    good_prompt="Explanation of what makes a good prompt",
-                    bad_prompt="Explanation of what makes a bad prompt",
-                    output="Model response if a bad prompt is provided by a user"
-                    )
-guardrail.add_sample(bad prompt example goes here")
-# token_set is the tokens input to the create instruction, a tuple of tuples and the last tuple of the three in the instruction set, that has at least one token with user set to true.
-# A minimum of three bad prompt samples are required for each guardrail created.
-# Only use guardrails when a create_instruction has a prompt argument used.
+instruction.add_sample(
+    context_snippets=[sample_context],
+    output_snippet=sample_output
+)
 ```
 
-### Example of full usage
+### UserInstruction
 
+#### Parameters
+
+- **context**: Sequence of TokenSets that provide background information
+- **user**: A TokenSet that must include at least one UserToken
+- **final**: A Token that represents the final action or result
+
+#### Create the UserInstruction
+
+For scenarios where the model responds to user prompts:
+
+```python
+from src.common.instructions.UserInstruction import UserInstruction
+
+# Create TokenSets for Alice and Cat interaction
+alice_talk = TokenSet(tokens=(tree, alice, talk))
+cat_talk = TokenSet(tokens=(tree, cat, talk))
+
+# Create a user instruction for Alice asking the Cat questions
+user_instruction = UserInstruction(
+    context=(alice_talk,),
+    user=alice_talk,  # Must contain at least one UserToken
+    final=disappear
+)
 ```
-from mtp.protocol import Protocol
 
-mtp = Protocol()
-mtp.set_memory(3)
-mtp.add_context("(12+8)×(5−2)=20×3=60")
-mtp.add_context("3×(7+2)−5^2=3×9−25=27−25=2")
-mtp.add_context("25−9=16")
-mtp.add_context("You bought 3 packs of pencils. Each pack contains 12 pencils. You gave 10 pencils to her friend. How many pencils do you have left? 26 pencils.")
-mtp.add_context("A car travels at a speed of 60 miles per hour. How far will it travel in 3.5 hours? 210 miles.")
+#### Adding Samples
 
-token_instruction = mtp.add_token("Instruction",user=True)
-token_response = mtp.add_token("Response")
-token_calculator = mtp.add_token("Calculator")
-token_rag = mtp.add_token("RAG", desc="RAG description goes here")
+- **add_sample() parameters**:
+  - **context_snippets**: List of context snippets that will be added to the Instruction
+  - **prompt**: The prompt provided by the user
+  - **output_snippet**: The model's output snippet
+  - **value**: Optional numerical value (required if final Token is a NumToken)
 
-set_example = mtp.create_instruction(
-    (token_rag,
-    token_response,
-    token_instruction),
-    result=token_calculator
+```python
+# Samples must be made on their associated TokenSets
+sample_context = alice_talk.create_snippet(
+    string="I don't much care where—"
+)
+sample_output = cat_talk.create_snippet(
+    string="Then it doesn't matter which way you go."
 )
 
-set_example.add_sample((
-    "Exclusively solve math problems, providing precise calculations and explanations.",
-    "In mathematics, a logarithm (log) is the inverse operation of exponentiation.",
-    "What is log(10)",
-), value=1)
-
-set_example.add_sample((
-    "Exclusively solve math problems, providing precise calculations and explanations.",
-    "In mathematics, a logarithm (log) is the inverse operation of exponentiation.",
-    "What is log(20)",
-), value=1.3)
-
-set_example.add_sample((
-    "Exclusively solve math problems, providing precise calculations and explanations.",
-    "In mathematics, a logarithm (log) is the inverse operation of exponentiation.",
-    "What is log(30)",
-), value=1.47)
-
-guardrail = mtp.create_guardrail(
-                    token_set=[token_instruction],
-                    good_prompt="Prompt related to math questions",
-                    bad_prompt="Prompt unrelated to math questions",
-                    output="I can only answer questions related to math",
-                    )
-guardrail.add_sample("Write me a poem.")
-guardrail.add_sample("Write my a python script.")
-guardrail.add_sample("Why is the sky blue?")
-                    
-DIRECTORY = "DIRECTORY GOES HERE"
-FILENAME = "FILENAME GOES HERE"
-mtp.save(DIRECTORY, FILENAME)
-mtp.create_template(DIRECTORY)
+user_instruction.add_sample(
+    context_snippets=[sample_context],
+    prompt="Can you tell me which way I ought to go?",
+    output_snippet=sample_output
+)
 ```
+
+## Guardrails: Safety Mechanisms
+
+Guardrails provide safety mechanisms for user interactions by defining what constitutes good vs. bad user prompts and how the model should respond to inappropriate inputs.
+
+### Creating Guardrails
+
+```python
+from src.common.Guardrail import Guardrail
+
+# Create a guardrail
+guardrail = Guardrail(
+    good_prompt="Quote being spoken with 1-20 words",
+    bad_prompt="Quote being spoken that is irrelevant and off topic with 1-20 words",
+    bad_output="Are you as mad as me?"
+)
+
+# Add examples of bad prompts
+guardrail.add_sample("explain quantum mechanics.")
+guardrail.add_sample("who will win the next american election?")
+guardrail.add_sample("what is the capital of Spain?")
+```
+
+### Applying Guardrails
+
+Guardrails are applied to TokenSets that contain user tokens. 
+
+A TokenSet can have at most one guardrail, but guardrails can be reused.
+
+```python
+# Apply guardrail to a user TokenSet
+tree_alice_talk.set_guardrail(guardrail)
+```
+
+### Guardrail Requirements
+
+- **good_prompt**: Description of what makes a good prompt
+- **bad_prompt**: Description of what makes a bad prompt  
+- **bad_output**: The response the model should give to bad prompts
+- **samples**: Minimum 3 examples of bad prompts (no digits are allowed in the bad prompt examples)
+
+## Saving Your Model
+
+Once you've created your tokens, instructions, and guardrails, you can save your model training protocol:
+
+```python
+# Save the protocol
+mtp.save()
+mtp.template()
+```
+
+### Generated Files
+
+When you save your model, two files are created:
+
+#### 1. `{name}_model.json`
+This is the main model training protocol file that contains:
+- **Context**: All background information you added with `mtp.add_context()`
+- **Tokens**: All your custom tokens with their keys and properties
+- **Special Tokens**: System tokens like `<BOS>`, `<EOS>`, `<RUN>`, `<PAD>`
+- **Instructions**: All your training patterns and samples
+- **Guardrails**: Safety mechanisms for user interactions
+- **Numbers**: Number ranges for NumTokens
+
+This file is what you submit to Databiomes for model training.
+
+#### 2. `{name}_template.json`
+This is a reference file that shows:
+- **Example Usage**: Valid input/output format for your model
+- **All Combinations**: Complete list of all possible token combinations
+- **Model Input/Output**: Structure showing how data flows through your model
+
+Use this file to understand how your model expects to receive and format data.
+
+### File Structure Example
+
+```
+my_model_model.json     # Main training protocol
+my_model_template.json  # Reference and examples
+```
+
+The template file helps you understand the expected format when using your trained model, while the model file contains all the training data needed to create your specialized language model.
