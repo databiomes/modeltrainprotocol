@@ -6,14 +6,14 @@ MTP is an open-source protocol for training custom Language Models on Databiomes
 
 Install the package:
 
+For Linux and macOs
 ```bash
-pip install -e .
+python3 -m pip install model-train-protocol
 ```
 
-Or install from PyPI (once published):
-
+For Windows
 ```bash
-pip install model-train-protocol
+py -3 -m pip install model-train-protocol
 ```
 
 See examples/example.py to follow along with these steps.
@@ -21,10 +21,10 @@ See examples/example.py to follow along with these steps.
 The first step in creating a model training protocol is to initialize the Protocol:
 
 ```python
-from model_train_protocol import Protocol
+import model_train_protocol as mtp
 
 # Initialize the protocol
-mtp = Protocol(name="my_model", instruction_sample_lines=3)
+protocol = mtp.Protocol(name="my_model", instruction_sample_lines=3)
 ```
 
 The parameter `instruction_sample_lines` is the number of lines in each instruction sample. This is required and must be at least 3.
@@ -48,42 +48,36 @@ Tokens are the base building blocks of the MTP system. They represent words, sym
 The standard token for representing concepts, actions, or entities:
 
 ```python
-from model_train_protocol.common.tokens import Token
-
 # Create a basic token
-cat = Token("Cat", key="🐱", desc="The Cheshire Cat")
-talk = Token("Talk", key="🗣")
-tree = Token("Tree", key="🌳", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
-add = Token("Add", key="🔢")
-ponder = Token("Ponder", key="🤔")
-grin = Token("Grin", key="😏")
-disappear = Token("Disappear", key="🫥")
+cat = mtp.Token("Cat", desc="The Cheshire Cat")
+talk = mtp.Token("Talk")
+tree = mtp.Token("Tree", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
+add = mtp.Token("Add")
+ponder = mtp.Token("Ponder")
+grin = mtp.Token("Grin")
+disappear = mtp.Token("Disappear", key="🫥")
 ```
 
 #### UserToken
 A specialized token that represents user input. These tokens are used when the model needs to respond to user prompts:
 
 ```python
-from model_train_protocol.common.tokens import UserToken
-
 # Create a user token
-alice = UserToken("Alice")
+alice = mtp.UserToken("Alice")
 ```
 
 #### NumToken
 A token that can be associated with numerical values:
 
 ```python
-from model_train_protocol.common.tokens import NumToken
-
 # Create a number token for sentence length
-sentence_length = NumToken("SentenceLength", key="📏")
+sentence_length = mtp.NumToken("SentenceLength")
 ```
 
 When using NumTokens, you must add number ranges to the protocol using the `add_number` method:
 ```python
 # Add number range to the protocol
-mtp.add_number(sentence_length, min_value=1, max_value=100)
+protocol.add_number(sentence_length, min_value=1, max_value=100)
 ```
 
 ### Token Properties
@@ -101,13 +95,11 @@ Tokensets are the basic building blocks of instructions.
 ### Creating TokenSets
 
 ```python
-from model_train_protocol.common.tokens import TokenSet
-
 # Create a TokenSet combining multiple tokens
-tree_alice_talk = TokenSet(tokens=(tree, alice, talk))
+tree_alice_talk = mtp.TokenSet(tokens=(tree, alice, talk))
 
 # Create a TokenSet with sentence length
-character_context_sentence = TokenSet(tokens=(character, context, sentence_length))
+character_context_sentence = mtp.TokenSet(tokens=(character, context, sentence_length))
 ```
 
 ### TokenSet Properties
@@ -145,14 +137,12 @@ Instructions define how the model should respond to different input patterns. Th
 For scenarios where the model responds without user input:
 
 ```python
-from model_train_protocol.common.instructions import SimpleInstruction
-
 # Create TokenSets
-cat_pondering = TokenSet(tokens=(tree, cat, ponder))
-cat_grinning = TokenSet(tokens=(tree, cat, grin))
+cat_pondering = mtp.TokenSet(tokens=(tree, cat, ponder))
+cat_grinning = mtp.TokenSet(tokens=(tree, cat, grin))
 
 # Create a simple instruction for the Cat's internal thoughts
-instruction = SimpleInstruction(
+instruction = mtp.SimpleInstruction(
     context=(cat_pondering,),
     response=cat_grinning,
     final=disappear
@@ -194,14 +184,12 @@ instruction.add_sample(
 For scenarios where the model responds to user prompts:
 
 ```python
-from model_train_protocol.common.instructions import UserInstruction
-
 # Create TokenSets for Alice and Cat interaction
-alice_talk = TokenSet(tokens=(tree, alice, talk))
-cat_talk = TokenSet(tokens=(tree, cat, talk))
+alice_talk = mtp.TokenSet(tokens=(tree, alice, talk))
+cat_talk = mtp.TokenSet(tokens=(tree, cat, talk))
 
 # Create a user instruction for Alice asking the Cat questions
-user_instruction = UserInstruction(
+user_instruction = mtp.UserInstruction(
     context=(alice_talk,),
     user=alice_talk,  # Must contain at least one UserToken
     final=disappear
@@ -239,10 +227,8 @@ Guardrails provide safety mechanisms for user interactions by defining what cons
 ### Creating Guardrails
 
 ```python
-from model_train_protocol.common.guardrails import Guardrail
-
 # Create a guardrails
-guardrail = Guardrail(
+guardrail = mtp.Guardrail(
     good_prompt="Quote being spoken with 1-20 words",
     bad_prompt="Quote being spoken that is irrelevant and off topic with 1-20 words",
     bad_output="Are you as mad as me?"
@@ -278,8 +264,8 @@ Once you've created your tokens, instructions, and guardrails, you can save your
 
 ```python
 # Save the protocol
-mtp.save()
-mtp.template()
+protocol.save()
+protocol.template()
 ```
 
 ### Generated Files
@@ -288,7 +274,7 @@ When you save your model, two files are created:
 
 #### 1. `{name}_model.json`
 This is the main model training protocol file that contains:
-- **Context**: All background information you added with `mtp.add_context()`
+- **Context**: All background information you added with `protocol.add_context()`
 - **Tokens**: All your custom tokens with their keys and properties
 - **Special Tokens**: System tokens like `<BOS>`, `<EOS>`, `<RUN>`, `<PAD>`
 - **Instructions**: All your training patterns and samples
