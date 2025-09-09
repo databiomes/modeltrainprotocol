@@ -15,8 +15,9 @@ __all__ = [
     "Protocol",
     "Token", 
     "UserToken",
-    "NumToken", 
+    "NumToken",
     "TokenSet",
+    "Snippet",
     "SimpleInstruction", 
     "UserInstruction",
     "Guardrail"
