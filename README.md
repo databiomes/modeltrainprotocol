@@ -50,11 +50,11 @@ The standard token for representing concepts, actions, or entities:
 ```python
 # Create a basic token
 cat = mtp.Token("Cat", desc="The Cheshire Cat")
-talk = mtp.Token("Talk")
 tree = mtp.Token("Tree", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
-add = mtp.Token("Add")
+talk = mtp.Token("Talk")
 ponder = mtp.Token("Ponder")
 grin = mtp.Token("Grin")
+add = mtp.Token("Add")
 disappear = mtp.Token("Disappear", key="🫥")
 ```
 
