@@ -10,7 +10,7 @@ exclude = ["assets", "examples"]
 [project]
 name = "model-train-protocol"
 version = "1.0.0"
-description = "Create a Model Train Protocol JSON file"
+description = "Standardized protocol to train models on Databiomes"
 requires-python = ">=3.9"
 readme = {file = "README.md", content-type = "text/markdown"}
 authors = [
