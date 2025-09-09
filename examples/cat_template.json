@@ -1,0 +1,33 @@
+{
+    "example_usage": {
+        "valid_input": "🏁\n🪾🇨😁⏹\n<string>\n🪾🇨🐱⏹\n🏃\n\n🪾🇨😁⏹USER PROMPT\n<string>",
+        "valid_output": "<string>\nNone\n🎬"
+    },
+    "all_combinations": {
+        "model_input": {
+            "<BOS>": "🏁",
+            "0": [
+                "Tree_English_Alice_Talk_: 🪾🇨😁⏹\n<string>"
+            ],
+            "1": [
+                "Tree_English_Cat_Talk_: 🪾🇨🐱⏹\n",
+                "Tree_English_Disappear_Cat_Talk_: 🪾🇨👪🐱⏹\n"
+            ],
+            "2": [
+                "Tree_English_Alice_Talk_: 🪾🇨😁⏹USER PROMPT\n<string>"
+            ],
+            "<RUN>": "🏃"
+        },
+        "model_output": {
+            "model_response": "<string>",
+            "model_results": {
+                "Continue_": "None",
+                "Appear_": "None",
+                "Leave_": "💥",
+                "Disappear_": "👪",
+                "Answer_": "None"
+            },
+            "<EOS>": "🎬"
+        }
+    }
+}
