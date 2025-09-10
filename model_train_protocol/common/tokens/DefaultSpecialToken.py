@@ -1,15 +1,11 @@
-from .Token import Token
+from . import SpecialToken
 
-
-class DefaultSpecialToken(Token):
+class DefaultSpecialToken(SpecialToken):
     def __init__(self, value: str, key: str, desc: str | None = None, special: str = None):
         """
         Initializes a DefaultSpecialToken instance.
 
-        A DefaultSpecialToken is a subclass of Token that includes an additional 'special' attribute
-        to identify tokens with special significance or behavior.
-
-        It differs from SpecialToken in that it is internally assigned and
+        A DefaultSpecialToken is a subclass of SpecialToken that is internally assigned and
         does not remove the trailing underscore from the value.
 
         Users should not create instances of this class directly. Use SpecialToken when defining tokens.
