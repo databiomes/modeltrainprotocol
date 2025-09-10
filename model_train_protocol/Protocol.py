@@ -3,7 +3,7 @@ import json
 import os
 import string
 
-from . import NumToken, Token
+from model_train_protocol import NumToken, Token
 from .common.instructions.Instruction import Instruction
 from .common.tokens.DefaultSpecialToken import DefaultSpecialToken
 from .common.util import get_possible_emojis, get_extended_possible_emojis
