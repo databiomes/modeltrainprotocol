@@ -11,12 +11,6 @@ class SimpleInstruction(Instruction):
 
     Samples must be added to the Instruction to provide context for the model.
     A minimum of 3 samples must be added to an Instruction.
-
-    Example:
-        tokens= [
-                 ( Token("SentenceLength", num=True), Token("Greeting")),
-                 ( Token("CurtResponse")),
-                 ( Token("SentenceLength", num=True), Token("Goodbye")),
     """
 
     def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token):
