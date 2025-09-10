@@ -23,12 +23,6 @@ The main Protocol class for creating model training protocols.
        def add_instruction(self, instruction: Instruction):
            """Adds an Instruction (and its components) to the protocol."""
            
-       def add_number(self, num: NumToken, min_value: int | float, max_value: int | float):
-           """Adds a number range to the protocol."""
-
-       def add_number_list(self, num: NumToken, min_value: int | float, max_value: int | float, length: int):
-           """Adds a list of numbers to the protocol."""
-           
        def save(self, name: str | None = None, path: str | None = None):
            """Saves the protocol to a JSON file."""
            
