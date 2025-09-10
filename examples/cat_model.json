@@ -20,15 +20,15 @@
             "desc": null,
             "special": null
         },
-        "Disappear_": {
-            "key": "👪",
+        "Tree_": {
+            "key": "🪾",
             "user": false,
             "num": false,
-            "desc": null,
+            "desc": "Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.",
             "special": null
         },
-        "Cat_": {
-            "key": "🐱",
+        "Disappear_": {
+            "key": "🫥",
             "user": false,
             "num": false,
             "desc": null,
@@ -41,19 +41,26 @@
             "desc": null,
             "special": null
         },
-        "Tree_": {
-            "key": "🪾",
-            "user": false,
-            "num": false,
-            "desc": "Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.",
-            "special": null
-        },
-        "Talk_": {
-            "key": "⏹",
+        "Cat_": {
+            "key": "🐱",
             "user": false,
             "num": false,
             "desc": null,
             "special": null
+        },
+        "Talk_": {
+            "key": "🗣",
+            "user": false,
+            "num": false,
+            "desc": null,
+            "special": null
+        },
+        "<PAD>": {
+            "key": "🗒",
+            "user": false,
+            "num": false,
+            "desc": null,
+            "special": "pad"
         },
         "<BOS>": {
             "key": "🏁",
@@ -62,13 +69,6 @@
             "desc": null,
             "special": "start"
         },
-        "<RUN>": {
-            "key": "🏃",
-            "user": false,
-            "num": false,
-            "desc": null,
-            "special": "infer"
-        },
         "<NON>": {
             "key": "🫙",
             "user": false,
@@ -76,19 +76,19 @@
             "desc": null,
             "special": "none"
         },
+        "<RUN>": {
+            "key": "🏃",
+            "user": false,
+            "num": false,
+            "desc": null,
+            "special": "infer"
+        },
         "<EOS>": {
             "key": "🎬",
             "user": false,
             "num": false,
             "desc": null,
             "special": "end"
-        },
-        "<PAD>": {
-            "key": "🗒",
-            "user": false,
-            "num": false,
-            "desc": null,
-            "special": "pad"
         },
         "<UNK>": {
             "key": "🛑",
@@ -99,21 +99,83 @@
         }
     },
     "special_tokens": [
-        "🏁",
-        "🏃",
-        "🫙",
         "🎬",
         "🗒",
-        "🛑",
+        "🪾🇨😁🗣",
         "💥",
-        "👪",
-        "🪾🇨😁⏹",
-        "🪾🇨🐱⏹",
-        "🪾🇨👪🐱⏹"
+        "🏁",
+        "🏃",
+        "🪾🇨🫥🐱🗣",
+        "🔎",
+        "🫙",
+        "👀",
+        "🛑",
+        "🔄",
+        "🫥",
+        "🪾🇨🐱🗣"
     ],
     "instruction": {
         "memory": 3,
         "sets": [
+            {
+                "set": [
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Cat_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ]
+                ],
+                "result": "Disappear_",
+                "samples": [
+                    {
+                        "sample": [
+                            "Why do you keep vanishing and reappearing so suddenly?",
+                            "Because it amuses me, and it keeps you wondering whether I’m truly here at all.",
+                            "Then I’ll do it twice as much, since nervousness is such a curious flavor."
+                        ],
+                        "prompt": "It makes me nervous, please stop.",
+                        "number": null,
+                        "result": "Disappear_",
+                        "value": "None"
+                    },
+                    {
+                        "sample": [
+                            "Everyone here seems so very mad—are you mad too?",
+                            "Of course I am, or else I wouldn’t be here among them.",
+                            "Because I purr when I’m pleased and grin when I’m angry, surely that’s not quite sane."
+                        ],
+                        "prompt": "But how do you know that you’re mad?",
+                        "number": null,
+                        "result": "Disappear_",
+                        "value": "None"
+                    },
+                    {
+                        "sample": [
+                            "Must you always speak in riddles? I only want a straight answer.",
+                            "But riddles are straighter than answers, if you know how to look at them.",
+                            "All the better, then—nonsense is safer than truth."
+                        ],
+                        "prompt": "That does not make sense at all.",
+                        "number": null,
+                        "result": "Disappear_",
+                        "value": "None"
+                    }
+                ],
+                "ppo": []
+            },
             {
                 "set": [
                     [
@@ -288,65 +350,6 @@
                         "prompt": "But that doesn’t help me at all!",
                         "number": null,
                         "result": "Leave_",
-                        "value": "None"
-                    }
-                ],
-                "ppo": []
-            },
-            {
-                "set": [
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Cat_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ]
-                ],
-                "result": "Disappear_",
-                "samples": [
-                    {
-                        "sample": [
-                            "Why do you keep vanishing and reappearing so suddenly?",
-                            "Because it amuses me, and it keeps you wondering whether I’m truly here at all.",
-                            "Then I’ll do it twice as much, since nervousness is such a curious flavor."
-                        ],
-                        "prompt": "It makes me nervous, please stop.",
-                        "number": null,
-                        "result": "Disappear_",
-                        "value": "None"
-                    },
-                    {
-                        "sample": [
-                            "Everyone here seems so very mad—are you mad too?",
-                            "Of course I am, or else I wouldn’t be here among them.",
-                            "Because I purr when I’m pleased and grin when I’m angry, surely that’s not quite sane."
-                        ],
-                        "prompt": "But how do you know that you’re mad?",
-                        "number": null,
-                        "result": "Disappear_",
-                        "value": "None"
-                    },
-                    {
-                        "sample": [
-                            "Must you always speak in riddles? I only want a straight answer.",
-                            "But riddles are straighter than answers, if you know how to look at them.",
-                            "All the better, then—nonsense is safer than truth."
-                        ],
-                        "prompt": "That does not make sense at all.",
-                        "number": null,
-                        "result": "Disappear_",
                         "value": "None"
                     }
                 ],
