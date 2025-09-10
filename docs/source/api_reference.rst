@@ -119,9 +119,6 @@ For scenarios where the model responds to user prompts.
 Guardrails
 ----------
 
-Guardrail
-~~~~~~~~~
-
 Safety mechanisms for user interactions.
 
 .. code-block:: python
