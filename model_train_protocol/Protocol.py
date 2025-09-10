@@ -3,7 +3,8 @@ import json
 import os
 import string
 
-from model_train_protocol import NumToken, Token
+from . import Token
+from ._internal.ProtocolFile import ProtocolFile
 from .common.instructions.Instruction import Instruction
 from .common.tokens.DefaultSpecialToken import DefaultSpecialToken
 from .common.util import get_possible_emojis, get_extended_possible_emojis
@@ -30,7 +31,6 @@ class Protocol:
         self.numbers: dict[str, str] = dict()
         self.none = None
         self.special_tokens: set[Token] = set()
-        self.instruction_token_key_sets: set[str] = set()
         self.possible_emoji_keys: set[str] = get_possible_emojis()
         self.used_keys: set[str] = set()
 
@@ -57,12 +57,6 @@ class Protocol:
                 if token not in self.tokens:
                     self._add_token(token)
 
-            self.instruction_token_key_sets.add(token_set.get_token_key_set())
-
-        # Add the result token as a special token
-        if instruction.final.key is not None:
-            self.instruction_token_key_sets.add(instruction.final.key)
-
         # Add the instruction to the protocol
         self.instructions.add(instruction)
 
@@ -80,10 +74,9 @@ class Protocol:
         os.makedirs(path, exist_ok=True)
         filename = f"{path}\\{name}_model.json"
         print(f"Saving Model Train Protocol to {filename}...")
-        protocol_file = self._serialize()
-        protocol_file = self._rename_template_elements(protocol_file)
+        protocol_file: ProtocolFile = self._create_protocol_file()
         with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(protocol_file, file, indent=4, ensure_ascii=False)
+            json.dump(protocol_file.to_json(), file, indent=4, ensure_ascii=False)
 
     def template(self, path: str | None = None):
         """
@@ -97,7 +90,7 @@ class Protocol:
         if path is None:
             path = os.getcwd()
 
-        self._set_all_elements()
+        self._set_protocol_elements()
         unique_sets = {i: set() for i in range(self.instruction_sample_lines)}
         unique_results = dict()
         valid_input_list = ["🏁", ]
@@ -193,88 +186,33 @@ class Protocol:
             non_token: DefaultSpecialToken = DefaultSpecialToken(value="<NON>", key="🫙", special="none")
             self.special_tokens.add(non_token)
 
-    def _serialize(self):
-        """Serializes the protocol to a dictionary."""
-        self._set_all_elements()
-        template = {
-            "name": self.name,
-            "context": self.context,
-            "tokens": {},
-            "special_tokens": [],
-            "instruction": {'memory': self.instruction_sample_lines, 'sets': []},
-            "guardrails": {'None': ''},
-            "numbers": {'None': ''},
-            "batches": {'pretrain': [], 'instruct': [], 'judge': [], 'ppo': []},
-        }
+    def _create_protocol_file(self) -> ProtocolFile:
+        """Creates a ProtocolFile for model training."""
+        self._set_protocol_elements()
+        protocol_file: ProtocolFile = ProtocolFile(
+            name=self.name,
+            context=self.context,
+            instruction_sample_lines=self.instruction_sample_lines
+        )
+        # Add regular tokens
+        protocol_file.add_tokens(self.tokens)
 
-        # Add tokens to the template
-        tokens_dict: dict[str, dict] = {}
-        for token in self.tokens:
-            token_dict: dict[str, dict] = token.to_dict()
-            token_dict.pop("value")
-            tokens_dict[token.value] = token_dict
+        # Add special tokens
+        protocol_file.add_tokens(self.special_tokens)
 
-        for token in self.special_tokens:
-            token_dict: dict[str, dict] = token.to_dict()
-            token_dict.pop("value")
-            tokens_dict[token.value] = token_dict
-        template['tokens'] = tokens_dict
+        # Add instructions
+        protocol_file.add_instructions(self.instructions)
 
-        # Add special tokens to the template
-        self._create_default_special_tokens()
-        for special_token in self.special_tokens:
-            template['special_tokens'].append(special_token.key)
+        return protocol_file
 
-        # Add instruction token key sets to the template
-        for instruction_token_key_set in self.instruction_token_key_sets:
-            template['special_tokens'].append(instruction_token_key_set)
+    def _set_protocol_elements(self):
+        """
+        Sets all elements in the protocol before serialization.
 
-        # Add instructions to the template
-        for instruction in self.instructions:
-            template['instruction']['sets'].append(
-                {
-                    "set": instruction.serialize_memory_set(),
-                    "result": instruction.final.value,
-                    "samples": instruction.serialize_samples(),
-                    "ppo": instruction.serialize_ppo(),
-                }
-            )
-
-        # Add guardrails to the template
-        template['guardrails'] = {'None': ''}
-        for key, value in self.guardrails.items():
-            template['guardrails'][key] = value
-
-        # Add numbers to the template
-        for key, value in self.numbers.items():
-            template['numbers'][key] = value
-
-        return template
-
-    def _set_all_elements(self):
-        """Sets all elements in the protocol before serialization."""
+        This includes setting guardrails from their TokenSets and creating default special tokens.
+        """
         self._set_guardrails()
         self._create_default_special_tokens()
-
-    @classmethod
-    def _rename_template_elements(cls, template: dict):
-        """
-        Renames elements in the template to match the previous output format for backwards compatibility.
-        :param template: The original template dictionary.
-        :return: The modified template dictionary with renamed elements.
-        """
-        # Rename Token 'key' to 'emoji'
-        for token_value, token_info in template.get('common/tokens', {}).items():
-            if 'key' in token_info:
-                token_info['emoji'] = token_info.pop('key')
-
-        # Rename sample number to None if an array of empty arrays
-        for instruction in template.get('instruction', {}).get('sets', []):
-            for sample in instruction['samples']:
-                if all(num == [] for num in sample['number']):
-                    sample['number'] = None
-
-        return template
 
     def _get_random_key(self) -> str:
         """
