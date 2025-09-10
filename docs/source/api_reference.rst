@@ -41,7 +41,7 @@ Basic token class for representing concepts, actions, or entities.
 
    class Token:
        def __init__(self, value: str, key: str = None, desc: str = None):
-           """Initialize a Token with value, optional key, and description."""
+           """Initialize a Token with value, optional key, and optional description."""
 
 UserToken
 ~~~~~~~~~
