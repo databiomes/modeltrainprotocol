@@ -16,7 +16,11 @@ For Windows
 py -3 -m pip install model-train-protocol
 ```
 
+View the full package documentation at: https://model-train-protocol.readthedocs.io/
+
 See examples/example.py to follow along with these steps.
+
+# Creating a Model Training Protocol
 
 The first step in creating a model training protocol is to initialize the Protocol:
 
