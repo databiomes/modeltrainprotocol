@@ -35,5 +35,5 @@ docs = [
 [project.urls]
 Homepage = "https://pypi.org/project/model-train-protocol/"
 Documentation = "https://model-train-protocol.readthedocs.io/"
-Repository = "https://github.com/databiomes/model-train-protocol"
+Repository = "https://github.com/databiomes/modeltrainprotocol"
 Issues = "https://github.com/databiomes/model-train-protocol/issues"
