@@ -96,10 +96,10 @@ class Protocol:
         os.makedirs(path, exist_ok=True)
         filename = f"{path}\\{name}_model.json"
         print(f"Saving Model Train Protocol to {filename}...")
-        mtp_template = self._serialize()
-        mtp_template = self._rename_template_elements(mtp_template)
+        protocol_file = self._serialize()
+        protocol_file = self._rename_template_elements(protocol_file)
         with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(mtp_template, file, indent=4, ensure_ascii=False)
+            json.dump(protocol_file, file, indent=4, ensure_ascii=False)
 
     def template(self, path: str | None = None):
         """
