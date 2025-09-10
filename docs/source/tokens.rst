@@ -98,9 +98,9 @@ Number Tokens
 .. code-block:: python
 
    # Number tokens for quantitative data
-   age = mtp.NumToken("Age")
-   count = mtp.NumToken("Count")
-   temperature = mtp.NumToken("Temperature")
+   age = mtp.NumToken("Age", min_value=0, max_value=100)
+   count = mtp.NumToken("Count", min_value=0, max_value=5000)
+   temperature = mtp.NumToken("Temperature", min_value=-112.5, max_value=260.5)
 
 
 Token Validation
@@ -110,7 +110,7 @@ The MTP system automatically validates tokens to ensure:
 
 - Token values are unique within the protocol
 - Token keys (emojis) are unique within the protocol
-- NumTokens have associated number ranges when used
+- NumTokens have associated number ranges defined by min_value and max_value
 - UserTokens are properly used in interactive scenarios
 
 Common Patterns
