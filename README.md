@@ -78,12 +78,6 @@ A token that can be associated with numerical values:
 sentence_length = mtp.NumToken("SentenceLength")
 ```
 
-When using NumTokens, you must add number ranges to the protocol using the `add_number` method:
-```python
-# Add number range to the protocol
-protocol.add_number(sentence_length, min_value=1, max_value=100)
-```
-
 ### Token Properties
 
 - **value**: The string identifier

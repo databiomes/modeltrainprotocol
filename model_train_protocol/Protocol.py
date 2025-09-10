@@ -66,14 +66,6 @@ class Protocol:
         # Add the instruction to the protocol
         self.instructions.add(instruction)
 
-    def add_number(self, num: NumToken, min_value: int | float, max_value: int | float):
-        """Adds a number range to the protocol."""
-        if self.numbers is None:
-            self.numbers = {"None": ''}
-        key = num.value
-        value = f"<Number between {min_value} and {max_value}>"
-        self.numbers[key] = value
-
     def add_number_list(self, num: NumToken, min_value: int | float, max_value: int | float, length: int):
         """Adds a number list range to the protocol."""
         if self.numbers is None:
