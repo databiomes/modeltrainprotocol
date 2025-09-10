@@ -114,6 +114,18 @@ class Instruction(ABC):
         if not self.final.num and value is not None:
             raise ValueError("Value must be None when final token is not a number.")
 
+    @classmethod
+    def _validate_snippet_matches_set(cls, snippet: Snippet, expected_token_set: TokenSet):
+        """Validates that the snippet matches the expected token set."""
+        if snippet.token_set_key != expected_token_set.key:
+            raise ValueError(f"Snippet f{snippet} does not match expected token set {expected_token_set}.")
+
+    def _assert_context_snippet_count(self, context_snippets: list[Snippet]):
+        """Assert the number of context snippets matches the number of context token sets."""
+        if len(context_snippets) != len(self.context):
+            raise ValueError(
+                f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.context)}).")
+
     def __str__(self) -> str:
         """String representation of the Instruction."""
         tokens_str: str = ', '.join(

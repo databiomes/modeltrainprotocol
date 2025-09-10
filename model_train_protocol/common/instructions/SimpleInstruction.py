@@ -35,7 +35,13 @@ class SimpleInstruction(Instruction):
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         """
         self._assert_valid_value(value=value)
+        self._assert_context_snippet_count(context_snippets=context_snippets)
 
         all_snippets: list[Snippet] = context_snippets + [output_snippet]
+        all_token_sets: list[TokenSet] = self.get_token_sets()
+
+        for i in range(len(all_snippets)):
+            self._validate_snippet_matches_set(snippet=all_snippets[i], expected_token_set=all_token_sets[i])
+
         sample: dict = self._create_base_sample(snippets=all_snippets, value=value)
         self.samples.append(sample)
