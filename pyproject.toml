@@ -24,3 +24,16 @@ classifiers = [
 dependencies = [
     "emoji>=2.0.0",
 ]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx>=8.0.0",
+    "sphinx-rtd-theme>=3.0.0",
+    "sphinx-autodoc-typehints>=1.24.0",
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/model-train-protocol/"
+Documentation = "https://model-train-protocol.readthedocs.io/"
+Repository = "https://github.com/databiomes/model-train-protocol"
+Issues = "https://github.com/databiomes/model-train-protocol/issues"
