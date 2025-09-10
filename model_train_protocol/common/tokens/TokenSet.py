@@ -11,6 +11,7 @@ from .Token import Token
 @dataclass
 class Snippet:
     string: str
+    token_set_key: str
     numbers: list[int] = dataclasses.field(default_factory=list)
 
 
@@ -52,7 +53,7 @@ class TokenSet:
             raise TypeError("Numbers must be an int, an Iterable of ints, or None.")
         assert len(numbers) == self.required_numbers, \
             f"{self} requires {self.required_numbers} numbers but {len(numbers)} were provided."
-        return Snippet(string=string, numbers=numbers)
+        return Snippet(string=string, numbers=numbers, token_set_key=self.key)
 
     def get_token_key_set(self) -> str:
         """Returns a string representing the combined token keys of the individual Tokens in the TokenSet."""
