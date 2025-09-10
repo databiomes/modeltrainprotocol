@@ -3,9 +3,9 @@ import json
 import os
 import string
 
+from . import NumToken, Token
 from .common.instructions.Instruction import Instruction
 from .common.tokens.DefaultSpecialToken import DefaultSpecialToken
-from .common.tokens.Token import Token
 from .common.util import get_possible_emojis, get_extended_possible_emojis
 
 
@@ -66,7 +66,7 @@ class Protocol:
         # Add the instruction to the protocol
         self.instructions.add(instruction)
 
-    def add_number(self, num, min_value, max_value):
+    def add_number(self, num: NumToken, min_value: int | float, max_value: int | float):
         """Adds a number range to the protocol."""
         if self.numbers is None:
             self.numbers = {"None": ''}
@@ -74,7 +74,7 @@ class Protocol:
         value = f"<Number between {min_value} and {max_value}>"
         self.numbers[key] = value
 
-    def add_number_list(self, num, min_value, max_value, length):
+    def add_number_list(self, num: NumToken, min_value: int | float, max_value: int | float, length: int):
         """Adds a number list range to the protocol."""
         if self.numbers is None:
             self.numbers = {"None": ''}
