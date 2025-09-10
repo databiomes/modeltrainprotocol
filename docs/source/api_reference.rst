@@ -72,15 +72,15 @@ Token that can be associated with numerical values.
            """Initialize a NumToken for numerical data."""
 
 TokenSet
-~~~~~~~~
+------
 
 Groups multiple tokens together to define input patterns.
 
 .. code-block:: python
 
    class TokenSet:
-       def __init__(self, tokens: tuple):
-           """Initialize a TokenSet with a tuple of tokens."""
+       def __init__(self, tokens: Sequence[Token]):
+           """Initialize a TokenSet with a list of tokens."""
            
        def create_snippet(self, string: str, numbers: list = None):
            """Create a snippet from this TokenSet."""
