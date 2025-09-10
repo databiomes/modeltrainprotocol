@@ -24,10 +24,10 @@ The main Protocol class for creating model training protocols.
            """Adds an Instruction (and its components) to the protocol."""
            
        def save(self, name: str | None = None, path: str | None = None):
-           """Saves the protocol to a JSON file."""
+           """Saves the training protocol to a JSON file."""
            
        def template(self, path: str | None = None):
-           """Create a template JSON file for the model training protocol."""
+           """Create a usage template JSON file for the model."""
 
 Tokens
 ------
