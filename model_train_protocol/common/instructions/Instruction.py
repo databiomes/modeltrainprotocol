@@ -114,6 +114,17 @@ class Instruction(ABC):
         if not self.final.num and value is not None:
             raise ValueError("Value must be None when final token is not a number.")
 
+    def _validate_snippets_match(self, context_snippets: list[Snippet], output_snippet: Snippet):
+        """Validates that all snippets in the samples match their expected token sets."""
+        all_snippets: list[Snippet] = context_snippets + [output_snippet]
+        all_token_sets: list[TokenSet] = self.get_token_sets()
+
+        for i in range(len(all_snippets)):
+            self._validate_snippet_matches_set(snippet=all_snippets[i], expected_token_set=all_token_sets[i])
+
+        # Validate output snippet set matches output token set
+        self._validate_snippet_matches_set(snippet=output_snippet, expected_token_set=self.response)
+
     @classmethod
     def _validate_snippet_matches_set(cls, snippet: Snippet, expected_token_set: TokenSet):
         """Validates that the snippet matches the expected token set."""

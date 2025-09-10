@@ -38,6 +38,8 @@ class UserInstruction(Instruction):
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         """
         self._assert_valid_value(value=value)
+        self._assert_context_snippet_count(context_snippets=context_snippets)
+        self._validate_snippets_match(context_snippets=context_snippets, output_snippet=output_snippet)
 
         all_snippets: list[Snippet] = context_snippets + [output_snippet]
         sample: dict = self._create_base_sample(snippets=all_snippets, value=value)

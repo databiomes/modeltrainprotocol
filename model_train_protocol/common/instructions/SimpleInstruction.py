@@ -36,12 +36,8 @@ class SimpleInstruction(Instruction):
         """
         self._assert_valid_value(value=value)
         self._assert_context_snippet_count(context_snippets=context_snippets)
+        self._validate_snippets_match(context_snippets=context_snippets, output_snippet=output_snippet)
 
         all_snippets: list[Snippet] = context_snippets + [output_snippet]
-        all_token_sets: list[TokenSet] = self.get_token_sets()
-
-        for i in range(len(all_snippets)):
-            self._validate_snippet_matches_set(snippet=all_snippets[i], expected_token_set=all_token_sets[i])
-
         sample: dict = self._create_base_sample(snippets=all_snippets, value=value)
         self.samples.append(sample)
