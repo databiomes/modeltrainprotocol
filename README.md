@@ -75,7 +75,7 @@ A token that can be associated with numerical values:
 
 ```python
 # Create a number token for sentence length
-sentence_length = mtp.NumToken("SentenceLength")
+sentence_length = mtp.NumToken(value="SentenceLength", min_value=5, max_value=20)
 ```
 
 ### Token Properties
