@@ -35,12 +35,26 @@ A specialized token that represents user input. These tokens are used when the m
 NumToken
 ~~~~~~~~
 
-A token that can be associated with numerical values:
+A token that can be associated with numerical values within a specified range:
 
 .. code-block:: python
 
    # Create a number token for sentence length
-   sentence_length = mtp.NumToken("SentenceLength")
+   sentence_length = mtp.NumToken("SentenceLength", key="📏", min_value=5, max_value=20, desc="Length of a sentence in words")
+
+NumListToken
+~~~~~~~~~~~~
+
+A specialized NumToken that represents a list of numerical values with a fixed length:
+
+.. code-block:: python
+
+   # Create a number list token for coordinates
+   coordinates = mtp.NumListToken("Coordinates", key="📍", min_value=-100, max_value=100, length=3, desc="3D coordinates (x, y, z)")
+   
+   # Create a number list token for RGB values
+   rgb_values = mtp.NumListToken("RGB", key="🎨", min_value=0, max_value=255, length=3, desc="Red, Green, Blue color values")
+
 
 Token Properties
 ----------------
@@ -91,10 +105,23 @@ Number Tokens
 .. code-block:: python
 
    # Number tokens for quantitative data
-   age = mtp.NumToken("Age", min_value=0, max_value=100)
-   count = mtp.NumToken("Count", min_value=0, max_value=5000)
-   temperature = mtp.NumToken("Temperature", min_value=-112.5, max_value=260.5)
+   age = mtp.NumToken("Age", key="👤", min_value=0, max_value=100, desc="Person's age in years")
+   count = mtp.NumToken("Count", key="🔢", min_value=0, max_value=5000, desc="Number of items")
+   temperature = mtp.NumToken("Temperature", key="🌡️", min_value=-112.5, max_value=260.5, desc="Temperature in Celsius")
 
+NumTokens must specify both min_value and max_value. These constrains must be followed.
+
+Number List Tokens
+~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+   # Number list tokens for structured numerical data
+   position = mtp.NumListToken("Position", key="📍", min_value=-1000, max_value=1000, length=2, desc="X, Y coordinates")
+   color_rgb = mtp.NumListToken("ColorRGB", key="🎨", min_value=0, max_value=255, length=3, desc="Red, Green, Blue values")
+   scores = mtp.NumListToken("Scores", key="📊", min_value=0, max_value=100, length=5, desc="Five test scores")
+
+NumListTokens must specify min_value, max_value, and length. Length is the expected length of the number list.
 
 Token Validation
 ----------------
@@ -104,6 +131,7 @@ The MTP system automatically validates tokens to ensure:
 - Token values are unique within the protocol
 - Token keys (emojis) are unique within the protocol
 - NumTokens have associated number ranges defined by min_value and max_value
+- NumListTokens have associated number ranges and a fixed length defined by min_value, max_value, and length
 - UserTokens are properly used in interactive scenarios
 
 Common Patterns
