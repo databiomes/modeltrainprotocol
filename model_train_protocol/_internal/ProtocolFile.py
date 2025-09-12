@@ -8,7 +8,7 @@ from model_train_protocol.common.tokens import TokenSet, SpecialToken
 
 
 class ProtocolFile:
-    """Manages the template.json file for model training protocols."""
+    """Manages the model.json file for model training protocols."""
 
     @dataclass
     class ProtocolInstruction:
