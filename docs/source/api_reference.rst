@@ -66,7 +66,7 @@ Token that can be associated with numerical values.
            """Initialize a NumToken for numerical data."""
 
 TokenSet
-------
+--------
 
 Groups multiple tokens together to define input patterns.
 

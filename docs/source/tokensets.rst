@@ -35,7 +35,7 @@ The MTP system ensures that:
 - TokenSets are used consistently across instructions
 
 Example TokenSet Patterns
-------------------------
+--------------------------
 
 Storytelling Patterns
 ~~~~~~~~~~~~~~~~~~~~~

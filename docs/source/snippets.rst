@@ -158,7 +158,7 @@ The MTP system ensures that:
 - Snippets provide meaningful context for training
 
 Example Snippet Patterns
------------------------
+------------------------
 
 Emotional Context
 ~~~~~~~~~~~~~~~~~
