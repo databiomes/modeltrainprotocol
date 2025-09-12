@@ -1,0 +1,10 @@
+# Include assets in the package
+include assets/*
+recursive-include assets *
+
+# Include documentation
+include README.md
+include LICENSE
+
+# Include examples
+recursive-include examples *
