@@ -16,7 +16,7 @@ class Token:
         self.key: str | None = key
         self.desc: str = desc
         self.user: bool = False
-        self.num: bool = False
+        self.num: int = 0
         self.special: str | None = None
 
     def validate_key(self):

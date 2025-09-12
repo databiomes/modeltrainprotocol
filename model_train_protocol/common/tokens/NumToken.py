@@ -16,5 +16,5 @@ class NumToken(Token):
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         super().__init__(value, key, desc)
-        self.num: bool = True
+        self.num: int = 1
         self.protocol_representation: str = f"<Number between {min_value} and {max_value}>"

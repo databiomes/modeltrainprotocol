@@ -4,9 +4,9 @@ from typing import Sequence, Iterable
 
 from dataclasses import dataclass
 
-from ..guardrails.Guardrail import Guardrail
 from .Token import Token
-
+from ..guardrails.Guardrail import Guardrail
+from .NumToken import NumToken
 
 @dataclass
 class Snippet:
@@ -22,8 +22,12 @@ class TokenSet:
         """Initializes a TokenSet instance."""
         self.tokens: Sequence[Token] = tokens
         self.is_user: bool = any(token.user for token in tokens)
-        self.required_numbers: int = sum(1 for token in tokens if token.num)  # Count of tokens that require numbers
-        self.key: str = ''.join(token.value for token in tokens) # Note this key is based on the value of the tokens and not the keys of the tokens
+        self.required_numtoken_numbers: int = sum(
+            token.num for token in tokens if token.num == 1)  # Count of NumToken
+        self.required_numlist_numbers: int = sum(
+            token.num for token in tokens if token.num > 1)  # Count of NumListToken
+        self.key: str = ''.join(token.value for token in
+                                tokens)  # Note this key is based on the value of the tokens and not the keys of the tokens
         self._guardrail: Guardrail | None = None
 
     @property
@@ -41,19 +45,46 @@ class TokenSet:
             raise TypeError("Guardrail must be an instance of the Guardrail class.")
         self._guardrail = guardrail
 
-    def create_snippet(self, string: str, numbers: Iterable[int] | int | None = None) -> Snippet:
+    def create_snippet(self, string: str,
+                       numbers: Iterable[int | float] | int | float | None = None, number_lists: Iterable[int | float | Iterable[int | float]] | None = None) -> Snippet:
         """Create a snippet for the TokenSet"""
         if numbers is None:
             numbers = []
         elif isinstance(numbers, int):
             numbers = [numbers]
-        elif isinstance(numbers, Iterable) and not isinstance(numbers, str):
+        elif isinstance(numbers, Iterable):
             numbers = list(numbers)
         else:
             raise TypeError("Numbers must be an int, an Iterable of ints, or None.")
-        assert len(numbers) == self.required_numbers, \
-            f"{self} requires {self.required_numbers} numbers but {len(numbers)} were provided."
-        return Snippet(string=string, numbers=numbers, token_set_key=self.key)
+
+        if number_lists is None:
+            number_lists = []
+        elif isinstance(number_lists, Iterable):
+            number_lists = list(number_lists)
+        else:
+            raise TypeError("Number lists must be an Iterable of numbers or Iterable of Iterables or None.")
+
+        assert len(numbers) == self.required_numtoken_numbers, \
+            f"{self} requires {self.required_numtoken_numbers} numbers but {len(numbers)} were provided."
+        assert len(number_lists) == self.required_numlist_numbers, \
+            f"{self} requires {self.required_numlist_numbers} number lists but {len(number_lists or [])} were provided."
+
+        # Combine numbers and number_lists into single input for Snippet
+        numbers_index = 0
+        number_lists_index = 0
+        combined_numbers: list[int | float | Iterable[int | float]] = [] # Combined list of numbers and number lists
+        for index, token in enumerate(self.tokens):
+            if not isinstance(token, NumToken):
+                continue
+
+            if token.num == 1:
+                combined_numbers.append(numbers[numbers_index])
+                numbers_index += 1
+            elif token.num > 1:
+                combined_numbers.append(number_lists[number_lists_index])
+                number_lists_index += 1
+
+        return Snippet(string=string, numbers=combined_numbers, token_set_key=self.key)
 
     def get_token_key_set(self) -> str:
         """Returns a string representing the combined token keys of the individual Tokens in the TokenSet."""
