@@ -5,6 +5,7 @@ import string
 
 from . import Token
 from ._internal.ProtocolFile import ProtocolFile
+from ._internal.TemplateFile import TemplateFile
 from .common.instructions.Instruction import Instruction
 from .common.tokens.DefaultSpecialToken import DefaultSpecialToken
 from .common.util import get_possible_emojis, get_extended_possible_emojis
@@ -94,54 +95,16 @@ class Protocol:
             path = os.getcwd()
 
         self._set_protocol_elements()
-        unique_sets = {i: set() for i in range(self.instruction_sample_lines)}
-        unique_results = dict()
-        valid_input_list = ["🏁", ]
-        valid_output_list = ["<string>", ]
-        for instruction in self.instructions:
-            for idx, token_set in enumerate(instruction.get_token_sets()):
-                token_user = [t.user for t in token_set]
-                token_strings = "".join([t.value for t in token_set])
-                token_keys = []
-                for t in token_set:
-                    token_keys.append(t.key + (self.numbers[t.value] if t.num else ""))
-                token_keys = "".join(token_keys)
-                unique_sets[idx].add(str(token_strings) + ": " + (
-                    (str(token_keys) + "USER PROMPT") if any(token_user) and (idx == (len(unique_sets) - 1)) else str(
-                        token_keys)) + "\n" + ("<string>" if idx != (len(instruction.context) - 1) else ""))
-                if len(valid_input_list) < (((int(self.instruction_sample_lines) * 2) - 1) + 2):
-                    valid_input_list.append(((str(token_keys) + "USER PROMPT") if any(token_user) and (
-                            idx == (len(unique_sets) - 1)) else str(token_keys)))
-                    if idx == (len(instruction.context) - 1):
-                        valid_input_list.append("🏃\n")
-                    else:
-                        valid_input_list.append("<string>")
-            unique_results[str(instruction.final.value)] = str(instruction.final.key)
-            if len(valid_output_list) < 3:
-                valid_output_list.append(str(instruction.final.key))
-                valid_output_list.append("🎬")
+        template_file: TemplateFile = TemplateFile(
+            instructions=list(self.instructions),
+            instruction_sample_lines=self.instruction_sample_lines
+        )
 
-        template: dict[str, dict] = {
-            "example_usage": {
-                "valid_input": "\n".join(valid_input_list),
-                "valid_output": "\n".join(valid_output_list)
-            },
-            "all_combinations": {
-                "model_input": {},
-                "model_output": {}
-            }
-        }
-        template['all_combinations']['model_input']["<BOS>"] = "🏁"
-        for i in range(int(self.instruction_sample_lines)):
-            template['all_combinations']['model_input'][f"{i}"] = list(unique_sets[i])
-        template['all_combinations']['model_input']["<RUN>"] = "🏃"
-        template['all_combinations']['model_output']["model_response"] = "<string>"
-        template['all_combinations']['model_output']["model_results"] = unique_results
-        template['all_combinations']['model_output']["<EOS>"] = "🎬"
         filename = f"{path}\\{self.name}_template.json"
         print(f"Saving Model Train Protocol Template to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(template, file, indent=4, ensure_ascii=False)
+            json.dump(template_file.to_json(), file, indent=4, ensure_ascii=False)
+
 
     def _add_token(self, token: Token):
         """

@@ -1,8 +1,4 @@
 {
-    "example_usage": {
-        "valid_input": "🏁\n🪾🇨😁🗣\n<string>\n🪾🇨🐱🗣\n🏃\n\n🪾🇨😁🗣USER PROMPT\n<string>",
-        "valid_output": "<string>\n🔄\n🎬"
-    },
     "all_combinations": {
         "model_input": {
             "<BOS>": "🏁",
@@ -22,8 +18,8 @@
             "model_response": "<string>",
             "model_results": {
                 "Continue_": "🔄",
-                "Appear_": "👀",
                 "Answer_": "🔎",
+                "Appear_": "👀",
                 "Leave_": "💥",
                 "Disappear_": "🫥"
             },

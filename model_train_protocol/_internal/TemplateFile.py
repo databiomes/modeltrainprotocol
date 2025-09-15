@@ -1,10 +1,8 @@
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 from typing import Collection
 
-from model_train_protocol import Token, NumToken
-from model_train_protocol.common.guardrails import Guardrail
+from model_train_protocol import NumToken
 from model_train_protocol.common.instructions import Instruction
-from model_train_protocol.common.tokens import TokenSet, SpecialToken
 
 
 class TemplateFile:
@@ -21,43 +19,85 @@ class TemplateFile:
         guardrail_input: str
         guardrail_output: str
 
-    @dataclass
     class ModelInput:
         """Represents inputs to the model."""
 
-        inputs: list[list[str]]
-        input_count: int
-        bos: str = "<BOS>"
-        run: str = "<RUN>"
+        inputs: list[list[str]] = list()
+        bos: str = "🏁"
+        run: str = "🏃"
 
-    @dataclass
+        def add_inputs_from_instructions(self, instructions: list[Instruction], instruction_sample_lines: int):
+            """Adds input combinations from a list of instructions."""
+            unique_sets = {i: set() for i in range(instruction_sample_lines)}
+            for instruction in instructions:
+                for idx, token_set in enumerate(instruction.get_token_sets()):
+                    token_user = [t.user for t in token_set]
+                    token_strings = "".join([t.value for t in token_set])
+                    token_keys = []
+                    for token in token_set:
+                        token_keys.append(token.key + (token.protocol_representation if isinstance(token, NumToken) else ""))
+                    token_keys = "".join(token_keys)
+                    unique_sets[idx].add(str(token_strings) + ": " + (
+                        (str(token_keys) + "USER PROMPT") if any(token_user) and (
+                                    idx == (len(unique_sets) - 1)) else str(
+                            token_keys)) + "\n" + ("<string>" if idx != (len(instruction.context) - 1) else ""))
+
+            for input_set in unique_sets.values():
+                self.inputs.append(list(input_set))
+
+        def to_json(self):
+            """Converts the model input to a JSON-serializable dictionary."""
+            model_json: dict[str, Collection[str] | str] = {"<BOS>": self.bos}
+            # Add each input sequence with its index as the key
+            for idx, input_seq in enumerate(self.inputs):
+                model_json[str(idx)] = input_seq
+            model_json["<RUN>"] = self.run
+            return model_json
+
     class ModelOutput:
-        model_response: str
-        model_results: dict[str, str]
-        eos: str = "<EOS>"
+        model_results: dict[str, str] = dict()
+        model_response: str = "<string>"
+        eos: str = "🎬"
 
-    def __init__(self, instruction_sample_lines: int, instructions: list[Instruction],):
+        def __setitem__(self, key: str, value: str):
+            self.model_results[key] = value
+
+        def add_results_from_instructions(self, instructions: list[Instruction]):
+            """Adds model results from a list of instructions."""
+            for instruction in instructions:
+                self.model_results[str(instruction.final.value)] = str(instruction.final.key)
+
+        def to_json(self):
+            """Converts the model output to a JSON-serializable dictionary."""
+            model_json: dict[str, dict[str] | str] = {
+                "model_response": self.model_response,
+                "model_results": {}
+            }
+            # Add each model result with its key
+            for key, value in self.model_results.items():
+                model_json["model_results"][key] = value
+
+            model_json["<EOS>"] = self.eos
+            return model_json
+
+    def __init__(self, instruction_sample_lines: int, instructions: list[Instruction], ):
         """Initializes the template"""
+        self.model_input: TemplateFile.ModelInput = TemplateFile.ModelInput()
+        self.model_output: TemplateFile.ModelOutput = TemplateFile.ModelOutput()
+        self.instruction_sample_lines: int = instruction_sample_lines
+        self.instructions: list[Instruction] = instructions
+        self._add_io_from_instructions()
 
-    def to_json(self):
-        """Converts the template to a JSON-compatible dictionary."""
-        json_dict = {
-            "name": self._name,
-            "context": self._context,
-            "tokens": self._tokens,
-            "special_tokens": list(self._special_token_keys | self._instruction_token_keys),
-            "instruction": {
-                "memory": self._instruction.memory,
-                "sets": [vars(s) for s in self._instruction.sets],
-            },
-            "guardrails": self._guardrails,
-            "numbers": self._numbers,
-            "batches": {
-                "pretrain": self._batches.pretrain,
-                "instruct": self._batches.instruct,
-                "judge": self._batches.judge,
-                "ppo": self._batches.ppo,
-            },
+    def _add_io_from_instructions(self):
+        """Adds input and output sequences from the instructions."""
+        self.model_input.add_inputs_from_instructions(self.instructions, instruction_sample_lines=self.instruction_sample_lines)
+        self.model_output.add_results_from_instructions(self.instructions)
+
+    def to_json(self) -> dict:
+        """Converts the entire template to a JSON-serializable dictionary."""
+        return {
+            "all_combinations": {
+                "model_input": self.model_input.to_json(),
+                "model_output": self.model_output.to_json()
+            }
         }
-
-        return self._rename_protocol_elements(json_dict)
