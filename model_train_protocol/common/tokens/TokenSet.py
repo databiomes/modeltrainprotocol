@@ -1,0 +1,102 @@
+import dataclasses
+import warnings
+from typing import Sequence, Iterable
+
+from dataclasses import dataclass
+
+from .Token import Token
+from ..guardrails.Guardrail import Guardrail
+from .NumToken import NumToken
+
+@dataclass
+class Snippet:
+    string: str
+    token_set_key: str
+    numbers: list[int] = dataclasses.field(default_factory=list)
+
+
+class TokenSet:
+    """A set of Tokens representing a combination of input types."""
+
+    def __init__(self, tokens: Sequence[Token]):
+        """Initializes a TokenSet instance."""
+        self.tokens: Sequence[Token] = tokens
+        self.is_user: bool = any(token.user for token in tokens)
+        self.required_numtoken_numbers: int = sum(
+            token.num for token in tokens if token.num == 1)  # Count of NumToken
+        self.required_numlist_numbers: int = sum(
+            token.num for token in tokens if token.num > 1)  # Count of NumListToken
+        self.key: str = ''.join(token.value for token in
+                                tokens)  # Note this key is based on the value of the tokens and not the keys of the tokens
+        self._guardrail: Guardrail | None = None
+
+    @property
+    def guardrail(self) -> Guardrail | None:
+        """Returns the guardrails for the TokenSet, if any."""
+        return self._guardrail
+
+    def set_guardrail(self, guardrail: Guardrail):
+        """Sets a guardrails for the TokenSet."""
+        if self.guardrail is not None:
+            warnings.warn("Overwriting existing guardrails for TokenSet.")
+        if not self.is_user:
+            raise ValueError("Guardrails can only be added to a user TokenSet.")
+        if not isinstance(guardrail, Guardrail):
+            raise TypeError("Guardrail must be an instance of the Guardrail class.")
+        self._guardrail = guardrail
+
+    def create_snippet(self, string: str,
+                       numbers: Iterable[int | float] | int | float | None = None, number_lists: Iterable[int | float | Iterable[int | float]] | None = None) -> Snippet:
+        """Create a snippet for the TokenSet"""
+        if numbers is None:
+            numbers = []
+        elif isinstance(numbers, int):
+            numbers = [numbers]
+        elif isinstance(numbers, Iterable):
+            numbers = list(numbers)
+        else:
+            raise TypeError("Numbers must be an int, an Iterable of ints, or None.")
+
+        if number_lists is None:
+            number_lists = []
+        elif isinstance(number_lists, Iterable):
+            number_lists = list(number_lists)
+        else:
+            raise TypeError("Number lists must be an Iterable of numbers or Iterable of Iterables or None.")
+
+        assert len(numbers) == self.required_numtoken_numbers, \
+            f"{self} requires {self.required_numtoken_numbers} numbers but {len(numbers)} were provided."
+        assert len(number_lists) == self.required_numlist_numbers, \
+            f"{self} requires {self.required_numlist_numbers} number lists but {len(number_lists or [])} were provided."
+
+        # Combine numbers and number_lists into single input for Snippet
+        numbers_index = 0
+        number_lists_index = 0
+        combined_numbers: list[int | float | Iterable[int | float]] = [] # Combined list of numbers and number lists
+        for index, token in enumerate(self.tokens):
+            if not isinstance(token, NumToken):
+                continue
+
+            if token.num == 1:
+                combined_numbers.append(numbers[numbers_index])
+                numbers_index += 1
+            elif token.num > 1:
+                combined_numbers.append(number_lists[number_lists_index])
+                number_lists_index += 1
+
+        return Snippet(string=string, numbers=combined_numbers, token_set_key=self.key)
+
+    def get_token_key_set(self) -> str:
+        """Returns a string representing the combined token keys of the individual Tokens in the TokenSet."""
+        token_key_set = ''
+        for token in self.tokens:
+            token_key_set += token.key
+        return token_key_set
+
+    def __repr__(self):
+        """String representation of the TokenSet."""
+        return f"TokenSet([{self.key}])"
+
+    def __iter__(self):
+        """Iterator over the tokens in the TokenSet."""
+        return iter(self.tokens)

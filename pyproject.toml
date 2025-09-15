@@ -3,13 +3,14 @@ requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
-exclude = ["assets"]
-include = ["mtp"]
+where = ["."]
+include = ["model_train_protocol*"]
+exclude = ["assets", "examples"]
 
 [project]
-name = "Model Train Protocol"
-version = "1.0.0"
-description = "Create a Model Train Protocol JSON file"
+name = "model-train-protocol"
+version = "0.1.0"
+description = "Standardized protocol to train models on Databiomes"
 requires-python = ">=3.9"
 readme = {file = "README.md", content-type = "text/markdown"}
 authors = [
@@ -20,3 +21,22 @@ classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Operating System :: OS Independent",
 ]
+dependencies = [
+    "emoji>=2.8.0",
+]
+dependencies = [
+    "emoji>=2.0.0",
+]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx>=8.0.0",
+    "sphinx-rtd-theme>=3.0.0",
+    "sphinx-autodoc-typehints>=1.24.0",
+]
+
+[project.urls]
+Homepage = "https://pypi.org/project/model-train-protocol/"
+Documentation = "https://model-train-protocol.readthedocs.io/"
+Repository = "https://github.com/databiomes/modeltrainprotocol"
+Issues = "https://github.com/databiomes/modeltrainprotocol/issues"
