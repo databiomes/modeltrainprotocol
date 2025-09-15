@@ -44,6 +44,9 @@ class Protocol:
 
         Asserts that all samples in the instruction match the defined sample line size.
         """
+        if instruction in self.instructions:
+            raise ValueError("Instruction already added to the protocol.")
+
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
             assert len(sample['strings']) == self.instruction_sample_lines, \
