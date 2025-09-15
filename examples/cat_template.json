@@ -1,7 +1,7 @@
 {
     "example_usage": {
         "valid_input": "🏁\n🪾🇨😁🗣\n<string>\n🪾🇨🐱🗣\n🏃\n\n🪾🇨😁🗣USER PROMPT\n<string>",
-        "valid_output": "<string>\n🫥\n🎬"
+        "valid_output": "<string>\n🔄\n🎬"
     },
     "all_combinations": {
         "model_input": {
@@ -21,11 +21,11 @@
         "model_output": {
             "model_response": "<string>",
             "model_results": {
-                "Disappear_": "🫥",
                 "Continue_": "🔄",
                 "Appear_": "👀",
+                "Answer_": "🔎",
                 "Leave_": "💥",
-                "Answer_": "🔎"
+                "Disappear_": "🫥"
             },
             "<EOS>": "🎬"
         }
