@@ -41,12 +41,17 @@ def validate_string_set(string_set: set[str]):
     :raises ValueError: If any string is a perfect substring of another (case insensitive).
     """
     # Sort the list by length, longest to shortest.
-    sorted_strings = sorted(list(string_set), key=len, reverse=True)
+    sorted_strings = sorted(list(string_set), key=len, reverse=False)
 
     # Iterate through the strings and check for perfect subsets.
     for i in range(len(sorted_strings)):
         for j in range(i + 1, len(sorted_strings)):
             # If a shorter string is a perfect substring of a longer one, return False.
-            if sorted_strings[j].lower() in sorted_strings[i].lower():
+
+            # Only keep alphanumeric characters for comparison
+            first_string: str = ''.join(c.lower() for c in sorted_strings[i] if c.isalnum())
+            second_string: str = ''.join(c.lower() for c in sorted_strings[j] if c.isalnum())
+
+            if first_string in second_string:
                 raise ValueError(
-                    f"String '{sorted_strings[j]}' is a perfect substring of '{sorted_strings[i]}' (case insensitive).")
+                    f"'{sorted_strings[i]}' is a substring of '{sorted_strings[j]}' (alphanumeric characters only, case insensitive).")
