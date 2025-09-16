@@ -92,7 +92,8 @@ class Instruction(ABC):
     def _create_base_sample(self, snippets: list[Snippet], value: int | float | None = None) -> dict:
         """Create a base sample dictionary without a prompt."""
         if value is not None:
-            assert type(value) == int or type(value) == float, "Value is not a number."
+            if not type(value) == int and not type(value) == float:
+                raise TypeError("Value must be an int or float.")
         else:
             value = "None"
 
