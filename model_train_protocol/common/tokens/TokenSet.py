@@ -64,10 +64,10 @@ class TokenSet:
         else:
             raise TypeError("Number lists must be an Iterable of numbers or Iterable of Iterables or None.")
 
-        assert len(numbers) == self.required_numtoken_numbers, \
-            f"{self} requires {self.required_numtoken_numbers} numbers but {len(numbers)} were provided."
-        assert len(number_lists) == self.required_numlist_numbers, \
-            f"{self} requires {self.required_numlist_numbers} number lists but {len(number_lists or [])} were provided."
+        if len(numbers) != self.required_numtoken_numbers:
+            raise ValueError(f"{self} requires {self.required_numtoken_numbers} numbers but {len(numbers)} were provided.")
+        if len(number_lists) != self.required_numlist_numbers:
+            raise ValueError(f"{self} requires {self.required_numlist_numbers} number lists but {len(number_lists or [])} were provided.")
 
         # Combine numbers and number_lists into single input for Snippet
         numbers_index = 0

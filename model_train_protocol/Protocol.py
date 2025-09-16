@@ -51,8 +51,10 @@ class Protocol:
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            assert len(sample['strings']) == self.context_lines, \
-                "The number of sample lines does not match the memory size."
+            if not len(sample['strings']) == self.context_lines:
+                raise ValueError(
+                    f"Instruction sample line count {len(sample['strings'])} does not match defined context_lines {self.context_lines}."
+                    )
 
         # Add all token combos as special tokens
         for token_set in instruction.get_token_sets():
