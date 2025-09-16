@@ -23,8 +23,9 @@ class Protocol:
         """
         self.name: str = name
         self.context_lines: int = context_lines  # Number of lines in instruction samples
-        assert self.context_lines >= 3, "A minimum of 3 sample lines is required for all instructions."
-
+        self.encrypt: bool = encrypt
+        if self.context_lines < 3:
+            raise ValueError("A minimum of 3 context lines is required for all instructions.")
         self.context: list[str] = []
         self.tokens: set[Token] = set()
         self.instructions: set[Instruction] = set()
