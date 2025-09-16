@@ -10,7 +10,6 @@ from .common.instructions import SimpleInstruction, UserInstruction
 from .common.guardrails import Guardrail
 from .Protocol import Protocol
 
-__version__ = "1.0.0"
 __all__ = [
     "Protocol",
     "Token", 
