@@ -16,10 +16,13 @@ class Instruction(ABC):
     Example:
         context = TokenSet(
         context = [
-                 ( Token("SentenceLength", num=True), Token("Greeting")),
-                 ( Token("CurtResponse")),
-                 ( Token("SentenceLength", num=True), Token("Goodbye")),
-
+                 [ Token("SentenceLength", num=True), Token("Greeting") ],
+                 [ Token("CurtResponse") ],
+                 [ Token("SentenceLength", num=True), Token("Goodbye") ],
+                 ]
+        response = TokenSet( Token("SentenceLength", num=True), Token("PoliteResponse") )
+        final = Token("End")
+        instruction = Instruction(context=context, response=response, final=final)
     """
 
     def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token):
