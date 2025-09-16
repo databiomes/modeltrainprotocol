@@ -55,7 +55,7 @@ class Protocol:
             if not len(sample['strings']) == self.context_lines:
                 raise ValueError(
                     f"Instruction sample line count {len(sample['strings'])} does not match defined context_lines {self.context_lines}."
-                    )
+                )
 
         # Add all token combos as special tokens
         for token_set in instruction.get_token_sets():
@@ -86,7 +86,11 @@ class Protocol:
         os.makedirs(path, exist_ok=True)
         filename = f"{path}\\{name}_model.json"
         print(f"Saving Model Train Protocol to {filename}...")
-        protocol_file: ProtocolFile = self._create_protocol_file()
+        self._prep_protocol()
+        protocol_file: ProtocolFile = ProtocolFile(
+            name=self.name, context=self.context, context_lines=self.context_lines,
+            tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
+        )
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(protocol_file.to_json(), file, indent=4, ensure_ascii=False)
 
@@ -131,7 +135,6 @@ class Protocol:
         else:
             # Use the value as the key if not encrypting. I.e. Token 'Continue_' has key 'Continue_'
             token.key = token.value
-
 
     def _add_token(self, token: Token):
         """
@@ -179,25 +182,6 @@ class Protocol:
             non_token: SpecialToken = SpecialToken(value="<NON>", key="🫙", special="none")
             self.special_tokens.add(non_token)
 
-    def _create_protocol_file(self) -> ProtocolFile:
-        """Creates a ProtocolFile for model training."""
-        self._prep_protocol()
-        protocol_file: ProtocolFile = ProtocolFile(
-            name=self.name,
-            context=self.context,
-            context_lines=self.context_lines
-        )
-        # Add regular tokens
-        protocol_file.add_tokens(self.tokens)
-
-        # Add special tokens
-        protocol_file.add_tokens(self.special_tokens)
-
-        # Add instructions
-        protocol_file.add_instructions(self.instructions)
-
-        return protocol_file
-
     def _prep_protocol(self):
         """
         Sets all elements in the protocol before serialization.
@@ -211,7 +195,6 @@ class Protocol:
         used_values: set[str] = {token.value for token in self.tokens}
         validate_string_set(used_values)
         validate_string_set(self.used_keys)
-
 
     def _get_random_key(self) -> str:
         """

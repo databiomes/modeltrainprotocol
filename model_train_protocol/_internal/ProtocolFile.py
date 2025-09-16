@@ -35,7 +35,8 @@ class ProtocolFile:
         judge: list = field(default_factory=list)
         ppo: list = field(default_factory=list)
 
-    def __init__(self, name: str, context: list[str], context_lines: int):
+    def __init__(self, name: str, context: list[str], context_lines: int, tokens: Collection[Token],
+                 special_tokens: Collection[Token], instructions: Collection[Instruction]):
         """Initializes the Template with a name and context."""
         self._name: str = name
         self._context: list[str] = context
@@ -47,6 +48,15 @@ class ProtocolFile:
         self._guardrails: dict[str, list[str] | str] = {'None': ''}
         self._numbers: dict[str, str] = {'None': ''}
         self._batches: ProtocolFile.Batches = ProtocolFile.Batches()
+
+        # Add regular tokens
+        self.add_tokens(tokens)
+
+        # Add special tokens
+        self.add_tokens(special_tokens)
+
+        # Add instructions
+        self.add_instructions(instructions)
 
     def add_tokens(self, tokens: Collection[Token]):
         """Adds tokens to the template."""
