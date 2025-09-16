@@ -1,15 +1,14 @@
-import hashlib
 import itertools
 import json
 import os
 import string
 
-from . import Token, TokenSet
+from . import Token
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.instructions.Instruction import Instruction
 from .common.tokens.SpecialToken import SpecialToken
-from .common.util import get_possible_emojis, get_extended_possible_emojis, hash_string
+from .common.util import get_possible_emojis, get_extended_possible_emojis, hash_string, validate_string_set
 
 
 class Protocol:
@@ -103,7 +102,7 @@ class Protocol:
         if path is None:
             path = os.getcwd()
 
-        self._set_protocol_elements()
+        self._prep_protocol()
         template_file: TemplateFile = TemplateFile(
             instructions=list(self.instructions),
             context_lines=self.context_lines
@@ -182,7 +181,7 @@ class Protocol:
 
     def _create_protocol_file(self) -> ProtocolFile:
         """Creates a ProtocolFile for model training."""
-        self._set_protocol_elements()
+        self._prep_protocol()
         protocol_file: ProtocolFile = ProtocolFile(
             name=self.name,
             context=self.context,
@@ -199,14 +198,20 @@ class Protocol:
 
         return protocol_file
 
-    def _set_protocol_elements(self):
+    def _prep_protocol(self):
         """
         Sets all elements in the protocol before serialization.
+
+        Setups up all necessary components in the protocol before saving or templating.
 
         This includes setting guardrails from their TokenSets and creating default special tokens.
         """
         self._set_guardrails()
         self._create_default_special_tokens()
+        used_values: set[str] = {token.value for token in self.tokens}
+        validate_string_set(used_values)
+        validate_string_set(self.used_keys)
+
 
     def _get_random_key(self) -> str:
         """
