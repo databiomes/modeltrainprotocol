@@ -97,6 +97,7 @@ Next Steps
 Now that you have the basics, explore the following sections:
 
 - :doc:`system_architecture` - Understand the overall system design
+- :doc:`context` - Learn how to add background information and domain knowledge
 - :doc:`tokens` - Learn about the fundamental building blocks
 - :doc:`tokensets` - Combine tokens into meaningful patterns
 - :doc:`instructions` - Create training patterns for your model

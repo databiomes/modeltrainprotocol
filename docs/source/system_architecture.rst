@@ -1,20 +1,30 @@
 System Architecture
 ====================
 
-The MTP system is built on a hierarchical structure of four main components that work together to create comprehensive training protocols for language models.
+The MTP system is built on a hierarchical structure of five main components that work together to create comprehensive training protocols for language models.
 
 Architecture Overview
 ---------------------
 
-The four core components are:
+The five core components are:
 
-1. **Tokens** - The fundamental building blocks
-2. **TokenSets** - Combinations of tokens that define input patterns
-3. **Instructions** - Training patterns that inform the model what to do
-4. **Guardrails** - Safety mechanisms for bad user prompts
+1. **Context** - Background information and domain knowledge for the model
+2. **Tokens** - The fundamental building blocks
+3. **TokenSets** - Combinations of tokens that define input patterns
+4. **Instructions** - Training patterns that inform the model what to do
+5. **Guardrails** - Safety mechanisms for bad user prompts
 
 Component Hierarchy
 -------------------
+
+Context
+~~~~~~~
+
+Context provides the foundational background information and domain knowledge that the model needs to understand the training data and respond appropriately.
+
+- Context establishes the domain, setting, and background information
+- It helps the model understand the context in which tokens, instructions, and responses should be interpreted
+- Context is added to the protocol using the ``add_context()`` method
 
 Tokens
 ~~~~~~
@@ -50,16 +60,18 @@ Guardrails provide safety mechanisms for user interactions by defining what cons
 Data Flow
 ---------
 
-1. **Token Creation**: Define the basic building blocks
-2. **TokenSet Assembly**: Combine tokens into meaningful patterns
-3. **Snippet Generation**: Create training examples from TokenSets
-4. **Instruction Definition**: Specify how the model should respond to TokenSet patterns
-5. **Guardrail Application**: Add safety mechanisms
+1. **Context Establishment**: Add background information and domain knowledge
+2. **Token Creation**: Define the basic building blocks
+3. **TokenSet Assembly**: Combine tokens into meaningful patterns
+4. **Snippet Generation**: Create training examples from TokenSets
+5. **Instruction Definition**: Specify how the model should respond to TokenSet patterns
+6. **Guardrail Application**: Add safety mechanisms
 
 Best Practices
 --------------
 
 - Start with a clear understanding of your model's purpose
+- Establish comprehensive context to provide domain knowledge and background information
 - Define tokens that represent the core concepts in your domain
 - Create TokenSets that capture meaningful input patterns
 - Use instructions to teach the model appropriate responses
