@@ -14,16 +14,16 @@ from .common.util import get_possible_emojis, get_extended_possible_emojis
 class Protocol:
     """Model Training Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, instruction_sample_lines: int):
+    def __init__(self, name: str, context_lines: int):
         """
         Initialize the Model Training Protocol (MTP)
 
         :param name: The name of the protocol.
-        :param instruction_sample_lines: The number of lines in each instruction sample. Must be at least 3.
+        :param context_lines: The number of lines in each instruction sample. Must be at least 3.
         """
         self.name: str = name
-        self.instruction_sample_lines: int = instruction_sample_lines  # Number of lines in instruction samples
-        assert self.instruction_sample_lines >= 3, "A minimum of 3 sample lines is required for all instructions."
+        self.context_lines: int = context_lines  # Number of lines in instruction samples
+        assert self.context_lines >= 3, "A minimum of 3 sample lines is required for all instructions."
 
         self.context: list[str] = []
         self.tokens: set[Token] = set()
@@ -50,7 +50,7 @@ class Protocol:
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            assert len(sample['strings']) == self.instruction_sample_lines, \
+            assert len(sample['strings']) == self.context_lines, \
                 "The number of sample lines does not match the memory size."
 
         # Add all token combos as special tokens
@@ -97,7 +97,7 @@ class Protocol:
         self._set_protocol_elements()
         template_file: TemplateFile = TemplateFile(
             instructions=list(self.instructions),
-            instruction_sample_lines=self.instruction_sample_lines
+            context_lines=self.context_lines
         )
 
         filename = f"{path}\\{self.name}_template.json"
@@ -158,7 +158,7 @@ class Protocol:
         protocol_file: ProtocolFile = ProtocolFile(
             name=self.name,
             context=self.context,
-            instruction_sample_lines=self.instruction_sample_lines
+            context_lines=self.context_lines
         )
         # Add regular tokens
         protocol_file.add_tokens(self.tokens)

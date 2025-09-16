@@ -26,9 +26,9 @@ class TemplateFile:
         bos: str = "🏁"
         run: str = "🏃"
 
-        def add_inputs_from_instructions(self, instructions: list[Instruction], instruction_sample_lines: int):
+        def add_inputs_from_instructions(self, instructions: list[Instruction], context_lines: int):
             """Adds input combinations from a list of instructions."""
-            unique_sets = {i: set() for i in range(instruction_sample_lines)}
+            unique_sets = {i: set() for i in range(context_lines)}
             for instruction in instructions:
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_user = [t.user for t in token_set]
@@ -80,17 +80,17 @@ class TemplateFile:
             model_json["<EOS>"] = self.eos
             return model_json
 
-    def __init__(self, instruction_sample_lines: int, instructions: list[Instruction], ):
+    def __init__(self, context_lines: int, instructions: list[Instruction], ):
         """Initializes the template"""
         self.model_input: TemplateFile.ModelInput = TemplateFile.ModelInput()
         self.model_output: TemplateFile.ModelOutput = TemplateFile.ModelOutput()
-        self.instruction_sample_lines: int = instruction_sample_lines
+        self.context_lines: int = context_lines
         self.instructions: list[Instruction] = instructions
         self._add_io_from_instructions()
 
     def _add_io_from_instructions(self):
         """Adds input and output sequences from the instructions."""
-        self.model_input.add_inputs_from_instructions(self.instructions, instruction_sample_lines=self.instruction_sample_lines)
+        self.model_input.add_inputs_from_instructions(self.instructions, context_lines=self.context_lines)
         self.model_output.add_results_from_instructions(self.instructions)
 
     def to_json(self) -> dict:
