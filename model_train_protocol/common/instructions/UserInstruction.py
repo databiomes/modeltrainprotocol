@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from .Instruction import Instruction
+from .. import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
@@ -15,7 +16,7 @@ class UserInstruction(Instruction):
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
 
-    def __init__(self, context: Sequence[TokenSet], user: TokenSet, final: Token):
+    def __init__(self, context: Sequence[TokenSet], user: TokenSet, final: Token=NON_TOKEN):
         """
         Initializes a UserInstruction instance.
 
