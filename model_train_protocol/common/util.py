@@ -26,8 +26,9 @@ def get_extended_possible_emojis() -> set[str]:
     return set(emoji.EMOJI_DATA.keys()) # Returns roughly 5000 emojis that can be multi-character
 
 
-def hash_string(key: str, ouput_char: int = 6) -> str:
+def hash_string(key: str, output_char: int = 6) -> str:
     """
     Hashes a string into.
     """
-    return hashlib.sha256(key.encode()).hexdigest()[:ouput_char]
+    return hashlib.sha256(key.encode()).hexdigest()[:output_char]
+
