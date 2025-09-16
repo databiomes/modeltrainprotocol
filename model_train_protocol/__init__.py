@@ -5,7 +5,7 @@ MTP is an open-source protocol for training custom Language Models on Databiomes
 MTP contains all the data that a model is trained on.
 """
 
-from .common.tokens import Token, UserToken, NumToken, NumListToken, SpecialToken, Snippet, TokenSet
+from .common.tokens import Token, UserToken, NumToken, NumListToken, Snippet, TokenSet
 from .common.instructions import SimpleInstruction, UserInstruction
 from .common.guardrails import Guardrail
 from .Protocol import Protocol
@@ -17,7 +17,6 @@ __all__ = [
     "UserToken",
     "NumToken",
     "NumListToken",
-    "SpecialToken",
     "TokenSet",
     "Snippet",
     "SimpleInstruction", 

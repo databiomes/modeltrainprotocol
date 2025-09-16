@@ -7,7 +7,7 @@ from . import Token
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.instructions.Instruction import Instruction
-from .common.tokens.DefaultSpecialToken import DefaultSpecialToken
+from .common.tokens.SpecialToken import SpecialToken
 from .common.util import get_possible_emojis, get_extended_possible_emojis
 
 
@@ -135,21 +135,21 @@ class Protocol:
 
     def _create_default_special_tokens(self):
         """Adds all special tokens to the protocol."""
-        bos_token: DefaultSpecialToken = DefaultSpecialToken(value="<BOS>", key="🏁", special="start")
-        eos_token: DefaultSpecialToken = DefaultSpecialToken(value="<EOS>", key="🎬", special="end")
-        run_token: DefaultSpecialToken = DefaultSpecialToken(value="<RUN>", key="🏃", special="infer")
-        pad_token: DefaultSpecialToken = DefaultSpecialToken(value="<PAD>", key="🗒", special="pad")
+        bos_token: SpecialToken = SpecialToken(value="<BOS>", key="🏁", special="start")
+        eos_token: SpecialToken = SpecialToken(value="<EOS>", key="🎬", special="end")
+        run_token: SpecialToken = SpecialToken(value="<RUN>", key="🏃", special="infer")
+        pad_token: SpecialToken = SpecialToken(value="<PAD>", key="🗒", special="pad")
         self.special_tokens.add(bos_token)
         self.special_tokens.add(eos_token)
         self.special_tokens.add(run_token)
         self.special_tokens.add(pad_token)
 
         if len(self.guardrails) > 0:
-            unk_token: DefaultSpecialToken = DefaultSpecialToken(value="<UNK>", key="🛑", special="unknown")
+            unk_token: SpecialToken = SpecialToken(value="<UNK>", key="🛑", special="unknown")
             self.special_tokens.add(unk_token)
 
         if self.none is None:
-            non_token: DefaultSpecialToken = DefaultSpecialToken(value="<NON>", key="🫙", special="none")
+            non_token: SpecialToken = SpecialToken(value="<NON>", key="🫙", special="none")
             self.special_tokens.add(non_token)
 
     def _create_protocol_file(self) -> ProtocolFile:
