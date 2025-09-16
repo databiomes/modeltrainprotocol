@@ -82,7 +82,7 @@ class Protocol:
         if name is None:
             name = self.name
         if path is None:
-            path = os.getcwd()\
+            path = os.getcwd()
         os.makedirs(path, exist_ok=True)
         filename = f"{path}\\{name}_model.json"
 
