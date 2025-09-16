@@ -23,7 +23,8 @@ class SimpleInstruction(Instruction):
         :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken.
         """
         super().__init__(context=context, response=response, final=final)
-        assert not self.contains_user(), "Instruction cannot contain a user token in response. Use UserInstruction for user inputs."
+        if not self.contains_user():
+            raise ValueError("SimpleInstruction requires that the response does not contain a user token. Use UserInstruction for user inputs.")
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
