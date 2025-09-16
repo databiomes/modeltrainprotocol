@@ -1,25 +1,27 @@
+import hashlib
 import itertools
 import json
 import os
 import string
 
-from . import Token
+from . import Token, TokenSet
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.instructions.Instruction import Instruction
 from .common.tokens.SpecialToken import SpecialToken
-from .common.util import get_possible_emojis, get_extended_possible_emojis
+from .common.util import get_possible_emojis, get_extended_possible_emojis, hash_string
 
 
 class Protocol:
     """Model Training Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, context_lines: int):
+    def __init__(self, name: str, context_lines: int, encrypt: bool = True):
         """
         Initialize the Model Training Protocol (MTP)
 
         :param name: The name of the protocol.
         :param context_lines: The number of lines in each instruction sample. Must be at least 3.
+        :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
         self.context_lines: int = context_lines  # Number of lines in instruction samples
@@ -58,6 +60,10 @@ class Protocol:
 
         # Add all token combos as special tokens
         for token_set in instruction.get_token_sets():
+
+            # Set keys based on encryption status
+            for token in token_set.tokens:
+                self._assign_key(token=token)
 
             # Add all tokens in the instruction to the protocol
             for token in token_set.tokens:
@@ -107,6 +113,25 @@ class Protocol:
         print(f"Saving Model Train Protocol Template to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(template_file.to_json(), file, indent=4, ensure_ascii=False)
+
+    def _assign_key(self, token: Token):
+        """
+        Assigns a key to a Token based on the protocol's encryption setting.
+
+        :param token: The Token to assign the key of.
+        """
+        # If the user has assigned a key, use this key
+        if token.key is not None:
+            return
+
+        if self.encrypt:
+            # Generate a random key for the token if encrypting and no key is set
+            key: str = self._get_random_key()
+            key: str = hash_string(key=key, ouput_char=6)
+            token.key = key
+        else:
+            # Use the value as the key if not encrypting. I.e. Token 'Continue_' has key 'Continue_'
+            token.key = token.value
 
 
     def _add_token(self, token: Token):
