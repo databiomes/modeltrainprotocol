@@ -25,7 +25,7 @@ class UserInstruction(Instruction):
         :param final: A Token instance designating the final action by the model.
         """
         super().__init__(context=context, response=user, final=final)
-        if self.contains_user():
+        if not self.contains_user():
             raise ValueError("UserInstruction requires a user token in the response. Use Instruction for non-user inputs.")
 
     # noinspection PyMethodOverriding
