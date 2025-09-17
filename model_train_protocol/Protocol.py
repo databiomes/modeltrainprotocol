@@ -60,10 +60,6 @@ class Protocol:
         # Add all token combos as special tokens
         for token_set in instruction.get_token_sets():
 
-            # Set keys based on encryption status
-            for token in token_set.tokens:
-                self._assign_key(token=token)
-
             # Add all tokens in the instruction to the protocol
             for token in token_set.tokens:
                 if token not in self.tokens:
@@ -149,8 +145,7 @@ class Protocol:
         if token.key in self.used_keys:
             raise ValueError(f"Token key '{token.key}' already used.")
 
-        if token.key is None:
-            token.key = self._get_random_key()
+        self._assign_key(token=token)
 
         self.tokens.add(token)
         self.used_keys.add(token.key)
