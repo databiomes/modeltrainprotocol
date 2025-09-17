@@ -1,14 +1,12 @@
-import itertools
 import json
 import os
-import string
 
 from . import Token
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.instructions.Instruction import Instruction
 from .common.tokens.SpecialToken import SpecialToken
-from .common.util import get_possible_emojis, get_extended_possible_emojis, hash_string, validate_string_set
+from .common.util import get_possible_emojis, hash_string, validate_string_set
 
 
 class Protocol:
@@ -175,10 +173,6 @@ class Protocol:
         if len(self.guardrails) > 0:
             unk_token: SpecialToken = SpecialToken(value="<UNK>", key="🛑", special="unknown")
             self.special_tokens.add(unk_token)
-
-        if self.none is None:
-            non_token: SpecialToken = SpecialToken(value="<NON>", key="🫙", special="none")
-            self.special_tokens.add(non_token)
 
     def _prep_protocol(self):
         """
