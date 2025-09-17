@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import Collection
 
 from model_train_protocol import NumToken
+from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
 from model_train_protocol.common.instructions import Instruction
 
 
@@ -23,8 +24,6 @@ class TemplateFile:
         """Represents inputs to the model."""
 
         inputs: list[list[str]] = list()
-        bos: str = "🏁"
-        run: str = "🏃"
 
         def add_inputs_from_instructions(self, instructions: list[Instruction], context_lines: int):
             """Adds input combinations from a list of instructions."""
@@ -47,17 +46,16 @@ class TemplateFile:
 
         def to_json(self):
             """Converts the model input to a JSON-serializable dictionary."""
-            model_json: dict[str, Collection[str] | str] = {"<BOS>": self.bos}
+            model_json: dict[str, Collection[str] | str] = {"<BOS>": BOS_TOKEN.key}
             # Add each input sequence with its index as the key
             for idx, input_seq in enumerate(self.inputs):
                 model_json[str(idx)] = input_seq
-            model_json["<RUN>"] = self.run
+            model_json["<RUN>"] = RUN_TOKEN.key
             return model_json
 
     class ModelOutput:
         model_results: dict[str, str] = dict()
         model_response: str = "<string>"
-        eos: str = "🎬"
 
         def __setitem__(self, key: str, value: str):
             self.model_results[key] = value
@@ -77,7 +75,7 @@ class TemplateFile:
             for key, value in self.model_results.items():
                 model_json["model_results"][key] = value
 
-            model_json["<EOS>"] = self.eos
+            model_json["<EOS>"] = EOS_TOKEN.key
             return model_json
 
     def __init__(self, context_lines: int, instructions: list[Instruction], ):
