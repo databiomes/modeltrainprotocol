@@ -131,9 +131,7 @@ class Protocol:
 
         if self.encrypt:
             # Generate a random key for the token if encrypting and no key is set
-            key: str = self._get_random_key()
-            key: str = hash_string(key=key, output_char=6)
-            token.key = key
+            token.key = hash_string(key=token.value, output_char=6)
         else:
             # Use the value as the key if not encrypting. I.e. Token 'Continue_' has key 'Continue_'
             token.key = token.value
