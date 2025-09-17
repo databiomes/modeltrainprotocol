@@ -150,6 +150,9 @@ class Protocol:
         self.tokens.add(token)
         self.used_keys.add(token.key)
 
+        if isinstance(token, SpecialToken):
+            self.special_tokens.add(token)
+
     def _set_guardrails(self):
         """Sets all guardrails from TokenSets into the protocol."""
         # Add all guardrails to the protocol
