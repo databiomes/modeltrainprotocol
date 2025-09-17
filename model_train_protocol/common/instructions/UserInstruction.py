@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from .Instruction import Instruction
-from .. import NON_TOKEN
+from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
