@@ -4,7 +4,7 @@ import model_train_protocol as mtp
 
 # This example protocol demonstrates a conversation between Alice and the Cheshire Cat from "Alice's Adventures in Wonderland".
 # The protocol includes multiple instructions for different interactions, such as continuing a conversation, making the cat
-# appear or disappear, answering questions, and leaving the conversation.
+# appear or vanish, answering questions, and leaving the conversation.
 # The context is set with excerpts from the book to provide a rich background for the interactions.
 # The model is set from the perspective of the Cat, responding to Alice's prompts.
 
@@ -34,7 +34,7 @@ token_tree: mtp.Token = mtp.Token("Tree",
 
 # Actions
 token_talk: mtp.Token = mtp.Token("Talk")
-token_disappear: mtp.Token = mtp.Token("Disappear")
+token_vanish: mtp.Token = mtp.Token("Vanish")
 
 # Game Functions
 token_continue: mtp.Token = mtp.Token("Continue")
@@ -46,7 +46,7 @@ token_leave: mtp.Token = mtp.Token("Leave")
 tree_english_alice_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_alice, token_talk))
 tree_english_cat_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_cat, token_talk))
 tree_english_disappear_cat_talk: mtp.TokenSet = mtp.TokenSet(
-    tokens=(token_tree, token_english, token_disappear, token_cat, token_talk))
+    tokens=(token_tree, token_english, token_vanish, token_cat, token_talk))
 
 # -------------------- Instruction Set: Continue (English) --------------------
 alice_cat_alice_instruction_continue: mtp.UserInstruction = mtp.UserInstruction(
@@ -151,7 +151,7 @@ protocol.add_instruction(alice_disappear_cat_alice_instruction_appear)
 alice_cat_alice_instruction_disappear: mtp.UserInstruction = mtp.UserInstruction(
     context=(tree_english_alice_talk, tree_english_cat_talk),
     user=tree_english_alice_talk,
-    final=token_disappear
+    final=token_vanish
 )
 
 # 1st Sample
