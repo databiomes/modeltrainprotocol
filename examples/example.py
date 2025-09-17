@@ -22,25 +22,25 @@ protocol.add_context("Down, down, down. There was nothing else to do, so Alice s
 protocol.add_context("Alice was not a bit hurt, and she jumped up on to her feet in a moment: she looked up, but it was all dark overhead; before her was another long passage, and the White Rabbit was still in sight, hurrying down it. There was not a moment to be lost: away went Alice like the wind, and was just in time to hear it say, as it turned a corner, “Oh my ears and whiskers, how late its getting!” She was close behind it when she turned the corner, but the Rabbit was no longer to be seen: she found herself in a long, low hall, which was lit up by a row of lamps hanging from the roof.")
 
 # Language
-token_english: mtp.Token = mtp.Token("English", key="🇨")  # Optional keys for template readability
+token_english: mtp.Token = mtp.Token("English")  # Optional keys for template readability
 
 # Characters
-token_alice: mtp.UserToken = mtp.UserToken("Alice", key="😁")
-token_cat: mtp.Token = mtp.Token("Cat", key="🐱")
+token_alice: mtp.UserToken = mtp.UserToken("Alice")
+token_cat: mtp.Token = mtp.Token("Cat")
 
 # Scenes
-token_tree: mtp.Token = mtp.Token("Tree", key="🪾",
+token_tree: mtp.Token = mtp.Token("Tree",
                           desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
 
 # Actions
-token_talk: mtp.Token = mtp.Token("Talk", key="🗣")
-token_disappear: mtp.Token = mtp.Token("Disappear", key="🫥")
+token_talk: mtp.Token = mtp.Token("Talk")
+token_disappear: mtp.Token = mtp.Token("Disappear")
 
 # Game Functions
-token_continue: mtp.Token = mtp.Token("Continue", key="🔄")
-token_appear: mtp.Token = mtp.Token("Appear", key="👀")
-token_answer: mtp.Token = mtp.Token("Answer", key="🔎")
-token_leave: mtp.Token = mtp.Token("Leave", key="💥")
+token_continue: mtp.Token = mtp.Token("Continue")
+token_appear: mtp.Token = mtp.Token("Appear")
+token_answer: mtp.Token = mtp.Token("Answer")
+token_leave: mtp.Token = mtp.Token("Leave")
 
 # Create the token sets for the instructions
 tree_english_alice_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_alice, token_talk))

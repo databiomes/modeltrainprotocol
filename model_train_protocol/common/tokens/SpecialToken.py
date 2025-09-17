@@ -13,6 +13,7 @@ class SpecialToken(Token):
 
         :param value: The string representing the token's value.
         :param key: The key associated with the token, a symbol, emoji, or short string.
+            Special Tokens should always have a key for readability.
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         :param special: Special attribute to identify special tokens.
         """
