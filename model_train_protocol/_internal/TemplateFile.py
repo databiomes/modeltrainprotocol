@@ -67,7 +67,7 @@ class TemplateFile:
 
         def to_json(self):
             """Converts the model output to a JSON-serializable dictionary."""
-            model_json: dict[str, dict[str] | str] = {
+            model_json: dict[str, str | dict] = {
                 "model_response": self.model_response,
                 "model_results": {}
             }
@@ -76,6 +76,10 @@ class TemplateFile:
                 model_json["model_results"][key] = value
 
             model_json["<EOS>"] = EOS_TOKEN.key
+
+            # Sort alphabetically for readability and consistency across runs
+            model_json["model_results"] = dict(sorted(model_json["model_results"].items()))
+
             return model_json
 
     def __init__(self, context_lines: int, instructions: list[Instruction], ):
