@@ -4,6 +4,7 @@ import os
 from . import Token
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
+from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN
 from .common.instructions.Instruction import Instruction
 from .common.tokens.SpecialToken import SpecialToken
 from .common.util import get_possible_emojis, hash_string, validate_string_set
@@ -55,13 +56,10 @@ class Protocol:
                     f"Instruction sample line count {len(sample['strings'])} does not match defined context_lines {self.context_lines}."
                 )
 
-        # Add all token combos as special tokens
-        for token_set in instruction.get_token_sets():
-
-            # Add all tokens in the instruction to the protocol
-            for token in token_set.tokens:
-                if token not in self.tokens:
-                    self._add_token(token)
+        # Add all tokens
+        for token in instruction.get_tokens():
+            if token not in self.tokens:
+                self._add_token(token)
 
         # Add the instruction to the protocol
         self.instructions.add(instruction)
@@ -159,20 +157,14 @@ class Protocol:
                 # instruction.response is the user TokenSet
                 self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
 
-    def _create_default_special_tokens(self):
+    def _add_default_special_tokens(self):
         """Adds all special tokens to the protocol."""
-        bos_token: SpecialToken = SpecialToken(value="<BOS>", key="🏁", special="start")
-        eos_token: SpecialToken = SpecialToken(value="<EOS>", key="🎬", special="end")
-        run_token: SpecialToken = SpecialToken(value="<RUN>", key="🏃", special="infer")
-        pad_token: SpecialToken = SpecialToken(value="<PAD>", key="🗒", special="pad")
-        self.special_tokens.add(bos_token)
-        self.special_tokens.add(eos_token)
-        self.special_tokens.add(run_token)
-        self.special_tokens.add(pad_token)
-
+        self.special_tokens.add(BOS_TOKEN)
+        self.special_tokens.add(EOS_TOKEN)
+        self.special_tokens.add(RUN_TOKEN)
+        self.special_tokens.add(PAD_TOKEN)
         if len(self.guardrails) > 0:
-            unk_token: SpecialToken = SpecialToken(value="<UNK>", key="🛑", special="unknown")
-            self.special_tokens.add(unk_token)
+            self.special_tokens.add(UNK_TOKEN)
 
     def _prep_protocol(self):
         """
@@ -183,7 +175,7 @@ class Protocol:
         This includes setting guardrails from their TokenSets and creating default special tokens.
         """
         self._set_guardrails()
-        self._create_default_special_tokens()
+        self._add_default_special_tokens()
         used_values: set[str] = {token.value for token in self.tokens}
         validate_string_set(used_values)
         validate_string_set(self.used_keys)

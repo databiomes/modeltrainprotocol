@@ -45,6 +45,14 @@ class Instruction(ABC):
         all_tokens.append(self.response)
         return all_tokens
 
+    def get_tokens(self) -> list[Token]:
+        """Returns all tokens in the instruction as a flat list."""
+        all_tokens: list[Token] = []
+        for token_set in self.get_token_sets():
+            all_tokens.extend(token_set.tokens)
+        all_tokens.append(self.final)
+        return all_tokens
+
     def contains_user(self) -> bool:
         """
         Returns True if the response contains a user token, else False
