@@ -20,3 +20,15 @@ class SpecialToken(Token):
         # Overwrite value to not have trailing underscore
         self.value: str = self.value[:-1]
         self.special: str = special
+
+    def validate_value(self):
+        """
+        Special Tokens are valid by default as they are created internally
+        """
+        pass
+
+    def validate_key(self):
+        """
+        Special Tokens are valid by default as they are created internally
+        """
+        pass
