@@ -18,6 +18,8 @@ class Token:
         self.user: bool = False
         self.num: int = 0
         self.special: str | None = None
+        self.validate_value()
+        self.validate_key()
 
     @property
     def key(self) -> str:
@@ -42,7 +44,7 @@ class Token:
         for c in self.key:
             if not (c == '_' or c.isalnum() or emoji.is_emoji(c)):
                 raise ValueError(
-                    f"Invalid character '{c}' found in key '{self.key}'. Only alphanumeric characters, underscores, and emojis are allowed.")
+                    f"Invalid character '{c}' found in key '{self.key}'. Only alphanumeric characters, underscores, and emojis recommended for general interchange by Unicode.org are allowed.")
 
     def validate_value(self):
         """
