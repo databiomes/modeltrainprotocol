@@ -49,8 +49,8 @@ def validate_string_set(string_set: set[str]):
             # If a shorter string is a perfect substring of a longer one, return False.
 
             # Only keep alphanumeric characters for comparison
-            first_string: str = ''.join(c.lower() for c in sorted_strings[i] if c.isalnum())
-            second_string: str = ''.join(c.lower() for c in sorted_strings[j] if c.isalnum())
+            first_string: str = ''.join(c.lower() for c in sorted_strings[i] if c.isalnum() or emoji.purely_emoji(c))
+            second_string: str = ''.join(c.lower() for c in sorted_strings[j] if c.isalnum() or emoji.purely_emoji(c))
 
             if first_string in second_string:
                 raise ValueError(
