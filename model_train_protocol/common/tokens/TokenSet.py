@@ -1,18 +1,20 @@
 import dataclasses
 import warnings
-from typing import Sequence, Iterable
+from typing import Sequence, Collection
 
 from dataclasses import dataclass
 
+from . import NumListToken
 from .Token import Token
 from ..guardrails.Guardrail import Guardrail
 from .NumToken import NumToken
+
 
 @dataclass
 class Snippet:
     string: str
     token_set_key: str
-    numbers: list[int] = dataclasses.field(default_factory=list)
+    numbers: Collection[int] = dataclasses.field(default_factory=list)
 
 
 class TokenSet:
@@ -24,8 +26,9 @@ class TokenSet:
         self.is_user: bool = any(token.user for token in tokens)
         self.required_numtoken_numbers: int = sum(
             token.num for token in tokens if token.num == 1)  # Count of NumToken
-        self.required_numlist_numbers: int = sum(
-            token.num for token in tokens if token.num > 1)  # Count of NumListToken
+        self.required_numlists: list[int] = [
+            token.num for token in tokens if isinstance(token, NumListToken)
+        ] # List of lengths for NumListToken
         self.key: str = ''.join(token.value for token in
                                 tokens)  # Note this key is based on the value of the tokens and not the keys of the tokens
         self._guardrail: Guardrail | None = None
@@ -46,33 +49,39 @@ class TokenSet:
         self._guardrail = guardrail
 
     def create_snippet(self, string: str,
-                       numbers: Iterable[int | float] | int | float | None = None, number_lists: Iterable[int | float | Iterable[int | float]] | None = None) -> Snippet:
+                       numbers: Collection[int | float] | int | float | None = None, number_lists: Collection[int | float | Collection[int | float]] | None = None) -> Snippet:
         """Create a snippet for the TokenSet"""
         if numbers is None:
             numbers = []
         elif isinstance(numbers, int):
             numbers = [numbers]
-        elif isinstance(numbers, Iterable):
+        elif isinstance(numbers, Collection):
             numbers = list(numbers)
         else:
-            raise TypeError("Numbers must be an int, an Iterable of ints, or None.")
+            raise TypeError("Numbers must be an int, an Collection of ints, or None.")
 
         if number_lists is None:
             number_lists = []
-        elif isinstance(number_lists, Iterable):
-            number_lists = list(number_lists)
+        # if number lists is a single list of numbers, wrap it in another list
+        elif isinstance(number_lists, Collection) and all(isinstance(nl, (float, int)) for nl in number_lists):
+            number_lists = [number_lists]
+        elif isinstance(number_lists, Collection) and all(isinstance(nl, Collection) for nl in number_lists):
+            pass
         else:
-            raise TypeError("Number lists must be an Iterable of numbers or Iterable of Iterables or None.")
+            raise TypeError("Number lists must be an Collection of numbers or Collection of Collections or None.")
 
         if len(numbers) != self.required_numtoken_numbers:
             raise ValueError(f"{self} requires {self.required_numtoken_numbers} numbers but {len(numbers)} were provided.")
-        if len(number_lists) != self.required_numlist_numbers:
-            raise ValueError(f"{self} requires {self.required_numlist_numbers} number lists but {len(number_lists or [])} were provided.")
+        if len(number_lists) != len(self.required_numlists):
+            raise ValueError(f"{self} requires {len(self.required_numlists)} number lists but {len(number_lists or [])} lists were provided.")
+        for (i, required_length) in enumerate(self.required_numlists):
+            if len(number_lists[i]) != required_length:
+                raise ValueError(f"Number list at index {i} must be of length {required_length} but is of length {len(number_lists[i])}.")
 
         # Combine numbers and number_lists into single input for Snippet
         numbers_index = 0
         number_lists_index = 0
-        combined_numbers: list[int | float | Iterable[int | float]] = [] # Combined list of numbers and number lists
+        combined_numbers: list[int | float | Collection[int | float]] = [] # Combined list of numbers and number lists
         for index, token in enumerate(self.tokens):
             if not isinstance(token, NumToken):
                 continue
