@@ -129,7 +129,7 @@ class TemplateFile:
                 user_input += token_strings + "\n"
                 user_input += "<string>\n" if idx != (len(user_instruction.get_token_sets()) - 1) else "USER PROMPT\n"
             user_input = BOS_TOKEN.key + "\n" + user_input + RUN_TOKEN.key + "\n"
-            examples["valid_user_instruction_input"] = user_input
+            examples["valid_user_input"] = user_input
 
         examples["valid_output"] = self._create_sample_model_output()
 
