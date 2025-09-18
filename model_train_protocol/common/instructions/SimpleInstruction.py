@@ -24,7 +24,7 @@ class SimpleInstruction(Instruction):
         """
         super().__init__(context=context, response=response, final=final)
         if self.contains_user():
-            raise ValueError("SimpleInstruction requires that the response does not contain a user token. Use UserInstruction for user inputs.")
+            raise ValueError("SimpleInstruction requires that the response does not contain a UserToken. Use UserInstruction for user inputs.")
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
