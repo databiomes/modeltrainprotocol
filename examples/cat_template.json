@@ -27,7 +27,7 @@
         }
     },
     "example_usage": {
-        "user_instruction_input": "<BOS>\n852964847a70ac50a4b6ecfb\n<string>\n852964847a7050f7ddb6ecfb\n<string>\n852964847a70ac50a4b6ecfb\nUSER PROMPT\n<RUN>\n",
-        "output": "<string>\n6c7865\n<EOS>"
+        "valid_user_input": "<BOS>\n852964847a70ac50a4b6ecfb\n<string>\n852964847a70fecd8550f7ddb6ecfb\n<string>\n852964847a70ac50a4b6ecfb\nUSER PROMPT\n<RUN>\n",
+        "valid_output": "<string>\n6c7865\n<EOS>"
     }
 }
