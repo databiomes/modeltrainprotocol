@@ -96,8 +96,8 @@ class TemplateFile:
         """Creates a sample model output string for example usages."""
         sample_output: str = ""
         sample_output += self.model_output.model_response + "\n"
-        first_output_key = next(iter(self.model_output.model_results))
-        sample_output += self.model_output.model_results[first_output_key] + "\n"
+        sorted_model_results: list[tuple[str, str]] = list(sorted(self.model_output.model_results.items()))
+        sample_output += sorted_model_results[0][1] + "\n"
         sample_output += EOS_TOKEN.key
         return sample_output
 
@@ -129,9 +129,9 @@ class TemplateFile:
                 user_input += token_strings + "\n"
                 user_input += "<string>\n" if idx != (len(user_instruction.get_token_sets()) - 1) else "USER PROMPT\n"
             user_input = BOS_TOKEN.key + "\n" + user_input + RUN_TOKEN.key + "\n"
-            examples["user_instruction_input"] = user_input
+            examples["valid_user_instruction_input"] = user_input
 
-        examples["output"] = self._create_sample_model_output()
+        examples["valid_output"] = self._create_sample_model_output()
 
         return examples
 
