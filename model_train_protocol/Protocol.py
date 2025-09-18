@@ -170,10 +170,15 @@ class Protocol:
         """
         Sets all elements in the protocol before serialization.
 
+        Raises errors if any validation checks fail.
+
         Setups up all necessary components in the protocol before saving or templating.
 
         This includes setting guardrails from their TokenSets and creating default special tokens.
         """
+        if len(self.instructions) == 0:
+            raise ValueError("No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
+
         self._set_guardrails()
         self._add_default_special_tokens()
         used_values: set[str] = {token.value for token in self.tokens}
