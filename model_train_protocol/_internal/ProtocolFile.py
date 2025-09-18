@@ -14,7 +14,7 @@ class ProtocolFile:
     class ProtocolInstruction:
         """Represents an instruction in the template."""
 
-        memory: int
+        context_lines: int
         sets: list = field(default_factory=list)
 
     @dataclass
@@ -44,7 +44,7 @@ class ProtocolFile:
         self._special_token_keys: set[str] = set()
         self._instruction_token_keys: set[str] = set()
         self._instruction: ProtocolFile.ProtocolInstruction = ProtocolFile.ProtocolInstruction(
-            memory=context_lines)
+            context_lines=context_lines)
         self._guardrails: dict[str, list[str] | str] = {'None': ''}
         self._numbers: dict[str, str] = {'None': ''}
         self._batches: ProtocolFile.Batches = ProtocolFile.Batches()
@@ -143,7 +143,7 @@ class ProtocolFile:
             "tokens": sorted(self._tokens),
             "special_tokens": self._get_special_token_keys(),
             "instruction": {
-                "memory": self._instruction.memory,
+                "memory": self._instruction.context_lines,
                 "sets": [vars(s) for s in self._instruction.sets],
             },
             "guardrails": self._guardrails,
