@@ -18,7 +18,7 @@ class Protocol:
         Initialize the Model Training Protocol (MTP)
 
         :param name: The name of the protocol.
-        :param context_lines: The number of lines in each instruction sample. Must be at least 3.
+        :param context_lines: The number of lines in each instruction sample. Must be at least 2.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
