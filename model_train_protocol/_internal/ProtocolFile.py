@@ -35,7 +35,8 @@ class ProtocolFile:
         judge: list = field(default_factory=list)
         ppo: list = field(default_factory=list)
 
-    def __init__(self, name: str, context: list[str], instruction_sample_lines: int):
+    def __init__(self, name: str, context: list[str], context_lines: int, tokens: Collection[Token],
+                 special_tokens: Collection[Token], instructions: Collection[Instruction]):
         """Initializes the Template with a name and context."""
         self._name: str = name
         self._context: list[str] = context
@@ -43,10 +44,19 @@ class ProtocolFile:
         self._special_token_keys: set[str] = set()
         self._instruction_token_keys: set[str] = set()
         self._instruction: ProtocolFile.ProtocolInstruction = ProtocolFile.ProtocolInstruction(
-            memory=instruction_sample_lines)
+            memory=context_lines)
         self._guardrails: dict[str, list[str] | str] = {'None': ''}
         self._numbers: dict[str, str] = {'None': ''}
         self._batches: ProtocolFile.Batches = ProtocolFile.Batches()
+
+        # Add regular tokens
+        self.add_tokens(tokens)
+
+        # Add special tokens
+        self.add_tokens(special_tokens)
+
+        # Add instructions
+        self.add_instructions(instructions)
 
     def add_tokens(self, tokens: Collection[Token]):
         """Adds tokens to the template."""
@@ -117,13 +127,21 @@ class ProtocolFile:
 
         return template
 
+    def _get_special_token_keys(self):
+        """
+        Returns a sorted list of tokens that should be under 'special_tokens' in the JSON.
+
+        :return: A sorted list of special token keys.
+        """
+        return sorted(self._special_token_keys | self._instruction_token_keys)
+
     def to_json(self):
         """Converts the template to a JSON-compatible dictionary."""
         json_dict = {
             "name": self._name,
             "context": self._context,
-            "tokens": self._tokens,
-            "special_tokens": list(self._special_token_keys | self._instruction_token_keys),
+            "tokens": sorted(self._tokens),
+            "special_tokens": self._get_special_token_keys(),
             "instruction": {
                 "memory": self._instruction.memory,
                 "sets": [vars(s) for s in self._instruction.sets],

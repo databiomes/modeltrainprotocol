@@ -45,6 +45,7 @@ make epub
   - `index.rst` - Main documentation index
   - `getting_started.rst` - Installation and quick start guide
   - `system_architecture.rst` - System overview and architecture
+  - `contexts.rst` - Context documentation'
   - `tokens.rst` - Token documentation
   - `tokensets.rst` - TokenSet documentation
   - `instructions.rst` - Instruction documentation

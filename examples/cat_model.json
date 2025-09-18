@@ -12,107 +12,37 @@
         "Down, down, down. There was nothing else to do, so Alice soon began talking again. “Dinahll miss me very much to-night, I should think!” (Dinah was the cat.) “I hope theyll remember her saucer of milk at tea-time. Dinah my dear! I wish you were down here with me! There are no mice in the air, Im afraid, but you might catch a bat, and thats very like a mouse, you know. But do cats eat bats, I wonder?” And here Alice began to get rather sleepy, and went on saying to herself, in a dreamy sort of way, “Do cats eat bats? Do cats eat bats?” and sometimes, “Do bats eat cats?” for, you see, as she couldnt answer either question, it didnt much matter which way she put it. She felt that she was dozing off, and had just begun to dream that she was walking hand in hand with Dinah, and saying to her very earnestly, “Now, Dinah, tell me the truth: did you ever eat a bat?” when suddenly, thump! thump! down she came upon a heap of sticks and dry leaves, and the fall was over.",
         "Alice was not a bit hurt, and she jumped up on to her feet in a moment: she looked up, but it was all dark overhead; before her was another long passage, and the White Rabbit was still in sight, hurrying down it. There was not a moment to be lost: away went Alice like the wind, and was just in time to hear it say, as it turned a corner, “Oh my ears and whiskers, how late its getting!” She was close behind it when she turned the corner, but the Rabbit was no longer to be seen: she found herself in a long, low hall, which was lit up by a row of lamps hanging from the roof."
     ],
-    "tokens": {
-        "Disappear_": {
-            "key": "🫥",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": null
-        },
-        "Alice_": {
-            "key": "😁",
-            "user": true,
-            "num": 0,
-            "desc": null,
-            "special": null
-        },
-        "Talk_": {
-            "key": "🗣",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": null
-        },
-        "Tree_": {
-            "key": "🪾",
-            "user": false,
-            "num": 0,
-            "desc": "Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.",
-            "special": null
-        },
-        "Cat_": {
-            "key": "🐱",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": null
-        },
-        "English_": {
-            "key": "🇨",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": null
-        },
-        "<RUN>": {
-            "key": "🏃",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": "infer"
-        },
-        "<UNK>": {
-            "key": "🛑",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": "unknown"
-        },
-        "<EOS>": {
-            "key": "🎬",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": "end"
-        },
-        "<BOS>": {
-            "key": "🏁",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": "start"
-        },
-        "<PAD>": {
-            "key": "🗒",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": "pad"
-        },
-        "<NON>": {
-            "key": "🫙",
-            "user": false,
-            "num": 0,
-            "desc": null,
-            "special": "none"
-        }
-    },
+    "tokens": [
+        "<BOS>",
+        "<EOS>",
+        "<PAD>",
+        "<RUN>",
+        "<UNK>",
+        "Alice_",
+        "Answer_",
+        "Appear_",
+        "Cat_",
+        "Continue_",
+        "English_",
+        "Leave_",
+        "Talk_",
+        "Tree_",
+        "Vanish_"
+    ],
     "special_tokens": [
-        "🏁",
-        "💥",
-        "🔎",
-        "🫙",
-        "🪾🇨😁🗣",
-        "🎬",
-        "🏃",
-        "🛑",
-        "🗒",
-        "🫥",
-        "🔄",
-        "🪾🇨🐱🗣",
-        "🪾🇨🫥🐱🗣",
-        "👀"
+        "0f915e",
+        "6c7865",
+        "7a560c",
+        "852964847a7050f7ddb6ecfb",
+        "852964847a70ac50a4b6ecfb",
+        "852964847a70fecd8550f7ddb6ecfb",
+        "<BOS>",
+        "<EOS>",
+        "<PAD>",
+        "<RUN>",
+        "<UNK>",
+        "c4bf26",
+        "fecd85"
     ],
     "instruction": {
         "memory": 3,
@@ -128,6 +58,7 @@
                     [
                         "Tree_",
                         "English_",
+                        "Vanish_",
                         "Cat_",
                         "Talk_"
                     ],
@@ -138,39 +69,39 @@
                         "Talk_"
                     ]
                 ],
-                "result": "Continue_",
+                "result": "Leave_",
                 "samples": [
                     {
                         "sample": [
-                            "I don’t much care where",
-                            "Then it doesnt matter which way you go.",
-                            "Oh sure, if you only walk long enough that is a way."
+                            "Do you ever stay in one place, or are you always drifting about?",
+                            "I stay wherever I please, which is nowhere for very long.",
+                            "Companionship is a heavy coat, and I prefer to travel light."
                         ],
-                        "prompt": "Can you tell me a way?",
+                        "prompt": "But I was hoping you might keep me company a bit longer.",
                         "number": null,
-                        "result": "Continue_",
+                        "result": "Leave_",
                         "value": "None"
                     },
                     {
                         "sample": [
-                            "But I don’t want to go among mad people",
-                            "Oh, you cant help that, were all mad here. Im mad. You are mad.",
-                            "You must be, or you would not have come here."
+                            "Why do you grin so when there’s nothing funny at all?",
+                            "Because grinning is my way of keeping secrets from slipping out.",
+                            "Then I shall go before you ask too much."
                         ],
-                        "prompt": "How do you know I am mad?",
+                        "prompt": "That seems rather suspicious",
                         "number": null,
-                        "result": "Continue_",
+                        "result": "Leave_",
                         "value": "None"
                     },
                     {
                         "sample": [
-                            "And how do you know that you’re mad?",
-                            "To begin with, a dogs not mad. You grant that?",
-                            "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
+                            "Could you tell me if I’m going the right way?",
+                            "Every way is right if you don’t know your destination.",
+                            "Then I’ve said enough."
                         ],
-                        "prompt": "I suppose so",
+                        "prompt": "But that doesn’t help me at all!",
                         "number": null,
-                        "result": "Continue_",
+                        "result": "Leave_",
                         "value": "None"
                     }
                 ],
@@ -246,7 +177,125 @@
                     [
                         "Tree_",
                         "English_",
-                        "Disappear_",
+                        "Cat_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ]
+                ],
+                "result": "Vanish_",
+                "samples": [
+                    {
+                        "sample": [
+                            "Why do you keep vanishing and reappearing so suddenly?",
+                            "Because it amuses me, and it keeps you wondering whether I’m truly here at all.",
+                            "Then I’ll do it twice as much, since nervousness is such a curious flavor."
+                        ],
+                        "prompt": "It makes me nervous, please stop.",
+                        "number": null,
+                        "result": "Vanish_",
+                        "value": "None"
+                    },
+                    {
+                        "sample": [
+                            "Everyone here seems so very mad—are you mad too?",
+                            "Of course I am, or else I wouldn’t be here among them.",
+                            "Because I purr when I’m pleased and grin when I’m angry, surely that’s not quite sane."
+                        ],
+                        "prompt": "But how do you know that you’re mad?",
+                        "number": null,
+                        "result": "Vanish_",
+                        "value": "None"
+                    },
+                    {
+                        "sample": [
+                            "Must you always speak in riddles? I only want a straight answer.",
+                            "But riddles are straighter than answers, if you know how to look at them.",
+                            "All the better, then—nonsense is safer than truth."
+                        ],
+                        "prompt": "That does not make sense at all.",
+                        "number": null,
+                        "result": "Vanish_",
+                        "value": "None"
+                    }
+                ],
+                "ppo": []
+            },
+            {
+                "set": [
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Cat_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ]
+                ],
+                "result": "Continue_",
+                "samples": [
+                    {
+                        "sample": [
+                            "I don’t much care where",
+                            "Then it doesnt matter which way you go.",
+                            "Oh sure, if you only walk long enough that is a way."
+                        ],
+                        "prompt": "Can you tell me a way?",
+                        "number": null,
+                        "result": "Continue_",
+                        "value": "None"
+                    },
+                    {
+                        "sample": [
+                            "But I don’t want to go among mad people",
+                            "Oh, you cant help that, were all mad here. Im mad. You are mad.",
+                            "You must be, or you would not have come here."
+                        ],
+                        "prompt": "How do you know I am mad?",
+                        "number": null,
+                        "result": "Continue_",
+                        "value": "None"
+                    },
+                    {
+                        "sample": [
+                            "And how do you know that you’re mad?",
+                            "To begin with, a dogs not mad. You grant that?",
+                            "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
+                        ],
+                        "prompt": "I suppose so",
+                        "number": null,
+                        "result": "Continue_",
+                        "value": "None"
+                    }
+                ],
+                "ppo": []
+            },
+            {
+                "set": [
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Vanish_",
                         "Cat_",
                         "Talk_"
                     ],
@@ -290,125 +339,6 @@
                         "prompt": "I suppose so",
                         "number": null,
                         "result": "Appear_",
-                        "value": "None"
-                    }
-                ],
-                "ppo": []
-            },
-            {
-                "set": [
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Disappear_",
-                        "Cat_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ]
-                ],
-                "result": "Leave_",
-                "samples": [
-                    {
-                        "sample": [
-                            "Do you ever stay in one place, or are you always drifting about?",
-                            "I stay wherever I please, which is nowhere for very long.",
-                            "Companionship is a heavy coat, and I prefer to travel light."
-                        ],
-                        "prompt": "But I was hoping you might keep me company a bit longer.",
-                        "number": null,
-                        "result": "Leave_",
-                        "value": "None"
-                    },
-                    {
-                        "sample": [
-                            "Why do you grin so when there’s nothing funny at all?",
-                            "Because grinning is my way of keeping secrets from slipping out.",
-                            "Then I shall go before you ask too much."
-                        ],
-                        "prompt": "That seems rather suspicious",
-                        "number": null,
-                        "result": "Leave_",
-                        "value": "None"
-                    },
-                    {
-                        "sample": [
-                            "Could you tell me if I’m going the right way?",
-                            "Every way is right if you don’t know your destination.",
-                            "Then I’ve said enough."
-                        ],
-                        "prompt": "But that doesn’t help me at all!",
-                        "number": null,
-                        "result": "Leave_",
-                        "value": "None"
-                    }
-                ],
-                "ppo": []
-            },
-            {
-                "set": [
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Cat_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ]
-                ],
-                "result": "Disappear_",
-                "samples": [
-                    {
-                        "sample": [
-                            "Why do you keep vanishing and reappearing so suddenly?",
-                            "Because it amuses me, and it keeps you wondering whether I’m truly here at all.",
-                            "Then I’ll do it twice as much, since nervousness is such a curious flavor."
-                        ],
-                        "prompt": "It makes me nervous, please stop.",
-                        "number": null,
-                        "result": "Disappear_",
-                        "value": "None"
-                    },
-                    {
-                        "sample": [
-                            "Everyone here seems so very mad—are you mad too?",
-                            "Of course I am, or else I wouldn’t be here among them.",
-                            "Because I purr when I’m pleased and grin when I’m angry, surely that’s not quite sane."
-                        ],
-                        "prompt": "But how do you know that you’re mad?",
-                        "number": null,
-                        "result": "Disappear_",
-                        "value": "None"
-                    },
-                    {
-                        "sample": [
-                            "Must you always speak in riddles? I only want a straight answer.",
-                            "But riddles are straighter than answers, if you know how to look at them.",
-                            "All the better, then—nonsense is safer than truth."
-                        ],
-                        "prompt": "That does not make sense at all.",
-                        "number": null,
-                        "result": "Disappear_",
                         "value": "None"
                     }
                 ],

@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from .Instruction import Instruction
+from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
@@ -13,10 +14,17 @@ class SimpleInstruction(Instruction):
     A minimum of 3 samples must be added to an Instruction.
     """
 
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token):
-        """Initializes an Instruction instance."""
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token=NON_TOKEN):
+        """
+        Initializes an Instruction instance.
+
+        :param context: List of tuples containing Token instances that define the input structure. This precedes the model's response.
+        :param response: A TokenSet instance that does not include any user tokens.
+        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken.
+        """
         super().__init__(context=context, response=response, final=final)
-        assert not self.contains_user(), "Instruction cannot contain a user token in response. Use UserInstruction for user inputs."
+        if self.contains_user():
+            raise ValueError("SimpleInstruction requires that the response does not contain a user token. Use UserInstruction for user inputs.")
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,

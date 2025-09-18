@@ -14,7 +14,7 @@ The main Protocol class for creating model training protocols.
 .. code-block:: python
 
    class Protocol:
-       def __init__(self, name: str, instruction_sample_lines: int):
+       def __init__(self, name: str, context_lines: int):
            """Initialize the Model Training Protocol (MTP)"""
            
        def add_context(self, context: str):

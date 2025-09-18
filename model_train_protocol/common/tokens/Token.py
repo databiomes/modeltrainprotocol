@@ -13,11 +13,24 @@ class Token:
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         self.value: str = value + "_"
-        self.key: str | None = key
+        self._key: str | None = key
         self.desc: str = desc
         self.user: bool = False
         self.num: int = 0
         self.special: str | None = None
+        self.validate_value()
+        self.validate_key()
+
+    @property
+    def key(self) -> str:
+        """Returns the key"""
+        return self._key
+
+    @key.setter
+    def key(self, new_key: str):
+        """Sets the key and validates it"""
+        self._key = new_key
+        self.validate_key()
 
     def validate_key(self):
         """
@@ -26,17 +39,23 @@ class Token:
         :return: True if all characters in the string are valid characters or emojis, False otherwise.
         """
         if self.key is None:
-            raise ValueError("Key is None, cannot validate.")
+            return
 
-        invalid_emojis = []
+        for c in self.key:
+            if not (c == '_' or c.isalnum() or emoji.is_emoji(c)):
+                raise ValueError(
+                    f"Invalid character '{c}' found in key '{self.key}'. Only alphanumeric characters, underscores, and emojis recommended for general interchange by Unicode.org are allowed.")
 
-        for char in self.key:
-            # Uses the emoji library to check if the character is a valid emoji recommended by Unicode
-            if emoji.emoji_count(char) >= 1 and not emoji.is_emoji(char):
-                invalid_emojis.append(char)
+    def validate_value(self):
+        """
+        Validates that all characters in the value are valid according to the emoji library.
 
-        if len(invalid_emojis) > 0:
-            raise ValueError(f"Invalid emojis found in key '{self.key}': {invalid_emojis}")
+        :return: True if all characters in the string are valid characters or emojis, False otherwise.
+        """
+        for c in self.value:
+            if not (c == '_' or c.isalnum() or emoji.is_emoji(c)):
+                raise ValueError(
+                    f"Invalid character '{c}' found in value '{self.value}'. Only alphanumeric characters, underscores, and emojis are allowed.")
 
     def __str__(self):
         """String representation of the token."""

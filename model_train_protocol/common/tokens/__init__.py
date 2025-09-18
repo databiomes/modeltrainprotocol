@@ -7,7 +7,7 @@ from .UserToken import UserToken
 from .NumToken import NumToken
 from .NumListToken import NumListToken
 from .SpecialToken import SpecialToken
-from .DefaultSpecialToken import DefaultSpecialToken
+from .SpecialToken import SpecialToken
 from .TokenSet import TokenSet, Snippet
 
 __all__ = [
@@ -16,7 +16,6 @@ __all__ = [
     "NumToken",
     "NumListToken",
     "SpecialToken",
-    "DefaultSpecialToken",
     "TokenSet",
     "Snippet"
 ]

@@ -4,11 +4,11 @@ import model_train_protocol as mtp
 
 # This example protocol demonstrates a conversation between Alice and the Cheshire Cat from "Alice's Adventures in Wonderland".
 # The protocol includes multiple instructions for different interactions, such as continuing a conversation, making the cat
-# appear or disappear, answering questions, and leaving the conversation.
+# appear or vanish, answering questions, and leaving the conversation.
 # The context is set with excerpts from the book to provide a rich background for the interactions.
 # The model is set from the perspective of the Cat, responding to Alice's prompts.
 
-protocol = mtp.Protocol(name="cat", instruction_sample_lines=3)
+protocol = mtp.Protocol(name="cat", context_lines=3, encrypt=True)
 
 protocol.add_context("ALICE was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, “and what is the use of a book,” thought Alice, “ without pictures or conversations?”")
 protocol.add_context("So she was considering in her own mind, as well as she could, for the hot day made her feel very sleepy and stupid, whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a white rabbit with pink eyes ran close by her.")
@@ -22,31 +22,31 @@ protocol.add_context("Down, down, down. There was nothing else to do, so Alice s
 protocol.add_context("Alice was not a bit hurt, and she jumped up on to her feet in a moment: she looked up, but it was all dark overhead; before her was another long passage, and the White Rabbit was still in sight, hurrying down it. There was not a moment to be lost: away went Alice like the wind, and was just in time to hear it say, as it turned a corner, “Oh my ears and whiskers, how late its getting!” She was close behind it when she turned the corner, but the Rabbit was no longer to be seen: she found herself in a long, low hall, which was lit up by a row of lamps hanging from the roof.")
 
 # Language
-token_english: mtp.Token = mtp.Token("English", key="🇨")  # Optional keys for template readability
+token_english: mtp.Token = mtp.Token("English")
 
 # Characters
-token_alice: mtp.UserToken = mtp.UserToken("Alice", key="😁")
-token_cat: mtp.Token = mtp.Token("Cat", key="🐱")
+token_alice: mtp.UserToken = mtp.UserToken("Alice")
+token_cat: mtp.Token = mtp.Token("Cat")
 
 # Scenes
-token_tree: mtp.Token = mtp.Token("Tree", key="🪾",
+token_tree: mtp.Token = mtp.Token("Tree",
                           desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
 
 # Actions
-token_talk: mtp.Token = mtp.Token("Talk", key="🗣")
-token_disappear: mtp.Token = mtp.Token("Disappear", key="🫥")
+token_talk: mtp.Token = mtp.Token("Talk")
+token_vanish: mtp.Token = mtp.Token("Vanish")
 
 # Game Functions
-token_continue: mtp.Token = mtp.Token("Continue", key="🔄")
-token_appear: mtp.Token = mtp.Token("Appear", key="👀")
-token_answer: mtp.Token = mtp.Token("Answer", key="🔎")
-token_leave: mtp.Token = mtp.Token("Leave", key="💥")
+token_continue: mtp.Token = mtp.Token("Continue")
+token_appear: mtp.Token = mtp.Token("Appear")
+token_answer: mtp.Token = mtp.Token("Answer")
+token_leave: mtp.Token = mtp.Token("Leave")
 
 # Create the token sets for the instructions
 tree_english_alice_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_alice, token_talk))
 tree_english_cat_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_cat, token_talk))
 tree_english_disappear_cat_talk: mtp.TokenSet = mtp.TokenSet(
-    tokens=(token_tree, token_english, token_disappear, token_cat, token_talk))
+    tokens=(token_tree, token_english, token_vanish, token_cat, token_talk))
 
 # -------------------- Instruction Set: Continue (English) --------------------
 alice_cat_alice_instruction_continue: mtp.UserInstruction = mtp.UserInstruction(
@@ -151,7 +151,7 @@ protocol.add_instruction(alice_disappear_cat_alice_instruction_appear)
 alice_cat_alice_instruction_disappear: mtp.UserInstruction = mtp.UserInstruction(
     context=(tree_english_alice_talk, tree_english_cat_talk),
     user=tree_english_alice_talk,
-    final=token_disappear
+    final=token_vanish
 )
 
 # 1st Sample

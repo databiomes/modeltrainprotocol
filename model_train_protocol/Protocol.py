@@ -1,30 +1,31 @@
-import itertools
 import json
 import os
-import string
 
 from . import Token
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
+from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN
 from .common.instructions.Instruction import Instruction
-from .common.tokens.DefaultSpecialToken import DefaultSpecialToken
-from .common.util import get_possible_emojis, get_extended_possible_emojis
+from .common.tokens.SpecialToken import SpecialToken
+from .common.util import get_possible_emojis, hash_string, validate_string_set
 
 
 class Protocol:
     """Model Training Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, instruction_sample_lines: int):
+    def __init__(self, name: str, context_lines: int, encrypt: bool = True):
         """
         Initialize the Model Training Protocol (MTP)
 
         :param name: The name of the protocol.
-        :param instruction_sample_lines: The number of lines in each instruction sample. Must be at least 3.
+        :param context_lines: The number of lines in each instruction sample. Must be at least 3.
+        :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
-        self.instruction_sample_lines: int = instruction_sample_lines  # Number of lines in instruction samples
-        assert self.instruction_sample_lines >= 3, "A minimum of 3 sample lines is required for all instructions."
-
+        self.context_lines: int = context_lines  # Number of lines in instruction samples
+        self.encrypt: bool = encrypt
+        if self.context_lines < 3:
+            raise ValueError("A minimum of 3 context lines is required for all instructions.")
         self.context: list[str] = []
         self.tokens: set[Token] = set()
         self.instructions: set[Instruction] = set()
@@ -50,16 +51,15 @@ class Protocol:
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            assert len(sample['strings']) == self.instruction_sample_lines, \
-                "The number of sample lines does not match the memory size."
+            if not len(sample['strings']) == self.context_lines:
+                raise ValueError(
+                    f"Instruction sample line count {len(sample['strings'])} does not match defined context_lines {self.context_lines}."
+                )
 
-        # Add all token combos as special tokens
-        for token_set in instruction.get_token_sets():
-
-            # Add all tokens in the instruction to the protocol
-            for token in token_set.tokens:
-                if token not in self.tokens:
-                    self._add_token(token)
+        # Add all tokens
+        for token in instruction.get_tokens():
+            if token not in self.tokens:
+                self._add_token(token)
 
         # Add the instruction to the protocol
         self.instructions.add(instruction)
@@ -77,8 +77,14 @@ class Protocol:
             path = os.getcwd()
         os.makedirs(path, exist_ok=True)
         filename = f"{path}\\{name}_model.json"
+
+        self._prep_protocol()
+        protocol_file: ProtocolFile = ProtocolFile(
+            name=self.name, context=self.context, context_lines=self.context_lines,
+            tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
+        )
+
         print(f"Saving Model Train Protocol to {filename}...")
-        protocol_file: ProtocolFile = self._create_protocol_file()
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(protocol_file.to_json(), file, indent=4, ensure_ascii=False)
 
@@ -93,18 +99,34 @@ class Protocol:
         """
         if path is None:
             path = os.getcwd()
+        filename = f"{path}\\{self.name}_template.json"
 
-        self._set_protocol_elements()
+        self._prep_protocol()
         template_file: TemplateFile = TemplateFile(
             instructions=list(self.instructions),
-            instruction_sample_lines=self.instruction_sample_lines
+            context_lines=self.context_lines
         )
 
-        filename = f"{path}\\{self.name}_template.json"
         print(f"Saving Model Train Protocol Template to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(template_file.to_json(), file, indent=4, ensure_ascii=False)
 
+    def _assign_key(self, token: Token):
+        """
+        Assigns a key to a Token based on the protocol's encryption setting.
+
+        :param token: The Token to assign the key of.
+        """
+        # If the user has assigned a key, use this key
+        if token.key is not None:
+            return
+
+        if self.encrypt:
+            # Generate a random key for the token if encrypting and no key is set
+            token.key = hash_string(key=token.value, output_char=6)
+        else:
+            # Use the value as the key if not encrypting. I.e. Token 'Continue_' has key 'Continue_'
+            token.key = token.value
 
     def _add_token(self, token: Token):
         """
@@ -119,11 +141,13 @@ class Protocol:
         if token.key in self.used_keys:
             raise ValueError(f"Token key '{token.key}' already used.")
 
-        if token.key is None:
-            token.key = self._get_random_key()
+        self._assign_key(token=token)
 
         self.tokens.add(token)
         self.used_keys.add(token.key)
+
+        if isinstance(token, SpecialToken):
+            self.special_tokens.add(token)
 
     def _set_guardrails(self):
         """Sets all guardrails from TokenSets into the protocol."""
@@ -133,90 +157,25 @@ class Protocol:
                 # instruction.response is the user TokenSet
                 self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
 
-    def _create_default_special_tokens(self):
+    def _add_default_special_tokens(self):
         """Adds all special tokens to the protocol."""
-        bos_token: DefaultSpecialToken = DefaultSpecialToken(value="<BOS>", key="🏁", special="start")
-        eos_token: DefaultSpecialToken = DefaultSpecialToken(value="<EOS>", key="🎬", special="end")
-        run_token: DefaultSpecialToken = DefaultSpecialToken(value="<RUN>", key="🏃", special="infer")
-        pad_token: DefaultSpecialToken = DefaultSpecialToken(value="<PAD>", key="🗒", special="pad")
-        self.special_tokens.add(bos_token)
-        self.special_tokens.add(eos_token)
-        self.special_tokens.add(run_token)
-        self.special_tokens.add(pad_token)
-
+        self.special_tokens.add(BOS_TOKEN)
+        self.special_tokens.add(EOS_TOKEN)
+        self.special_tokens.add(RUN_TOKEN)
+        self.special_tokens.add(PAD_TOKEN)
         if len(self.guardrails) > 0:
-            unk_token: DefaultSpecialToken = DefaultSpecialToken(value="<UNK>", key="🛑", special="unknown")
-            self.special_tokens.add(unk_token)
+            self.special_tokens.add(UNK_TOKEN)
 
-        if self.none is None:
-            non_token: DefaultSpecialToken = DefaultSpecialToken(value="<NON>", key="🫙", special="none")
-            self.special_tokens.add(non_token)
-
-    def _create_protocol_file(self) -> ProtocolFile:
-        """Creates a ProtocolFile for model training."""
-        self._set_protocol_elements()
-        protocol_file: ProtocolFile = ProtocolFile(
-            name=self.name,
-            context=self.context,
-            instruction_sample_lines=self.instruction_sample_lines
-        )
-        # Add regular tokens
-        protocol_file.add_tokens(self.tokens)
-
-        # Add special tokens
-        protocol_file.add_tokens(self.special_tokens)
-
-        # Add instructions
-        protocol_file.add_instructions(self.instructions)
-
-        return protocol_file
-
-    def _set_protocol_elements(self):
+    def _prep_protocol(self):
         """
         Sets all elements in the protocol before serialization.
+
+        Setups up all necessary components in the protocol before saving or templating.
 
         This includes setting guardrails from their TokenSets and creating default special tokens.
         """
         self._set_guardrails()
-        self._create_default_special_tokens()
-
-    def _get_random_key(self) -> str:
-        """
-        Generates a random key that is not already used in the protocol.
-
-        Prioritizes single-character emojis, then expands to multi-character emojis,
-        and finally uses alphanumeric characters if all emojis are exhausted.
-
-        :return: A unique key as a string.
-        """
-        available_keys: set[str] = self.possible_emoji_keys - self.used_keys
-
-        if len(available_keys) == 0:
-            self.possible_emoji_keys = get_extended_possible_emojis()
-            available_keys: set = self.possible_emoji_keys - self.used_keys
-
-            if len(available_keys) == 0:
-                # If no available emoji keys, begin assigning alphanumeric keys
-                alphanumeric_chars: str = string.ascii_letters + string.digits
-
-                # Calculate how many alphanumeric keys have already been used
-                already_used_alphanumeric: int = len(self.used_keys) - len(self.possible_emoji_keys)
-
-                # Progressively generate combinations, skipping the first 'already_used_alphanumeric' keys
-                key_generator = itertools.islice(
-                    itertools.chain.from_iterable(
-                        itertools.product(alphanumeric_chars, repeat=length)
-                        for length in itertools.count(1)
-                    ),
-                    already_used_alphanumeric,  # Skip this many keys
-                    None  # No upper limit
-                )
-
-                # Find the first unused key
-                for combo in key_generator:
-                    key: str = ''.join(combo)
-                    if key not in self.used_keys:  # Failsafe, will be True unless user has manually added the specific key
-                        return key
-
-        key: str = available_keys.pop()
-        return key
+        self._add_default_special_tokens()
+        used_values: set[str] = {token.value for token in self.tokens}
+        validate_string_set(used_values)
+        validate_string_set(self.used_keys)

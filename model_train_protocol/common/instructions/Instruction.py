@@ -16,10 +16,13 @@ class Instruction(ABC):
     Example:
         context = TokenSet(
         context = [
-                 ( Token("SentenceLength", num=True), Token("Greeting")),
-                 ( Token("CurtResponse")),
-                 ( Token("SentenceLength", num=True), Token("Goodbye")),
-
+                 [ Token("SentenceLength", num=True), Token("Greeting") ],
+                 [ Token("CurtResponse") ],
+                 [ Token("SentenceLength", num=True), Token("Goodbye") ],
+                 ]
+        response = TokenSet( Token("SentenceLength", num=True), Token("PoliteResponse") )
+        final = Token("End")
+        instruction = Instruction(context=context, response=response, final=final)
     """
 
     def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token):
@@ -40,6 +43,14 @@ class Instruction(ABC):
         for token_set in self.context:
             all_tokens.append(token_set)
         all_tokens.append(self.response)
+        return all_tokens
+
+    def get_tokens(self) -> list[Token]:
+        """Returns all tokens in the instruction as a flat list."""
+        all_tokens: list[Token] = []
+        for token_set in self.get_token_sets():
+            all_tokens.extend(token_set.tokens)
+        all_tokens.append(self.final)
         return all_tokens
 
     def contains_user(self) -> bool:
@@ -89,7 +100,8 @@ class Instruction(ABC):
     def _create_base_sample(self, snippets: list[Snippet], value: int | float | None = None) -> dict:
         """Create a base sample dictionary without a prompt."""
         if value is not None:
-            assert type(value) == int or type(value) == float, "Value is not a number."
+            if not type(value) == int and not type(value) == float:
+                raise TypeError("Value must be an int or float.")
         else:
             value = "None"
 

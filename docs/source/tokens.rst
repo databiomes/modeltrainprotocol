@@ -126,9 +126,10 @@ NumListTokens must specify min_value, max_value, and length. Length is the expec
 Token Validation
 ----------------
 
-The MTP system automatically validates tokens to ensure:
+The MTP system validates tokens to ensure:
 
 - Token values are unique within the protocol
+- No full token value is used as as subset of another token value (e.g., "Damage" and "DamageBoost" cannot both exist)
 - Token keys (emojis) are unique within the protocol
 - NumTokens have associated number ranges defined by min_value and max_value
 - NumListTokens have associated number ranges and a fixed length defined by min_value, max_value, and length
@@ -168,3 +169,9 @@ Emotion Tokens
    sad = mtp.Token("Sad", key="😢")
    angry = mtp.Token("Angry", key="😠")
    surprised = mtp.Token("Surprised", key="😲")
+
+Best Practices
+--------------
+- Use descriptive names and keys for tokens to enhance clarity.
+- Ensure token uniqueness to avoid conflicts. Avoid overlapping names like "Run" and "Running"
+- Use descriptions for complex tokens to provide context.

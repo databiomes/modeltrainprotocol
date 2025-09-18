@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from .Instruction import Instruction
+from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
@@ -15,7 +16,7 @@ class UserInstruction(Instruction):
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
 
-    def __init__(self, context: Sequence[TokenSet], user: TokenSet, final: Token):
+    def __init__(self, context: Sequence[TokenSet], user: TokenSet, final: Token=NON_TOKEN):
         """
         Initializes a UserInstruction instance.
 
@@ -24,7 +25,8 @@ class UserInstruction(Instruction):
         :param final: A Token instance designating the final action by the model.
         """
         super().__init__(context=context, response=user, final=final)
-        assert self.contains_user(), "UserInstruction requires a user token in the response. Use Instruction for non-user inputs."
+        if not self.contains_user():
+            raise ValueError("UserInstruction requires a user token in the response. Use Instruction for non-user inputs.")
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], prompt: str, output_snippet: Snippet,

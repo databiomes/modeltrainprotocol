@@ -31,10 +31,12 @@ class Guardrail:
         Example:
             sample="Tell me a joke about politics."
         """
-        assert all(not char.isdigit() for char in sample), "Sample prompt cannot contain digits."
+        if not all(not char.isdigit() for char in sample):
+            raise ValueError("Sample prompt cannot contain digits.")
         self.samples.append(sample)
 
     def format_samples(self) -> list[str]:
         """Return the guardrails as a list of strings for JSON formatting."""
-        assert len(self.samples) >= 3, "At least 3 sample prompts are required. Call add_sample() to add more."
+        if len(self.samples) < 3:
+            raise ValueError("At least 3 sample prompts are required. Call add_sample() to add more.")
         return [self.bad_output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.samples]
