@@ -13,12 +13,12 @@ formats:
   - htmlzip
   - pdf
 
-# Python dependencies and installation
-python:
-  install:
-    # - requirements: docs/requirements.txt
-    - method: pip
-      path: .
+# # Python dependencies and installation
+# python:
+#   install:
+#     # - requirements: docs/requirements.txt
+#     - method: pip
+#       path: .
 
 # Build settings
 build:
