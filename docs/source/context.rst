@@ -1,7 +1,7 @@
-Adding Context to Your Model
+Context: Domain Knowledge
 ============================
 
-Context is the foundational layer of the Model Training Protocol (MTP) system. It provides the background information and domain knowledge that helps the model understand the training data and respond appropriately in the intended context.
+Context is a foundational layer of the Model Training Protocol (MTP) system. It provides the background information and domain knowledge that helps the model understand the training data and respond appropriately in the intended context.
 
 What is Context?
 ----------------
