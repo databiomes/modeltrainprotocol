@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from .Instruction import Instruction
+from .Instruction import Instruction, Sample
 from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
@@ -14,7 +14,7 @@ class SimpleInstruction(Instruction):
     A minimum of 3 samples must be added to an Instruction.
     """
 
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token=NON_TOKEN):
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token = NON_TOKEN):
         """
         Initializes an Instruction instance.
 
@@ -24,7 +24,8 @@ class SimpleInstruction(Instruction):
         """
         super().__init__(context=context, response=response, final=final)
         if self.contains_user():
-            raise ValueError("SimpleInstruction requires that the response does not contain a UserToken. Use UserInstruction for user inputs.")
+            raise ValueError(
+                "SimpleInstruction requires that the response does not contain a UserToken. Use UserInstruction for user inputs.")
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
@@ -40,6 +41,6 @@ class SimpleInstruction(Instruction):
         self._assert_context_snippet_count(context_snippets=context_snippets)
         self._validate_snippets_match(context_snippets=context_snippets, output_snippet=output_snippet)
 
-        all_snippets: list[Snippet] = context_snippets + [output_snippet]
-        sample: dict = self._create_base_sample(snippets=all_snippets, value=value)
+        sample: Sample = self._create_sample(context_snippets=context_snippets, output_snippet=output_snippet,
+                                             value=value)
         self.samples.append(sample)

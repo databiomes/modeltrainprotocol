@@ -51,9 +51,10 @@ class Protocol:
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            if not len(sample['strings']) - 1 == self.context_lines:
+            if not len(sample.context) == self.context_lines:
                 raise ValueError(
-                    f"Instruction sample line count {len(sample['strings'])} does not match defined context_lines {self.context_lines}."
+                    f"Sample context lines ({len(sample.context)}) does not match defined context_lines count ({self.context_lines})"
+                    f"\n{sample}."
                 )
 
         # Add all tokens
