@@ -23,7 +23,7 @@ class TemplateFile:
 
         def add_inputs_from_instructions(self, instructions: list[Instruction], context_lines: int):
             """Adds input combinations from a list of instructions."""
-            unique_sets = {i: set() for i in range(context_lines)}
+            unique_sets = {i: set() for i in range(context_lines + 1)}
             for instruction in instructions:
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_user = [t.user for t in token_set]

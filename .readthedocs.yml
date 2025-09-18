@@ -13,10 +13,8 @@ formats:
   - htmlzip
   - pdf
 
-# Optional but recommended. If you use Sphinx, add the RTD theme
-# as a dependency. It will not be installed automatically.
+# Python dependencies and installation
 python:
-  version: 3.9
   install:
     - requirements: docs/requirements.txt
     - method: pip
@@ -24,6 +22,6 @@ python:
 
 # Build settings
 build:
-  os: "ubuntu-22.04"
+  os: "ubuntu-24.04"  # Updated to latest LTS
   tools:
     python: "3.9"

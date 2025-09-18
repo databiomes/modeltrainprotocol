@@ -24,8 +24,8 @@ class Protocol:
         self.name: str = name
         self.context_lines: int = context_lines  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
-        if self.context_lines < 3:
-            raise ValueError("A minimum of 3 context lines is required for all instructions.")
+        if self.context_lines < 2:
+            raise ValueError("A minimum of 2 context lines is required for all instructions.")
         self.context: list[str] = []
         self.tokens: set[Token] = set()
         self.instructions: set[Instruction] = set()
@@ -51,9 +51,10 @@ class Protocol:
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            if not len(sample['strings']) == self.context_lines:
+            if not len(sample.context) == self.context_lines:
                 raise ValueError(
-                    f"Instruction sample line count {len(sample['strings'])} does not match defined context_lines {self.context_lines}."
+                    f"Sample context lines ({len(sample.context)}) does not match defined context_lines count ({self.context_lines})"
+                    f"\n{sample}."
                 )
 
         # Add all tokens
@@ -170,10 +171,15 @@ class Protocol:
         """
         Sets all elements in the protocol before serialization.
 
+        Raises errors if any validation checks fail.
+
         Setups up all necessary components in the protocol before saving or templating.
 
         This includes setting guardrails from their TokenSets and creating default special tokens.
         """
+        if len(self.instructions) == 0:
+            raise ValueError("No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
+
         self._set_guardrails()
         self._add_default_special_tokens()
         used_values: set[str] = {token.value for token in self.tokens}

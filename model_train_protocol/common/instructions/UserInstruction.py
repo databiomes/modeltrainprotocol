@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from .Instruction import Instruction
+from .Instruction import Instruction, Sample
 from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
@@ -43,7 +43,30 @@ class UserInstruction(Instruction):
         self._assert_context_snippet_count(context_snippets=context_snippets)
         self._validate_snippets_match(context_snippets=context_snippets, output_snippet=output_snippet)
 
-        all_snippets: list[Snippet] = context_snippets + [output_snippet]
-        sample: dict = self._create_base_sample(snippets=all_snippets, value=value)
-        sample['prompt'] = prompt
+        sample: Sample = self._create_sample(context_snippets=context_snippets, output_snippet=output_snippet,
+                                             prompt=prompt, value=value)
         self.samples.append(sample)
+
+    # noinspection PyMethodOverriding
+    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet, prompt: str,
+                                value: int | float | None = None) -> Sample:
+        """Creates a sample UserInstruction string for example usages."""
+        if value is not None:
+            if not type(value) == int and not type(value) == float:
+                raise TypeError("Value must be an int or float.")
+
+        all_snippets: list[Snippet] = context_snippets + [output_snippet]
+
+        # format sample
+        numbers: list[list[int]] = []
+        for snippet in all_snippets:
+            numbers.append(snippet.numbers)
+
+        return Sample(
+            context=[snippet.string for snippet in context_snippets],
+            response=output_snippet.string,
+            prompt=prompt,
+            number=numbers,
+            result=self.final,
+            value=value
+        )

@@ -14,7 +14,7 @@ from .NumToken import NumToken
 class Snippet:
     string: str
     token_set_key: str
-    numbers: Collection[int] = dataclasses.field(default_factory=list)
+    numbers: list[int] = dataclasses.field(default_factory=list)
 
 
 class TokenSet:

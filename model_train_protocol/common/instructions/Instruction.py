@@ -5,6 +5,36 @@ from typing import Sequence
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
+class Sample:
+    """A Sample is a single example of input and output for an Instruction."""
+    def __init__(self, context: list[str], response: str, prompt: str | None, number: list[list[int]], result: Token, value: int | float | None):
+        self.context: list[str] = context
+        self.response: str = response
+        self.prompt: str | None = prompt
+        self.number: list[list[int]] = number
+        self.result: Token = result
+        self.value: int | float | None = value
+
+    @property
+    def strings(self) -> list[str]:
+        """Returns all strings in the sample as a list."""
+        return self.context + [self.response]
+
+    def to_dict(self) -> dict:
+        return {
+            'strings': self.strings,
+            'prompt': self.prompt,
+            'number': self.number,
+            'result': self.result,
+            'value': self.value
+        }
+
+    def __repr__(self):
+        """String representation of the Sample."""
+        result_str = self.result.value
+        if self.value is not None:
+            result_str += f"{self.value}"
+        return f"Sample(Context: {self.context}, Response: {self.response}, Result: {result_str})"
 
 class Instruction(ABC):
     """
@@ -30,7 +60,7 @@ class Instruction(ABC):
         self.context: Sequence[TokenSet] = context
         self.response: TokenSet = response
         self.final: Token = final
-        self.samples: list[dict] = []
+        self.samples: list[Sample] = []
 
     @abc.abstractmethod
     def add_sample(self):
@@ -62,13 +92,17 @@ class Instruction(ABC):
     def serialize_samples(self) -> list[dict]:
         """Serializes the Instruction samples"""
         samples = []
-        sample_strings = [sample['strings'] for sample in self.samples]
-        sample_prompts = [sample['prompt'] for sample in self.samples]
-        sample_numbers = [sample['number'] for sample in self.samples]
-        sample_results = [sample['result'].value for sample in self.samples]
-        sample_values = [sample['value'] for sample in self.samples]
-        for s, p, n, r, v in zip(sample_strings, sample_prompts, sample_numbers, sample_results, sample_values):
-            samples.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v})
+        # sample_strings = [sample['strings'] for sample in self.samples]
+        # sample_prompts = [sample['prompt'] for sample in self.samples]
+        # sample_numbers = [sample['number'] for sample in self.samples]
+        # sample_results = [sample['result'].value for sample in self.samples]
+        # sample_values = [sample['value'] for sample in self.samples]
+        # for s, p, n, r, v in zip(sample_strings, sample_prompts, sample_numbers, sample_results, sample_values):
+        #     samples.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v})
+
+        for sample in samples:
+            samples.append(sample.to_dict())
+
         return samples
 
     def serialize_ppo(self) -> list[dict]:
@@ -97,7 +131,7 @@ class Instruction(ABC):
             memory_set.append(token_strings)
         return memory_set
 
-    def _create_base_sample(self, snippets: list[Snippet], value: int | float | None = None) -> dict:
+    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet, value: int | float | None = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
         if value is not None:
             if not type(value) == int and not type(value) == float:
@@ -105,14 +139,21 @@ class Instruction(ABC):
         else:
             value = "None"
 
+        all_snippets: list[Snippet] = context_snippets + [output_snippet]
+
         # format sample
-        strings: list[str] = []
         numbers: list[list[int]] = []
-        for snippet in snippets:
-            strings.append(snippet.string)
+        for snippet in all_snippets:
             numbers.append(snippet.numbers)
 
-        return {'strings': strings, 'number': numbers, 'result': self.final, 'value': value, 'prompt': None}
+        return Sample(
+            context=[snippet.string for snippet in context_snippets],
+            response=output_snippet.string,
+            prompt=None,
+            number=numbers,
+            result=self.final,
+            value=value
+        )
 
     def _assert_valid_value(self, value: int | float | None):
         """
@@ -153,9 +194,7 @@ class Instruction(ABC):
         """String representation of the Instruction."""
         tokens_str: str = ', '.join(
             [''.join([token.key for token in token_set.tokens]) for token_set in self.get_token_sets()])
-        samples_str: str = ',\n'.join([
-            f"Sample(Strings: {sample['strings']}, Result: {sample['result'].key + sample['value'] if sample['value'] is not None else ''}"
-            for sample in self.samples])
+        samples_str: str = ',\n'.join([str(sample) for sample in self.samples])
         return f"Token Set(Tokens: {tokens_str}, Result: {self.final.key}, Samples:\n{samples_str})"
 
     def __hash__(self) -> int:
