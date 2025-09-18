@@ -24,16 +24,6 @@ classifiers = [
 dependencies = [
     "emoji>=2.8.0",
 ]
-dependencies = [
-    "emoji>=2.0.0",
-]
-
-[project.optional-dependencies]
-docs = [
-    "sphinx>=8.0.0",
-    "sphinx-rtd-theme>=3.0.0",
-    "sphinx-autodoc-typehints>=1.24.0",
-]
 
 [project.urls]
 Homepage = "https://pypi.org/project/model-train-protocol/"
