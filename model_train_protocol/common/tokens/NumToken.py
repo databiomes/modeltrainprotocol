@@ -18,4 +18,4 @@ class NumToken(Token):
         """
         super().__init__(value, key, desc)
         self.num: int = 1
-        self.protocol_representation: str = f"<Number between {min_value} and {max_value}>"
+        self.protocol_representation: str = f"<number between {min_value} and {max_value}>"

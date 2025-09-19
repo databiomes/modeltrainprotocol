@@ -18,4 +18,4 @@ class NumListToken(NumToken):
         """
         super().__init__(value=value, key=key, min_value=min_value, max_value=max_value, desc=desc)
         self.num: int = length
-        self.protocol_representation: str = f"<List of length {length} of numbers between {min_value} and {max_value}>"
+        self.protocol_representation: str = f"<list of length {length} of numbers between {min_value} and {max_value}>"
