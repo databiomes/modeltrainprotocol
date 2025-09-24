@@ -59,3 +59,4 @@ jobs:
           tag_name: v${{ steps.get_version.outputs.version }}
           name: Release v${{ steps.get_version.outputs.version }}
           body: New release triggered by version update in pyproject.toml
+          draft: false
