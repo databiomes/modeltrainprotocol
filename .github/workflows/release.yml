@@ -6,6 +6,12 @@ on:
       - main
     paths:
       - 'pyproject.toml'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+        default: '0.0.1'
 
 jobs:
   create-release:
