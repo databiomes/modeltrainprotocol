@@ -5,9 +5,17 @@
 
 import os
 import sys
+import tomllib
 
 # Add the project root to the Python path
 sys.path.insert(0, os.path.abspath('../../'))
+
+# Read version from pyproject.toml
+def get_version() -> str:
+    pyproject_path = os.path.join(os.path.dirname(__file__), '..', '..', 'pyproject.toml')
+    with open(pyproject_path, 'rb') as f:
+        pyproject_data = tomllib.load(f)
+    return pyproject_data['project']['version']
 
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
@@ -15,7 +23,10 @@ sys.path.insert(0, os.path.abspath('../../'))
 project = 'Model Training Protocol'
 copyright = '2025, Databiomes Inc.'
 author = 'Databiomes Inc.'
-release = '1.0.0'
+
+# Get version from pyproject.toml
+version = get_version()
+release = version
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
