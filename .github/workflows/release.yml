@@ -1,4 +1,6 @@
 name: Create Release on Version Update
+permissions:
+  contents: write
 
 on:
   push:
