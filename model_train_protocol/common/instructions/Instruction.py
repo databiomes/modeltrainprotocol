@@ -25,7 +25,7 @@ class Sample:
             'strings': self.strings,
             'prompt': self.prompt,
             'number': self.number,
-            'result': self.result,
+            'result': self.result.value, # We only need the value of the result token
             'value': self.value
         }
 
@@ -91,19 +91,11 @@ class Instruction(ABC):
 
     def serialize_samples(self) -> list[dict]:
         """Serializes the Instruction samples"""
-        samples = []
-        # sample_strings = [sample['strings'] for sample in self.samples]
-        # sample_prompts = [sample['prompt'] for sample in self.samples]
-        # sample_numbers = [sample['number'] for sample in self.samples]
-        # sample_results = [sample['result'].value for sample in self.samples]
-        # sample_values = [sample['value'] for sample in self.samples]
-        # for s, p, n, r, v in zip(sample_strings, sample_prompts, sample_numbers, sample_results, sample_values):
-        #     samples.append({'sample': s, 'prompt': p, 'number': n, 'result': r, 'value': v})
+        serialized_samples: list[dict] = []
+        for sample in self.samples:
+            serialized_samples.append(sample.to_dict())
 
-        for sample in samples:
-            samples.append(sample.to_dict())
-
-        return samples
+        return serialized_samples
 
     def serialize_ppo(self) -> list[dict]:
         """Serialize the Instruction for PPO training."""
