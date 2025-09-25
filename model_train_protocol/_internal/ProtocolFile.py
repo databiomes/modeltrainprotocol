@@ -125,7 +125,9 @@ class ProtocolFile:
                 num: int = token_info['num']
                 token_info['num'] = True if num >= 1 else False
 
-        for instruction in template.get('instruction', {}).get('sets', []):
+            # TODO: Differentiate between num and num_list tokens in the future - currently both are just 'num': True
+
+        for instruction in protocol_json.get('instruction', {}).get('sets', []):
 
             # Rename sample number to None if an array of empty arrays
             for sample in instruction['samples']:
