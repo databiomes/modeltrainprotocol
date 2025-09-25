@@ -140,7 +140,7 @@ class ProtocolFile:
         json_dict = {
             "name": self._name,
             "context": self._context,
-            "tokens": sorted(self._tokens),
+            "tokens": dict(sorted(self._tokens.items())),
             "special_tokens": self._get_special_token_keys(),
             "instruction": {
                 "memory": self._instruction.context_lines,
