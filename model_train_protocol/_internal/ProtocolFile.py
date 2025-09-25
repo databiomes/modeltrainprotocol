@@ -2,7 +2,6 @@ from dataclasses import dataclass, field
 from typing import Collection
 
 from model_train_protocol import Token, NumToken
-from model_train_protocol.common.constants import NON_TOKEN, BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.instructions import Instruction
 from model_train_protocol.common.tokens import TokenSet, SpecialToken
@@ -109,13 +108,13 @@ class ProtocolFile:
             self._guardrails[token_set.key] = guardrail.format_samples()
 
     @classmethod
-    def _rename_protocol_elements(cls, template: dict):
+    def _rename_protocol_elements(cls, protocol_json: dict):
         """
-        Renames elements in the template to match the previous output format for backwards compatibility.
-        :param template: The original template dictionary.
-        :return: The modified template dictionary with renamed elements.
+        Renames elements in the ProtocolFile json to match the previous output format for backwards compatibility.
+        :param protocol_json: The original json dictionary.
+        :return: The modified json with renamed elements.
         """
-        for token_value, token_info in template.get('common/tokens', {}).items():
+        for token_value, token_info in protocol_json.get('tokens', {}).items():
             # Rename Token 'key' to 'emoji'
             if 'key' in token_info:
                 token_info['emoji'] = token_info.pop('key')
@@ -139,7 +138,7 @@ class ProtocolFile:
                 if 'strings' in sample:
                     sample['sample'] = sample.pop('strings')
 
-        return template
+        return protocol_json
 
     def _get_special_token_keys(self):
         """
