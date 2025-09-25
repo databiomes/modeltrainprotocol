@@ -119,11 +119,18 @@ class ProtocolFile:
             if 'key' in token_info:
                 token_info['emoji'] = token_info.pop('key')
 
-        # Rename sample number to None if an array of empty arrays
+
         for instruction in template.get('instruction', {}).get('sets', []):
+
+            # Rename sample number to None if an array of empty arrays
             for sample in instruction['samples']:
                 if all(num == [] for num in sample['number']):
                     sample['number'] = None
+
+            # Rename sample 'strings' to 'sample'
+            for sample in instruction['samples']:
+                if 'strings' in sample:
+                    sample['sample'] = sample.pop('strings')
 
         return template
 
