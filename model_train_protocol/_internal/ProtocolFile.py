@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Collection
 
 from model_train_protocol import Token, NumToken
+from model_train_protocol.common.constants import UNK_TOKEN
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.instructions import Instruction
 from model_train_protocol.common.tokens import TokenSet, SpecialToken
@@ -114,6 +115,13 @@ class ProtocolFile:
         :param protocol_json: The original json dictionary.
         :return: The modified json with renamed elements.
         """
+        # Add special token <UNK> REGARDLESS of whether we have any guardrails
+        unk_token_dict: dict = UNK_TOKEN.to_dict()
+        unk_token_dict['emoji'] = unk_token_dict.pop('key')
+        unk_token_dict.pop('value')
+        protocol_json['tokens'][UNK_TOKEN.value] = unk_token_dict
+        protocol_json['special_tokens'].append(UNK_TOKEN.key)
+
         for token_value, token_info in protocol_json.get('tokens', {}).items():
             # Rename Token 'key' to 'emoji'
             if 'key' in token_info:
