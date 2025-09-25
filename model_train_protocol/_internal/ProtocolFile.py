@@ -164,7 +164,7 @@ class ProtocolFile:
             "tokens": dict(sorted(self._tokens.items())),
             "special_tokens": self._get_special_token_keys(),
             "instruction": {
-                "memory": self._instruction.context_lines,
+                "memory": self._instruction.context_lines + 1, # +1 for the response line
                 "sets": [vars(s) for s in self._instruction.sets],
             },
             "guardrails": self._guardrails,
