@@ -108,24 +108,37 @@ class ProtocolFile:
             self._guardrails[token_set.key] = guardrail.format_samples()
 
     @classmethod
-    def _rename_protocol_elements(cls, template: dict):
+    def _rename_protocol_elements(cls, protocol_json: dict):
         """
-        Renames elements in the template to match the previous output format for backwards compatibility.
-        :param template: The original template dictionary.
-        :return: The modified template dictionary with renamed elements.
+        Renames elements in the ProtocolFile json to match the previous output format for backwards compatibility.
+        :param protocol_json: The original json dictionary.
+        :return: The modified json with renamed elements.
         """
-        # Rename Token 'key' to 'emoji'
-        for token_value, token_info in template.get('common/tokens', {}).items():
+        for token_value, token_info in protocol_json.get('tokens', {}).items():
+            # Rename Token 'key' to 'emoji'
             if 'key' in token_info:
                 token_info['emoji'] = token_info.pop('key')
 
-        # Rename sample number to None if an array of empty arrays
-        for instruction in template.get('instruction', {}).get('sets', []):
+            # Reassign Token 'num' to boolean
+            if 'num' in token_info:
+                num: int = token_info['num']
+                token_info['num'] = True if num >= 1 else False
+
+            # TODO: Differentiate between num and num_list tokens in the future - currently both are just 'num': True
+
+        for instruction in protocol_json.get('instruction', {}).get('sets', []):
+
+            # Rename sample number to None if an array of empty arrays
             for sample in instruction['samples']:
                 if all(num == [] for num in sample['number']):
                     sample['number'] = None
 
-        return template
+            # Rename sample 'strings' to 'sample'
+            for sample in instruction['samples']:
+                if 'strings' in sample:
+                    sample['sample'] = sample.pop('strings')
+
+        return protocol_json
 
     def _get_special_token_keys(self):
         """
