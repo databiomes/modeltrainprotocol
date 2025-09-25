@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from typing import Collection
 
 from model_train_protocol import Token, NumToken
+from model_train_protocol.common.constants import NON_TOKEN, BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.instructions import Instruction
 from model_train_protocol.common.tokens import TokenSet, SpecialToken
@@ -114,11 +115,15 @@ class ProtocolFile:
         :param template: The original template dictionary.
         :return: The modified template dictionary with renamed elements.
         """
-        # Rename Token 'key' to 'emoji'
         for token_value, token_info in template.get('common/tokens', {}).items():
+            # Rename Token 'key' to 'emoji'
             if 'key' in token_info:
                 token_info['emoji'] = token_info.pop('key')
 
+            # Reassign Token 'num' to boolean
+            if 'num' in token_info:
+                num: int = token_info['num']
+                token_info['num'] = True if num >= 1 else False
 
         for instruction in template.get('instruction', {}).get('sets', []):
 
