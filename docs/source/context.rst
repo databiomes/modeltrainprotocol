@@ -32,14 +32,14 @@ Context is added to your protocol using the ``add_context()`` method. You can ad
 
 Context Lines
 --------------
-
-Context lines does NOT refer to the number of total context that your model has. Context lines, set as
-context_lines when initializing the protocol, refers to how many lines of context are provided to each Instruction.
+Context lines, set as context_lines when initializing the protocol, refers to how many lines of context are provided to each Instruction.
+Context lines does NOT refer to the amount of total context that your model has.
 
 Each Instruction in the protocol must have the same number of context lines as specified when initializing the protocol.
 
 This is not to be confused with the context added to the protocol using the ``add_context()`` method, which can be any number of lines.
 
+A minimum of 2 context_lines are required.
 
 Basic Usage
 ~~~~~~~~~~~
