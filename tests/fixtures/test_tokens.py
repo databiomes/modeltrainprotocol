@@ -16,6 +16,9 @@ TOKEN_TREE = Token("Tree",
 # Actions
 TOKEN_TALK = Token("Talk")
 
+# Result
+TOKEN_CONTINUE = Token("Continue")
+
 # Num Tokens
 TOKEN_SENTENCE_LENGTH = NumToken("SentenceLength", min_value=1, max_value=20,
                            desc="The number of words in the sentence, between 1 and 20.")
@@ -24,8 +27,15 @@ TOKEN_COORDINATES: NumListToken = NumListToken("Coordinates", min_value=-100, ma
                                                desc="3D coordinates (x, y, z)")
 
 # Create the token sets for the instructions
-TREE_ENGLISH_ALICE_TALK = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
 TREE_ENGLISH_CAT_TALK = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_CAT, TOKEN_TALK))
+TREE_ENGLISH_CAT_TALK_SENTENCE_LENGTH = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_CAT, TOKEN_TALK, TOKEN_SENTENCE_LENGTH)) # NumToken
+TREE_ENGLISH_CAT_TALK_COORDINATES = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_CAT, TOKEN_TALK, TOKEN_COORDINATES)) # NumListToken
+TREE_ENGLISH_CAT_TALK_SENTENCE_LENGTH_COORDINATES = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_CAT, TOKEN_TALK, TOKEN_SENTENCE_LENGTH, TOKEN_COORDINATES)) # Both NumToken and NumListToken
+
+TREE_ENGLISH_ALICE_TALK = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+TREE_ENGLISH_ALICE_TALK_SENTENCE_LENGTH = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK, TOKEN_SENTENCE_LENGTH)) # NumToken
+TREE_ENGLISH_ALICE_TALK_COORDINATES = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK, TOKEN_COORDINATES)) # NumListToken
+TREE_ENGLISH_ALICE_TALK_SENTENCE_LENGTH_COORDINATES = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK, TOKEN_SENTENCE_LENGTH, TOKEN_COORDINATES)) # Both NumToken and NumListToken
 
 
 def get_valid_tokens() -> Dict[str, Union[Token, UserToken, NumToken, NumListToken]]:
