@@ -1,0 +1,102 @@
+"""
+Sample token data for testing.
+"""
+from typing import Dict, List, Any, Union, Tuple
+from model_train_protocol import Token, UserToken, NumToken, NumListToken
+
+
+def get_valid_tokens() -> Dict[str, Union[Token, UserToken, NumToken, NumListToken]]:
+    """Get a collection of valid tokens for testing."""
+    return {
+        'basic': Token("Basic", key="🔑", desc="A basic token"),
+        'user': UserToken("User", key="👤", desc="A user token"),
+        'numeric': NumToken("Count", key="🔢", min_value=1, max_value=10, desc="A numeric token"),
+        'num_list': NumListToken("Numbers", key="📊", desc="A numeric list token"),
+        'with_desc': Token("Described", key="📝", desc="A token with description"),
+        'emoji_key': Token("Emoji", key="😀", desc="A token with emoji key"),
+        'alphanumeric_key': Token("Alpha", key="abc123", desc="A token with alphanumeric key"),
+        'underscore_key': Token("Underscore", key="test_key", desc="A token with underscore key"),
+        'no_key': Token("NoKey", desc="A token without key"),
+        'no_desc': Token("NoDesc", key="🔧"),
+        'minimal': Token("Minimal"),
+        'long_desc': Token("LongDesc", key="📚", desc="A token with a very long description that explains its purpose in detail"),
+        'special_chars': Token("Special", key="!@#$%", desc="A token with special characters in key"),
+        'unicode': Token("Unicode", key="🚀🌟", desc="A token with unicode characters"),
+        'numeric_range': NumToken("Range", key="📈", min_value=0, max_value=100, desc="A token with wide numeric range"),
+        'single_value': NumToken("Single", key="1", min_value=5, max_value=5, desc="A token with single numeric value")
+    }
+
+
+def get_invalid_tokens() -> Dict[str, Tuple[Any, ...]]:
+    """Get a collection of invalid token configurations for testing."""
+    return {
+        'invalid_char_value': ("Test@", "🔑", "Invalid character in value"),
+        'invalid_char_key': ("Test", "Key#", "Invalid character in key"),
+        'empty_value': ("", "🔑", "Empty value"),
+        'none_value': (None, "🔑", "None value"),
+        'invalid_emoji_key': ("Test", "invalid_emoji", "Invalid emoji in key"),
+        'numeric_invalid_range': ("Count", "🔢", "Invalid numeric range", 10, 5),  # min > max
+        'numeric_negative_min': ("Count", "🔢", "Negative minimum value", -1, 10),
+        'numeric_zero_max': ("Count", "🔢", "Zero maximum value", 1, 0)
+    }
+
+
+def get_token_equality_pairs() -> List[Tuple[Union[Token, UserToken, NumToken], Union[Token, UserToken, NumToken], bool]]:
+    """Get pairs of tokens for testing equality."""
+    return [
+        (Token("Same"), Token("Same"), True),
+        (Token("Different"), Token("Same"), False),
+        (UserToken("User"), UserToken("User"), True),
+        (UserToken("User"), Token("User"), False),  # Different types
+        (NumToken("Count", min_value=1, max_value=10), NumToken("Count", min_value=1, max_value=10), True),
+        (NumToken("Count", min_value=1, max_value=10), NumToken("Count", min_value=1, max_value=5), False),
+    ]
+
+
+def get_token_hash_pairs() -> List[Tuple[Union[Token, UserToken, NumToken], Union[Token, UserToken, NumToken], bool]]:
+    """Get pairs of tokens for testing hashing."""
+    return [
+        (Token("HashTest"), Token("HashTest"), True),  # Same hash
+        (Token("HashTest1"), Token("HashTest2"), False),  # Different hash
+        (UserToken("UserHash"), UserToken("UserHash"), True),
+        (NumToken("NumHash", min_value=1, max_value=10), NumToken("NumHash", min_value=1, max_value=10), True),
+    ]
+
+
+def get_token_serialization_data() -> Dict[str, Dict[str, Any]]:
+    """Get token data for testing serialization."""
+    return {
+        'basic_token': {
+            'token': Token("Serial", key="🔧", desc="Serialization test"),
+            'expected_dict': {
+                'value': 'Serial_',
+                'key': '🔧',
+                'user': False,
+                'num': 0,
+                'desc': 'Serialization test',
+                'special': None
+            }
+        },
+        'user_token': {
+            'token': UserToken("UserSerial", key="👤", desc="User serialization test"),
+            'expected_dict': {
+                'value': 'UserSerial_',
+                'key': '👤',
+                'user': True,
+                'num': 0,
+                'desc': 'User serialization test',
+                'special': None
+            }
+        },
+        'numeric_token': {
+            'token': NumToken("NumSerial", key="🔢", min_value=1, max_value=10, desc="Numeric serialization test"),
+            'expected_dict': {
+                'value': 'NumSerial_',
+                'key': '🔢',
+                'user': False,
+                'num': 1,
+                'desc': 'Numeric serialization test',
+                'special': None
+            }
+        }
+    }
