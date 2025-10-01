@@ -2,7 +2,30 @@
 Sample token data for testing.
 """
 from typing import Dict, List, Any, Union, Tuple
-from model_train_protocol import Token, UserToken, NumToken, NumListToken
+from model_train_protocol import Token, UserToken, NumToken, NumListToken, TokenSet
+
+TOKEN_ENGLISH = Token("English")
+
+# Characters
+TOKEN_ALICE = UserToken("Alice")
+TOKEN_CAT = Token("Cat")
+
+# Scenes
+TOKEN_TREE = Token("Tree",
+                   desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
+# Actions
+TOKEN_TALK = Token("Talk")
+
+# Num Tokens
+TOKEN_SENTENCE_LENGTH = NumToken("SentenceLength", min_value=1, max_value=20,
+                           desc="The number of words in the sentence, between 1 and 20.")
+
+TOKEN_COORDINATES: NumListToken = NumListToken("Coordinates", min_value=-100, max_value=100, length=3,
+                                               desc="3D coordinates (x, y, z)")
+
+# Create the token sets for the instructions
+TREE_ENGLISH_ALICE_TALK = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+TREE_ENGLISH_CAT_TALK = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_CAT, TOKEN_TALK))
 
 
 def get_valid_tokens() -> Dict[str, Union[Token, UserToken, NumToken, NumListToken]]:
