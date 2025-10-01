@@ -29,10 +29,10 @@ class TestGuardrail:
             bad_output="Bad output response"
         )
         
-        guardrail.add_sample("Bad sample 1")
+        guardrail.add_sample("Bad sample one")
         
         assert len(guardrail.samples) == 1
-        assert guardrail.samples[0] == "Bad sample 1"
+        assert guardrail.samples[0] == "Bad sample one"
 
     def test_guardrail_add_sample_multiple(self):
         """Test adding multiple samples to guardrail."""
@@ -42,7 +42,7 @@ class TestGuardrail:
             bad_output="Bad output response"
         )
         
-        samples = ["Bad sample 1", "Bad sample 2", "Bad sample 3"]
+        samples = ["Bad sample one", "Bad sample two", "Bad sample three"]
         for sample in samples:
             guardrail.add_sample(sample)
         
@@ -67,11 +67,9 @@ class TestGuardrail:
             bad_prompt="Bad prompt description",
             bad_output="Bad output response"
         )
-        
-        guardrail.add_sample("")
-        
-        assert len(guardrail.samples) == 1
-        assert guardrail.samples[0] == ""
+
+        with pytest.raises(ValueError, match="Sample prompt must be a non-empty string"):
+            guardrail.add_sample("")
 
     def test_guardrail_add_sample_none(self):
         """Test adding None sample."""
@@ -80,11 +78,9 @@ class TestGuardrail:
             bad_prompt="Bad prompt description",
             bad_output="Bad output response"
         )
-        
-        guardrail.add_sample(None)
-        
-        assert len(guardrail.samples) == 1
-        assert guardrail.samples[0] is None
+
+        with pytest.raises(ValueError, match="Sample prompt must be a non-empty string"):
+            guardrail.add_sample(None)
 
     def test_guardrail_format_samples_sufficient(self):
         """Test formatting samples with sufficient samples."""
@@ -93,18 +89,23 @@ class TestGuardrail:
             bad_prompt="Bad prompt description",
             bad_output="Bad output response"
         )
+
+        sample_string_one = "Bad sample one"
+        sample_string_two = "Bad sample two"
+        sample_string_three = "Bad sample three"
+
+        guardrail.add_sample(sample_string_one)
+        guardrail.add_sample(sample_string_two)
+        guardrail.add_sample(sample_string_three)
         
-        guardrail.add_sample("Bad sample 1")
-        guardrail.add_sample("Bad sample 2")
-        guardrail.add_sample("Bad sample 3")
-        
+
         formatted = guardrail.format_samples()
         
         assert len(formatted) == 4
         assert formatted[0] == "Bad output response"
         assert formatted[1] == "<Bad prompt description>"
         assert formatted[2] == "<Good prompt description>"
-        assert formatted[3] == ["Bad sample 1", "Bad sample 2", "Bad sample 3"]
+        assert formatted[3] == [sample_string_one, sample_string_two, sample_string_three]
 
     def test_guardrail_format_samples_insufficient(self):
         """Test formatting samples with insufficient samples."""
@@ -114,8 +115,8 @@ class TestGuardrail:
             bad_output="Bad output response"
         )
         
-        guardrail.add_sample("Bad sample 1")
-        guardrail.add_sample("Bad sample 2")
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
         
         with pytest.raises(ValueError, match="At least 3 sample prompts are required"):
             guardrail.format_samples()
@@ -139,9 +140,9 @@ class TestGuardrail:
             bad_output="Bad output response"
         )
         
-        guardrail.add_sample("Bad sample 1")
-        guardrail.add_sample("Bad sample 2")
-        guardrail.add_sample("Bad sample 3")
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
         
         formatted = guardrail.format_samples()
         
@@ -149,7 +150,7 @@ class TestGuardrail:
         assert formatted[0] == "Bad output response"
         assert formatted[1] == "<Bad prompt description>"
         assert formatted[2] == "<Good prompt description>"
-        assert formatted[3] == ["Bad sample 1", "Bad sample 2", "Bad sample 3"]
+        assert formatted[3] == ["Bad sample one", "Bad sample two", "Bad sample three"]
 
     def test_guardrail_format_samples_more_than_three(self):
         """Test formatting samples with more than three samples."""
@@ -159,11 +160,11 @@ class TestGuardrail:
             bad_output="Bad output response"
         )
         
-        guardrail.add_sample("Bad sample 1")
-        guardrail.add_sample("Bad sample 2")
-        guardrail.add_sample("Bad sample 3")
-        guardrail.add_sample("Bad sample 4")
-        guardrail.add_sample("Bad sample 5")
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+        guardrail.add_sample("Bad sample four")
+        guardrail.add_sample("Bad sample five")
         
         formatted = guardrail.format_samples()
         
@@ -171,7 +172,7 @@ class TestGuardrail:
         assert formatted[0] == "Bad output response"
         assert formatted[1] == "<Bad prompt description>"
         assert formatted[2] == "<Good prompt description>"
-        assert formatted[3] == ["Bad sample 1", "Bad sample 2", "Bad sample 3", "Bad sample 4", "Bad sample 5"]
+        assert formatted[3] == ["Bad sample one", "Bad sample two", "Bad sample three", "Bad sample four", "Bad sample five"]
 
     def test_guardrail_long_descriptions(self):
         """Test guardrail with long descriptions."""
@@ -270,22 +271,6 @@ class TestGuardrail:
         assert len(formatted) == 4
         assert formatted[3] == ["Duplicate sample", "Duplicate sample", "Duplicate sample"]
 
-    def test_guardrail_mixed_sample_types(self):
-        """Test guardrail with mixed sample types."""
-        guardrail = Guardrail(
-            good_prompt="Good prompt description",
-            bad_prompt="Bad prompt description",
-            bad_output="Bad output response"
-        )
-        
-        guardrail.add_sample("String sample")
-        guardrail.add_sample("")
-        guardrail.add_sample(None)
-        
-        formatted = guardrail.format_samples()
-        
-        assert len(formatted) == 4
-        assert formatted[3] == ["String sample", "", None]
 
     @pytest.mark.parametrize("sample_count", [3, 4, 5, 10])
     def test_guardrail_various_sample_counts(self, sample_count):
@@ -297,7 +282,7 @@ class TestGuardrail:
         )
         
         for i in range(sample_count):
-            guardrail.add_sample(f"Bad sample {i}")
+            guardrail.add_sample(f"Bad sample {chr(ord('a') + i)}")
         
         formatted = guardrail.format_samples()
         
@@ -363,9 +348,9 @@ class TestGuardrail:
             bad_output="Bad output response"
         )
         
-        guardrail.add_sample("Bad sample 1")
-        guardrail.add_sample("Bad sample 2")
-        guardrail.add_sample("Bad sample 3")
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
         
         assert len(guardrail.samples) == 3
         
@@ -385,16 +370,16 @@ class TestGuardrail:
             bad_output="Bad output response"
         )
         
-        guardrail.add_sample("Bad sample 1")
-        guardrail.add_sample("Bad sample 2")
-        guardrail.add_sample("Bad sample 3")
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
         
         # Modify samples
-        guardrail.samples[0] = "Modified bad sample 1"
+        guardrail.samples[0] = "Modified bad sample one"
         guardrail.samples.append("Additional bad sample")
         
         formatted = guardrail.format_samples()
         
         assert len(formatted) == 4
-        assert formatted[3] == ["Modified bad sample 1", "Bad sample 2", "Bad sample 3", "Additional bad sample"]
+        assert formatted[3] == ["Modified bad sample one", "Bad sample two", "Bad sample three", "Additional bad sample"]
 
