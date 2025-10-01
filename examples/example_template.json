@@ -1,0 +1,33 @@
+{
+    "all_combinations": {
+        "model_input": {
+            "<BOS>": "🏁",
+            "0": [
+                "Tree_English_Alice_Talk_: 852964847a70ac50a4b6ecfb\n<string>"
+            ],
+            "1": [
+                "Tree_English_Cat_Talk_: 852964847a7050f7ddb6ecfb\n",
+                "Tree_English_Vanish_Cat_Talk_: 852964847a70fecd8550f7ddb6ecfb\n"
+            ],
+            "2": [
+                "Tree_English_Alice_Talk_: 852964847a70ac50a4b6ecfbUSER PROMPT\n<string>"
+            ],
+            "<RUN>": "🏃"
+        },
+        "model_output": {
+            "model_response": "<string>",
+            "model_results": {
+                "Answer_": "6c7865",
+                "Appear_": "c4bf26",
+                "Continue_": "7a560c",
+                "Leave_": "0f915e",
+                "Vanish_": "fecd85"
+            },
+            "<EOS>": "🎬"
+        }
+    },
+    "example_usage": {
+        "valid_user_input": "🏁\n852964847a70ac50a4b6ecfb\n<string>\n852964847a70fecd8550f7ddb6ecfb\n<string>\n852964847a70ac50a4b6ecfb\nUSER PROMPT\n🏃\n",
+        "valid_output": "<string>\n6c7865\n🎬"
+    }
+}
