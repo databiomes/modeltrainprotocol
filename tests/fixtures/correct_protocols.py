@@ -160,7 +160,7 @@ def create_user_instruction(add_num_token: bool = False,
 
     # Sample 2
     sample_2_context_1: Snippet = tree_english_alice_talk.create_snippet(string="But I don't want to go among mad people", numbers=sample_numbers)
-    sample_2_context_2: Snippet = tree_english_cat_talk.create_snippet(string="Oh, you ca, numbers=sample_numbersn't help that, we're all mad here. I'm mad. You are mad.")
+    sample_2_context_2: Snippet = tree_english_cat_talk.create_snippet(string="Oh, you can't help that, we're all mad here. I'm mad. You are mad.")
     sample_2_prompt: str = "How do you know I am mad?"
     sample_2_output: Snippet = tree_english_alice_talk.create_snippet(string="You must be, or you would not have come here.", numbers=sample_numbers)
 
@@ -172,7 +172,7 @@ def create_user_instruction(add_num_token: bool = False,
 
     # Sample 3
     sample_3_context_1: Snippet = tree_english_alice_talk.create_snippet(string="And how do you know that you're mad?", numbers=sample_numbers)
-    sample_3_context_2: Snippet = tree_english_cat_talk.create_snippet(string="To begin with,, numbers=sample_numbers a dog's not mad. You grant that?")
+    sample_3_context_2: Snippet = tree_english_cat_talk.create_snippet(string="To begin with, a dog's not mad. You grant that?")
     sample_3_prompt: str = "I suppose so"
     sample_3_output: Snippet = tree_english_alice_talk.create_snippet(string="Well, then. You see, a dog growls when it's angry, and wags its tail when it's pleased.", numbers=sample_numbers)
 
