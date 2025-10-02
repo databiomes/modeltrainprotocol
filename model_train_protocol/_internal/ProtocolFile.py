@@ -3,10 +3,11 @@ from typing import Collection
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.constants import UNK_TOKEN
+from model_train_protocol.common.instructions import Instruction
 from model_train_protocol.common.guardrails import Guardrail
-from model_train_protocol.common.pydantic.protocol import Instruction, TokenInfo, Sample, InstructionSet, Numbers, \
-    Batches, ProtocolModel
 from model_train_protocol.common.tokens import TokenSet, SpecialToken
+from model_train_protocol.common.pydantic.protocol import InstructionModel, TokenInfoModel, SampleModel, InstructionSetModel, NumberModel, \
+    BatchModel, ProtocolModel
 
 
 class ProtocolFile:
@@ -168,7 +169,7 @@ class ProtocolFile:
         # Create TokenInfo objects for each token
         token_info_dict = {}
         for token_value, token_dict in self._tokens.items():
-            token_info = TokenInfo(
+            token_info = TokenInfoModel(
                 emoji=token_dict.get('emoji', ''),
                 num=token_dict.get('num', False),
                 user=token_dict.get('user', False),
@@ -183,7 +184,7 @@ class ProtocolFile:
             # Create Sample objects
             samples = []
             for sample_data in instruction_set.samples:
-                sample = Sample(
+                sample = SampleModel(
                     sample=sample_data.get('strings', []),
                     prompt=sample_data.get('prompt', ''),
                     number=sample_data.get('number', []),
@@ -193,7 +194,7 @@ class ProtocolFile:
                 samples.append(sample)
 
             # Create InstructionSet
-            instruction_set_obj = InstructionSet(
+            instruction_set_obj = InstructionSetModel(
                 set=instruction_set.set,
                 result=instruction_set.result,
                 samples=samples,
@@ -202,16 +203,16 @@ class ProtocolFile:
             instruction_sets.append(instruction_set_obj)
 
         # Create Instruction object
-        instruction = Instruction(
+        instruction = InstructionModel(
             memory=self._instruction.context_lines + 1,  # +1 for the response line
             sets=instruction_sets
         )
 
         # Create Numbers object
-        numbers = Numbers()
+        numbers = NumberModel()
 
         # Create Batches object
-        batches = Batches(
+        batches = BatchModel(
             pretrain=self._batches.pretrain,
             instruct=self._batches.instruct,
             judge=self._batches.judge,

@@ -7,7 +7,7 @@ from typing import List, Dict, Any, Optional, Union
 from pydantic import BaseModel, Field
 
 
-class TokenInfo(BaseModel):
+class TokenInfoModel(BaseModel):
     """Model for individual token information."""
     emoji: str
     num: bool
@@ -16,7 +16,7 @@ class TokenInfo(BaseModel):
     special: Optional[str] = None
 
 
-class Sample(BaseModel):
+class SampleModel(BaseModel):
     """Model for instruction samples."""
     sample: List[str]
     prompt: Union[str, None]
@@ -25,21 +25,21 @@ class Sample(BaseModel):
     value: Union[str, None]
 
 
-class InstructionSet(BaseModel):
+class InstructionSetModel(BaseModel):
     """Model for instruction sets."""
     set: List[List[str]]
     result: str
-    samples: List[Sample]
+    samples: List[SampleModel]
     ppo: List[Any] = Field(default_factory=list)
 
 
-class Instruction(BaseModel):
+class InstructionModel(BaseModel):
     """Model for instruction configuration."""
     memory: int
-    sets: List[InstructionSet]
+    sets: List[InstructionSetModel]
 
 
-class Guardrails(BaseModel):
+class GuardrailModel(BaseModel):
     """Model for guardrails configuration."""
     nil: str = Field(default="", alias="None")
 
@@ -50,11 +50,11 @@ class Guardrails(BaseModel):
     def __setitem__(self, key, value):
         setattr(self, key, value)
 
-class Numbers(BaseModel):
+class NumberModel(BaseModel):
     """Model for numbers configuration."""
     nil: str = Field(default="", alias="None")
 
-class Batches(BaseModel):
+class BatchModel(BaseModel):
     """Model for batches configuration."""
     pretrain: List[Any] = Field(default_factory=list)
     instruct: List[Any] = Field(default_factory=list)
@@ -66,12 +66,12 @@ class ProtocolModel(BaseModel):
     """Main model for MTP Protocol JSON structure."""
     name: str
     context: List[str]
-    tokens: Dict[str, TokenInfo]
+    tokens: Dict[str, TokenInfoModel]
     special_tokens: List[str]
-    instruction: Instruction
+    instruction: InstructionModel
     guardrails: Dict[str, Union[str, List[Union[str, List[str]]]]]  # Flexible for dynamic keys
-    numbers: Numbers
-    batches: Batches
+    numbers: NumberModel
+    batches: BatchModel
 
     class Config:
         json_schema_extra = {
