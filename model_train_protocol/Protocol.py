@@ -38,6 +38,9 @@ class Protocol:
 
     def add_context(self, context: str):
         """Adds a line of context to the model."""
+        if not isinstance(context, str):
+            raise TypeError("Context must be a string.")
+
         self.context.append(context)
 
     def add_instruction(self, instruction: Instruction):
