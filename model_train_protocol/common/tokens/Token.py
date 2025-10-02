@@ -38,6 +38,13 @@ class Token:
 
         :return: True if all characters in the string are valid characters or emojis, False otherwise.
         """
+
+        if not isinstance(self.key, str) and self.key is not None:
+            raise TypeError("Key must be a string or None.")
+
+        if self.key == "":
+            raise ValueError("Key cannot be an empty string.")
+
         if self.key is None:
             return
 
@@ -52,6 +59,12 @@ class Token:
 
         :return: True if all characters in the string are valid characters or emojis, False otherwise.
         """
+        if self.value is None:
+            raise ValueError("Value cannot be None.")
+
+        if self.value == "" or self.value == "_":
+            raise ValueError("Value cannot be an empty string.")
+
         for c in self.value:
             if not (c == '_' or c.isalnum() or emoji.is_emoji(c)):
                 raise ValueError(
