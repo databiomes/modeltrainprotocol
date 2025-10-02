@@ -58,3 +58,31 @@ class TestSimpleInstruction:
         assert len(instruction.context) == 2
         assert instruction.response == SIMPLE_TOKENSET
         assert instruction.final == TOKEN_CONTINUE
+
+    def test_wrong_tokenset_snippet(self):
+        """Test that creating a snippet with wrong tokenset raises an error."""
+        context: list[TokenSet] = [SIMPLE_TOKENSET, SIMPLE_TOKENSET]
+        instruction: SimpleInstruction = SimpleInstruction(context=context, response=SIMPLE_TOKENSET, final=TOKEN_CONTINUE)
+
+        # Create snippet with wrong tokenset (USER_TOKENSET instead of SIMPLE_TOKENSET)
+        wrong_snippet = USER_TOKENSET.create_snippet("Wrong snippet")
+        correct_snippet = SIMPLE_TOKENSET.create_snippet("Correct snippet")
+
+        with pytest.raises(ValueError, match="does not match expected token set"):
+            instruction.add_sample(
+                context_snippets=[wrong_snippet, correct_snippet],
+                output_snippet=correct_snippet
+            )
+    def test_wrong_number_of_snippets(self):
+        """Test that creating a snippet with wrong tokenset raises an error."""
+        context: list[TokenSet] = [SIMPLE_TOKENSET, SIMPLE_TOKENSET]
+        instruction: SimpleInstruction = SimpleInstruction(context=context, response=SIMPLE_TOKENSET, final=TOKEN_CONTINUE)
+
+        # Create snippet with wrong tokenset (USER_TOKENSET instead of SIMPLE_TOKENSET)
+        correct_snippet = SIMPLE_TOKENSET.create_snippet("Correct snippet")
+
+        with pytest.raises(ValueError):
+            instruction.add_sample(
+                context_snippets=[correct_snippet],
+                output_snippet=correct_snippet
+            )
