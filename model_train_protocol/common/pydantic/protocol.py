@@ -43,16 +43,51 @@ class GuardrailModel(BaseModel):
     """Model for guardrails configuration."""
     nil: str = Field(default="", alias="None")
 
-    # Dynamic field for other guardrail rules
-    def __getitem__(self, key):
+    class Config:
+        extra = "allow"  # Allow extra fields for dynamic attributes
+
+    def __getitem__(self, key: str) -> Any:
+        """Get a guardrail rule by key."""
         return getattr(self, key, None)
 
-    def __setitem__(self, key, value):
+    def __setitem__(self, key: str, value: Any) -> None:
+        """Set a guardrail rule by key."""
+        setattr(self, key, value)
+
+    def get_guardrail_rules(self) -> Dict[str, Any]:
+        """Get all guardrail rules as a dictionary."""
+        return {k: v for k, v in self.__dict__.items() if k != 'nil'}
+
+    def set_guardrail_rule(self, key: str, value: Union[str, List[Union[str, List[str]]]]) -> None:
+        """Set a guardrail rule with proper validation."""
+        if not isinstance(value, (str, list)):
+            raise ValueError(f"Guardrail value must be string or list, got {type(value)}")
         setattr(self, key, value)
 
 class NumberModel(BaseModel):
     """Model for numbers configuration."""
     nil: str = Field(default="", alias="None")
+
+    class Config:
+        extra = "allow"  # Allow extra fields for dynamic attributes
+
+    def __getitem__(self, key: str) -> Any:
+        """Get a number rule by key."""
+        return getattr(self, key, None)
+
+    def __setitem__(self, key: str, value: Any) -> None:
+        """Set a number rule by key."""
+        setattr(self, key, value)
+
+    def get_number_rules(self) -> Dict[str, Any]:
+        """Get all number rules as a dictionary."""
+        return {k: v for k, v in self.__dict__.items() if k != 'nil'}
+
+    def set_number_rule(self, key: str, value: str) -> None:
+        """Set a number rule with proper validation."""
+        if not isinstance(value, str):
+            raise ValueError(f"Number value must be string, got {type(value)}")
+        setattr(self, key, value)
 
 class BatchModel(BaseModel):
     """Model for batches configuration."""
@@ -69,7 +104,7 @@ class ProtocolModel(BaseModel):
     tokens: Dict[str, TokenInfoModel]
     special_tokens: List[str]
     instruction: InstructionModel
-    guardrails: Dict[str, Union[str, List[Union[str, List[str]]]]]  # Flexible for dynamic keys
+    guardrails: GuardrailModel
     numbers: NumberModel
     batches: BatchModel
 
