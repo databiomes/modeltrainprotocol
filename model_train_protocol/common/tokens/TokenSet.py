@@ -102,6 +102,16 @@ class TokenSet:
             token_key_set += token.key
         return token_key_set
 
+    def __eq__(self, other):
+        """Equality comparison for TokenSet."""
+        if not isinstance(other, TokenSet):
+            return False
+        return self.key == other.key and all(st == ot for (st, ot) in zip(self.tokens, other.tokens))
+
+    def __hash__(self):
+        """Hash based on the string representation of the TokenSet."""
+        return hash(str(self))
+
     def __repr__(self):
         """String representation of the TokenSet."""
         return f"TokenSet([{self.key}])"
