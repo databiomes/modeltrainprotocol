@@ -30,4 +30,4 @@ class NumToken(Token):
 
     def __hash__(self):
         """Hash based on the string representation of the NumToken."""
-        return hash(str(self))
+        return hash((self.value, self.key, self.desc, self.num, self.min_value, self.max_value, self.protocol_representation))
