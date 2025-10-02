@@ -2,8 +2,11 @@
 Unit tests for the Guardrail class.
 """
 import pytest
+
+from model_train_protocol import TokenSet
 from model_train_protocol.common.guardrails.Guardrail import Guardrail
-from tests.fixtures.test_tokens import SIMPLE_TOKENSET, USER_TOKENSET
+from tests.fixtures.test_tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, \
+    TOKEN_TALK
 
 
 class TestGuardrail:
@@ -193,27 +196,22 @@ class TestGuardrail:
 
     def test_guardrail_empty_descriptions(self):
         """Test guardrail with empty descriptions."""
-        guardrail = Guardrail(
-            good_prompt="",
-            bad_prompt="",
-            bad_output=""
-        )
-        
-        assert guardrail.good_prompt == ""
-        assert guardrail.bad_prompt == ""
-        assert guardrail.bad_output == ""
+        with pytest.raises(ValueError):
+            Guardrail(
+                good_prompt="",
+                bad_prompt="",
+                bad_output=""
+            )
+
 
     def test_guardrail_none_descriptions(self):
         """Test guardrail with None descriptions."""
-        guardrail = Guardrail(
-            good_prompt=None,
-            bad_prompt=None,
-            bad_output=None
-        )
-        
-        assert guardrail.good_prompt is None
-        assert guardrail.bad_prompt is None
-        assert guardrail.bad_output is None
+        with pytest.raises(TypeError):
+            Guardrail(
+                good_prompt=None,
+                bad_prompt=None,
+                bad_output=None
+            )
 
     def test_guardrail_special_characters(self):
         """Test guardrail with special characters."""
@@ -398,10 +396,28 @@ class TestGuardrail:
 
     def test_guardrail_assignment_user_tokenset(self):
         """Tests adding a guardrail to a user tokenset"""
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         guardrail = Guardrail(
             good_prompt="Good prompt description",
             bad_prompt="Bad prompt description",
             bad_output="Bad output response"
         )
-        USER_TOKENSET.set_guardrail(guardrail)
-        assert USER_TOKENSET.guardrail == guardrail
+        user_token_set.set_guardrail(guardrail)
+        assert user_token_set.guardrail == guardrail
+
+    def test_multiple_guardrails_raises_error(self):
+        """Tests that adding multiple guardrails to the same tokenset raises an error"""
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        guardrail_one = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail_two = Guardrail(
+            good_prompt="Another good prompt description",
+            bad_prompt="Another bad prompt description",
+            bad_output="Another bad output response"
+        )
+        user_token_set.set_guardrail(guardrail_one)
+        with pytest.raises(ValueError):
+            user_token_set.set_guardrail(guardrail_two)
