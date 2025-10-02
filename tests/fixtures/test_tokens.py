@@ -38,25 +38,25 @@ USER_NUMLILSTTOKEN_TOKENSET = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_
 USER_NUMTOKEN_NUMLISTTOKEN_TOKENSET = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK, TOKEN_SENTENCE_LENGTH, TOKEN_COORDINATES)) # Both NumToken and NumListToken
 
 
-def get_valid_tokens() -> Dict[str, Union[Token, UserToken, NumToken, NumListToken]]:
-    """Get a collection of valid tokens for testing."""
+def get_valid_keyless_tokens() -> Dict[str, Union[Token, UserToken, NumToken, NumListToken]]:
+    """Get a collection of valid keyless tokens for testing."""
     return {
-        'basic': Token("Basic", key="🔑", desc="A basic token"),
-        'user': UserToken("User", key="👤", desc="A user token"),
-        'numeric': NumToken("Count", key="🔢", min_value=1, max_value=10, desc="A numeric token"),
-        'num_list': NumListToken("Numbers", key="📊", desc="A numeric list token"),
-        'with_desc': Token("Described", key="📝", desc="A token with description"),
-        'emoji_key': Token("Emoji", key="😀", desc="A token with emoji key"),
-        'alphanumeric_key': Token("Alpha", key="abc123", desc="A token with alphanumeric key"),
-        'underscore_key': Token("Underscore", key="test_key", desc="A token with underscore key"),
+        'basic': Token("Basic", desc="A basic token"),
+        'user': UserToken("User", desc="A user token"),
+        'numeric': NumToken("Count", min_value=1, max_value=10, desc="A numeric token"),
+        'num_list': NumListToken("Numbers", desc="A numeric list token", min_value=1, max_value=5, length=3),
+        'with_desc': Token("Described", desc="A token with description"),
+        'emoji_key': Token("Emoji", desc="A token with emoji key"),
+        'alphanumeric_key': Token("Alpha", desc="A token with alphanumeric key"),
+        'underscore_key': Token("Underscore", desc="A token with underscore key"),
         'no_key': Token("NoKey", desc="A token without key"),
-        'no_desc': Token("NoDesc", key="🔧"),
+        'no_desc': Token("NoDesc"),
         'minimal': Token("Minimal"),
-        'long_desc': Token("LongDesc", key="📚", desc="A token with a very long description that explains its purpose in detail"),
-        'special_chars': Token("Special", key="!@#$%", desc="A token with special characters in key"),
-        'unicode': Token("Unicode", key="🚀🌟", desc="A token with unicode characters"),
-        'numeric_range': NumToken("Range", key="📈", min_value=0, max_value=100, desc="A token with wide numeric range"),
-        'single_value': NumToken("Single", key="1", min_value=5, max_value=5, desc="A token with single numeric value")
+        'long_desc': Token("LongDesc", desc="A token with a very long description that explains its purpose in detail"),
+        'special_chars': Token("Special", desc="A token with special characters in key"),
+        'unicode': Token("Unicode", desc="A token with unicode characters"),
+        'numeric_range': NumToken("Range", min_value=0, max_value=100, desc="A token with wide numeric range"),
+        'single_value': NumToken("Single", min_value=5, max_value=5, desc="A token with single numeric value")
     }
 
 
@@ -100,7 +100,7 @@ def get_token_serialization_data() -> Dict[str, Dict[str, Any]]:
     """Get token data for testing serialization."""
     return {
         'basic_token': {
-            'token': Token("Serial", key="🔧", desc="Serialization test"),
+            'token': Token("Serial", desc="Serialization test"),
             'expected_dict': {
                 'value': 'Serial_',
                 'key': '🔧',
