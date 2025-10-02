@@ -1,6 +1,8 @@
 from model_train_protocol import Protocol, UserToken, Token, TokenSet, Snippet, UserInstruction, NumToken, NumListToken, \
     Guardrail, SimpleInstruction
 
+BASE_PROTOCOL: Protocol = Protocol(name="base_protocol", context_lines=2, encrypt=False)
+
 def add_context_to_protocol(protocol: Protocol) -> None:
     """Add context to an existing protocol."""
     protocol.add_context(
@@ -24,135 +26,44 @@ def add_context_to_protocol(protocol: Protocol) -> None:
     protocol.add_context(
         "Alice was not a bit hurt, and she jumped up on to her feet in a moment: she looked up, but it was all dark overhead; before her was another long passage, and the White Rabbit was still in sight, hurrying down it. There was not a moment to be lost: away went Alice like the wind, and was just in time to hear it say, as it turned a corner, \"Oh my ears and whiskers, how late its getting!\" She was close behind it when she turned the corner, but the Rabbit was no longer to be seen: she found herself in a long, low hall, which was lit up by a row of lamps hanging from the roof.")
 
-def create_user_instruction(add_num_token: bool = False,
-                           add_num_list_token: bool = False, 
-                           add_guardrail: bool = False) -> UserInstruction:
-    """Create a user instruction with conditional tokens and guardrails."""
-    # Basic tokens
-    token_english: Token = Token("English")
-    token_alice: UserToken = UserToken("Alice")
-    token_cat: Token = Token("Cat")
-    token_tree: Token = Token("Tree", 
-                             desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
-    token_talk: Token = Token("Talk")
-    token_continue: Token = Token("Continue")
-    
-    # Conditional tokens
-    tokens_list = [token_tree, token_english, token_alice, token_talk]
-
-    sample_numbers = []
-    
-    if add_num_token:
-        token_sentence_length: NumToken = NumToken("SentenceLength", key="📏", min_value=5, max_value=20, desc="Length of a sentence in words")
-        tokens_list.append(token_sentence_length)
-        sample_numbers.append(10)
-    
-    if add_num_list_token:
-        token_coordinates: NumListToken = NumListToken("Coordinates", key="📍", min_value=-100, max_value=100, length=3, desc="3D coordinates (x, y, z)")
-        tokens_list.append(token_coordinates)
-        sample_numbers.append([10, 20, 30])
-    
-    # Create token sets
-    tree_english_alice_talk: TokenSet = TokenSet(tokens=tuple(tokens_list))
-    tree_english_cat_talk: TokenSet = TokenSet(tokens=(token_tree, token_english, token_cat, token_talk))
-    
-    # Create user instruction
-    user_instruction: UserInstruction = UserInstruction(
-        context=(tree_english_alice_talk, tree_english_cat_talk),
-        user=tree_english_alice_talk,
-        final=token_continue
-    )
-    
-    # Add guardrail if requested
-    if add_guardrail:
-        guardrail: Guardrail = Guardrail(
-            good_prompt="Questions about the story characters and plot",
-            bad_prompt="Questions about unrelated topics or inappropriate content",
-            bad_output="I can only help with questions about the story."
-        )
-        guardrail.add_sample("tell me about politics")
-        guardrail.add_sample("what's the weather like")
-        guardrail.add_sample("give me personal advice")
-        tree_english_alice_talk.set_guardrail(guardrail)
-    
-    # Add exactly 3 samples
-    # Sample 1
-    sample_1_context_1: Snippet = tree_english_alice_talk.create_snippet(string="I don't much care where", numbers=sample_numbers)
-    sample_1_context_2: Snippet = tree_english_cat_talk.create_snippet(string="Then it doesn't matter which way you go.")
-    sample_1_prompt: str = "Can you tell me a way?"
-    sample_1_output: Snippet = tree_english_alice_talk.create_snippet(string="Oh sure, if you only walk long enough that is a way.", numbers=sample_numbers)
-    
-    user_instruction.add_sample(
-        context_snippets=[sample_1_context_1, sample_1_context_2],
-        prompt=sample_1_prompt,
-        output_snippet=sample_1_output,
-    )
-    
-    # Sample 2
-    sample_2_context_1: Snippet = tree_english_alice_talk.create_snippet(string="But I don't want to go among mad people", numbers=sample_numbers)
-    sample_2_context_2: Snippet = tree_english_cat_talk.create_snippet(string="Oh, you ca, numbers=sample_numbersn't help that, we're all mad here. I'm mad. You are mad.")
-    sample_2_prompt: str = "How do you know I am mad?"
-    sample_2_output: Snippet = tree_english_alice_talk.create_snippet(string="You must be, or you would not have come here.", numbers=sample_numbers)
-    
-    user_instruction.add_sample(
-        context_snippets=[sample_2_context_1, sample_2_context_2],
-        prompt=sample_2_prompt,
-        output_snippet=sample_2_output,
-    )
-    
-    # Sample 3
-    sample_3_context_1: Snippet = tree_english_alice_talk.create_snippet(string="And how do you know that you're mad?", numbers=sample_numbers)
-    sample_3_context_2: Snippet = tree_english_cat_talk.create_snippet(string="To begin with,, numbers=sample_numbers a dog's not mad. You grant that?")
-    sample_3_prompt: str = "I suppose so"
-    sample_3_output: Snippet = tree_english_alice_talk.create_snippet(string="Well, then. You see, a dog growls when it's angry, and wags its tail when it's pleased.", numbers=sample_numbers)
-    
-    user_instruction.add_sample(
-        context_snippets=[sample_3_context_1, sample_3_context_2],
-        prompt=sample_3_prompt,
-        output_snippet=sample_3_output,
-    )
-
-    return user_instruction
-
-
 def create_simple_instruction(add_num_token: bool = False,
-                            add_num_list_token: bool = False, 
+                            add_num_list_token: bool = False,
                             add_guardrail: bool = False) -> SimpleInstruction:
     """Create a simple instruction with conditional tokens and guardrails."""
     # Basic tokens
     token_cat: Token = Token("Cat")
-    token_tree: Token = Token("Tree", 
+    token_tree: Token = Token("Tree",
                              desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
     token_ponder: Token = Token("Ponder")
     token_grin: Token = Token("Grin")
     token_disappear: Token = Token("Disappear", key="🫥")
-    
+
     # Conditional tokens
     tokens_list = [token_tree, token_cat, token_ponder]
-    
+
     sample_numbers = []
-    
+
     if add_num_token:
         token_sentence_length: NumToken = NumToken("SentenceLength", key="📏", min_value=5, max_value=20, desc="Length of a sentence in words")
         tokens_list.append(token_sentence_length)
         sample_numbers.append(10)
-    
+
     if add_num_list_token:
         token_coordinates: NumListToken = NumListToken("Coordinates", key="📍", min_value=-100, max_value=100, length=3, desc="3D coordinates (x, y, z)")
         tokens_list.append(token_coordinates)
         sample_numbers.append([10, 20, 30])
-    
+
     # Create token sets
     cat_pondering: TokenSet = TokenSet(tokens=tuple(tokens_list))
     cat_grinning: TokenSet = TokenSet(tokens=(token_tree, token_cat, token_grin))
-    
+
     # Create simple instruction
     simple_instruction: SimpleInstruction = SimpleInstruction(
-        context=[cat_pondering],
+        context=[cat_pondering, cat_pondering],
         response=cat_grinning,
         final=token_disappear
     )
-    
+
     # Add guardrail if requested
     if add_guardrail:
         guardrail: Guardrail = Guardrail(
@@ -164,7 +75,7 @@ def create_simple_instruction(add_num_token: bool = False,
         guardrail.add_sample("what's the weather like")
         guardrail.add_sample("give me personal advice")
         cat_pondering.set_guardrail(guardrail)
-    
+
     # Add exactly 3 samples
     # Sample 1
     sample_1_context_1: Snippet = cat_pondering.create_snippet(string="Why do I keep vanishing and reappearing so suddenly?", numbers=sample_numbers)
@@ -174,7 +85,7 @@ def create_simple_instruction(add_num_token: bool = False,
         context_snippets=[sample_1_context_1, sample_1_context_2],
         output_snippet=sample_1_output
     )
-    
+
     # Sample 2
     sample_2_context_1: Snippet = cat_pondering.create_snippet(string="What makes me so mysterious?", numbers=sample_numbers)
     sample_2_context_2: Snippet = cat_pondering.create_snippet(string="I find myself questioning the very nature of my existence.", numbers=sample_numbers)
@@ -183,7 +94,7 @@ def create_simple_instruction(add_num_token: bool = False,
         context_snippets=[sample_2_context_1, sample_2_context_2],
         output_snippet=sample_2_output
     )
-    
+
     # Sample 3
     sample_3_context_1: Snippet = cat_pondering.create_snippet(string="Do I really exist when no one is looking?", numbers=sample_numbers)
     sample_3_context_2: Snippet = cat_pondering.create_snippet(string="The branches creak softly as I contemplate this philosophical dilemma.", numbers=sample_numbers)
@@ -194,4 +105,95 @@ def create_simple_instruction(add_num_token: bool = False,
     )
 
     return simple_instruction
+
+
+def create_user_instruction(add_num_token: bool = False,
+                           add_num_list_token: bool = False,
+                           add_guardrail: bool = False) -> UserInstruction:
+    """Create a user instruction with conditional tokens and guardrails."""
+    # Basic tokens
+    token_english: Token = Token("English")
+    token_alice: UserToken = UserToken("Alice")
+    token_cat: Token = Token("Cat")
+    token_tree: Token = Token("Tree",
+                             desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
+    token_talk: Token = Token("Talk")
+    token_continue: Token = Token("Continue")
+
+    # Conditional tokens
+    tokens_list = [token_tree, token_english, token_alice, token_talk]
+
+    sample_numbers = []
+
+    if add_num_token:
+        token_sentence_length: NumToken = NumToken("SentenceLength", key="📏", min_value=5, max_value=20, desc="Length of a sentence in words")
+        tokens_list.append(token_sentence_length)
+        sample_numbers.append(10)
+
+    if add_num_list_token:
+        token_coordinates: NumListToken = NumListToken("Coordinates", key="📍", min_value=-100, max_value=100, length=3, desc="3D coordinates (x, y, z)")
+        tokens_list.append(token_coordinates)
+        sample_numbers.append([10, 20, 30])
+
+    # Create token sets
+    tree_english_alice_talk: TokenSet = TokenSet(tokens=tuple(tokens_list))
+    tree_english_cat_talk: TokenSet = TokenSet(tokens=(token_tree, token_english, token_cat, token_talk))
+
+    # Create user instruction
+    user_instruction: UserInstruction = UserInstruction(
+        context=(tree_english_alice_talk, tree_english_cat_talk),
+        user=tree_english_alice_talk,
+        final=token_continue
+    )
+
+    # Add guardrail if requested
+    if add_guardrail:
+        guardrail: Guardrail = Guardrail(
+            good_prompt="Questions about the story characters and plot",
+            bad_prompt="Questions about unrelated topics or inappropriate content",
+            bad_output="I can only help with questions about the story."
+        )
+        guardrail.add_sample("tell me about politics")
+        guardrail.add_sample("what's the weather like")
+        guardrail.add_sample("give me personal advice")
+        tree_english_alice_talk.set_guardrail(guardrail)
+
+    # Add exactly 3 samples
+    # Sample 1
+    sample_1_context_1: Snippet = tree_english_alice_talk.create_snippet(string="I don't much care where", numbers=sample_numbers)
+    sample_1_context_2: Snippet = tree_english_cat_talk.create_snippet(string="Then it doesn't matter which way you go.")
+    sample_1_prompt: str = "Can you tell me a way?"
+    sample_1_output: Snippet = tree_english_alice_talk.create_snippet(string="Oh sure, if you only walk long enough that is a way.", numbers=sample_numbers)
+
+    user_instruction.add_sample(
+        context_snippets=[sample_1_context_1, sample_1_context_2],
+        prompt=sample_1_prompt,
+        output_snippet=sample_1_output,
+    )
+
+    # Sample 2
+    sample_2_context_1: Snippet = tree_english_alice_talk.create_snippet(string="But I don't want to go among mad people", numbers=sample_numbers)
+    sample_2_context_2: Snippet = tree_english_cat_talk.create_snippet(string="Oh, you ca, numbers=sample_numbersn't help that, we're all mad here. I'm mad. You are mad.")
+    sample_2_prompt: str = "How do you know I am mad?"
+    sample_2_output: Snippet = tree_english_alice_talk.create_snippet(string="You must be, or you would not have come here.", numbers=sample_numbers)
+
+    user_instruction.add_sample(
+        context_snippets=[sample_2_context_1, sample_2_context_2],
+        prompt=sample_2_prompt,
+        output_snippet=sample_2_output,
+    )
+
+    # Sample 3
+    sample_3_context_1: Snippet = tree_english_alice_talk.create_snippet(string="And how do you know that you're mad?", numbers=sample_numbers)
+    sample_3_context_2: Snippet = tree_english_cat_talk.create_snippet(string="To begin with,, numbers=sample_numbers a dog's not mad. You grant that?")
+    sample_3_prompt: str = "I suppose so"
+    sample_3_output: Snippet = tree_english_alice_talk.create_snippet(string="Well, then. You see, a dog growls when it's angry, and wags its tail when it's pleased.", numbers=sample_numbers)
+
+    user_instruction.add_sample(
+        context_snippets=[sample_3_context_1, sample_3_context_2],
+        prompt=sample_3_prompt,
+        output_snippet=sample_3_output,
+    )
+
+    return user_instruction
 
