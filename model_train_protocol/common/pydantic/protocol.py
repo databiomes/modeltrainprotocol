@@ -12,17 +12,17 @@ class TokenInfoModel(BaseModel):
     emoji: str
     num: bool
     user: bool
-    desc: Optional[str] = None
-    special: Optional[str] = None
+    desc: Optional[str]
+    special: Optional[str]
 
 
 class SampleModel(BaseModel):
     """Model for instruction samples."""
     sample: List[str]
-    prompt: Union[str, None]
-    number: Union[int, List[int], List[List[int]]]
+    prompt: Optional[Union[str]]
+    number: Optional[Union[int, List[int], List[List[int]]]]
     result: str
-    value: Union[str, None]
+    value: Optional[str]
 
 
 class InstructionSetModel(BaseModel):
