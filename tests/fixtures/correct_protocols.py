@@ -27,8 +27,7 @@ def add_context_to_protocol(protocol: Protocol) -> None:
         "Alice was not a bit hurt, and she jumped up on to her feet in a moment: she looked up, but it was all dark overhead; before her was another long passage, and the White Rabbit was still in sight, hurrying down it. There was not a moment to be lost: away went Alice like the wind, and was just in time to hear it say, as it turned a corner, \"Oh my ears and whiskers, how late its getting!\" She was close behind it when she turned the corner, but the Rabbit was no longer to be seen: she found herself in a long, low hall, which was lit up by a row of lamps hanging from the roof.")
 
 def create_simple_instruction(add_num_token: bool = False,
-                            add_num_list_token: bool = False,
-                            add_guardrail: bool = False) -> SimpleInstruction:
+                            add_num_list_token: bool = False) -> SimpleInstruction:
     """Create a simple instruction with conditional tokens and guardrails."""
     # Basic tokens
     token_cat: Token = Token("Cat")
@@ -63,18 +62,6 @@ def create_simple_instruction(add_num_token: bool = False,
         response=cat_grinning,
         final=token_disappear
     )
-
-    # Add guardrail if requested
-    if add_guardrail:
-        guardrail: Guardrail = Guardrail(
-            good_prompt="Questions about the story characters and plot",
-            bad_prompt="Questions about unrelated topics or inappropriate content",
-            bad_output="I can only help with questions about the story."
-        )
-        guardrail.add_sample("tell me about politics")
-        guardrail.add_sample("what's the weather like")
-        guardrail.add_sample("give me personal advice")
-        cat_pondering.set_guardrail(guardrail)
 
     # Add exactly 3 samples
     # Sample 1
