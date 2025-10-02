@@ -3,6 +3,7 @@ Unit tests for the Guardrail class.
 """
 import pytest
 from model_train_protocol.common.guardrails.Guardrail import Guardrail
+from tests.fixtures.test_tokens import SIMPLE_TOKENSET, USER_TOKENSET
 
 
 class TestGuardrail:
@@ -383,3 +384,24 @@ class TestGuardrail:
         assert len(formatted) == 4
         assert formatted[3] == ["Modified bad sample one", "Bad sample two", "Bad sample three", "Additional bad sample"]
 
+    def test_guardrail_assignment_simple_tokenset(self):
+        """Tests adding a guardrail to a simple tokenset"""
+        from tests.fixtures.test_tokens import SIMPLE_TOKENSET
+
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        with pytest.raises(ValueError):
+            SIMPLE_TOKENSET.set_guardrail(guardrail)
+
+    def test_guardrail_assignment_user_tokenset(self):
+        """Tests adding a guardrail to a user tokenset"""
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        USER_TOKENSET.set_guardrail(guardrail)
+        assert USER_TOKENSET.guardrail == guardrail
