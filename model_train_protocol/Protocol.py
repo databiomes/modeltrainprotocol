@@ -52,6 +52,9 @@ class Protocol:
         if instruction in self.instructions:
             raise ValueError("Instruction already added to the protocol.")
 
+        if len(instruction.samples) == 0:
+            raise ValueError("Instruction must have at least three samples.")
+
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
             if not len(sample.context) == self.context_lines:
