@@ -1,30 +1,350 @@
 """
 Sample token data for testing.
 """
+import pytest
 from typing import Dict, List, Any, Union, Tuple
 from model_train_protocol import Token, UserToken, NumToken, NumListToken, TokenSet
 
-TOKEN_ENGLISH = Token("English")
 
-# Characters
+# Basic token fixtures
+@pytest.fixture
+def token_english() -> Token:
+    """English token fixture."""
+    return Token("English")
+
+
+@pytest.fixture
+def token_alice() -> UserToken:
+    """Alice user token fixture."""
+    return UserToken("Alice")
+
+
+@pytest.fixture
+def token_cat() -> Token:
+    """Cat token fixture."""
+    return Token("Cat")
+
+
+@pytest.fixture
+def token_tree() -> Token:
+    """Tree token fixture."""
+    return Token("Tree", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
+
+
+@pytest.fixture
+def token_talk() -> Token:
+    """Talk token fixture."""
+    return Token("Talk")
+
+
+@pytest.fixture
+def token_continue() -> Token:
+    """Continue token fixture."""
+    return Token("Continue")
+
+
+@pytest.fixture
+def token_sentence_length() -> NumToken:
+    """Sentence length numeric token fixture."""
+    return NumToken("SentenceLength", min_value=1, max_value=20, desc="The number of words in the sentence, between 1 and 20.")
+
+
+@pytest.fixture
+def token_coordinates() -> NumListToken:
+    """Coordinates NumList token fixture."""
+    return NumListToken("Coordinates", min_value=-100, max_value=100, length=3, desc="3D coordinates (x, y, z)")
+
+
+# Additional token fixtures for comprehensive testing
+@pytest.fixture
+def token_result() -> Token:
+    """Result token fixture."""
+    return Token("Result", key="📊")
+
+
+@pytest.fixture
+def token_end() -> Token:
+    """End token fixture."""
+    return Token("End", key="🏁")
+
+
+@pytest.fixture
+def token_final() -> Token:
+    """Final token fixture."""
+    return Token("Final", key="🏁")
+
+
+@pytest.fixture
+def token_disappear() -> Token:
+    """Disappear token fixture."""
+    return Token("Disappear", key="🫥")
+
+
+@pytest.fixture
+def token_grin() -> Token:
+    """Grin token fixture."""
+    return Token("Grin", key="😊")
+
+
+@pytest.fixture
+def token_ponder() -> Token:
+    """Ponder token fixture."""
+    return Token("Ponder", key="🤔")
+
+
+@pytest.fixture
+def user_token_user() -> UserToken:
+    """User token fixture."""
+    return UserToken("User", key="👤")
+
+
+@pytest.fixture
+def num_token_count() -> NumToken:
+    """Count numeric token fixture."""
+    return NumToken("Count", key="🔢", min_value=1, max_value=10, desc="Count token")
+
+
+@pytest.fixture
+def num_token_scores() -> NumToken:
+    """Scores numeric token fixture."""
+    return NumToken("Scores", key="⭐", min_value=0, max_value=100, desc="Scores token")
+
+
+@pytest.fixture
+def numlist_token_scores() -> NumListToken:
+    """Scores NumList token fixture."""
+    return NumListToken("Scores", key="⭐", min_value=0, max_value=100, length=3, desc="Scores list token")
+
+
+# Test tokens for various test scenarios
+@pytest.fixture
+def token_test() -> Token:
+    """Basic test token fixture."""
+    return Token("Test", key="🔑", desc="A test token")
+
+
+@pytest.fixture
+def token_test1() -> Token:
+    """Test1 token fixture."""
+    return Token("Test1", key="🔑")
+
+
+@pytest.fixture
+def token_test2() -> Token:
+    """Test2 token fixture."""
+    return Token("Test2", key="🔧")
+
+
+@pytest.fixture
+def token_test3() -> Token:
+    """Test3 token fixture."""
+    return Token("Test3", key="🔨")
+
+
+@pytest.fixture
+def token_token1() -> Token:
+    """Token1 fixture."""
+    return Token("Token1", key="🔑")
+
+
+@pytest.fixture
+def token_token2() -> Token:
+    """Token2 fixture."""
+    return Token("Token2", key="🔧")
+
+
+@pytest.fixture
+def token_token3() -> Token:
+    """Token3 fixture."""
+    return Token("Token3", key="🔨")
+
+
+@pytest.fixture
+def token_basic() -> Token:
+    """Basic token fixture."""
+    return Token("Basic", key="🔑")
+
+
+@pytest.fixture
+def token_visible() -> Token:
+    """Visible token fixture."""
+    return Token("Visible", key="👁️")
+
+
+@pytest.fixture
+def token_public() -> Token:
+    """Public token fixture."""
+    return Token("Public", key="🌐")
+
+
+@pytest.fixture
+def token_secret() -> Token:
+    """Secret token fixture."""
+    return Token("Secret", key="🔒")
+
+
+@pytest.fixture
+def token_hidden() -> Token:
+    """Hidden token fixture."""
+    return Token("Hidden", key="👻")
+
+
+@pytest.fixture
+def token_assistant() -> Token:
+    """Assistant token fixture."""
+    return Token("Assistant", key="🤖")
+
+
+@pytest.fixture
+def token_question() -> Token:
+    """Question token fixture."""
+    return Token("Question", key="❓")
+
+
+@pytest.fixture
+def token_answer() -> Token:
+    """Answer token fixture."""
+    return Token("Answer", key="💬")
+
+
+# Tokens for specific test scenarios
+@pytest.fixture
+def token_unicode() -> Token:
+    """Unicode token fixture."""
+    return Token("Unicode", key="🚀🌟", desc="Unicode description with émojis")
+
+
+@pytest.fixture
+def token_long_desc() -> Token:
+    """Token with long description fixture."""
+    long_desc = "A token with a very long description that explains its purpose in detail and provides comprehensive context for testing purposes."
+    return Token("LongDesc", key="📝", desc=long_desc)
+
+
+@pytest.fixture
+def token_no_key() -> Token:
+    """Token without key fixture."""
+    return Token("NoKey", key=None, desc="A token without key")
+
+
+@pytest.fixture
+def token_no_desc() -> Token:
+    """Token without description fixture."""
+    return Token("NoDesc", key="🔑")
+
+
+@pytest.fixture
+def token_minimal() -> Token:
+    """Minimal token fixture."""
+    return Token("Minimal")
+
+
+@pytest.fixture
+def token_emoji_key() -> Token:
+    """Token with emoji key fixture."""
+    return Token("Emoji", key="🎭", desc="A token with emoji key")
+
+
+@pytest.fixture
+def token_alphanumeric_key() -> Token:
+    """Token with alphanumeric key fixture."""
+    return Token("Alpha", key="abc123", desc="A token with alphanumeric key")
+
+
+@pytest.fixture
+def token_underscore_key() -> Token:
+    """Token with underscore key fixture."""
+    return Token("Underscore", key="test_key", desc="A token with underscore key")
+
+
+@pytest.fixture
+def token_special_chars() -> Token:
+    """Token with special characters fixture."""
+    return Token("Special", key="test@key", desc="A token with special characters in key")
+
+
+@pytest.fixture
+def token_numeric_range() -> NumToken:
+    """Token with wide numeric range fixture."""
+    return NumToken("Range", key="📊", min_value=0, max_value=100, desc="A token with wide numeric range")
+
+
+@pytest.fixture
+def token_single_value() -> NumToken:
+    """Token with single numeric value fixture."""
+    return NumToken("Single", key="1️⃣", min_value=5, max_value=5, desc="A token with single numeric value")
+
+
+# Tokens for protocol workflow tests
+@pytest.fixture
+def token_workflow_tree() -> Token:
+    """Tree token for workflow tests."""
+    return Token("Tree")
+
+
+@pytest.fixture
+def token_workflow_english() -> Token:
+    """English token for workflow tests."""
+    return Token("English")
+
+
+@pytest.fixture
+def token_workflow_cat() -> Token:
+    """Cat token for workflow tests."""
+    return Token("Cat")
+
+
+@pytest.fixture
+def token_workflow_talk() -> Token:
+    """Talk token for workflow tests."""
+    return Token("Talk")
+
+
+@pytest.fixture
+def token_workflow_result() -> Token:
+    """Result token for workflow tests."""
+    return Token("Result")
+
+
+@pytest.fixture
+def token_workflow_end() -> Token:
+    """End token for workflow tests."""
+    return Token("End")
+
+
+@pytest.fixture
+def token_workflow_count() -> NumToken:
+    """Count token for workflow tests."""
+    return NumToken("Count", min_value=1, max_value=10)
+
+
+@pytest.fixture
+def token_workflow_coordinates() -> NumListToken:
+    """Coordinates token for workflow tests."""
+    return NumListToken("Coordinates", min_value=-100, max_value=100, length=3)
+
+
+@pytest.fixture
+def token_workflow_scores() -> NumListToken:
+    """Scores token for workflow tests."""
+    return NumListToken("Scores", min_value=0, max_value=100, length=3)
+
+
+@pytest.fixture
+def user_token_workflow() -> UserToken:
+    """User token for workflow tests."""
+    return UserToken("User")
+
+
+# Legacy token constants for backward compatibility
+TOKEN_ENGLISH = Token("English")
 TOKEN_ALICE = UserToken("Alice")
 TOKEN_CAT = Token("Cat")
-
-# Scenes
-TOKEN_TREE = Token("Tree",
-                   desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
-# Actions
+TOKEN_TREE = Token("Tree", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
 TOKEN_TALK = Token("Talk")
-
-# Result
 TOKEN_CONTINUE = Token("Continue")
-
-# Num Tokens
-TOKEN_SENTENCE_LENGTH = NumToken("SentenceLength", min_value=1, max_value=20,
-                           desc="The number of words in the sentence, between 1 and 20.")
-
-TOKEN_COORDINATES: NumListToken = NumListToken("Coordinates", min_value=-100, max_value=100, length=3,
-                                               desc="3D coordinates (x, y, z)")
+TOKEN_SENTENCE_LENGTH = NumToken("SentenceLength", min_value=1, max_value=20, desc="The number of words in the sentence, between 1 and 20.")
+TOKEN_COORDINATES = NumListToken("Coordinates", min_value=-100, max_value=100, length=3, desc="3D coordinates (x, y, z)")
 
 # Create the token sets for the instructions
 SIMPLE_TOKENSET = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_CAT, TOKEN_TALK))
