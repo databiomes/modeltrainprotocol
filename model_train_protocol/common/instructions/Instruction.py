@@ -170,8 +170,8 @@ class Instruction(ABC):
         Assert value is provided if self.final is a number Token, else assert value is None
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number
         """
-        if isinstance(self.final, NumToken) and not isinstance(value, NumToken):
-            raise ValueError("Value must be provided as a number when final token is a NumToken.")
+        if isinstance(self.final, NumToken) and not isinstance(value, Union[int, float]):
+            raise ValueError("Value must be provided as an int or float when final token is a NumToken.")
         elif isinstance(self.final, NumListToken) and not isinstance(value, list):
             raise ValueError("Value must be provided as a list of numbers when final token is a NumListToken.")
         elif not isinstance(self.final, (NumToken, NumListToken)) and value is not None:
