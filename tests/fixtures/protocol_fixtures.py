@@ -20,19 +20,47 @@ def basic_simple_protocol(simple_workflow_instruction_with_samples) -> Protocol:
     
     return protocol
 
+@pytest.fixture
+def basic_simple_protocol_with_guardrail(simple_workflow_instruction_with_samples_with_guardrail) -> Protocol:
+    """Basic protocol with simple instruction."""
+    protocol = Protocol("basic_simple", instruction_context_snippets=2, encrypt=False)
+
+    # Add context
+    protocol.add_context("This is a basic context line.")
+    protocol.add_context("This is a second basic context line.")
+
+    # Add instruction
+    protocol.add_instruction(simple_workflow_instruction_with_samples_with_guardrail)
+
+    return protocol
+
 
 @pytest.fixture
 def basic_user_protocol(user_workflow_instruction_with_samples) -> Protocol:
     """Basic protocol with user instruction."""
     protocol = Protocol("basic_user", instruction_context_snippets=2, encrypt=False)
-    
+
     # Add context
     protocol.add_context("This is a user context line.")
     protocol.add_context("This is a second user context line.")
-    
+
     # Add instruction
     protocol.add_instruction(user_workflow_instruction_with_samples)
-    
+
+    return protocol
+
+@pytest.fixture
+def basic_user_protocol_with_guardrail(user_workflow_instruction_with_samples_and_guardrail) -> Protocol:
+    """Basic protocol with simple instruction."""
+    protocol = Protocol("basic_simple", instruction_context_snippets=2, encrypt=False)
+
+    # Add context
+    protocol.add_context("This is a basic context line.")
+    protocol.add_context("This is a second basic context line.")
+
+    # Add instruction
+    protocol.add_instruction(user_workflow_instruction_with_samples_and_guardrail)
+
     return protocol
 
 

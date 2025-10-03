@@ -189,7 +189,7 @@ class TestBasicUserProtocolJSON:
         # User instruction should have prompts
         assert len(sample["prompt"]) > 0
 
-    def test_basic_user_protocol_guardrails(self, basic_user_protocol):
+    def test_basic_user_protocol_empty_guardrails(self, basic_user_protocol):
         """Test that guardrails are correctly included."""
         json_output = self._get_json_output(basic_user_protocol)
         
@@ -198,6 +198,18 @@ class TestBasicUserProtocolJSON:
         # Basic user protocol should have no guardrails (except None key)
         assert len(json_output["guardrails"]) == 1
         assert "None" in json_output["guardrails"]
+
+    def test_basic_user_protocol_one_guardrail(self, basic_user_protocol_with_guardrail):
+        """Test that guardrails are correctly included."""
+        json_output = self._get_json_output(basic_user_protocol_with_guardrail)
+
+        assert "guardrails" in json_output
+        assert isinstance(json_output["guardrails"], dict)
+        # Basic user protocol should have no guardrails (except None key)
+        assert len(json_output["guardrails"]) == 2
+        assert "None" in json_output["guardrails"]
+        assert "Tree_English_Alice_Talk_" in json_output["guardrails"]
+        assert isinstance(json_output["guardrails"]["Tree_English_Alice_Talk_"], list)
 
     def test_basic_user_protocol_numbers(self, basic_user_protocol):
         """Test that numbers are correctly included."""
