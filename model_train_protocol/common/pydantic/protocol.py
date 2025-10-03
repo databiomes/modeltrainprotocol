@@ -43,7 +43,7 @@ class GuardrailModel(BaseModel):
     """Model for guardrails configuration."""
     nil: str = Field(default="", alias="None")
 
-    class Config:
+    class ConfigDict:
         extra = "allow"  # Allow extra fields for dynamic attributes
 
     def __getitem__(self, key: str) -> Any:
@@ -68,7 +68,7 @@ class NumberModel(BaseModel):
     """Model for numbers configuration."""
     nil: str = Field(default="", alias="None")
 
-    class Config:
+    class ConfigDict:
         extra = "allow"  # Allow extra fields for dynamic attributes
 
     def __getitem__(self, key: str) -> Any:
@@ -108,7 +108,7 @@ class ProtocolModel(BaseModel):
     numbers: NumberModel
     batches: BatchModel
 
-    class Config:
+    class ConfigDict:
         json_schema_extra = {
             "example": {
                 "name": "cat",
