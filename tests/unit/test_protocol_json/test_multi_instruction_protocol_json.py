@@ -193,6 +193,36 @@ class TestMultiInstructionProtocolJSON:
         expected_special_keys = set(expected_special_tokens.keys())
         assert special_token_keys == expected_special_keys, f"Unexpected special tokens found: {special_token_keys - expected_special_keys}"
 
+    def test_multi_instruction_protocol_tokens_key_value_pairs(self, multi_instruction_protocol):
+        """Test that all items in tokens are proper key-value pairs."""
+        json_output = self._get_json_output(multi_instruction_protocol)
+
+        tokens = json_output["tokens"]
+        
+        # Check that tokens is a dictionary
+        assert isinstance(tokens, dict), "Tokens should be a dictionary"
+        
+        # Check that all items are key-value pairs (string keys with dict values)
+        for token_key, token_value in tokens.items():
+            # Key should be a string
+            assert isinstance(token_key, str), f"Token key '{token_key}' should be a string, got {type(token_key)}"
+            assert len(token_key) > 0, f"Token key should not be empty"
+            
+            # Value should be a dictionary
+            assert isinstance(token_value, dict), f"Token value for '{token_key}' should be a dictionary, got {type(token_value)}"
+            
+            # Token value should have the required fields
+            required_fields = {"emoji", "num", "user", "desc", "special"}
+            actual_fields = set(token_value.keys())
+            assert actual_fields == required_fields, f"Token '{token_key}' has fields {actual_fields}, expected {required_fields}"
+            
+            # Check field types
+            assert isinstance(token_value["emoji"], str), f"Token '{token_key}' emoji should be string"
+            assert isinstance(token_value["num"], (bool, int)), f"Token '{token_key}' num should be bool or int"
+            assert isinstance(token_value["user"], bool), f"Token '{token_key}' user should be bool"
+            assert token_value["desc"] is None or isinstance(token_value["desc"], str), f"Token '{token_key}' desc should be None or string"
+            assert token_value["special"] is None or isinstance(token_value["special"], str), f"Token '{token_key}' special should be None or string"
+
     def test_multi_instruction_protocol_instruction(self, multi_instruction_protocol):
         """Test that instruction structure is correct."""
         json_output = self._get_json_output(multi_instruction_protocol)
