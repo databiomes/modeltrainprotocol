@@ -120,19 +120,19 @@
         }
     },
     "special_tokens": [
-        "Leave_",
-        "🏁",
-        "Appear_",
         "Answer_",
-        "🛑",
-        "🎬",
-        "Vanish_",
-        "Tree_English_Alice_Talk_",
-        "🗒",
-        "Tree_English_Vanish_Cat_Talk_",
-        "🏃",
+        "Appear_",
         "Continue_",
-        "Tree_English_Cat_Talk_"
+        "Leave_",
+        "Tree_English_Alice_Talk_",
+        "Tree_English_Cat_Talk_",
+        "Tree_English_Vanish_Cat_Talk_",
+        "Vanish_",
+        "🎬",
+        "🏁",
+        "🏃",
+        "🗒",
+        "🛑"
     ],
     "instruction": {
         "memory": 3,
