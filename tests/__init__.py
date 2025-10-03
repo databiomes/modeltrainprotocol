@@ -34,7 +34,6 @@ tests/
 ├── fixtures/                      # Test data and fixtures
 │   ├── __init__.py
 │   ├── correct_protocol_utils.py       # Correct protocol examples
-│   ├── incorrect_protocol_utils.py     # Incorrect protocol examples
 │   ├── sample_protocols.py        # Sample protocol data
 │   └── tokens.py            # Sample token data
 

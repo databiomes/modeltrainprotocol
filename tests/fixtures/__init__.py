@@ -4,7 +4,6 @@ Test fixtures and sample data for Model Train Protocol.
 This package contains test fixtures, sample data, and helper functions used across tests:
 
 - correct_protocol_utils.py: Helper functions for creating correct protocol examples
-- incorrect_protocol_utils.py: Helper functions for creating incorrect protocol examples
 - sample_protocols.py: Sample protocol data and comprehensive protocol creation
 - tokens.py: Sample token data and token creation helpers
 
