@@ -13,10 +13,11 @@ from tests.fixtures.samples import *
 from tests.fixtures.instructions import *
 from tests.fixtures.comprehensive_instructions import *
 from tests.fixtures.protocol_workflow_instructions import *
+from tests.fixtures.workflow_context_instructions import *
 from tests.fixtures.tokens import *
 from tests.fixtures.correct_protocol_utils import *
 from tests.fixtures.incorrect_protocol_utils import *
-from tests.fixtures.sample_protocols import *
+from tests.fixtures.protocol_fixtures import *
 
 
 @pytest.fixture
