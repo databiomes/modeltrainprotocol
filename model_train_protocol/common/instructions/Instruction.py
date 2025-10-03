@@ -77,11 +77,11 @@ class Instruction(ABC):
 
     def get_token_sets(self) -> list[TokenSet]:
         """Returns all tokens in the instruction as a list of tuples."""
-        all_tokens: list = []
+        all_tokens_sets: list = []
         for token_set in self.context:
-            all_tokens.append(token_set)
-        all_tokens.append(self.response)
-        return all_tokens
+            all_tokens_sets.append(token_set)
+        all_tokens_sets.append(self.response)
+        return all_tokens_sets
 
     def get_tokens(self) -> list[Token]:
         """Returns all tokens in the instruction as a flat list."""
