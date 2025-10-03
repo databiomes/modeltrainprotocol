@@ -4,6 +4,8 @@ from typing import Sequence
 
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
+from ... import NumToken, NumListToken
+
 
 class Sample:
     """A Sample is a single example of input and output for an Instruction."""
@@ -131,7 +133,7 @@ class Instruction(ABC):
             memory_set.append(token_strings)
         return memory_set
 
-    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet, value: int | float | None = None) -> Sample:
+    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet, value: int | float | list | None = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
         if value is not None:
             if not type(value) == int and not type(value) == float:
@@ -155,13 +157,15 @@ class Instruction(ABC):
             value=value
         )
 
-    def _assert_valid_value(self, value: int | float | None):
+    def _assert_valid_value(self, value: int | float | list | None):
         """
         Assert value is provided if self.final is a number Token, else assert value is None
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number
         """
-        if self.final.num and value is None:
-            raise ValueError("Value must be provided when final token is a number.")
+        if isinstance(self.final, NumToken) and not isinstance(value, NumToken):
+            raise ValueError("Value must be provided as a number when final token is a NumToken.")
+        if isinstance(self.final, NumListToken) and not isinstance(value, list):
+            raise ValueError("Value must be provided as a list of numbers when final token is a NumListToken.")
         if self.final.num and not (isinstance(value, int) or isinstance(value, float)):
             raise TypeError("Value must be an int or float when final token is a number.")
         if not self.final.num and value is not None:
