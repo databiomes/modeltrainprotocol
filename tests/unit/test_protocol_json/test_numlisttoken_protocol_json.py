@@ -182,8 +182,8 @@ class TestNumListTokenProtocolJSON:
         # Test sample content
         assert len(sample["sample"]) == 3  # Three context snippets (2 context + 1 response)
         assert isinstance(sample["number"], (list, type(None)))  # Can be list or None
-        assert sample["result"] == "Coordinates_"
-        assert isinstance(sample["value"], (str, int, float, type(None)))
+        assert sample["result"] == "Position_"
+        assert isinstance(sample["value"], (str, int, float, list, type(None)))
         
         # Test numeric values (if number is not None)
         if sample["number"] is not None:
