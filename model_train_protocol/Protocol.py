@@ -142,13 +142,13 @@ class Protocol:
         Validates that the token's value and key are unique.
         :param token: The Token instance to add.
         """
+        self._assign_key(token=token)
+
         if token in self.tokens:
-            raise ValueError(f"Token value '{token.value}' already used.")
+            raise ValueError(f"Token value {token.value} already used.")
 
         if token.key in self.used_keys:
-            raise ValueError(f"Token key '{token.key}' already used.")
-
-        self._assign_key(token=token)
+            raise ValueError(f"Duplicate token key '{token.key}' has been used in another token.")
 
         self.tokens.add(token)
         self.used_keys.add(token.key)
