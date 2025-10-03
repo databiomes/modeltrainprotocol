@@ -327,7 +327,7 @@ def token_workflow_count() -> NumToken:
 @pytest.fixture
 def token_workflow_coordinates() -> NumListToken:
     """Coordinates token for workflow tests."""
-    return NumListToken("Coordinates", min_value=-100, max_value=100, length=3)
+    return NumListToken("Position", min_value=-100, max_value=100, length=3)
 
 
 @pytest.fixture

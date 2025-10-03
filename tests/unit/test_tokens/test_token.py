@@ -3,6 +3,7 @@ Unit tests for the Token class.
 """
 import pytest
 from model_train_protocol.common.tokens.Token import Token
+from model_train_protocol.common.util import validate_string_set
 
 
 class TestToken:
@@ -280,4 +281,158 @@ class TestToken:
         """Test token key with various invalid characters."""
         with pytest.raises(ValueError, match="Invalid character"):
             Token("Test", key=invalid_key)
+
+
+class TestTokenSubstringValidation:
+    """Test cases for token substring validation."""
+
+    def test_validate_string_set_no_substrings(self):
+        """Test validate_string_set with no substring relationships."""
+        string_set = {"Apple", "Banana", "Cherry", "Date"}
+        # Should not raise any exception
+        validate_string_set(string_set)
+
+    def test_validate_string_set_perfect_substring_raises_error(self):
+        """Test validate_string_set with perfect substring relationships."""
+        # "Dog" should be detected as substring of "Dog_" (first match found)
+        string_set = {"Cat", "Cat_", "Dog", "Dog_"}
+        with pytest.raises(ValueError, match="'Dog' is a substring of 'Dog_'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_case_insensitive_substring(self):
+        """Test validate_string_set with case insensitive substring detection."""
+        # "cat" should be detected as substring of "Cat_" (first match found)
+        string_set = {"cat", "Cat_", "dog", "Dog_"}
+        with pytest.raises(ValueError, match="'cat' is a substring of 'Cat_'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_alphanumeric_only_comparison(self):
+        """Test validate_string_set with alphanumeric-only comparison."""
+        # "Test" should be detected as substring of "Test_123"
+        string_set = {"Test", "Test_123", "Sample", "Sample_456"}
+        with pytest.raises(ValueError, match="'Test' is a substring of 'Test_123'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_emoji_handling(self):
+        """Test validate_string_set with emoji characters."""
+        # Emojis should be preserved in comparison
+        string_set = {"😀", "😀_", "🚀", "🚀_"}
+        with pytest.raises(ValueError, match="'😀' is a substring of '😀_'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_mixed_content(self):
+        """Test validate_string_set with mixed alphanumeric and special characters."""
+        # "Data" should be detected as substring of "Data_456" (first match found)
+        string_set = {"Token", "Token_123", "Data", "Data_456"}
+        with pytest.raises(ValueError, match="'Data' is a substring of 'Data_456'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_special_characters_ignored(self):
+        """Test validate_string_set ignores special characters in comparison."""
+        # "Test" should be detected as substring of "Test@#$%"
+        string_set = {"Test", "Test@#$%", "Sample", "Sample!@#$"}
+        with pytest.raises(ValueError, match="'Test' is a substring of 'Test@#\\$%'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_empty_set(self):
+        """Test validate_string_set with empty set."""
+        string_set = set()
+        # Should not raise any exception
+        validate_string_set(string_set)
+
+    def test_validate_string_set_single_string(self):
+        """Test validate_string_set with single string."""
+        string_set = {"Single"}
+        # Should not raise any exception
+        validate_string_set(string_set)
+
+    def test_validate_string_set_identical_strings(self):
+        """Test validate_string_set with identical strings."""
+        string_set = {"Duplicate", "Duplicate", "Unique"}
+        # Should not raise any exception (identical strings are not substrings)
+        validate_string_set(string_set)
+
+    def test_validate_string_set_reverse_order(self):
+        """Test validate_string_set with longer string first."""
+        # "Short" should be detected as substring of "Short_" (first match found)
+        string_set = {"LongerString_", "LongerString", "Short", "Short_"}
+        with pytest.raises(ValueError, match="'Short' is a substring of 'Short_'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_multiple_substrings(self):
+        """Test validate_string_set with multiple substring relationships."""
+        string_set = {"A", "AB", "ABC", "ABCD"}
+        # Should raise error for the first substring found
+        with pytest.raises(ValueError, match="'A' is a substring of 'AB'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_unicode_characters(self):
+        """Test validate_string_set with unicode characters."""
+        string_set = {"αβγ", "αβγ_", "δεζ", "δεζ_"}
+        with pytest.raises(ValueError, match="'δεζ' is a substring of 'δεζ_'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_numbers_only(self):
+        """Test validate_string_set with numeric strings."""
+        string_set = {"123", "1234", "567", "5678"}
+        with pytest.raises(ValueError, match="'567' is a substring of '5678'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_mixed_case_substring(self):
+        """Test validate_string_set with mixed case substring detection."""
+        string_set = {"test", "TEST_", "sample", "SAMPLE_"}
+        with pytest.raises(ValueError, match="'test' is a substring of 'TEST_'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_complex_patterns(self):
+        """Test validate_string_set with complex alphanumeric patterns."""
+        string_set = {"Token123", "Token123_", "Data456", "Data456_"}
+        with pytest.raises(ValueError, match="'Data456' is a substring of 'Data456_'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_whitespace_handling(self):
+        """Test validate_string_set with whitespace in strings."""
+        # Whitespace should be ignored in comparison
+        string_set = {"Test", "Test ", "Sample", "Sample "}
+        with pytest.raises(ValueError, match="'Test' is a substring of 'Test '"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_punctuation_ignored(self):
+        """Test validate_string_set ignores punctuation in comparison."""
+        string_set = {"Word", "Word.", "Text", "Text!"}
+        with pytest.raises(ValueError, match="'Word' is a substring of 'Word.'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_long_strings(self):
+        """Test validate_string_set with longer strings."""
+        long_string = "ThisIsAVeryLongStringThatShouldNotBeASubstring"
+        longer_string = "ThisIsAVeryLongStringThatShouldNotBeASubstring_"
+        string_set = {long_string, longer_string, "Other", "Other_"}
+        with pytest.raises(ValueError, match="'Other' is a substring of 'Other_'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_edge_case_single_character(self):
+        """Test validate_string_set with single character strings."""
+        string_set = {"A", "AB", "C", "CD"}
+        with pytest.raises(ValueError, match="'A' is a substring of 'AB'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_no_common_prefix(self):
+        """Test validate_string_set with strings that have no common prefix."""
+        string_set = {"Apple", "Banana", "Cherry", "Date"}
+        # Should not raise any exception
+        validate_string_set(string_set)
+
+    def test_validate_string_set_partial_matches_are_substrings(self):
+        """Test validate_string_set with partial matches that are substrings."""
+        string_set = {"Test", "Testing", "Sample", "Sampling"}
+        # "Test" is a substring of "Testing", so should raise error
+        with pytest.raises(ValueError, match="'Test' is a substring of 'Testing'"):
+            validate_string_set(string_set)
+
+    def test_validate_string_set_special_unicode_substring(self):
+        """Test validate_string_set with special unicode substring relationships."""
+        string_set = {"🚀", "🚀_", "🌟", "🌟_"}
+        with pytest.raises(ValueError, match="'🚀' is a substring of '🚀_'"):
+            validate_string_set(string_set)
 
