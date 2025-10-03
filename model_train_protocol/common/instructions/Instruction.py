@@ -139,16 +139,6 @@ class Instruction(ABC):
     def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
                        value: int | float | list[int | float] | None = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
-        if value is not None:
-            if not type(value) == int and not type(value) == float and not type(value) == list:
-                if type(value) == list:
-                    if not all(isinstance(v, (int, float)) for v in value):
-                        raise TypeError("All items in the value list must be int or float.")
-                else:
-                    raise TypeError("Value must be an int or float or list of int/float.")
-        else:
-            value = "None"
-
         all_snippets: list[Snippet] = context_snippets + [output_snippet]
 
         # format sample
