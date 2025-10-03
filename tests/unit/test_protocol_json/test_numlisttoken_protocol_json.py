@@ -177,7 +177,7 @@ class TestNumListTokenProtocolJSON:
         assert isinstance(sample["prompt"], (str, type(None)))
         assert isinstance(sample["number"], (list, type(None)))
         assert isinstance(sample["result"], str)
-        assert isinstance(sample["value"], (str, int, float, type(None)))
+        assert isinstance(sample["value"], (str, int, float, list, type(None)))
         
         # Test sample content
         assert len(sample["sample"]) == 3  # Three context snippets (2 context + 1 response)
