@@ -119,6 +119,82 @@ class TestWorkflowProtocolJSON:
         assert len(json_output["special_tokens"]) > 0
         assert all(isinstance(token, str) for token in json_output["special_tokens"])
 
+    def test_workflow_protocol_special_tokens_unique(self, workflow_protocol):
+        """Test that special tokens are unique with no duplicates."""
+        json_output = self._get_json_output(workflow_protocol)
+
+        special_tokens = json_output["special_tokens"]
+        
+        # Check for duplicates
+        assert len(special_tokens) == len(set(special_tokens)), "Special tokens contain duplicates"
+        
+        # Check that all special tokens are unique
+        seen = set()
+        for token in special_tokens:
+            assert token not in seen, f"Duplicate special token found: {token}"
+            seen.add(token)
+
+    def test_workflow_protocol_special_token_format(self, workflow_protocol):
+        """Test that special tokens have the exact format specified."""
+        json_output = self._get_json_output(workflow_protocol)
+
+        tokens = json_output["tokens"]
+        
+        # Expected special tokens with their exact format
+        expected_special_tokens = {
+            "<BOS>": {
+                "desc": None,
+                "emoji": "🏁",
+                "num": False,
+                "special": "start",
+                "user": False
+            },
+            "<EOS>": {
+                "desc": None,
+                "emoji": "🎬",
+                "num": False,
+                "special": "end",
+                "user": False
+            },
+            "<PAD>": {
+                "desc": None,
+                "emoji": "🗒",
+                "num": False,
+                "special": "pad",
+                "user": False
+            },
+            "<RUN>": {
+                "desc": None,
+                "emoji": "🏃",
+                "num": False,
+                "special": "infer",
+                "user": False
+            },
+            "<UNK>": {
+                "desc": None,
+                "emoji": "🛑",
+                "num": False,
+                "special": "unknown",
+                "user": False
+            }
+        }
+        
+        # Check that all expected special tokens are present
+        for token_key, expected_format in expected_special_tokens.items():
+            assert token_key in tokens, f"Special token {token_key} not found in tokens"
+            
+            actual_token = tokens[token_key]
+            
+            # Check each field matches exactly
+            for field, expected_value in expected_format.items():
+                assert field in actual_token, f"Field {field} missing from {token_key}"
+                assert actual_token[field] == expected_value, f"Field {field} in {token_key} has value {actual_token[field]}, expected {expected_value}"
+        
+        # Check that no unexpected special tokens exist
+        special_token_keys = {key for key, value in tokens.items() if value.get("special") is not None}
+        expected_special_keys = set(expected_special_tokens.keys())
+        assert special_token_keys == expected_special_keys, f"Unexpected special tokens found: {special_token_keys - expected_special_keys}"
+
     def test_workflow_protocol_instruction(self, workflow_protocol):
         """Test that instruction structure is correct."""
         json_output = self._get_json_output(workflow_protocol)
