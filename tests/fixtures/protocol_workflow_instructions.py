@@ -110,15 +110,18 @@ def simple_numlisttoken_workflow_instruction_with_samples(
     # Add samples with 2 context snippets - one from each tokenset
     instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample
+        output_snippet=simple_numlisttoken_response_sample,
+        value=[1, 2, 3]
     )
     instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample
+        output_snippet=simple_numlisttoken_response_sample,
+        value=[4.2, .45, 6.8]
     )
     instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample
+        output_snippet=simple_numlisttoken_response_sample,
+        value=[7, 8, 9]
     )
     
     return instruction
