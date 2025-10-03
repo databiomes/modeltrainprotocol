@@ -3,31 +3,31 @@
         "model_input": {
             "<BOS>": "🏁",
             "0": [
-                "Tree_English_Alice_Talk_: 852964847a70ac50a4b6ecfb\n<string>"
+                "Tree_English_Alice_Talk_: Tree_English_Alice_Talk_\n<string>"
             ],
             "1": [
-                "Tree_English_Vanish_Cat_Talk_: 852964847a70fecd8550f7ddb6ecfb\n",
-                "Tree_English_Cat_Talk_: 852964847a7050f7ddb6ecfb\n"
+                "Tree_English_Cat_Talk_: Tree_English_Cat_Talk_\n",
+                "Tree_English_Vanish_Cat_Talk_: Tree_English_Vanish_Cat_Talk_\n"
             ],
             "2": [
-                "Tree_English_Alice_Talk_: 852964847a70ac50a4b6ecfbUSER PROMPT\n<string>"
+                "Tree_English_Alice_Talk_: Tree_English_Alice_Talk_USER PROMPT\n<string>"
             ],
             "<RUN>": "🏃"
         },
         "model_output": {
             "model_response": "<string>",
             "model_results": {
-                "Answer_": "6c7865",
-                "Appear_": "c4bf26",
-                "Continue_": "7a560c",
-                "Leave_": "0f915e",
-                "Vanish_": "fecd85"
+                "Answer_": "Answer_",
+                "Appear_": "Appear_",
+                "Continue_": "Continue_",
+                "Leave_": "Leave_",
+                "Vanish_": "Vanish_"
             },
             "<EOS>": "🎬"
         }
     },
     "example_usage": {
-        "valid_user_input": "🏁\n852964847a70ac50a4b6ecfb\n<string>\n852964847a70fecd8550f7ddb6ecfb\n<string>\n852964847a70ac50a4b6ecfb\nUSER PROMPT\n🏃\n",
-        "valid_output": "<string>\n6c7865\n🎬"
+        "valid_user_input": "🏁\nTree_English_Alice_Talk_\n<string>\nTree_English_Vanish_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\nUSER PROMPT\n🏃\n",
+        "valid_output": "<string>\nAnswer_\n🎬"
     }
 }

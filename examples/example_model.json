@@ -50,90 +50,89 @@
         },
         "Alice_": {
             "desc": null,
-            "emoji": "ac50a4",
+            "emoji": "Alice_",
             "num": false,
             "special": null,
             "user": true
         },
         "Answer_": {
             "desc": null,
-            "emoji": "6c7865",
+            "emoji": "Answer_",
             "num": false,
             "special": null,
             "user": false
         },
         "Appear_": {
             "desc": null,
-            "emoji": "c4bf26",
+            "emoji": "Appear_",
             "num": false,
             "special": null,
             "user": false
         },
         "Cat_": {
             "desc": null,
-            "emoji": "50f7dd",
+            "emoji": "Cat_",
             "num": false,
             "special": null,
             "user": false
         },
         "Continue_": {
             "desc": null,
-            "emoji": "7a560c",
+            "emoji": "Continue_",
             "num": false,
             "special": null,
             "user": false
         },
         "English_": {
             "desc": null,
-            "emoji": "847a70",
+            "emoji": "English_",
             "num": false,
             "special": null,
             "user": false
         },
         "Leave_": {
             "desc": null,
-            "emoji": "0f915e",
+            "emoji": "Leave_",
             "num": false,
             "special": null,
             "user": false
         },
         "Talk_": {
             "desc": null,
-            "emoji": "b6ecfb",
+            "emoji": "Talk_",
             "num": false,
             "special": null,
             "user": false
         },
         "Tree_": {
             "desc": "Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.",
-            "emoji": "852964",
+            "emoji": "Tree_",
             "num": false,
             "special": null,
             "user": false
         },
         "Vanish_": {
             "desc": null,
-            "emoji": "fecd85",
+            "emoji": "Vanish_",
             "num": false,
             "special": null,
             "user": false
         }
     },
     "special_tokens": [
-        "0f915e",
-        "6c7865",
-        "7a560c",
-        "852964847a7050f7ddb6ecfb",
-        "852964847a70ac50a4b6ecfb",
-        "852964847a70fecd8550f7ddb6ecfb",
-        "c4bf26",
-        "fecd85",
-        "🎬",
-        "🏁",
+        "Answer_",
+        "Continue_",
+        "Tree_English_Cat_Talk_",
+        "Tree_English_Vanish_Cat_Talk_",
         "🏃",
         "🗒",
         "🛑",
-        "🛑"
+        "🎬",
+        "🏁",
+        "Leave_",
+        "Tree_English_Alice_Talk_",
+        "Appear_",
+        "Vanish_"
     ],
     "instruction": {
         "memory": 3,
