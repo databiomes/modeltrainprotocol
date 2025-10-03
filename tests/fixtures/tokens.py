@@ -65,166 +65,166 @@ def token_scores() -> NumListToken:
 @pytest.fixture
 def token_result() -> Token:
     """Result token fixture."""
-    return Token("Result", key="📊")
+    return Token("Result")
 
 
 @pytest.fixture
 def token_end() -> Token:
     """End token fixture."""
-    return Token("End", key="🏁")
+    return Token("End")
 
 
 @pytest.fixture
 def token_final() -> Token:
     """Final token fixture."""
-    return Token("Final", key="🏁")
+    return Token("Final")
 
 
 @pytest.fixture
 def token_disappear() -> Token:
     """Disappear token fixture."""
-    return Token("Disappear", key="🫥")
+    return Token("Disappear")
 
 
 @pytest.fixture
 def token_grin() -> Token:
     """Grin token fixture."""
-    return Token("Grin", key="😊")
+    return Token("Grin")
 
 
 @pytest.fixture
 def token_ponder() -> Token:
     """Ponder token fixture."""
-    return Token("Ponder", key="🤔")
+    return Token("Ponder")
 
 
 @pytest.fixture
 def user_token_user() -> UserToken:
     """User token fixture."""
-    return UserToken("User", key="👤")
+    return UserToken("User")
 
 
 @pytest.fixture
 def num_token_count() -> NumToken:
     """Count numeric token fixture."""
-    return NumToken("Count", key="🔢", min_value=1, max_value=10, desc="Count token")
+    return NumToken("Count", min_value=1, max_value=10, desc="Count token")
 
 
 @pytest.fixture
 def num_token_scores() -> NumToken:
     """Scores numeric token fixture."""
-    return NumToken("Scores", key="⭐", min_value=0, max_value=100, desc="Scores token")
+    return NumToken("Scores", min_value=0, max_value=100, desc="Scores token")
 
 
 @pytest.fixture
 def numlist_token_scores() -> NumListToken:
     """Scores NumList token fixture."""
-    return NumListToken("Scores", key="⭐", min_value=0, max_value=100, length=3, desc="Scores list token")
+    return NumListToken("Scores", min_value=0, max_value=100, length=3, desc="Scores list token")
 
 
 # Test tokens for various test scenarios
 @pytest.fixture
 def token_test() -> Token:
     """Basic test token fixture."""
-    return Token("Test", key="🔑", desc="A test token")
+    return Token("Test", desc="A test token")
 
 
 @pytest.fixture
 def token_test1() -> Token:
     """Test1 token fixture."""
-    return Token("Test1", key="🔑")
+    return Token("Test1")
 
 
 @pytest.fixture
 def token_test2() -> Token:
     """Test2 token fixture."""
-    return Token("Test2", key="🔧")
+    return Token("Test2")
 
 
 @pytest.fixture
 def token_test3() -> Token:
     """Test3 token fixture."""
-    return Token("Test3", key="🔨")
+    return Token("Test3")
 
 
 @pytest.fixture
 def token_token1() -> Token:
     """Token1 fixture."""
-    return Token("Token1", key="🔑")
+    return Token("Token1")
 
 
 @pytest.fixture
 def token_token2() -> Token:
     """Token2 fixture."""
-    return Token("Token2", key="🔧")
+    return Token("Token2")
 
 
 @pytest.fixture
 def token_token3() -> Token:
     """Token3 fixture."""
-    return Token("Token3", key="🔨")
+    return Token("Token3")
 
 
 @pytest.fixture
 def token_basic() -> Token:
     """Basic token fixture."""
-    return Token("Basic", key="🔑")
+    return Token("Basic")
 
 
 @pytest.fixture
 def token_visible() -> Token:
     """Visible token fixture."""
-    return Token("Visible", key="👁️")
+    return Token("Visible")
 
 
 @pytest.fixture
 def token_public() -> Token:
     """Public token fixture."""
-    return Token("Public", key="🌐")
+    return Token("Public")
 
 
 @pytest.fixture
 def token_secret() -> Token:
     """Secret token fixture."""
-    return Token("Secret", key="🔒")
+    return Token("Secret")
 
 
 @pytest.fixture
 def token_hidden() -> Token:
     """Hidden token fixture."""
-    return Token("Hidden", key="👻")
+    return Token("Hidden")
 
 
 @pytest.fixture
 def token_assistant() -> Token:
     """Assistant token fixture."""
-    return Token("Assistant", key="🤖")
+    return Token("Assistant")
 
 
 @pytest.fixture
 def token_question() -> Token:
     """Question token fixture."""
-    return Token("Question", key="❓")
+    return Token("Question")
 
 
 @pytest.fixture
 def token_answer() -> Token:
     """Answer token fixture."""
-    return Token("Answer", key="💬")
+    return Token("Answer")
 
 
 # Tokens for specific test scenarios
 @pytest.fixture
 def token_unicode() -> Token:
     """Unicode token fixture."""
-    return Token("Unicode", key="🚀🌟", desc="Unicode description with émojis")
+    return Token("Unicode", desc="Unicode description with émojis")
 
 
 @pytest.fixture
 def token_long_desc() -> Token:
     """Token with long description fixture."""
     long_desc = "A token with a very long description that explains its purpose in detail and provides comprehensive context for testing purposes."
-    return Token("LongDesc", key="📝", desc=long_desc)
+    return Token("LongDesc", desc=long_desc)
 
 
 @pytest.fixture
@@ -236,7 +236,7 @@ def token_no_key() -> Token:
 @pytest.fixture
 def token_no_desc() -> Token:
     """Token without description fixture."""
-    return Token("NoDesc", key="🔑")
+    return Token("NoDesc")
 
 
 @pytest.fixture
@@ -248,7 +248,7 @@ def token_minimal() -> Token:
 @pytest.fixture
 def token_emoji_key() -> Token:
     """Token with emoji key fixture."""
-    return Token("Emoji", key="🎭", desc="A token with emoji key")
+    return Token("Emoji", desc="A token with emoji key")
 
 
 @pytest.fixture
@@ -272,13 +272,13 @@ def token_special_chars() -> Token:
 @pytest.fixture
 def token_numeric_range() -> NumToken:
     """Token with wide numeric range fixture."""
-    return NumToken("Range", key="📊", min_value=0, max_value=100, desc="A token with wide numeric range")
+    return NumToken("Range", min_value=0, max_value=100, desc="A token with wide numeric range")
 
 
 @pytest.fixture
 def token_single_value() -> NumToken:
     """Token with single numeric value fixture."""
-    return NumToken("Single", key="1️⃣", min_value=5, max_value=5, desc="A token with single numeric value")
+    return NumToken("Single", min_value=5, max_value=5, desc="A token with single numeric value")
 
 
 # Tokens for protocol workflow tests
