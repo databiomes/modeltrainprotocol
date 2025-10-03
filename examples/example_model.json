@@ -27,6 +27,13 @@
             "special": "end",
             "user": false
         },
+        "<NON>": {
+            "desc": null,
+            "emoji": "🫙",
+            "num": false,
+            "special": "none",
+            "user": false
+        },
         "<PAD>": {
             "desc": null,
             "emoji": "🗒",
@@ -132,7 +139,8 @@
         "🏁",
         "🏃",
         "🗒",
-        "🛑"
+        "🛑",
+        "🫙"
     ],
     "instruction": {
         "memory": 3,
