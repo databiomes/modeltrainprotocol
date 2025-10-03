@@ -61,6 +61,14 @@ class Instruction(ABC):
         self.response: TokenSet = response
         self.final: Token = final
         self.samples: list[Sample] = []
+        if not isinstance(context, Sequence):
+            raise TypeError("Context must be a sequence of TokenSet instances.")
+        if not all(isinstance(ts, TokenSet) for ts in context):
+            raise TypeError("All items in context must be instances of TokenSet.")
+        if not isinstance(response, TokenSet):
+            raise TypeError("Response must be an instance of TokenSet.")
+        if not isinstance(final, Token):
+            raise TypeError("Final must be an instance of Token.")
 
     @abc.abstractmethod
     def add_sample(self):
