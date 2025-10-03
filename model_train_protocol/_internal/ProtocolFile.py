@@ -6,8 +6,9 @@ from model_train_protocol.common.constants import UNK_TOKEN
 from model_train_protocol.common.instructions import Instruction
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.tokens import TokenSet, SpecialToken
-from model_train_protocol.common.pydantic.protocol import InstructionModel, TokenInfoModel, SampleModel, InstructionSetModel, NumberModel, \
-    BatchModel, ProtocolModel
+from model_train_protocol.common.pydantic.protocol import InstructionModel, TokenInfoModel, SampleModel, \
+    InstructionSetModel, NumberModel, \
+    BatchModel, ProtocolModel, GuardrailModel
 
 
 class ProtocolFile:
@@ -213,10 +214,11 @@ class ProtocolFile:
 
         # Create Batches object
         batches = BatchModel(
-            pretrain=self._batches.pretrain,
-            instruct=self._batches.instruct,
-            judge=self._batches.judge,
-            ppo=self._batches.ppo
+            **self._batches.__dict__
+        )
+
+        guardrails = GuardrailModel(
+            **self._guardrails
         )
 
         # Create ProtocolModel
@@ -226,7 +228,7 @@ class ProtocolFile:
             tokens=token_info_dict,
             special_tokens=self._get_special_token_keys(),
             instruction=instruction,
-            guardrails=self._guardrails,
+            guardrails=guardrails,
             numbers=numbers,
             batches=batches
         )
