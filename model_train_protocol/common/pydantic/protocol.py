@@ -43,8 +43,7 @@ class GuardrailModel(BaseModel):
     """Model for guardrails configuration."""
     nil: str = Field(default="", alias="None")
 
-    class ConfigDict:
-        extra = "allow"  # Allow extra fields for dynamic attributes
+    model_config = {"extra": "allow"}
 
     def __getitem__(self, key: str) -> Any:
         """Get a guardrail rule by key."""
