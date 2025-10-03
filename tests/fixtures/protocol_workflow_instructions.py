@@ -94,3 +94,31 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
     )
     
     return instruction
+
+
+@pytest.fixture
+def simple_numlisttoken_workflow_instruction_with_samples(
+    simple_numlisttoken_tokenset, user_tokenset, simple_numlisttoken_context_sample, user_context_sample, simple_numlisttoken_response_sample, token_workflow_coordinates
+) -> SimpleInstruction:
+    """Simple NumListToken instruction with 2 context lines for workflow tests."""
+    instruction = SimpleInstruction(
+        context=[simple_numlisttoken_tokenset, user_tokenset],
+        response=simple_numlisttoken_tokenset,
+        final=token_workflow_coordinates
+    )
+
+    # Add samples with 2 context snippets - one from each tokenset
+    instruction.add_sample(
+        context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
+        output_snippet=simple_numlisttoken_response_sample
+    )
+    instruction.add_sample(
+        context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
+        output_snippet=simple_numlisttoken_response_sample
+    )
+    instruction.add_sample(
+        context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
+        output_snippet=simple_numlisttoken_response_sample
+    )
+    
+    return instruction
