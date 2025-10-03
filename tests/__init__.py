@@ -36,7 +36,7 @@ tests/
 │   ├── correct_protocol_utils.py       # Correct protocol examples
 │   ├── incorrect_protocol_utils.py     # Incorrect protocol examples
 │   ├── sample_protocols.py        # Sample protocol data
-│   └── test_tokens.py            # Sample token data
+│   └── tokens.py            # Sample token data
 
 To run tests:
 

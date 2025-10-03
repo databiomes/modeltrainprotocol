@@ -7,7 +7,7 @@ import pytest
 
 from model_train_protocol import Protocol, Token, UserToken, TokenSet, SimpleInstruction, UserInstruction, \
     Guardrail
-from tests.fixtures.test_tokens import get_valid_keyless_tokens
+from tests.fixtures.tokens import get_valid_keyless_tokens
 
 
 class TestProtocol:

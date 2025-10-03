@@ -5,7 +5,7 @@ import pytest
 
 from model_train_protocol import TokenSet
 from model_train_protocol.common.guardrails.Guardrail import Guardrail
-from tests.fixtures.test_tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, \
+from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, \
     TOKEN_TALK
 
 
@@ -384,7 +384,7 @@ class TestGuardrail:
 
     def test_guardrail_assignment_simple_tokenset(self):
         """Tests adding a guardrail to a simple tokenset"""
-        from tests.fixtures.test_tokens import SIMPLE_TOKENSET
+        from tests.fixtures.tokens import SIMPLE_TOKENSET
 
         guardrail = Guardrail(
             good_prompt="Good prompt description",
