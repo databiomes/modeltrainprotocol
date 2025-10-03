@@ -22,7 +22,7 @@ class SampleModel(BaseModel):
     prompt: Optional[Union[str]]
     number: Optional[Union[int, List[int], List[List[int]]]]
     result: str
-    value: Optional[str]
+    value: Optional[Union[int, float]]  # Can be string, int, or float
 
 
 class InstructionSetModel(BaseModel):
