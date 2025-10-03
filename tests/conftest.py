@@ -7,6 +7,14 @@ from typing import Generator
 
 import pytest
 
+# Import all individual fixtures so they're available to all tests
+from tests.fixtures.tokensets import *
+from tests.fixtures.samples import *
+from tests.fixtures.tokens import *
+from tests.fixtures.correct_protocol_utils import *
+from tests.fixtures.incorrect_protocol_utils import *
+from tests.fixtures.sample_protocols import *
+
 
 @pytest.fixture
 def temp_directory() -> Generator[Path, None, None]:
