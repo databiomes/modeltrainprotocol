@@ -26,7 +26,7 @@ class TestComprehensiveProtocolJSON:
         """Test that the JSON has the correct top-level structure."""
         # Get the JSON output
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         # Test top-level keys
         assert "name" in json_output
         assert "context" in json_output
@@ -36,22 +36,23 @@ class TestComprehensiveProtocolJSON:
         assert "guardrails" in json_output
         assert "numbers" in json_output
         assert "batches" in json_output
-        
+
         # Test that no unexpected keys are present
-        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers", "batches"}
+        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers",
+                         "batches"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
     def test_comprehensive_protocol_name(self, comprehensive_protocol):
         """Test that the protocol name is correct."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         assert json_output["name"] == "comprehensive"
 
     def test_comprehensive_protocol_context(self, comprehensive_protocol):
         """Test that the context is correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         assert "context" in json_output
         assert isinstance(json_output["context"], list)
         assert len(json_output["context"]) == 2
@@ -60,20 +61,22 @@ class TestComprehensiveProtocolJSON:
     def test_comprehensive_protocol_tokens(self, comprehensive_protocol):
         """Test that tokens are correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         assert "tokens" in json_output
         assert isinstance(json_output["tokens"], dict)
-        
+
         # Check that we have the expected tokens from all instructions
         token_keys = set(json_output["tokens"].keys())
-        expected_tokens = {"Tree_", "English_", "Cat_", "Talk_", "Result_", "Alice_", "Count_", "Scores_", "Coordinates_"}
+        expected_tokens = {"Tree_", "English_", "Cat_", "Talk_", "Result_", "Alice_", "Count_", "Scores_",
+                           "Coordinates_"}
         special_tokens = {"<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"}
-        
+
         # Check that we have at least some expected tokens (not all may be present)
-        assert len(expected_tokens.intersection(token_keys)) > 0, f"Expected at least some of {expected_tokens} to be present in {token_keys}"
+        assert len(expected_tokens.intersection(
+            token_keys)) > 0, f"Expected at least some of {expected_tokens} to be present in {token_keys}"
         # Check that special tokens are present
         assert special_tokens.issubset(token_keys)
-        
+
         # Test token structure
         for token_key, token_info in json_output["tokens"].items():
             assert "emoji" in token_info
@@ -81,7 +84,7 @@ class TestComprehensiveProtocolJSON:
             assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
-            
+
             # Check data types
             assert isinstance(token_info["emoji"], str)
             assert isinstance(token_info["num"], bool)
@@ -92,9 +95,9 @@ class TestComprehensiveProtocolJSON:
     def test_comprehensive_protocol_token_types(self, comprehensive_protocol):
         """Test that token types are correctly set."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         tokens = json_output["tokens"]
-        
+
         # Check specific token types
         for token_key, token_info in tokens.items():
             if token_key == "Alice_":
@@ -112,10 +115,10 @@ class TestComprehensiveProtocolJSON:
     def test_comprehensive_protocol_special_tokens(self, comprehensive_protocol):
         """Test that special tokens are correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         assert "special_tokens" in json_output
         assert isinstance(json_output["special_tokens"], list)
-        
+
         # Should include instruction tokens
         assert len(json_output["special_tokens"]) > 0
         assert all(isinstance(token, str) for token in json_output["special_tokens"])
@@ -123,21 +126,21 @@ class TestComprehensiveProtocolJSON:
     def test_comprehensive_protocol_instruction(self, comprehensive_protocol):
         """Test that instruction structure is correct."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         assert "instruction" in json_output
         instruction = json_output["instruction"]
-        
+
         # Test instruction top-level keys
         assert "memory" in instruction
         assert "sets" in instruction
-        
+
         # Test memory (should be instruction_context_snippets + 1)
         assert instruction["memory"] == 3  # 2 context lines + 1 response line
-        
+
         # Test sets structure
         assert isinstance(instruction["sets"], list)
         assert len(instruction["sets"]) == 3  # Three instruction sets
-        
+
         for instruction_set in instruction["sets"]:
             self._test_instruction_set_structure(instruction_set)
 
@@ -148,24 +151,24 @@ class TestComprehensiveProtocolJSON:
         assert "result" in instruction_set
         assert "samples" in instruction_set
         assert "ppo" in instruction_set
-        
+
         # Test set structure (context tokens)
         assert isinstance(instruction_set["set"], list)
         assert len(instruction_set["set"]) == 3  # Three context lines (2 context + 1 response)
         assert isinstance(instruction_set["set"][0], list)
         assert len(instruction_set["set"][0]) > 0  # Should have tokens
-        
+
         # Test result (should be one of the final tokens)
         assert isinstance(instruction_set["result"], str)
         assert instruction_set["result"] in ["Result_", "Count_", "Scores_", "Coordinates_", "End_"]
-        
+
         # Test samples
         assert isinstance(instruction_set["samples"], list)
         assert len(instruction_set["samples"]) == 3  # Should have 3 samples
-        
+
         for sample in instruction_set["samples"]:
             self._test_sample_structure(sample)
-        
+
         # Test ppo
         assert isinstance(instruction_set["ppo"], list)
 
@@ -177,18 +180,18 @@ class TestComprehensiveProtocolJSON:
         assert "number" in sample
         assert "result" in sample
         assert "value" in sample
-        
+
         # Test sample data types
         assert isinstance(sample["sample"], list)
         assert isinstance(sample["prompt"], (str, type(None)))
         assert isinstance(sample["number"], (list, type(None)))
         assert isinstance(sample["result"], str)
         assert isinstance(sample["value"], (str, int, float, type(None)))
-        
+
         # Test sample content
         assert len(sample["sample"]) == 3  # Three context snippets (2 context + 1 response)
         assert sample["result"] in ["Result_", "Count_", "Scores_", "Coordinates_", "End_"]
-        
+
         # Check numeric values based on instruction type
         if sample["result"] == "Count_":
             assert len(sample["number"]) == 3  # Three numeric values (2 context + 1 response)
@@ -229,22 +232,25 @@ class TestComprehensiveProtocolJSON:
     def test_comprehensive_protocol_guardrails(self, comprehensive_protocol):
         """Test that guardrails are correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         assert "guardrails" in json_output
         assert isinstance(json_output["guardrails"], dict)
-        assert len(json_output["guardrails"]) == 1
+        assert len(json_output["guardrails"]) == 2
         assert "None" in json_output["guardrails"]
+        assert "Tree_English_Alice_Talk_" in json_output["guardrails"]
+        assert isinstance(json_output["guardrails"]["Tree_English_Alice_Talk_"], list)
+        assert len(json_output["guardrails"]["Tree_English_Alice_Talk_"]) == 4
 
     def test_comprehensive_protocol_numbers(self, comprehensive_protocol):
         """Test that numbers are correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         assert "numbers" in json_output
         assert isinstance(json_output["numbers"], dict)
-        
+
         # Comprehensive protocol should have numeric tokens
         assert len(json_output["numbers"]) > 0
-        
+
         # Check specific numeric tokens
         if "Count" in json_output["numbers"]:
             count_info = json_output["numbers"]["Count"]
@@ -254,7 +260,7 @@ class TestComprehensiveProtocolJSON:
             assert count_info["min"] == 1
             assert count_info["max"] == 100
             assert count_info["desc"] == "Count token"
-        
+
         if "Scores" in json_output["numbers"]:
             scores_info = json_output["numbers"]["Scores"]
             assert "min" in scores_info
@@ -265,7 +271,7 @@ class TestComprehensiveProtocolJSON:
             assert scores_info["max"] == 10
             assert scores_info["length"] == 5
             assert scores_info["desc"] == "Scores token"
-        
+
         if "Coordinates" in json_output["numbers"]:
             coords_info = json_output["numbers"]["Coordinates"]
             assert "min" in coords_info
@@ -280,22 +286,22 @@ class TestComprehensiveProtocolJSON:
     def test_comprehensive_protocol_batches(self, comprehensive_protocol):
         """Test that batches are correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         assert "batches" in json_output
         batches = json_output["batches"]
-        
+
         # Test batch structure
         assert "pretrain" in batches
         assert "instruct" in batches
         assert "judge" in batches
         assert "ppo" in batches
-        
+
         # Test batch data types
         assert isinstance(batches["pretrain"], list)
         assert isinstance(batches["instruct"], list)
         assert isinstance(batches["judge"], list)
         assert isinstance(batches["ppo"], list)
-        
+
         # Comprehensive protocol should have no batches
         assert len(batches["pretrain"]) == 0
         assert len(batches["instruct"]) == 0
@@ -305,9 +311,9 @@ class TestComprehensiveProtocolJSON:
     def test_comprehensive_protocol_token_descriptions(self, comprehensive_protocol):
         """Test that token descriptions are correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         tokens = json_output["tokens"]
-        
+
         # Check specific token descriptions
         if "Tree" in tokens:
             assert tokens["Tree"]["desc"] == "A tree token"
@@ -331,12 +337,12 @@ class TestComprehensiveProtocolJSON:
     def test_comprehensive_protocol_instruction_sets_order(self, comprehensive_protocol):
         """Test that instruction sets are in the correct order."""
         json_output = self._get_json_output(comprehensive_protocol)
-        
+
         instruction_sets = json_output["instruction"]["sets"]
-        
+
         # Should have 3 instruction sets
         assert len(instruction_sets) == 3
-        
+
         # Check that we have all expected instruction types
         results = [instruction_set["result"] for instruction_set in instruction_sets]
         expected_results = ["Result_", "Count_", "End_"]
@@ -344,4 +350,3 @@ class TestComprehensiveProtocolJSON:
         # Should contain all expected results (order may vary)
         for expected_result in expected_results:
             assert expected_result in results
-
