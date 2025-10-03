@@ -16,7 +16,7 @@ class Token:
         self._key: str | None = key
         self.desc: str = desc
         self.user: bool = False
-        self.num: bool = False
+        self.num: int = 0
         self.special: str | None = None
         self.validate_value()
         self.validate_key()

@@ -220,9 +220,12 @@ class ProtocolFile:
         # Create TokenInfo objects for each token
         token_info_dict = {}
         for token_value, token_dict in self._tokens.items():
+            num: int = token_dict.get('num', 0)
+            num: bool = True if num >= 1 else False  # Convert to boolean
+            # TODO: Remove this comparison once we differentiate between num and num_list tokens
             token_info = TokenInfoModel(
                 emoji=token_dict.get('emoji', ''),
-                num=token_dict.get('num', False),
+                num=num,
                 user=token_dict.get('user', False),
                 desc=token_dict.get('desc'),
                 special=token_dict.get('special')
