@@ -9,7 +9,9 @@ from ... import NumToken, NumListToken
 
 class Sample:
     """A Sample is a single example of input and output for an Instruction."""
-    def __init__(self, context: list[str], response: str, prompt: str | None, number: list[list[int]], result: Token, value: int | float | None):
+
+    def __init__(self, context: list[str], response: str, prompt: str | None, number: list[list[int]], result: Token,
+                 value: int | float | None):
         self.context: list[str] = context
         self.response: str = response
         self.prompt: str | None = prompt
@@ -27,7 +29,7 @@ class Sample:
             'strings': self.strings,
             'prompt': self.prompt,
             'number': self.number,
-            'result': self.result.value, # We only need the value of the result token
+            'result': self.result.value,  # We only need the value of the result token
             'value': self.value
         }
 
@@ -37,6 +39,7 @@ class Sample:
         if self.value is not None:
             result_str += f"{self.value}"
         return f"Sample(Context: {self.context}, Response: {self.response}, Result: {result_str})"
+
 
 class Instruction(ABC):
     """
@@ -133,11 +136,16 @@ class Instruction(ABC):
             memory_set.append(token_strings)
         return memory_set
 
-    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet, value: int | float | list | None = None) -> Sample:
+    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
+                       value: int | float | list[int | float] | None = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
         if value is not None:
-            if not type(value) == int and not type(value) == float:
-                raise TypeError("Value must be an int or float.")
+            if not type(value) == int and not type(value) == float and not type(value) == list:
+                if type(value) == list:
+                    if not all(isinstance(v, (int, float)) for v in value):
+                        raise TypeError("All items in the value list must be int or float.")
+                else:
+                    raise TypeError("Value must be an int or float or list of int/float.")
         else:
             value = "None"
 
