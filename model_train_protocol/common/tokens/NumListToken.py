@@ -17,5 +17,5 @@ class NumListToken(NumToken):
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         super().__init__(value=value, key=key, min_value=min_value, max_value=max_value, desc=desc)
-        self.num: int = length
+        self.num: bool = True
         self.protocol_representation: str = f"<List of length {length} of numbers between {min_value} and {max_value}>"
