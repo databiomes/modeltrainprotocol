@@ -11,7 +11,7 @@ class TestProtocolWorkflow:
 
     def test_complete_protocol_creation(self, simple_workflow_instruction_with_samples, user_workflow_instruction_with_samples):
         """Test creating a complete protocol with all components using fixtures."""
-        protocol = Protocol("integration_test", context_lines=2)
+        protocol = Protocol("integration_test", instruction_context_snippets=2)
         
         # Add context
         protocol.add_context("This is a test context line 1")
@@ -26,11 +26,11 @@ class TestProtocolWorkflow:
         assert len(protocol.tokens) >= 6  # Should include all tokens
         assert len(protocol.context) == 2
         assert protocol.name == "integration_test"
-        assert protocol.context_lines == 2
+        assert protocol.instruction_context_snippets == 2
 
     def test_protocol_with_numeric_tokens(self, simple_numtoken_workflow_instruction_with_samples):
         """Test creating a protocol with numeric tokens using fixtures."""
-        protocol = Protocol("numeric_test", context_lines=2)
+        protocol = Protocol("numeric_test", instruction_context_snippets=2)
         
         # Add context
         protocol.add_context("This protocol uses numeric tokens.")
@@ -45,7 +45,7 @@ class TestProtocolWorkflow:
 
     def test_protocol_save_and_load_workflow(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test complete save and load workflow using fixtures."""
-        protocol = Protocol("save_test", context_lines=2)
+        protocol = Protocol("save_test", instruction_context_snippets=2)
         
         # Add context
         protocol.add_context("Context line 1")
@@ -68,7 +68,7 @@ class TestProtocolWorkflow:
 
     def test_protocol_with_guardrails_workflow(self, user_workflow_instruction_with_samples):
         """Test protocol workflow with guardrails using fixtures."""
-        protocol = Protocol("guardrail_test", context_lines=2)
+        protocol = Protocol("guardrail_test", instruction_context_snippets=2)
         
         # Add context
         protocol.add_context("This protocol uses guardrails.")
@@ -82,7 +82,7 @@ class TestProtocolWorkflow:
 
     def test_protocol_encryption_workflow(self, simple_workflow_instruction_with_samples):
         """Test protocol workflow with encryption using fixtures."""
-        protocol = Protocol("encryption_test", context_lines=2, encrypt=True)
+        protocol = Protocol("encryption_test", instruction_context_snippets=2, encrypt=True)
         
         # Add context
         protocol.add_context("This protocol uses encryption.")
@@ -97,7 +97,7 @@ class TestProtocolWorkflow:
 
     def test_protocol_unencrypted_workflow(self, simple_workflow_instruction_with_samples):
         """Test protocol workflow without encryption using fixtures."""
-        protocol = Protocol("unencrypted_test", context_lines=2, encrypt=False)
+        protocol = Protocol("unencrypted_test", instruction_context_snippets=2, encrypt=False)
         
         # Add context
         protocol.add_context("This protocol does not use encryption.")
@@ -112,7 +112,7 @@ class TestProtocolWorkflow:
 
     def test_protocol_multiple_instructions_workflow(self, simple_workflow_instruction_with_samples, user_workflow_instruction_with_samples):
         """Test protocol workflow with multiple instructions using fixtures."""
-        protocol = Protocol("multi_instruction_test", context_lines=2)
+        protocol = Protocol("multi_instruction_test", instruction_context_snippets=2)
         
         # Add context
         protocol.add_context("This protocol has multiple instructions.")
@@ -128,7 +128,7 @@ class TestProtocolWorkflow:
 
     def test_protocol_complex_workflow(self, simple_workflow_instruction_with_samples, user_workflow_instruction_with_samples, simple_numtoken_workflow_instruction_with_samples):
         """Test complex protocol workflow with all features using fixtures."""
-        protocol = Protocol("complex_test", context_lines=2)
+        protocol = Protocol("complex_test", instruction_context_snippets=2)
         
         # Add context
         protocol.add_context("This is a complex protocol with all features.")
@@ -144,11 +144,11 @@ class TestProtocolWorkflow:
         assert len(protocol.tokens) >= 8
         assert len(protocol.context) == 2
         assert protocol.name == "complex_test"
-        assert protocol.context_lines == 2
+        assert protocol.instruction_context_snippets == 2
 
     def test_protocol_error_handling_workflow(self):
         """Test protocol workflow with error handling."""
-        protocol = Protocol("error_test", context_lines=2)
+        protocol = Protocol("error_test", instruction_context_snippets=2)
         
         # Add context
         protocol.add_context("This protocol tests error handling.")
@@ -177,7 +177,7 @@ class TestProtocolWorkflow:
 
     def test_protocol_validation_workflow(self, user_workflow_instruction_with_samples):
         """Test protocol workflow with validation using fixtures."""
-        protocol = Protocol("validation_test", context_lines=2)
+        protocol = Protocol("validation_test", instruction_context_snippets=2)
         
         # Add context
         protocol.add_context("This protocol tests validation.")
@@ -189,5 +189,5 @@ class TestProtocolWorkflow:
         assert len(protocol.instructions) == 1
         assert len(protocol.tokens) >= 3
         assert protocol.name == "validation_test"
-        assert protocol.context_lines == 2
+        assert protocol.instruction_context_snippets == 2
 

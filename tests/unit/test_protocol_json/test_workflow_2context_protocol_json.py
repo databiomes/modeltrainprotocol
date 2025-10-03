@@ -15,7 +15,7 @@ class TestWorkflow2ContextProtocolJSON:
         protocol_file = ProtocolFile(
             name=protocol.name,
             context=protocol.context,
-            context_lines=protocol.context_lines,
+            instruction_context_snippets=protocol.instruction_context_snippets,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
             instructions=protocol.instructions
@@ -126,7 +126,7 @@ class TestWorkflow2ContextProtocolJSON:
         assert "memory" in instruction
         assert "sets" in instruction
         
-        # Test memory (should be context_lines + 1)
+        # Test memory (should be instruction_context_snippets + 1)
         assert instruction["memory"] == 3  # 2 context lines + 1 response line
         
         # Test sets structure
@@ -254,11 +254,11 @@ class TestWorkflow2ContextProtocolJSON:
         # Second set should be simple instruction (Result_)
         assert instruction_sets[1]["result"] == "Result_"
 
-    def test_workflow_2context_protocol_context_lines(self, workflow_2context_protocol):
+    def test_workflow_2context_protocol_instruction_context_snippets(self, workflow_2context_protocol):
         """Test that the protocol correctly handles 2 context lines."""
         json_output = self._get_json_output(workflow_2context_protocol)
         
-        # Memory should be context_lines + 1
+        # Memory should be instruction_context_snippets + 1
         assert json_output["instruction"]["memory"] == 3
         
         # Each instruction set should have 3 context lines (actual structure)
@@ -280,7 +280,7 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         protocol_file = ProtocolFile(
             name=protocol.name,
             context=protocol.context,
-            context_lines=protocol.context_lines,
+            instruction_context_snippets=protocol.instruction_context_snippets,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
             instructions=protocol.instructions
@@ -348,7 +348,7 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         assert "instruction" in json_output
         instruction = json_output["instruction"]
         
-        # Test memory (should be context_lines + 1)
+        # Test memory (should be instruction_context_snippets + 1)
         assert instruction["memory"] == 3  # 2 context lines + 1 response line
         
         # Test sets structure

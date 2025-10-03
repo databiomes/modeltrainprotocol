@@ -13,18 +13,18 @@ from .common.util import get_possible_emojis, hash_string, validate_string_set
 class Protocol:
     """Model Training Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, context_lines: int, encrypt: bool = True):
+    def __init__(self, name: str, instruction_context_snippets: int, encrypt: bool = True):
         """
         Initialize the Model Training Protocol (MTP)
 
         :param name: The name of the protocol.
-        :param context_lines: The number of lines in each instruction sample. Must be at least 2.
+        :param instruction_context_snippets: The number of lines in each instruction sample. Must be at least 2.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
-        self.context_lines: int = context_lines  # Number of lines in instruction samples
+        self.instruction_context_snippets: int = instruction_context_snippets  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
-        if self.context_lines < 2:
+        if self.instruction_context_snippets < 2:
             raise ValueError("A minimum of 2 context lines is required for all instructions.")
         self.context: list[str] = []
         self.tokens: set[Token] = set()
@@ -57,9 +57,9 @@ class Protocol:
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            if not len(sample.context) == self.context_lines:
+            if not len(sample.context) == self.instruction_context_snippets:
                 raise ValueError(
-                    f"Sample context lines ({len(sample.context)}) does not match defined context_lines count ({self.context_lines})"
+                    f"Sample context lines ({len(sample.context)}) does not match defined instruction_context_snippets count ({self.instruction_context_snippets})"
                     f"\n{sample}."
                 )
 
@@ -87,7 +87,7 @@ class Protocol:
 
         self._prep_protocol()
         protocol_file: ProtocolFile = ProtocolFile(
-            name=self.name, context=self.context, context_lines=self.context_lines,
+            name=self.name, context=self.context, instruction_context_snippets=self.instruction_context_snippets,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
@@ -111,7 +111,7 @@ class Protocol:
         self._prep_protocol()
         template_file: TemplateFile = TemplateFile(
             instructions=list(self.instructions),
-            context_lines=self.context_lines
+            instruction_context_snippets=self.instruction_context_snippets
         )
 
         print(f"Saving Model Train Protocol Template to {filename}...")

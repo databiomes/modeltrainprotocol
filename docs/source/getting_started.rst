@@ -28,9 +28,9 @@ The first step in creating a model training protocol is to initialize the Protoc
    import model_train_protocol as mtp
 
    # Initialize the protocol
-   protocol = mtp.Protocol(name="my_model", context_lines=2)
+   protocol = mtp.Protocol(name="my_model", instruction_context_snippets=2)
 
-The parameter ``context_lines`` is the number of lines in each instruction sample. This is required and must be at least 2.
+The parameter ``instruction_context_snippets`` is the number of lines in each instruction sample. This is required and must be at least 2.
 
 Basic Example
 -------------
@@ -42,7 +42,7 @@ Here's a simple example of a protocol to train a Chesire Cat model:
    import model_train_protocol as mtp
 
    # Initialize the protocol
-   protocol = mtp.Protocol(name="my_model", context_lines=2)
+   protocol = mtp.Protocol(name="my_model", instruction_context_snippets=2)
 
    # Add context to the protocol
     protocol.add_context("The Cheshire Cat is a fictional character from Lewis Carroll's 'Alice's Adventures in Wonderland'.")

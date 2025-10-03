@@ -166,7 +166,7 @@ class TestSampleDictMethods:
         }
         assert sample_dict == expected_dict
 
-    def test_sample_to_dict_multiple_context_lines(self, simple_instruction_with_samples):
+    def test_sample_to_dict_multiple_instruction_context_snippets(self, simple_instruction_with_samples):
         """Test sample to_dict with multiple context lines using instruction fixtures."""
         # Get the first sample from the instruction
         sample = simple_instruction_with_samples.samples[0]

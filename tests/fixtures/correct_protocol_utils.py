@@ -1,7 +1,7 @@
 from model_train_protocol import Protocol, UserToken, Token, TokenSet, Snippet, UserInstruction, NumToken, NumListToken, \
     Guardrail, SimpleInstruction
 
-BASE_PROTOCOL: Protocol = Protocol(name="base_protocol", context_lines=2, encrypt=False)
+BASE_PROTOCOL: Protocol = Protocol(name="base_protocol", instruction_context_snippets=2, encrypt=False)
 
 def add_context_to_protocol(protocol: Protocol) -> None:
     """Add context to an existing protocol."""

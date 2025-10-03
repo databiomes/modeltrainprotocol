@@ -15,7 +15,7 @@ class TestComprehensiveProtocolJSON:
         protocol_file = ProtocolFile(
             name=protocol.name,
             context=protocol.context,
-            context_lines=protocol.context_lines,
+            instruction_context_snippets=protocol.instruction_context_snippets,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
             instructions=protocol.instructions
@@ -126,7 +126,7 @@ class TestComprehensiveProtocolJSON:
         assert "memory" in instruction
         assert "sets" in instruction
         
-        # Test memory (should be context_lines + 1)
+        # Test memory (should be instruction_context_snippets + 1)
         assert instruction["memory"] == 3  # 2 context lines + 1 response line
         
         # Test sets structure
