@@ -145,7 +145,7 @@ class Protocol:
         self._assign_key(token=token)
 
         if token in self.tokens:
-            raise ValueError(f"Token value {token.value} already used.")
+            raise ValueError(f"Token value {token.value} already used. Duplicate tokens are not allowed.")
 
         if token.key in self.used_keys:
             raise ValueError(f"Duplicate token key '{token.key}' is already used in another token. Duplicate keys are not allowed.")
