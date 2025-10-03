@@ -201,6 +201,9 @@ class TestNumTokenProtocolJSON:
         assert "guardrails" in json_output
         assert isinstance(json_output["guardrails"], dict)
         assert len(json_output["guardrails"]) == 1
+        assert json_output["guardrails"] == json_output["guardrails"] == {
+            "None": ""
+        }
         assert "None" in json_output["guardrails"]
 
     def test_numtoken_protocol_numbers(self, numtoken_protocol):
