@@ -161,7 +161,7 @@ class ProtocolFile:
 
         :return: A sorted list of special token keys.
         """
-        return sorted(self._special_token_keys | self._instruction_token_keys)
+        return list(set(sorted(self._special_token_keys | self._instruction_token_keys)))
 
     @classmethod
     def _alphabetize_dicts_by_keys_after_layer_n(cls, data: dict, n: int = 1):
