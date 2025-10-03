@@ -88,8 +88,8 @@ class ProtocolFile:
             )
             self._instruction.sets.append(instruction_set)
 
-            # Add guardrails from the instruction's TokenSets
-            self._add_guardrails(instruction.get_token_sets())
+            # Add guardrails from the instruction's Response TokenSet
+            self._add_guardrail(instruction.response)
 
             # Add instruction token keys
             for token_set in instruction.get_token_sets():
@@ -103,13 +103,12 @@ class ProtocolFile:
         """Adds an instruction token key to the template."""
         self._instruction_token_keys.add(key)
 
-    def _add_guardrails(self, token_sets: Collection[TokenSet]):
-        """Adds guardrails from TokenSets to the template."""
-        for token_set in token_sets:
-            if token_set.guardrail is None:
-                continue
-            guardrail: Guardrail = token_set.guardrail
-            self._guardrails[token_set.key] = guardrail.format_samples()
+    def _add_guardrail(self, token_set: TokenSet):
+        """Adds guardrail from TokenSet to the template."""
+        if token_set.guardrail is None:
+            return
+        guardrail: Guardrail = token_set.guardrail
+        self._guardrails[token_set.key] = guardrail.format_samples()
 
     @classmethod
     def _rename_protocol_elements(cls, protocol_json: dict):
