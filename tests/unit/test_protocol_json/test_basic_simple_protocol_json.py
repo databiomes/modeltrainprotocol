@@ -171,15 +171,26 @@ class TestBasicSimpleProtocolJSON:
         assert sample["result"] == "Result_"
         assert sample["value"] == "None"  # No value for simple instruction
 
-    def test_basic_simple_protocol_guardrails(self, basic_simple_protocol):
+    def test_basic_simple_protocol_empty_guardrails(self, basic_simple_protocol):
         """Test that guardrails are correctly included."""
         json_output = self._get_json_output(basic_simple_protocol)
         
+        # Basic simple protocol should have no guardrails (except None key)
         assert "guardrails" in json_output
         assert isinstance(json_output["guardrails"], dict)
         assert len(json_output["guardrails"]) == 1
         assert "None" in json_output["guardrails"]
-        # Basic simple protocol should have no guardrails (except None key)
+        assert len(json_output["guardrails"]) == 1
+
+    def test_basic_simple_protocol_one_guardrail(self, basic_simple_protocol_with_guardrail):
+        """Test that guardrails are correctly included."""
+        json_output = self._get_json_output(basic_simple_protocol_with_guardrail)
+
+        # Simple protocols should never have a guardrail (except None key) as the response is from a non-user TokenSet
+        assert "guardrails" in json_output
+        assert isinstance(json_output["guardrails"], dict)
+        assert len(json_output["guardrails"]) == 1
+        assert "None" in json_output["guardrails"]
         assert len(json_output["guardrails"]) == 1
 
     def test_basic_simple_protocol_numbers(self, basic_simple_protocol):
