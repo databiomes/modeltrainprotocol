@@ -26,7 +26,7 @@ class TestNumTokenProtocolJSON:
         """Test that the JSON has the correct top-level structure."""
         # Get the JSON output
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         # Test top-level keys
         assert "name" in json_output
         assert "context" in json_output
@@ -36,22 +36,23 @@ class TestNumTokenProtocolJSON:
         assert "guardrails" in json_output
         assert "numbers" in json_output
         assert "batches" in json_output
-        
+
         # Test that no unexpected keys are present
-        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers", "batches"}
+        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers",
+                         "batches"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
     def test_numtoken_protocol_name(self, numtoken_protocol):
         """Test that the protocol name is correct."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         assert json_output["name"] == "numtoken_protocol"
 
     def test_numtoken_protocol_context(self, numtoken_protocol):
         """Test that the context is correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         assert "context" in json_output
         assert isinstance(json_output["context"], list)
         assert len(json_output["context"]) == 2
@@ -61,15 +62,15 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_tokens(self, numtoken_protocol):
         """Test that tokens are correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         assert "tokens" in json_output
         assert isinstance(json_output["tokens"], dict)
-        
+
         # Check that we have the expected tokens (with underscores)
         token_keys = set(json_output["tokens"].keys())
         expected_tokens = {"Tree_", "English_", "Cat_", "Talk_", "Count_"}
         assert expected_tokens.issubset(token_keys)
-        
+
         # Test token structure
         for token_key, token_info in json_output["tokens"].items():
             assert "emoji" in token_info
@@ -77,7 +78,7 @@ class TestNumTokenProtocolJSON:
             assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
-            
+
             # Check data types
             assert isinstance(token_info["emoji"], str)
             assert isinstance(token_info["num"], bool)
@@ -88,14 +89,14 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_numeric_tokens(self, numtoken_protocol):
         """Test that numeric tokens are correctly identified."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         tokens = json_output["tokens"]
-        
+
         # Count_ should be marked as a numeric token
         if "Count_" in tokens:
             assert tokens["Count_"]["num"] is True
             assert tokens["Count_"]["user"] is False
-        
+
         # Other tokens should not be numeric tokens (excluding special tokens)
         for token_key, token_info in tokens.items():
             if token_key not in ["Count_", "<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"]:
@@ -106,10 +107,10 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_special_tokens(self, numtoken_protocol):
         """Test that special tokens are correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         assert "special_tokens" in json_output
         assert isinstance(json_output["special_tokens"], list)
-        
+
         # Should include instruction tokens
         assert len(json_output["special_tokens"]) > 0
         assert all(isinstance(token, str) for token in json_output["special_tokens"])
@@ -117,21 +118,21 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_instruction(self, numtoken_protocol):
         """Test that instruction structure is correct."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         assert "instruction" in json_output
         instruction = json_output["instruction"]
-        
+
         # Test instruction top-level keys
         assert "memory" in instruction
         assert "sets" in instruction
-        
+
         # Test memory (should be instruction_context_snippets + 1)
         assert instruction["memory"] == 3  # 2 context lines + 1 response line
-        
+
         # Test sets structure
         assert isinstance(instruction["sets"], list)
         assert len(instruction["sets"]) == 1  # One instruction set
-        
+
         instruction_set = instruction["sets"][0]
         self._test_instruction_set_structure(instruction_set)
 
@@ -142,24 +143,24 @@ class TestNumTokenProtocolJSON:
         assert "result" in instruction_set
         assert "samples" in instruction_set
         assert "ppo" in instruction_set
-        
+
         # Test set structure (context tokens)
         assert isinstance(instruction_set["set"], list)
         assert len(instruction_set["set"]) == 3  # Three context lines (2 context + 1 response)
         assert isinstance(instruction_set["set"][0], list)
         assert len(instruction_set["set"][0]) > 0  # Should have tokens
-        
+
         # Test result
         assert isinstance(instruction_set["result"], str)
         assert instruction_set["result"] == "Count_"
-        
+
         # Test samples
         assert isinstance(instruction_set["samples"], list)
         assert len(instruction_set["samples"]) == 3  # Should have 3 samples
-        
+
         for sample in instruction_set["samples"]:
             self._test_sample_structure(sample)
-        
+
         # Test ppo
         assert isinstance(instruction_set["ppo"], list)
 
@@ -171,20 +172,20 @@ class TestNumTokenProtocolJSON:
         assert "number" in sample
         assert "result" in sample
         assert "value" in sample
-        
+
         # Test sample data types
         assert isinstance(sample["sample"], list)
         assert isinstance(sample["prompt"], (str, type(None)))
         assert isinstance(sample["number"], (list, type(None)))
         assert isinstance(sample["result"], str)
         assert isinstance(sample["value"], (str, int, float, type(None)))
-        
+
         # Test sample content
         assert len(sample["sample"]) == 3  # Three context snippets (2 context + 1 response)
         assert isinstance(sample["number"], (list, type(None)))  # Can be list or None
         assert sample["result"] == "Count_"
         assert isinstance(sample["value"], (int, float))  # Should have numeric values
-        
+
         # Test numeric values (if number is not None)
         if sample["number"] is not None:
             assert len(sample["number"]) == 3  # Three context lines
@@ -197,7 +198,7 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_guardrails(self, numtoken_protocol):
         """Test that guardrails are correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         assert "guardrails" in json_output
         assert isinstance(json_output["guardrails"], dict)
         assert len(json_output["guardrails"]) == 1
@@ -209,13 +210,13 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_numbers(self, numtoken_protocol):
         """Test that numbers are correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         assert "numbers" in json_output
         assert isinstance(json_output["numbers"], dict)
-        
+
         # NumToken protocol should have numeric tokens
         assert len(json_output["numbers"]) > 0
-        
+
         # Check that Count token is in numbers
         if "Count" in json_output["numbers"]:
             count_info = json_output["numbers"]["Count"]
@@ -229,22 +230,22 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_batches(self, numtoken_protocol):
         """Test that batches are correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         assert "batches" in json_output
         batches = json_output["batches"]
-        
+
         # Test batch structure
         assert "pretrain" in batches
         assert "instruct" in batches
         assert "judge" in batches
         assert "ppo" in batches
-        
+
         # Test batch data types
         assert isinstance(batches["pretrain"], list)
         assert isinstance(batches["instruct"], list)
         assert isinstance(batches["judge"], list)
         assert isinstance(batches["ppo"], list)
-        
+
         # NumToken protocol should have no batches
         assert len(batches["pretrain"]) == 0
         assert len(batches["instruct"]) == 0
@@ -254,9 +255,9 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_token_descriptions(self, numtoken_protocol):
         """Test that token descriptions are correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         tokens = json_output["tokens"]
-        
+
         # Check specific token descriptions
         if "Tree" in tokens:
             assert tokens["Tree"]["desc"] == "A tree token"
@@ -272,9 +273,9 @@ class TestNumTokenProtocolJSON:
     def test_numtoken_protocol_token_types(self, numtoken_protocol):
         """Test that token types are correctly set."""
         json_output = self._get_json_output(numtoken_protocol)
-        
+
         tokens = json_output["tokens"]
-        
+
         # Count_ should be a numeric token, others should be regular tokens (excluding special tokens)
         for token_key, token_info in tokens.items():
             if token_key == "Count_":

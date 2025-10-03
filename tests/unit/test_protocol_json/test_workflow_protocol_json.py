@@ -26,7 +26,7 @@ class TestWorkflowProtocolJSON:
         """Test that the JSON has the correct top-level structure."""
         # Get the JSON output
         json_output = self._get_json_output(workflow_protocol)
-        
+
         # Test top-level keys
         assert "name" in json_output
         assert "context" in json_output
@@ -36,22 +36,23 @@ class TestWorkflowProtocolJSON:
         assert "guardrails" in json_output
         assert "numbers" in json_output
         assert "batches" in json_output
-        
+
         # Test that no unexpected keys are present
-        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers", "batches"}
+        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers",
+                         "batches"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
     def test_workflow_protocol_name(self, workflow_protocol):
         """Test that the protocol name is correct."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         assert json_output["name"] == "workflow_protocol"
 
     def test_workflow_protocol_context(self, workflow_protocol):
         """Test that the context is correctly included."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         assert "context" in json_output
         assert isinstance(json_output["context"], list)
         assert len(json_output["context"]) == 2
@@ -61,15 +62,15 @@ class TestWorkflowProtocolJSON:
     def test_workflow_protocol_tokens(self, workflow_protocol):
         """Test that tokens are correctly included."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         assert "tokens" in json_output
         assert isinstance(json_output["tokens"], dict)
-        
+
         # Check that we have the expected tokens from workflow instructions
         token_keys = set(json_output["tokens"].keys())
         expected_tokens = {"Tree_", "English_", "Cat_", "Talk_", "Result_", "Alice_", "End_"}
         assert expected_tokens.issubset(token_keys)
-        
+
         # Test token structure
         for token_key, token_info in json_output["tokens"].items():
             assert "emoji" in token_info
@@ -77,7 +78,7 @@ class TestWorkflowProtocolJSON:
             assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
-            
+
             # Check data types
             assert isinstance(token_info["emoji"], str)
             assert isinstance(token_info["num"], bool)
@@ -88,9 +89,9 @@ class TestWorkflowProtocolJSON:
     def test_workflow_protocol_token_types(self, workflow_protocol):
         """Test that token types are correctly set."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         tokens = json_output["tokens"]
-        
+
         # Check specific token types
         for token_key, token_info in tokens.items():
             if token_key in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"]:
@@ -110,10 +111,10 @@ class TestWorkflowProtocolJSON:
     def test_workflow_protocol_special_tokens(self, workflow_protocol):
         """Test that special tokens are correctly included."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         assert "special_tokens" in json_output
         assert isinstance(json_output["special_tokens"], list)
-        
+
         # Should include instruction tokens
         assert len(json_output["special_tokens"]) > 0
         assert all(isinstance(token, str) for token in json_output["special_tokens"])
@@ -121,21 +122,21 @@ class TestWorkflowProtocolJSON:
     def test_workflow_protocol_instruction(self, workflow_protocol):
         """Test that instruction structure is correct."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         assert "instruction" in json_output
         instruction = json_output["instruction"]
-        
+
         # Test instruction top-level keys
         assert "memory" in instruction
         assert "sets" in instruction
-        
+
         # Test memory (should be instruction_context_snippets + 1)
         assert instruction["memory"] == 3  # 2 context lines + 1 response line
-        
+
         # Test sets structure
         assert isinstance(instruction["sets"], list)
         assert len(instruction["sets"]) == 2  # Two instruction sets
-        
+
         for instruction_set in instruction["sets"]:
             self._test_instruction_set_structure(instruction_set)
 
@@ -146,7 +147,7 @@ class TestWorkflowProtocolJSON:
         assert "result" in instruction_set
         assert "samples" in instruction_set
         assert "ppo" in instruction_set
-        
+
         # Test set structure (context tokens)
         assert isinstance(instruction_set["set"], list)
         assert len(instruction_set["set"]) == 3  # Two context lines + one response line
@@ -154,18 +155,18 @@ class TestWorkflowProtocolJSON:
         assert isinstance(instruction_set["set"][1], list)
         assert len(instruction_set["set"][0]) > 0  # Should have tokens
         assert len(instruction_set["set"][1]) > 0  # Should have tokens
-        
+
         # Test result
         assert isinstance(instruction_set["result"], str)
         assert instruction_set["result"] in ["Result_", "End_"]
-        
+
         # Test samples
         assert isinstance(instruction_set["samples"], list)
         assert len(instruction_set["samples"]) == 3  # Should have 3 samples
-        
+
         for sample in instruction_set["samples"]:
             self._test_sample_structure(sample)
-        
+
         # Test ppo
         assert isinstance(instruction_set["ppo"], list)
 
@@ -177,7 +178,7 @@ class TestWorkflowProtocolJSON:
         assert "number" in sample
         assert "result" in sample
         assert "value" in sample
-        
+
         # Test sample data types
         assert isinstance(sample["sample"], list)
         # prompt can be None for simple instructions
@@ -186,7 +187,7 @@ class TestWorkflowProtocolJSON:
         assert sample["number"] is None or isinstance(sample["number"], list)
         assert isinstance(sample["result"], str)
         assert isinstance(sample["value"], str)
-        
+
         # Test sample content
         assert len(sample["sample"]) == 3  # Two context snippets + one response
         # number can be None for non-numeric final tokens
@@ -194,7 +195,7 @@ class TestWorkflowProtocolJSON:
             assert len(sample["number"]) == 0  # No numeric tokens
         assert sample["result"] in ["Result_", "End_"]
         assert sample["value"] == "None"  # No value for workflow instructions
-        
+
         # User instruction should have prompts
         if sample["result"] == "End_":
             assert len(sample["prompt"]) > 0
@@ -209,17 +210,19 @@ class TestWorkflowProtocolJSON:
         # Workflow protocol should have no guardrails
         if isinstance(json_output["guardrails"], dict):
             # Check if the dict is effectively empty (only contains None key with empty value)
-            assert json_output["guardrails"] == {'None': ''}
+            assert json_output["guardrails"] == {
+                "None": ""
+            }
         else:
             assert len(json_output["guardrails"]) == 0
 
     def test_workflow_protocol_numbers(self, workflow_protocol):
         """Test that numbers are correctly included."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         assert "numbers" in json_output
         assert isinstance(json_output["numbers"], dict)
-        
+
         # Workflow protocol should have no numeric tokens
         if json_output["numbers"] == {'None': ''}:
             # Effectively empty
@@ -230,22 +233,22 @@ class TestWorkflowProtocolJSON:
     def test_workflow_protocol_batches(self, workflow_protocol):
         """Test that batches are correctly included."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         assert "batches" in json_output
         batches = json_output["batches"]
-        
+
         # Test batch structure
         assert "pretrain" in batches
         assert "instruct" in batches
         assert "judge" in batches
         assert "ppo" in batches
-        
+
         # Test batch data types
         assert isinstance(batches["pretrain"], list)
         assert isinstance(batches["instruct"], list)
         assert isinstance(batches["judge"], list)
         assert isinstance(batches["ppo"], list)
-        
+
         # Workflow protocol should have no batches
         assert len(batches["pretrain"]) == 0
         assert len(batches["instruct"]) == 0
@@ -255,9 +258,9 @@ class TestWorkflowProtocolJSON:
     def test_workflow_protocol_token_descriptions(self, workflow_protocol):
         """Test that token descriptions are correctly included."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         tokens = json_output["tokens"]
-        
+
         # Check specific token descriptions
         if "Tree" in tokens:
             assert tokens["Tree"]["desc"] == "A tree token"
@@ -277,30 +280,29 @@ class TestWorkflowProtocolJSON:
     def test_workflow_protocol_instruction_sets_order(self, workflow_protocol):
         """Test that instruction sets are in the correct order."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         instruction_sets = json_output["instruction"]["sets"]
-        
+
         # Should have 2 instruction sets
         assert len(instruction_sets) == 2
-        
+
         # First set should be user instruction (End_) - alphabetically before Result_
         assert instruction_sets[0]["result"] == "End_"
-        
+
         # Second set should be simple instruction (Result_)
         assert instruction_sets[1]["result"] == "Result_"
 
     def test_workflow_protocol_instruction_context_snippets(self, workflow_protocol):
         """Test that the protocol correctly handles 2 context lines."""
         json_output = self._get_json_output(workflow_protocol)
-        
+
         # Memory should be instruction_context_snippets + 1
         assert json_output["instruction"]["memory"] == 3
-        
+
         # Each instruction set should have 2 context lines + 1 response line = 3 total lines
         for instruction_set in json_output["instruction"]["sets"]:
             assert len(instruction_set["set"]) == 3
-            
+
             # Each sample should have 2 context snippets + 1 response = 3 total snippets
             for sample in instruction_set["samples"]:
                 assert len(sample["sample"]) == 3
-
