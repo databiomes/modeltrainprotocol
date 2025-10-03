@@ -1,6 +1,6 @@
 import abc
 from abc import ABC
-from typing import Sequence
+from typing import Sequence, Union
 
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
