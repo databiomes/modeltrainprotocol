@@ -164,25 +164,32 @@ class ProtocolFile:
         """
         return sorted(self._special_token_keys | self._instruction_token_keys)
 
-    def _alphabetize_keys(self, data):
+    @classmethod
+    def _alphabetize_after_layer_n(cls, data: dict, n: int = 1):
         """
-        Recursively alphabetizes all dictionary keys in the data structure.
-        
-        :param data: The data structure to alphabetize
-        :return: The data structure with alphabetized keys
+        Alphabetizes the keys in the protocol JSON after a specified layer depth.
+        :param n: The layer depth after which to alphabetize keys. Default is 1.
         """
-        if isinstance(data, dict):
-            # Create a new dictionary with alphabetically sorted keys
-            sorted_dict = {}
-            for key in sorted(data.keys()):
-                sorted_dict[key] = self._alphabetize_keys(data[key])
-            return sorted_dict
-        elif isinstance(data, list):
-            # Recursively process each item in the list
-            return [self._alphabetize_keys(item) for item in data]
-        else:
-            # Return primitive values as-is
-            return data
+        if n < 1:
+            raise ValueError("Layer depth n must be at least 1.")
+
+        def _recursively_alphabetize(data, current_layer):
+            if isinstance(data, dict):
+                if current_layer >= n:
+                    # Alphabetize keys at this layer
+                    sorted_dict = {}
+                    for key in sorted(data.keys()):
+                        sorted_dict[key] = _recursively_alphabetize(data[key], current_layer + 1)
+                    return sorted_dict
+                else:
+                    # Do not alphabetize keys at this layer
+                    return {key: _recursively_alphabetize(value, current_layer + 1) for key, value in data.items()}
+            elif isinstance(data, list):
+                return [_recursively_alphabetize(item, current_layer) for item in data]
+            else:
+                return data
+
+        return _recursively_alphabetize(data, 0)
 
     def to_json(self):
         """Converts the template to a JSON-compatible dictionary using Pydantic models."""
@@ -256,5 +263,5 @@ class ProtocolFile:
         # Convert to JSON and apply backwards compatibility transformations
         json_dict = protocol.model_dump(by_alias=True)
         json_dict = self._rename_protocol_elements(json_dict)
-        json_dict = self._alphabetize_keys(json_dict)
+        json_dict = self._alphabetize_after_layer_n(json_dict, n=2)
         return json_dict
