@@ -351,103 +351,103 @@ def simple_numlisttoken_context_sample(simple_numlisttoken_tokenset) -> Snippet:
 
 
 @pytest.fixture
-def simple_numlisttoken_response_sample(simple_numlisttoken_tokenset):
+def simple_numlisttoken_response_sample(simple_numlisttoken_tokenset) -> Snippet:
     """Simple NumListToken response sample."""
     return simple_numlisttoken_tokenset.create_snippet(string="The cat responds with a grin", number_lists=[[5, 15, 25]])
 
 
 @pytest.fixture
-def user_numlisttoken_context_sample(user_numlisttoken_tokenset):
+def user_numlisttoken_context_sample(user_numlisttoken_tokenset) -> Snippet:
     """User NumListToken context sample."""
     return user_numlisttoken_tokenset.create_snippet(string="Alice asks a question", number_lists=[[1, 2, 3]])
 
 
 @pytest.fixture
-def user_numlisttoken_response_sample(user_numlisttoken_tokenset):
+def user_numlisttoken_response_sample(user_numlisttoken_tokenset) -> Snippet:
     """User NumListToken response sample."""
     return user_numlisttoken_tokenset.create_snippet(string="Alice receives an answer", number_lists=[[4, 5, 6]])
 
 
 @pytest.fixture
-def result_numlisttoken_context_sample(result_numlisttoken_tokenset):
+def result_numlisttoken_context_sample(result_numlisttoken_tokenset) -> Snippet:
     """Result NumListToken context sample."""
     return result_numlisttoken_tokenset.create_snippet(string="The conversation continues", number_lists=[[7, 8, 9]])
 
 
 @pytest.fixture
-def result_numlisttoken_response_sample(result_numlisttoken_tokenset):
+def result_numlisttoken_response_sample(result_numlisttoken_tokenset) -> Snippet:
     """Result NumListToken response sample."""
     return result_numlisttoken_tokenset.create_snippet(string="The result is determined", number_lists=[[10, 11, 12]])
 
 
 @pytest.fixture
-def user_result_numlisttoken_context_sample(user_result_numlisttoken_tokenset):
+def user_result_numlisttoken_context_sample(user_result_numlisttoken_tokenset) -> Snippet:
     """User result NumListToken context sample."""
     return user_result_numlisttoken_tokenset.create_snippet(string="Alice asks for a result", number_lists=[[13, 14, 15]])
 
 
 @pytest.fixture
-def user_result_numlisttoken_response_sample(user_result_numlisttoken_tokenset):
+def user_result_numlisttoken_response_sample(user_result_numlisttoken_tokenset) -> Snippet:
     """User result NumListToken response sample."""
     return user_result_numlisttoken_tokenset.create_snippet(string="Alice gets the result", number_lists=[[16, 17, 18]])
 
 
 @pytest.fixture
-def scores_context_sample(scores_tokenset):
+def scores_context_sample(scores_tokenset) -> Snippet:
     """Scores context sample."""
     return scores_tokenset.create_snippet(string="The scores are calculated", number_lists=[[1, 2, 3, 4, 5]])
 
 
 @pytest.fixture
-def scores_response_sample(scores_tokenset):
+def scores_response_sample(scores_tokenset) -> Snippet:
     """Scores response sample."""
     return scores_tokenset.create_snippet(string="The final scores are ready", number_lists=[[6, 7, 8, 9, 10]])
 
 
 # Mixed numeric samples
 @pytest.fixture
-def simple_mixed_context_sample(simple_mixed_tokenset):
+def simple_mixed_context_sample(simple_mixed_tokenset) -> Snippet:
     """Simple mixed context sample with both NumToken and NumListToken."""
     return simple_mixed_tokenset.create_snippet(string="The cat sits in the tree", numbers=[10], number_lists=[[1, 2, 3]])
 
 
 @pytest.fixture
-def simple_mixed_response_sample(simple_mixed_tokenset):
+def simple_mixed_response_sample(simple_mixed_tokenset) -> Snippet:
     """Simple mixed response sample with both NumToken and NumListToken."""
     return simple_mixed_tokenset.create_snippet(string="The cat responds with a grin", numbers=[8], number_lists=[[4, 5, 6]])
 
 
 @pytest.fixture
-def user_mixed_context_sample(user_mixed_tokenset):
+def user_mixed_context_sample(user_mixed_tokenset) -> Snippet:
     """User mixed context sample with both NumToken and NumListToken."""
     return user_mixed_tokenset.create_snippet(string="Alice asks a question", numbers=[12], number_lists=[[7, 8, 9]])
 
 
 @pytest.fixture
-def user_mixed_response_sample(user_mixed_tokenset):
+def user_mixed_response_sample(user_mixed_tokenset) -> Snippet:
     """User mixed response sample with both NumToken and NumListToken."""
     return user_mixed_tokenset.create_snippet(string="Alice receives an answer", numbers=[15], number_lists=[[10, 11, 12]])
 
 
 @pytest.fixture
-def result_mixed_context_sample(result_mixed_tokenset):
+def result_mixed_context_sample(result_mixed_tokenset) -> Snippet:
     """Result mixed context sample with both NumToken and NumListToken."""
     return result_mixed_tokenset.create_snippet(string="The conversation continues", numbers=[7], number_lists=[[13, 14, 15]])
 
 
 @pytest.fixture
-def result_mixed_response_sample(result_mixed_tokenset):
+def result_mixed_response_sample(result_mixed_tokenset) -> Snippet:
     """Result mixed response sample with both NumToken and NumListToken."""
     return result_mixed_tokenset.create_snippet(string="The result is determined", numbers=[9], number_lists=[[16, 17, 18]])
 
 
 @pytest.fixture
-def user_result_mixed_context_sample(user_result_mixed_tokenset):
+def user_result_mixed_context_sample(user_result_mixed_tokenset) -> Snippet:
     """User result mixed context sample with both NumToken and NumListToken."""
     return user_result_mixed_tokenset.create_snippet(string="Alice asks for a result", numbers=[11], number_lists=[[19, 20, 21]])
 
 
 @pytest.fixture
-def user_result_mixed_response_sample(user_result_mixed_tokenset):
+def user_result_mixed_response_sample(user_result_mixed_tokenset) -> Snippet:
     """User result mixed response sample with both NumToken and NumListToken."""
     return user_result_mixed_tokenset.create_snippet(string="Alice gets the result", numbers=[13], number_lists=[[22, 23, 24]])
