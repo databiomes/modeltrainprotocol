@@ -7,7 +7,7 @@ from model_train_protocol import Protocol
 
 
 @pytest.fixture
-def basic_simple_protocol(simple_instruction_2context_with_samples) -> Protocol:
+def basic_simple_protocol(simple_workflow_instruction_with_samples) -> Protocol:
     """Basic protocol with simple instruction."""
     protocol = Protocol("basic_simple", instruction_context_snippets=2, encrypt=False)
     
@@ -16,13 +16,13 @@ def basic_simple_protocol(simple_instruction_2context_with_samples) -> Protocol:
     protocol.add_context("This is a second basic context line.")
     
     # Add instruction
-    protocol.add_instruction(simple_instruction_2context_with_samples)
+    protocol.add_instruction(simple_workflow_instruction_with_samples)
     
     return protocol
 
 
 @pytest.fixture
-def basic_user_protocol(user_instruction_2context_with_samples) -> Protocol:
+def basic_user_protocol(user_workflow_instruction_with_samples) -> Protocol:
     """Basic protocol with user instruction."""
     protocol = Protocol("basic_user", instruction_context_snippets=2, encrypt=False)
     
@@ -31,13 +31,13 @@ def basic_user_protocol(user_instruction_2context_with_samples) -> Protocol:
     protocol.add_context("This is a second user context line.")
     
     # Add instruction
-    protocol.add_instruction(user_instruction_2context_with_samples)
+    protocol.add_instruction(user_workflow_instruction_with_samples)
     
     return protocol
 
 
 @pytest.fixture
-def numtoken_protocol(numtoken_instruction_2context_with_samples) -> Protocol:
+def numtoken_protocol(simple_numtoken_workflow_instruction_with_samples) -> Protocol:
     """Protocol with NumToken instruction."""
     protocol = Protocol("numtoken_protocol", instruction_context_snippets=2, encrypt=False)
     
@@ -46,13 +46,13 @@ def numtoken_protocol(numtoken_instruction_2context_with_samples) -> Protocol:
     protocol.add_context("This is a second context line for numeric tokens.")
     
     # Add instruction
-    protocol.add_instruction(numtoken_instruction_2context_with_samples)
+    protocol.add_instruction(simple_numtoken_workflow_instruction_with_samples)
     
     return protocol
 
 
 @pytest.fixture
-def numlisttoken_protocol(numlisttoken_instruction_2context_with_samples) -> Protocol:
+def numlisttoken_protocol(simple_numlisttoken_workflow_instruction_with_samples) -> Protocol:
     """Protocol with NumListToken instruction."""
     protocol = Protocol("numlisttoken_protocol", instruction_context_snippets=2, encrypt=False)
     
@@ -61,7 +61,7 @@ def numlisttoken_protocol(numlisttoken_instruction_2context_with_samples) -> Pro
     protocol.add_context("This is a second context line for numeric list tokens.")
     
     # Add instruction
-    protocol.add_instruction(numlisttoken_instruction_2context_with_samples)
+    protocol.add_instruction(simple_numlisttoken_workflow_instruction_with_samples)
     
     return protocol
 
@@ -98,9 +98,9 @@ def user_mixed_protocol(user_mixed_instruction_2context_with_samples) -> Protoco
 
 @pytest.fixture
 def multi_instruction_protocol(
-    simple_instruction_2context_with_samples, 
-    user_instruction_2context_with_samples,
-    numtoken_instruction_2context_with_samples
+    simple_workflow_instruction_with_samples, 
+    user_workflow_instruction_with_samples,
+    simple_numtoken_workflow_instruction_with_samples
 ) -> Protocol:
     """Protocol with multiple instructions."""
     protocol = Protocol("multi_instruction", instruction_context_snippets=2, encrypt=False)
@@ -110,15 +110,15 @@ def multi_instruction_protocol(
     protocol.add_context("This is a second context line for multiple instructions.")
     
     # Add multiple instructions
-    protocol.add_instruction(simple_instruction_2context_with_samples)
-    protocol.add_instruction(user_instruction_2context_with_samples)
-    protocol.add_instruction(numtoken_instruction_2context_with_samples)
+    protocol.add_instruction(simple_workflow_instruction_with_samples)
+    protocol.add_instruction(user_workflow_instruction_with_samples)
+    protocol.add_instruction(simple_numtoken_workflow_instruction_with_samples)
     
     return protocol
 
 
 @pytest.fixture
-def encrypted_protocol(simple_instruction_2context_with_samples) -> Protocol:
+def encrypted_protocol(simple_workflow_instruction_with_samples) -> Protocol:
     """Encrypted protocol."""
     protocol = Protocol("encrypted_protocol", instruction_context_snippets=2, encrypt=True)
     
@@ -127,7 +127,7 @@ def encrypted_protocol(simple_instruction_2context_with_samples) -> Protocol:
     protocol.add_context("This is a second context line for encrypted protocol.")
     
     # Add instruction
-    protocol.add_instruction(simple_instruction_2context_with_samples)
+    protocol.add_instruction(simple_workflow_instruction_with_samples)
     
     return protocol
 
@@ -150,11 +150,9 @@ def workflow_protocol(simple_workflow_instruction_with_samples, user_workflow_in
 
 @pytest.fixture
 def comprehensive_protocol(
-    simple_instruction_2context_with_samples,
-    user_instruction_2context_with_samples,
-    numtoken_instruction_2context_with_samples,
-    numlisttoken_instruction_2context_with_samples,
-    mixed_instruction_2context_with_samples
+    simple_workflow_instruction_with_samples,
+    user_workflow_instruction_with_samples,
+    simple_numtoken_workflow_instruction_with_samples
 ) -> Protocol:
     """Comprehensive protocol with all instruction types."""
     protocol = Protocol("comprehensive", instruction_context_snippets=2, encrypt=False)
@@ -164,11 +162,9 @@ def comprehensive_protocol(
     protocol.add_context("This is a second context line for comprehensive protocol.")
     
     # Add all instruction types
-    protocol.add_instruction(simple_instruction_2context_with_samples)
-    protocol.add_instruction(user_instruction_2context_with_samples)
-    protocol.add_instruction(numtoken_instruction_2context_with_samples)
-    protocol.add_instruction(numlisttoken_instruction_2context_with_samples)
-    protocol.add_instruction(mixed_instruction_2context_with_samples)
+    protocol.add_instruction(simple_workflow_instruction_with_samples)
+    protocol.add_instruction(user_workflow_instruction_with_samples)
+    protocol.add_instruction(simple_numtoken_workflow_instruction_with_samples)
     
     return protocol
 
