@@ -2,17 +2,15 @@
 Instruction fixtures for testing.
 All instructions are created using TokenSet and Sample fixtures.
 """
-from typing import Dict, List, Any
+from typing import Dict, Any
 
 import pytest
 
 from model_train_protocol import SimpleInstruction, UserInstruction
-from model_train_protocol.common.tokens.Token import Token
-from model_train_protocol.common.tokens.NumToken import NumToken
 from model_train_protocol.common.tokens.NumListToken import NumListToken
+from model_train_protocol.common.tokens.NumToken import NumToken
+from model_train_protocol.common.tokens.Token import Token
 from model_train_protocol.common.tokens.UserToken import UserToken
-from model_train_protocol.common.constants import NON_TOKEN
-
 
 # Basic tokens for creating instructions
 TOKEN_TREE = Token("Tree", desc="A tree token")

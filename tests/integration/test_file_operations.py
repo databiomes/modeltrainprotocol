@@ -7,16 +7,15 @@ from pathlib import Path
 import pytest
 
 from model_train_protocol import Protocol
-from tests.fixtures.correct_protocol_utils import create_simple_instruction, create_user_instruction
 
 
 class TestFileOperations:
     """Integration tests for file operations."""
 
-    def test_protocol_save_basic(self, temp_directory):
+    def test_protocol_save_basic(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test basic protocol saving."""
         protocol: Protocol = Protocol(name="file_test", context_lines=2, encrypt=False)
-        protocol.add_instruction(create_simple_instruction())
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
 
         # Save protocol
         protocol.save(name="test_save", path=str(temp_directory))
@@ -31,10 +30,10 @@ class TestFileOperations:
 
         assert data["name"] == "file_test"
 
-    def test_protocol_template_basic(self, temp_directory):
+    def test_protocol_template_basic(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test basic protocol templating."""
         protocol: Protocol = Protocol(name="file_test", context_lines=2, encrypt=False)
-        protocol.add_instruction(create_simple_instruction())
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
 
         # Create template
         protocol.template(path=str(temp_directory))
@@ -51,10 +50,10 @@ class TestFileOperations:
         assert "all_combinations" in data
         assert "example_usage" in data
 
-    def test_protocol_template(self, temp_directory):
+    def test_protocol_template(self, temp_directory, user_workflow_instruction_with_samples):
         """Test protocol template with guardrails."""
         protocol = Protocol("guardrail_test", context_lines=2)
-        protocol.add_instruction(create_user_instruction(add_guardrail=True))
+        protocol.add_instruction(user_workflow_instruction_with_samples)
 
         # Create template
         protocol.template(path=str(temp_directory))
@@ -71,10 +70,10 @@ class TestFileOperations:
         assert "all_combinations" in data
         assert "example_usage" in data
 
-    def test_protocol_save_with_numeric_tokens(self, temp_directory):
+    def test_protocol_save_with_numeric_tokens(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving with numeric tokens."""
         protocol = Protocol("numeric_test", context_lines=2)
-        protocol.add_instruction(create_simple_instruction(add_num_token=True))
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
 
         # Save protocol
         protocol.save(name="numeric_save", path=str(temp_directory))
@@ -90,10 +89,10 @@ class TestFileOperations:
         assert data["name"] == "numeric_test"
         assert len(data["numbers"]) > 0
 
-    def test_protocol_save_encrypted(self, temp_directory):
+    def test_protocol_save_encrypted(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving with encryption."""
         protocol = Protocol("encrypted_test", context_lines=2, encrypt=True)
-        protocol.add_instruction(create_simple_instruction())
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
 
         # Save protocol
         protocol.save(name="encrypted_save", path=str(temp_directory))
@@ -109,10 +108,10 @@ class TestFileOperations:
         assert data["name"] == "encrypted_test"
         assert len(data["tokens"]) >= 2
 
-    def test_protocol_save_unencrypted(self, temp_directory):
+    def test_protocol_save_unencrypted(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving without encryption."""
         protocol = Protocol("unencrypted_test", context_lines=2, encrypt=False)
-        protocol.add_instruction(create_simple_instruction())
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
 
         # Save protocol
         protocol.save(name="unencrypted_save", path=str(temp_directory))
@@ -128,11 +127,11 @@ class TestFileOperations:
         assert data["name"] == "unencrypted_test"
         assert len(data["tokens"]) >= 2
 
-    def test_protocol_save_multiple_instructions(self, temp_directory):
+    def test_protocol_save_multiple_instructions(self, temp_directory, user_workflow_instruction_with_samples, simple_workflow_instruction_with_samples):
         """Test protocol saving with multiple instructions."""
         protocol = Protocol("multi_instruction_test", context_lines=2)
-        protocol.add_instruction(create_user_instruction())
-        protocol.add_instruction(create_simple_instruction())
+        protocol.add_instruction(user_workflow_instruction_with_samples)
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
 
         # Save protocol
         protocol.save(name="multi_save", path=str(temp_directory))
@@ -148,10 +147,10 @@ class TestFileOperations:
         assert data["name"] == "multi_instruction_test"
         assert len(data["instruction"]) == 2
 
-    def test_protocol_save_default_path(self):
+    def test_protocol_save_default_path(self, simple_workflow_instruction_with_samples):
         """Test protocol saving with default path."""
         protocol = Protocol("default_path_test", context_lines=2)
-        protocol.add_instruction(create_simple_instruction())
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
 
         # Save protocol with default path
         protocol.save(name="default_path_save")
@@ -163,10 +162,10 @@ class TestFileOperations:
         # Clean up
         model_file.unlink()
 
-    def test_protocol_template_default_path(self):
+    def test_protocol_template_default_path(self, simple_workflow_instruction_with_samples):
         """Test protocol templating with default path."""
         protocol = Protocol("default_template_test", context_lines=2)
-        protocol.add_instruction(create_simple_instruction())
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
 
         # Create template with default path
         protocol.template()
