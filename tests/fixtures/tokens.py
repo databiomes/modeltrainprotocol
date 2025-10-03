@@ -391,14 +391,14 @@ def get_valid_keyless_tokens() -> Dict[str, Union[Token, UserToken, NumToken, Nu
 def get_invalid_tokens() -> Dict[str, Tuple[Any, ...]]:
     """Get a collection of invalid token configurations for testing."""
     return {
-        'invalid_char_value': ("Test@", "🔑", "Invalid character in value"),
+        'invalid_char_value': ("Test@", "key", "Invalid character in value"),
         'invalid_char_key': ("Test", "Key#", "Invalid character in key"),
-        'empty_value': ("", "🔑", "Empty value"),
-        'none_value': (None, "🔑", "None value"),
+        'empty_value': ("", "key", "Empty value"),
+        'none_value': (None, "key", "None value"),
         'invalid_emoji_key': ("Test", "invalid_emoji", "Invalid emoji in key"),
-        'numeric_invalid_range': ("Count", "🔢", "Invalid numeric range", 10, 5),  # min > max
-        'numeric_negative_min': ("Count", "🔢", "Negative minimum value", -1, 10),
-        'numeric_zero_max': ("Count", "🔢", "Zero maximum value", 1, 0)
+        'numeric_invalid_range': ("Count", "key", "Invalid numeric range", 10, 5),  # min > max
+        'numeric_negative_min': ("Count", "key", "Negative minimum value", -1, 10),
+        'numeric_zero_max': ("Count", "key", "Zero maximum value", 1, 0)
     }
 
 
@@ -431,7 +431,7 @@ def get_token_serialization_data() -> Dict[str, Dict[str, Any]]:
             'token': Token("Serial", desc="Serialization test"),
             'expected_dict': {
                 'value': 'Serial_',
-                'key': '🔧',
+                'key': 'Serial_',
                 'user': False,
                 'num': 0,
                 'desc': 'Serialization test',
@@ -439,10 +439,10 @@ def get_token_serialization_data() -> Dict[str, Dict[str, Any]]:
             }
         },
         'user_token': {
-            'token': UserToken("UserSerial", key="👤", desc="User serialization test"),
+            'token': UserToken("UserSerial", desc="User serialization test"),
             'expected_dict': {
                 'value': 'UserSerial_',
-                'key': '👤',
+                'key': 'Serial_',
                 'user': True,
                 'num': 0,
                 'desc': 'User serialization test',
@@ -450,10 +450,10 @@ def get_token_serialization_data() -> Dict[str, Dict[str, Any]]:
             }
         },
         'numeric_token': {
-            'token': NumToken("NumSerial", key="🔢", min_value=1, max_value=10, desc="Numeric serialization test"),
+            'token': NumToken("NumSerial", min_value=1, max_value=10, desc="Numeric serialization test"),
             'expected_dict': {
                 'value': 'NumSerial_',
-                'key': '🔢',
+                'key': 'Serial_',
                 'user': False,
                 'num': 1,
                 'desc': 'Numeric serialization test',
