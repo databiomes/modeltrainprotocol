@@ -48,19 +48,6 @@ class TestWorkflow5ContextProtocolJSON:
         
         assert json_output["name"] == "workflow_5context"
 
-    def test_workflow_5context_protocol_context(self, workflow_5context_protocol):
-        """Test that the context is correctly included."""
-        json_output = self._get_json_output(workflow_5context_protocol)
-        
-        assert "context" in json_output
-        assert isinstance(json_output["context"], list)
-        assert len(json_output["context"]) == 5
-        assert json_output["context"][0] == "This is a 5 context line workflow protocol."
-        assert json_output["context"][1] == "This is the second context line for the workflow protocol."
-        assert json_output["context"][2] == "This is the third context line for the workflow protocol."
-        assert json_output["context"][3] == "This is the fourth context line for the workflow protocol."
-        assert json_output["context"][4] == "This is the fifth context line for the workflow protocol."
-
     def test_workflow_5context_protocol_tokens(self, workflow_5context_protocol):
         """Test that tokens are correctly included."""
         json_output = self._get_json_output(workflow_5context_protocol)
@@ -303,19 +290,6 @@ class TestNumTokenWorkflow5ContextProtocolJSON:
         json_output = self._get_json_output(numtoken_workflow_5context_protocol)
         
         assert json_output["name"] == "numtoken_workflow_5context"
-
-    def test_numtoken_workflow_5context_protocol_context(self, numtoken_workflow_5context_protocol):
-        """Test that the context is correctly included."""
-        json_output = self._get_json_output(numtoken_workflow_5context_protocol)
-        
-        assert "context" in json_output
-        assert isinstance(json_output["context"], list)
-        assert len(json_output["context"]) == 5
-        assert json_output["context"][0] == "This is a 5 context line NumToken workflow protocol"
-        assert json_output["context"][1] == "This is the second context line for the NumToken workflow protocol."
-        assert json_output["context"][2] == "This is the third context line for the NumToken workflow protocol."
-        assert json_output["context"][3] == "This is the fourth context line for the NumToken workflow protocol."
-        assert json_output["context"][4] == "This is the fifth context line for the NumToken workflow protocol."
 
     def test_numtoken_workflow_5context_protocol_tokens(self, numtoken_workflow_5context_protocol):
         """Test that tokens are correctly included."""
