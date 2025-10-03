@@ -149,7 +149,7 @@ class TestSampleDictMethods:
         scores_instruction.add_sample(
             context_snippets=[scores_context_sample],
             output_snippet=scores_response_sample,
-            value=10  # NumListToken expects a number, not a list
+            value=[85, 90, 95]
         )
         
         # Get the sample from the instruction
