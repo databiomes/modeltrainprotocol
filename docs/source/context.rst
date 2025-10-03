@@ -29,6 +29,18 @@ Adding Context to Your Protocol
 
 Context is added to your protocol using the ``add_context()`` method. You can add multiple context lines to provide comprehensive background information.
 
+
+Instruction Context Snippets
+--------------
+Context snippets, set as instruction_context_snippets when initializing the protocol, refers to how many snippets of context are provided to each Instruction.
+Context snippets does NOT refer to the amount of total context that your model has.
+
+Each Instruction in the protocol must have the same number of context snippets as specified when initializing the protocol.
+
+This is not to be confused with the context added to the protocol using the ``add_context()`` method, which can be any number of lines.
+
+A minimum of 2 instruction_context_snippets are required.
+
 Basic Usage
 ~~~~~~~~~~~
 
@@ -37,9 +49,9 @@ Basic Usage
    import model_train_protocol as mtp
 
    # Initialize the protocol
-   protocol = mtp.Protocol(name="my_model", instruction_sample_lines=3)
+   protocol = mtp.Protocol(name="my_model", instruction_context_snippets=2)
 
-   # Add context lines
+   # Add context
    protocol.add_context("The Cheshire Cat is a fictional character from Lewis Carroll's 'Alice's Adventures in Wonderland'.")
    protocol.add_context("The Cheshire Cat is known for its distinctive mischievous grin and its ability to disappear and reappear at will.")
    protocol.add_context("The Cat often speaks in riddles and philosophical musings, adding a whimsical and enigmatic element to the story.")
@@ -96,7 +108,7 @@ Here's a complete example of setting up context for a creative writing assistant
    import model_train_protocol as mtp
 
    # Initialize the protocol
-   protocol = mtp.Protocol(name="creative_writing_assistant", instruction_sample_lines=3)
+   protocol = mtp.Protocol(name="creative_writing_assistant", instruction_context_snippets=2)
 
    # Add comprehensive context
    protocol.add_context("You are a creative writing assistant specializing in fantasy and science fiction.")

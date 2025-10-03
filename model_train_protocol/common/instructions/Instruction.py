@@ -1,13 +1,17 @@
 import abc
 from abc import ABC
-from typing import Sequence
+from typing import Sequence, Union
 
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
+from ... import NumToken, NumListToken
+
 
 class Sample:
     """A Sample is a single example of input and output for an Instruction."""
-    def __init__(self, context: list[str], response: str, prompt: str | None, number: list[list[int]], result: Token, value: int | float | None):
+
+    def __init__(self, context: list[str], response: str, prompt: str | None, number: list[list[int]], result: Token,
+                 value: int | float | None):
         self.context: list[str] = context
         self.response: str = response
         self.prompt: str | None = prompt
@@ -25,7 +29,7 @@ class Sample:
             'strings': self.strings,
             'prompt': self.prompt,
             'number': self.number,
-            'result': self.result.value, # We only need the value of the result token
+            'result': self.result.value,  # We only need the value of the result token
             'value': self.value
         }
 
@@ -35,6 +39,7 @@ class Sample:
         if self.value is not None:
             result_str += f"{self.value}"
         return f"Sample(Context: {self.context}, Response: {self.response}, Result: {result_str})"
+
 
 class Instruction(ABC):
     """
@@ -61,6 +66,14 @@ class Instruction(ABC):
         self.response: TokenSet = response
         self.final: Token = final
         self.samples: list[Sample] = []
+        if not isinstance(context, Sequence):
+            raise TypeError("Context must be a sequence of TokenSet instances.")
+        if not all(isinstance(ts, TokenSet) for ts in context):
+            raise TypeError("All items in context must be instances of TokenSet.")
+        if not isinstance(response, TokenSet):
+            raise TypeError("Response must be an instance of TokenSet.")
+        if not isinstance(final, Token):
+            raise TypeError("Final must be an instance of Token.")
 
     @abc.abstractmethod
     def add_sample(self):
@@ -69,11 +82,11 @@ class Instruction(ABC):
 
     def get_token_sets(self) -> list[TokenSet]:
         """Returns all tokens in the instruction as a list of tuples."""
-        all_tokens: list = []
+        all_tokens_sets: list = []
         for token_set in self.context:
-            all_tokens.append(token_set)
-        all_tokens.append(self.response)
-        return all_tokens
+            all_tokens_sets.append(token_set)
+        all_tokens_sets.append(self.response)
+        return all_tokens_sets
 
     def get_tokens(self) -> list[Token]:
         """Returns all tokens in the instruction as a flat list."""
@@ -123,14 +136,9 @@ class Instruction(ABC):
             memory_set.append(token_strings)
         return memory_set
 
-    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet, value: int | float | None = None) -> Sample:
+    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
+                       value: int | float | list[int | float] | None = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
-        if value is not None:
-            if not type(value) == int and not type(value) == float:
-                raise TypeError("Value must be an int or float.")
-        else:
-            value = "None"
-
         all_snippets: list[Snippet] = context_snippets + [output_snippet]
 
         # format sample
@@ -147,17 +155,17 @@ class Instruction(ABC):
             value=value
         )
 
-    def _assert_valid_value(self, value: int | float | None):
+    def _assert_valid_value(self, value: int | float | list | None):
         """
         Assert value is provided if self.final is a number Token, else assert value is None
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number
         """
-        if self.final.num and value is None:
-            raise ValueError("Value must be provided when final token is a number.")
-        if self.final.num and not (isinstance(value, int) or isinstance(value, float)):
-            raise TypeError("Value must be an int or float when final token is a number.")
-        if not self.final.num and value is not None:
-            raise ValueError("Value must be None when final token is not a number.")
+        if isinstance(self.final, NumToken) and not isinstance(value, Union[int, float]):
+            raise ValueError("Value must be provided as an int or float when final token is a NumToken.")
+        elif isinstance(self.final, NumListToken) and not isinstance(value, list):
+            raise ValueError("Value must be provided as a list of int or float when final token is a NumListToken.")
+        elif not isinstance(self.final, (NumToken, NumListToken)) and value is not None:
+            raise ValueError("Value must be None when final token is not a NumToken or NumListToken.")
 
     def _validate_snippets_match(self, context_snippets: list[Snippet], output_snippet: Snippet):
         """Validates that all snippets in the samples match their expected token sets."""

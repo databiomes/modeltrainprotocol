@@ -29,7 +29,7 @@ class SimpleInstruction(Instruction):
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
-                   value: int | float | None = None):
+                   value: int | float | list[int | float] | None = None):
         """
         Add a sample to the Instruction.
 

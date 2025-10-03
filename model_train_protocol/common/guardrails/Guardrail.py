@@ -17,6 +17,12 @@ class Guardrail:
             bad_prompt="Quote being spoken that is irrelevant and off-topic with 1-20 words",
             output="I have no idea what you're talking about."
         """
+        if not all(isinstance(param, str) for param in [good_prompt, bad_prompt, bad_output]):
+            raise TypeError("All parameters must be non-empty strings.")
+
+        if any(param == "" for param in [good_prompt, bad_prompt, bad_output]):
+            raise ValueError("All parameters must be non-empty strings.")
+
         self.good_prompt: str = good_prompt
         self.bad_prompt: str = bad_prompt
         self.bad_output: str = bad_output
@@ -31,6 +37,9 @@ class Guardrail:
         Example:
             sample="Tell me a joke about politics."
         """
+        if not isinstance(sample, str) or not sample.strip():
+            raise ValueError("Sample prompt must be a non-empty string.")
+
         if not all(not char.isdigit() for char in sample):
             raise ValueError("Sample prompt cannot contain digits.")
         self.samples.append(sample)

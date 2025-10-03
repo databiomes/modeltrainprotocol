@@ -9,7 +9,7 @@ exclude = ["assets", "examples"]
 
 [project]
 name = "model-train-protocol"
-version = "0.1.4"
+version = "0.1.7"
 description = "Standardized protocol to train models on Databiomes"
 requires-python = ">=3.9"
 readme = {file = "README.md", content-type = "text/markdown"}
@@ -23,10 +23,38 @@ classifiers = [
 ]
 dependencies = [
     "emoji>=2.8.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "pytest-mock>=3.10.0",
+    "pytest-xdist>=3.0.0",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=model_train_protocol",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+    "--cov-report=xml"
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow running tests"
 ]
 
 [project.urls]
 Homepage = "https://pypi.org/project/model-train-protocol/"
-Documentation = "https://model-train-protocol.readthedocs.io/"
+Documentation = "https://modeltrainprotocol.readthedocs.io/"
 Repository = "https://github.com/databiomes/modeltrainprotocol"
 Issues = "https://github.com/databiomes/modeltrainprotocol/issues"
