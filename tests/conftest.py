@@ -11,6 +11,7 @@ import pytest
 from tests.fixtures.tokensets import *
 from tests.fixtures.samples import *
 from tests.fixtures.instructions import *
+from tests.fixtures.comprehensive_instructions import *
 from tests.fixtures.tokens import *
 from tests.fixtures.correct_protocol_utils import *
 from tests.fixtures.incorrect_protocol_utils import *
