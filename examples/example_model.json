@@ -140,38 +140,38 @@
         "sets": [
             {
                 "ppo": [],
-                "result": "Leave_",
+                "result": "Answer_",
                 "samples": [
                     {
                         "number": null,
-                        "prompt": "But I was hoping you might keep me company a bit longer.",
-                        "result": "Leave_",
+                        "prompt": "Here? But there’s no table, no cups, no cakes at all!",
+                        "result": "Answer_",
                         "sample": [
-                            "Do you ever stay in one place, or are you always drifting about?",
-                            "I stay wherever I please, which is nowhere for very long.",
-                            "Companionship is a heavy coat, and I prefer to travel light."
+                            "Could you tell me where the tea party is being held?",
+                            "Why, it’s right here—has been all along, though you didn’t notice.",
+                            "Look again, dear—sometimes the party begins only when you decide to sit down."
                         ],
                         "value": "None"
                     },
                     {
                         "number": null,
-                        "prompt": "That seems rather suspicious",
-                        "result": "Leave_",
+                        "prompt": "I am lost. All I see is you and fog",
+                        "result": "Answer_",
                         "sample": [
-                            "Why do you grin so when there’s nothing funny at all?",
-                            "Because grinning is my way of keeping secrets from slipping out.",
-                            "Then I shall go before you ask too much."
+                            "I’ve been searching but I can’t seem to find where to go.",
+                            "That’s because you’re already here Alice.",
+                            "It is never where you ought to be, only where you happen to be."
                         ],
                         "value": "None"
                     },
                     {
                         "number": null,
-                        "prompt": "But that doesn’t help me at all!",
-                        "result": "Leave_",
+                        "prompt": "But I don't see a single teapot!",
+                        "result": "Answer_",
                         "sample": [
-                            "Could you tell me if I’m going the right way?",
-                            "Every way is right if you don’t know your destination.",
-                            "Then I’ve said enough."
+                            "Where are we?",
+                            "Why we are in wonderland my dear.",
+                            "Ah, but teapots appear once the company agrees to pour."
                         ],
                         "value": "None"
                     }
@@ -186,7 +186,6 @@
                     [
                         "Tree_",
                         "English_",
-                        "Vanish_",
                         "Cat_",
                         "Talk_"
                     ],
@@ -260,124 +259,6 @@
             },
             {
                 "ppo": [],
-                "result": "Vanish_",
-                "samples": [
-                    {
-                        "number": null,
-                        "prompt": "It makes me nervous, please stop.",
-                        "result": "Vanish_",
-                        "sample": [
-                            "Why do you keep vanishing and reappearing so suddenly?",
-                            "Because it amuses me, and it keeps you wondering whether I’m truly here at all.",
-                            "Then I’ll do it twice as much, since nervousness is such a curious flavor."
-                        ],
-                        "value": "None"
-                    },
-                    {
-                        "number": null,
-                        "prompt": "But how do you know that you’re mad?",
-                        "result": "Vanish_",
-                        "sample": [
-                            "Everyone here seems so very mad—are you mad too?",
-                            "Of course I am, or else I wouldn’t be here among them.",
-                            "Because I purr when I’m pleased and grin when I’m angry, surely that’s not quite sane."
-                        ],
-                        "value": "None"
-                    },
-                    {
-                        "number": null,
-                        "prompt": "That does not make sense at all.",
-                        "result": "Vanish_",
-                        "sample": [
-                            "Must you always speak in riddles? I only want a straight answer.",
-                            "But riddles are straighter than answers, if you know how to look at them.",
-                            "All the better, then—nonsense is safer than truth."
-                        ],
-                        "value": "None"
-                    }
-                ],
-                "set": [
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Cat_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ]
-                ]
-            },
-            {
-                "ppo": [],
-                "result": "Answer_",
-                "samples": [
-                    {
-                        "number": null,
-                        "prompt": "Here? But there’s no table, no cups, no cakes at all!",
-                        "result": "Answer_",
-                        "sample": [
-                            "Could you tell me where the tea party is being held?",
-                            "Why, it’s right here—has been all along, though you didn’t notice.",
-                            "Look again, dear—sometimes the party begins only when you decide to sit down."
-                        ],
-                        "value": "None"
-                    },
-                    {
-                        "number": null,
-                        "prompt": "I am lost. All I see is you and fog",
-                        "result": "Answer_",
-                        "sample": [
-                            "I’ve been searching but I can’t seem to find where to go.",
-                            "That’s because you’re already here Alice.",
-                            "It is never where you ought to be, only where you happen to be."
-                        ],
-                        "value": "None"
-                    },
-                    {
-                        "number": null,
-                        "prompt": "But I don't see a single teapot!",
-                        "result": "Answer_",
-                        "sample": [
-                            "Where are we?",
-                            "Why we are in wonderland my dear.",
-                            "Ah, but teapots appear once the company agrees to pour."
-                        ],
-                        "value": "None"
-                    }
-                ],
-                "set": [
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Cat_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ]
-                ]
-            },
-            {
-                "ppo": [],
                 "result": "Continue_",
                 "samples": [
                     {
@@ -410,6 +291,125 @@
                             "And how do you know that you’re mad?",
                             "To begin with, a dogs not mad. You grant that?",
                             "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
+                        ],
+                        "value": "None"
+                    }
+                ],
+                "set": [
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Cat_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ]
+                ]
+            },
+            {
+                "ppo": [],
+                "result": "Leave_",
+                "samples": [
+                    {
+                        "number": null,
+                        "prompt": "But I was hoping you might keep me company a bit longer.",
+                        "result": "Leave_",
+                        "sample": [
+                            "Do you ever stay in one place, or are you always drifting about?",
+                            "I stay wherever I please, which is nowhere for very long.",
+                            "Companionship is a heavy coat, and I prefer to travel light."
+                        ],
+                        "value": "None"
+                    },
+                    {
+                        "number": null,
+                        "prompt": "That seems rather suspicious",
+                        "result": "Leave_",
+                        "sample": [
+                            "Why do you grin so when there’s nothing funny at all?",
+                            "Because grinning is my way of keeping secrets from slipping out.",
+                            "Then I shall go before you ask too much."
+                        ],
+                        "value": "None"
+                    },
+                    {
+                        "number": null,
+                        "prompt": "But that doesn’t help me at all!",
+                        "result": "Leave_",
+                        "sample": [
+                            "Could you tell me if I’m going the right way?",
+                            "Every way is right if you don’t know your destination.",
+                            "Then I’ve said enough."
+                        ],
+                        "value": "None"
+                    }
+                ],
+                "set": [
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Vanish_",
+                        "Cat_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ]
+                ]
+            },
+            {
+                "ppo": [],
+                "result": "Vanish_",
+                "samples": [
+                    {
+                        "number": null,
+                        "prompt": "It makes me nervous, please stop.",
+                        "result": "Vanish_",
+                        "sample": [
+                            "Why do you keep vanishing and reappearing so suddenly?",
+                            "Because it amuses me, and it keeps you wondering whether I’m truly here at all.",
+                            "Then I’ll do it twice as much, since nervousness is such a curious flavor."
+                        ],
+                        "value": "None"
+                    },
+                    {
+                        "number": null,
+                        "prompt": "But how do you know that you’re mad?",
+                        "result": "Vanish_",
+                        "sample": [
+                            "Everyone here seems so very mad—are you mad too?",
+                            "Of course I am, or else I wouldn’t be here among them.",
+                            "Because I purr when I’m pleased and grin when I’m angry, surely that’s not quite sane."
+                        ],
+                        "value": "None"
+                    },
+                    {
+                        "number": null,
+                        "prompt": "That does not make sense at all.",
+                        "result": "Vanish_",
+                        "sample": [
+                            "Must you always speak in riddles? I only want a straight answer.",
+                            "But riddles are straighter than answers, if you know how to look at them.",
+                            "All the better, then—nonsense is safer than truth."
                         ],
                         "value": "None"
                     }
