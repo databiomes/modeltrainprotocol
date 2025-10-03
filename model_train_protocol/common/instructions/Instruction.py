@@ -163,7 +163,7 @@ class Instruction(ABC):
         if isinstance(self.final, NumToken) and not isinstance(value, Union[int, float]):
             raise ValueError("Value must be provided as an int or float when final token is a NumToken.")
         elif isinstance(self.final, NumListToken) and not isinstance(value, list):
-            raise ValueError("Value must be provided as an list of int or float when final token is a NumListToken.")
+            raise ValueError("Value must be provided as a list of int or float when final token is a NumListToken.")
         elif not isinstance(self.final, (NumToken, NumListToken)) and value is not None:
             raise ValueError("Value must be None when final token is not a NumToken or NumListToken.")
 
