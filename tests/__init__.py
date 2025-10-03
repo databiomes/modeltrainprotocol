@@ -24,9 +24,9 @@ tests/
 │   ├── test_guardrails/           # Guardrail tests
 │   │   ├── __init__.py
 │   │   └── test_guardrail.py
-│   └── test_protocol_file/         # Internal module tests
+│   └── test_protocol_json/         # Internal module tests
 │       ├── __init__.py
-│       └── test_protocol_file.py
+│       └── test_protocol_json.py
 ├── integration/                   # Integration tests
 │   ├── __init__.py
 │   ├── test_protocol_workflow.py  # End-to-end protocol creation
