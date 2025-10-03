@@ -207,8 +207,12 @@ class TestMultiInstructionProtocolJSON:
         
         assert "guardrails" in json_output
         assert isinstance(json_output["guardrails"], dict)
-        assert len(json_output["guardrails"]) == 1
+        assert len(json_output["guardrails"]) == 2
         assert "None" in json_output["guardrails"]
+        assert "None" in json_output["guardrails"]
+        assert "Tree_English_Alice_Talk_" in json_output["guardrails"]
+        assert isinstance(json_output["guardrails"]["Tree_English_Alice_Talk_"], list)
+        assert len(json_output["guardrails"]["Tree_English_Alice_Talk_"]) == 4
 
     def test_multi_instruction_protocol_numbers(self, multi_instruction_protocol):
         """Test that numbers are correctly included."""
