@@ -164,6 +164,26 @@ class ProtocolFile:
         """
         return sorted(self._special_token_keys | self._instruction_token_keys)
 
+    def _alphabetize_keys(self, data):
+        """
+        Recursively alphabetizes all dictionary keys in the data structure.
+        
+        :param data: The data structure to alphabetize
+        :return: The data structure with alphabetized keys
+        """
+        if isinstance(data, dict):
+            # Create a new dictionary with alphabetically sorted keys
+            sorted_dict = {}
+            for key in sorted(data.keys()):
+                sorted_dict[key] = self._alphabetize_keys(data[key])
+            return sorted_dict
+        elif isinstance(data, list):
+            # Recursively process each item in the list
+            return [self._alphabetize_keys(item) for item in data]
+        else:
+            # Return primitive values as-is
+            return data
+
     def to_json(self):
         """Converts the template to a JSON-compatible dictionary using Pydantic models."""
 
@@ -235,4 +255,6 @@ class ProtocolFile:
 
         # Convert to JSON and apply backwards compatibility transformations
         json_dict = protocol.model_dump(by_alias=True)
-        return self._rename_protocol_elements(json_dict)
+        json_dict = self._rename_protocol_elements(json_dict)
+        json_dict = self._alphabetize_keys(json_dict)
+        return json_dict
