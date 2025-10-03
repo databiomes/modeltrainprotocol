@@ -30,7 +30,7 @@ class UserInstruction(Instruction):
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], prompt: str, output_snippet: Snippet,
-                   value: int | float | None = None):
+                   value: int | float | list[int | float] | None = None):
         """
         Add a sample to the Instruction.
 
@@ -51,10 +51,6 @@ class UserInstruction(Instruction):
     def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet, prompt: str,
                                 value: int | float | list[int | float] | None = None) -> Sample:
         """Creates a sample UserInstruction string for example usages."""
-        if value is not None:
-            if not type(value) == int and not type(value) == float:
-                raise TypeError("Value must be an int or float.")
-
         all_snippets: list[Snippet] = context_snippets + [output_snippet]
 
         # format sample
