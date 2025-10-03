@@ -165,7 +165,7 @@ class ProtocolFile:
         return sorted(self._special_token_keys | self._instruction_token_keys)
 
     @classmethod
-    def _alphabetize_after_layer_n(cls, data: dict, n: int = 1):
+    def _alphabetize_dicts_by_keys_after_layer_n(cls, data: dict, n: int = 1):
         """
         Alphabetizes the keys in the protocol JSON after a specified layer depth.
         :param n: The layer depth after which to alphabetize keys. Default is 1.
@@ -190,6 +190,29 @@ class ProtocolFile:
                 return data
 
         return _recursively_alphabetize(data, 0)
+
+    @classmethod
+    def _alphabetize_list_of_dict_by_key_value(cls, data: list, key: str) -> list:
+        """
+        Alphabetizes a list of dictionaries by the value of a specific key.
+        
+        :param data: List of dictionaries to alphabetize
+        :param key: The key to use for alphabetization
+        :return: Alphabetized list of dictionaries
+        """
+        if not isinstance(data, list):
+            return data
+        
+        # Filter out non-dictionary items and items without the key
+        dict_items = [item for item in data if isinstance(item, dict) and key in item]
+        non_dict_items = [item for item in data if not isinstance(item, dict) or key not in item]
+        
+        # Sort dictionary items by the specified key value
+        sorted_dict_items = sorted(dict_items, key=lambda x: str(x[key]))
+        
+        # Combine sorted dictionary items with non-dictionary items
+        # Non-dictionary items are placed at the end
+        return sorted_dict_items + non_dict_items
 
     def to_json(self):
         """Converts the template to a JSON-compatible dictionary using Pydantic models."""
@@ -263,5 +286,28 @@ class ProtocolFile:
         # Convert to JSON and apply backwards compatibility transformations
         json_dict = protocol.model_dump(by_alias=True)
         json_dict = self._rename_protocol_elements(json_dict)
-        json_dict = self._alphabetize_after_layer_n(json_dict, n=2)
+        json_dict = self._alphabetize_dicts_by_keys_after_layer_n(json_dict, n=1)
+        
+        # Apply list alphabetization to relevant lists of dictionaries
+        if "instruction" in json_dict and "sets" in json_dict["instruction"]:
+            # Alphabetize instruction sets by "result" key
+            json_dict["instruction"]["sets"] = self._alphabetize_list_of_dict_by_key_value(
+                json_dict["instruction"]["sets"], "result"
+            )
+            
+            # Alphabetize samples within each instruction set by "result" key
+            for instruction_set in json_dict["instruction"]["sets"]:
+                if "samples" in instruction_set:
+                    instruction_set["samples"] = self._alphabetize_list_of_dict_by_key_value(
+                        instruction_set["samples"], "result"
+                    )
+        
+        # Alphabetize batch lists if they contain dictionaries
+        if "batches" in json_dict:
+            for batch_key in ["pretrain", "instruct", "judge", "ppo"]:
+                if batch_key in json_dict["batches"]:
+                    json_dict["batches"][batch_key] = self._alphabetize_list_of_dict_by_key_value(
+                        json_dict["batches"][batch_key], "result"
+                    )
+        
         return json_dict
