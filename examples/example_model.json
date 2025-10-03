@@ -15,28 +15,28 @@
     "tokens": {
         "<BOS>": {
             "desc": null,
-            "emoji": "",
+            "emoji": "🏁",
             "num": false,
             "special": "start",
             "user": false
         },
         "<EOS>": {
             "desc": null,
-            "emoji": "",
+            "emoji": "🎬",
             "num": false,
             "special": "end",
             "user": false
         },
         "<PAD>": {
             "desc": null,
-            "emoji": "",
+            "emoji": "🗒",
             "num": false,
             "special": "pad",
             "user": false
         },
         "<RUN>": {
             "desc": null,
-            "emoji": "",
+            "emoji": "🏃",
             "num": false,
             "special": "infer",
             "user": false
@@ -50,70 +50,70 @@
         },
         "Alice_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "ac50a4",
             "num": false,
             "special": null,
             "user": true
         },
         "Answer_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "6c7865",
             "num": false,
             "special": null,
             "user": false
         },
         "Appear_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "c4bf26",
             "num": false,
             "special": null,
             "user": false
         },
         "Cat_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "50f7dd",
             "num": false,
             "special": null,
             "user": false
         },
         "Continue_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "7a560c",
             "num": false,
             "special": null,
             "user": false
         },
         "English_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "847a70",
             "num": false,
             "special": null,
             "user": false
         },
         "Leave_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "0f915e",
             "num": false,
             "special": null,
             "user": false
         },
         "Talk_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "b6ecfb",
             "num": false,
             "special": null,
             "user": false
         },
         "Tree_": {
             "desc": "Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.",
-            "emoji": "",
+            "emoji": "852964",
             "num": false,
             "special": null,
             "user": false
         },
         "Vanish_": {
             "desc": null,
-            "emoji": "",
+            "emoji": "fecd85",
             "num": false,
             "special": null,
             "user": false

@@ -223,7 +223,7 @@ class ProtocolFile:
             num: bool = True if num >= 1 else False  # Convert to boolean
             # TODO: Remove this comparison once we differentiate between num and num_list tokens
             token_info = TokenInfoModel(
-                emoji=token_dict.get('emoji', ''),
+                key=token_dict.get('key', ''),
                 num=num,
                 user=token_dict.get('user', False),
                 desc=token_dict.get('desc'),

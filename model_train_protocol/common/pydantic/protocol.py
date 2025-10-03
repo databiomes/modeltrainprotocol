@@ -9,7 +9,7 @@ from pydantic import BaseModel, Field
 
 class TokenInfoModel(BaseModel):
     """Model for individual token information."""
-    emoji: str
+    key: str
     num: bool
     user: bool
     desc: Optional[str]
