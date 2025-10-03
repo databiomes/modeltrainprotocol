@@ -20,7 +20,7 @@ class SampleModel(BaseModel):
     """Model for instruction samples."""
     sample: List[str]
     prompt: Optional[Union[str]]
-    number: Optional[Union[int, List[int], List[List[int]]]]
+    number: Optional[Union[int, List[int], List[List[int]]], List[List[List[int]]]]
     result: str
     value: Optional[Union[str, int, float]]  # Can be string, int, or float
 
