@@ -72,8 +72,8 @@ class TestSampleValueValidation:
                 value=None  # None value
             )
 
-    def test_numtoken_result_valid_numeric_value_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that NumToken result token raises error when value is numeric but not NumToken instance."""
+    def test_numtoken_result_valid_numeric_value_succeeds(self, simple_tokenset, user_tokenset):
+        """Test that NumToken result token accepts valid numeric value."""
         num_token = NumToken("Count", min_value=1, max_value=10)
         instruction = SimpleInstruction(
             context=[simple_tokenset, user_tokenset],
@@ -85,13 +85,12 @@ class TestSampleValueValidation:
         context_snippet2 = user_tokenset.create_snippet("Context 2")
         output_snippet = simple_tokenset.create_snippet("Output")
 
-        # Should raise error - validation expects NumToken instance, not numeric value
-        with pytest.raises(ValueError, match="Value must be provided as an int or float when final token is a NumToken"):
-            instruction.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
-                value=5  # Pass a numeric value
-            )
+        # Should not raise error - numeric values are now accepted
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet,
+            value=5  # Pass a numeric value
+        )
 
     def test_numlisttoken_result_missing_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token raises error when value is not provided."""
@@ -106,7 +105,7 @@ class TestSampleValueValidation:
         context_snippet2 = user_tokenset.create_snippet("Context 2")
         output_snippet = simple_tokenset.create_snippet("Output")
 
-        with pytest.raises(ValueError, match="Value must be provided as a list of numbers when final token is a NumListToken"):
+        with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet
@@ -126,7 +125,7 @@ class TestSampleValueValidation:
         context_snippet2 = user_tokenset.create_snippet("Context 2")
         output_snippet = simple_tokenset.create_snippet("Output")
 
-        with pytest.raises(ValueError, match="Value must be provided as a list of numbers when final token is a NumListToken"):
+        with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
@@ -146,7 +145,7 @@ class TestSampleValueValidation:
         context_snippet2 = user_tokenset.create_snippet("Context 2")
         output_snippet = simple_tokenset.create_snippet("Output")
 
-        with pytest.raises(ValueError, match="Value must be provided as a list of numbers when final token is a NumListToken"):
+        with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
@@ -289,7 +288,7 @@ class TestSampleValueValidation:
         context_snippet2 = user_tokenset.create_snippet("Context 2")
         output_snippet = simple_tokenset.create_snippet("Output")
 
-        with pytest.raises(ValueError, match="Value must be provided as a list of numbers when final token is a NumListToken"):
+        with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
@@ -309,7 +308,7 @@ class TestSampleValueValidation:
         context_snippet2 = user_tokenset.create_snippet("Context 2")
         output_snippet = simple_tokenset.create_snippet("Output")
 
-        with pytest.raises(ValueError, match="Value must be provided as a list of numbers when final token is a NumListToken"):
+        with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
@@ -329,7 +328,7 @@ class TestSampleValueValidation:
         context_snippet2 = user_tokenset.create_snippet("Context 2")
         output_snippet = simple_tokenset.create_snippet("Output")
 
-        with pytest.raises(ValueError, match="Value must be provided as a list of numbers when final token is a NumListToken"):
+        with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
