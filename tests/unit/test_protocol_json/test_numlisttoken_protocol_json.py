@@ -151,7 +151,7 @@ class TestNumListTokenProtocolJSON:
         
         # Test result
         assert isinstance(instruction_set["result"], str)
-        assert instruction_set["result"] == "Coordinates_"
+        assert instruction_set["result"] == "Position_"
         
         # Test samples
         assert isinstance(instruction_set["samples"], list)
