@@ -76,7 +76,7 @@ class Token:
 
     def __hash__(self):
         """Hash based on the string representation of the token."""
-        return hash(self.value)
+        return hash(self.__str__())
 
     def __eq__(self, other):
         """
