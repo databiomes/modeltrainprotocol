@@ -128,8 +128,8 @@ class TestProtocol:
     def test_protocol_add_token_duplicate_value(self):
         """Test adding token with duplicate value."""
         protocol = Protocol("test_protocol", instruction_context_snippets=3)
-        token1 = Token("Test", key="🔑")
-        token2 = Token("Test", key="🔧")
+        token1 = Token("Test")
+        token2 = Token("Test")
 
         protocol._add_token(token1)
 
@@ -210,6 +210,38 @@ class TestProtocol:
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
         )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
 
         # Add instruction to protocol
         protocol.add_instruction(instruction)
@@ -240,6 +272,38 @@ class TestProtocol:
         context_snippet2 = context_set2.create_snippet("Context 2")
         output_snippet = response_set.create_snippet("Output")
 
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
@@ -277,6 +341,14 @@ class TestProtocol:
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
         )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
 
         with pytest.raises(ValueError, match="does not match defined instruction_context_snippets count"):
             protocol.add_instruction(instruction)
@@ -307,6 +379,14 @@ class TestProtocol:
         context_snippet2 = context_set2.create_snippet("Context 2")
         output_snippet = response_set.create_snippet("Output")
 
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
@@ -350,6 +430,14 @@ class TestProtocol:
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
         )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
 
         protocol.add_instruction(instruction)
 
@@ -385,6 +473,14 @@ class TestProtocol:
         context_snippet2 = context_set2.create_snippet("Context 2")
         output_snippet = response_set.create_snippet("Output")
 
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
@@ -431,6 +527,14 @@ class TestProtocol:
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
         )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
 
         protocol.add_instruction(instruction)
 
@@ -466,6 +570,14 @@ class TestProtocol:
         context_snippet2 = context_set2.create_snippet("Context 2")
         output_snippet = response_set.create_snippet("Output")
 
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
@@ -575,6 +687,16 @@ class TestProtocol:
             prompt="User prompt",
             output_snippet=output_snippet
         )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            prompt="User prompt 2",
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            prompt="User prompt 3",
+            output_snippet=output_snippet
+        )
 
         protocol.add_instruction(instruction)
 
@@ -629,6 +751,14 @@ class TestProtocol:
         context_snippet2 = context_set2.create_snippet("Context 2")
         output_snippet = response_set.create_snippet("Output")
 
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
+        instruction.add_sample(
+            context_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
+        )
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet
