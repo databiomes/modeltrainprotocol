@@ -55,6 +55,12 @@ def token_coordinates() -> NumListToken:
     return NumListToken("Coordinates", min_value=-100, max_value=100, length=3, desc="3D coordinates (x, y, z)")
 
 
+@pytest.fixture
+def token_scores() -> NumListToken:
+    """Scores NumList token fixture."""
+    return NumListToken("Scores", min_value=0, max_value=10, length=5, desc="A list of 5 scores between 0 and 10")
+
+
 # Additional token fixtures for comprehensive testing
 @pytest.fixture
 def token_result() -> Token:
@@ -343,8 +349,10 @@ TOKEN_CAT = Token("Cat")
 TOKEN_TREE = Token("Tree", desc="Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.")
 TOKEN_TALK = Token("Talk")
 TOKEN_CONTINUE = Token("Continue")
+TOKEN_RESULT = Token("Result")
 TOKEN_SENTENCE_LENGTH = NumToken("SentenceLength", min_value=1, max_value=20, desc="The number of words in the sentence, between 1 and 20.")
 TOKEN_COORDINATES = NumListToken("Coordinates", min_value=-100, max_value=100, length=3, desc="3D coordinates (x, y, z)")
+TOKEN_SCORES = NumListToken("Scores", min_value=0, max_value=10, length=5, desc="A list of 5 scores between 0 and 10")
 
 # Create the token sets for the instructions
 SIMPLE_TOKENSET = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_CAT, TOKEN_TALK))
