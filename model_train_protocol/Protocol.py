@@ -4,7 +4,7 @@ import os
 from . import Token
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
-from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN
+from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN
 from .common.instructions.Instruction import Instruction
 from .common.tokens.SpecialToken import SpecialToken
 from .common.util import get_possible_emojis, hash_string, validate_string_set
@@ -170,6 +170,7 @@ class Protocol:
         self.special_tokens.add(EOS_TOKEN)
         self.special_tokens.add(RUN_TOKEN)
         self.special_tokens.add(PAD_TOKEN)
+        self.special_tokens.add(NON_TOKEN)
         if len(self.guardrails) > 0:
             self.special_tokens.add(UNK_TOKEN)
 
