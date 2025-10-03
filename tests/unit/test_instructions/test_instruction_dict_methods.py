@@ -307,8 +307,8 @@ class TestInstructionDictMethods:
         simple_sample = simple_dict['samples'][0].to_dict()
         user_sample = user_dict['samples'][0].to_dict()
         
-        assert simple_sample['value'] == 10
-        assert user_sample['value'] == 20
+        assert simple_sample['value'] == [10, 20, 30]
+        assert user_sample['value'] == [5, 15, 25]
 
     def test_mixed_instruction_combinations(self, simple_mixed_instruction_with_samples, user_mixed_instruction_with_samples):
         """Test mixed numeric instruction combinations."""
@@ -345,8 +345,8 @@ class TestInstructionDictMethods:
         simple_sample = simple_dict['samples'][0].to_dict()
         user_sample = user_dict['samples'][0].to_dict()
         
-        assert simple_sample['value'] == 10
-        assert user_sample['value'] == 10  # Both have numeric values for NumListToken
+        assert simple_sample['value'] == [8, 9, 7, 10, 6]
+        assert user_sample['value'] == [6.2, 7.5, 8.0, 9.1, 5.4]
 
     def test_user_instruction_with_multiple_samples(self, user_instruction_with_multiple_samples):
         """Test user instruction with multiple samples."""
