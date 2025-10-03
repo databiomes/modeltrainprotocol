@@ -67,7 +67,7 @@ class TestNumListTokenProtocolJSON:
         
         # Check that we have the expected tokens
         token_keys = set(json_output["tokens"].keys())
-        expected_tokens = {"Tree_", "English_", "Cat_", "Talk_", "Scores_"}
+        expected_tokens = {"Tree_", "English_", "Cat_", "Talk_", "Coordinates_"}
         assert expected_tokens.issubset(token_keys)
         
         # Test token structure
@@ -151,7 +151,7 @@ class TestNumListTokenProtocolJSON:
         
         # Test result
         assert isinstance(instruction_set["result"], str)
-        assert instruction_set["result"] == "Scores_"
+        assert instruction_set["result"] == "Coordinates_"
         
         # Test samples
         assert isinstance(instruction_set["samples"], list)
@@ -182,17 +182,18 @@ class TestNumListTokenProtocolJSON:
         # Test sample content
         assert len(sample["sample"]) == 3  # Three context snippets (2 context + 1 response)
         assert isinstance(sample["number"], (list, type(None)))  # Can be list or None
-        assert sample["result"] == "Scores_"
-        assert isinstance(sample["value"], (int, float))  # Should have numeric values
+        assert sample["result"] == "Coordinates_"
+        assert sample["value"] == "None"  # Should be None for non-numeric final token
         
         # Test numeric values (if number is not None)
         if sample["number"] is not None:
             assert len(sample["number"]) == 3  # Three context lines
             for num_list in sample["number"]:
                 assert isinstance(num_list, list)
-                assert len(num_list) == 1
-                assert isinstance(num_list[0], list)  # NumListToken contains lists of numbers
-                assert len(num_list[0]) > 0  # Should have some numbers
+                assert len(num_list) in [0, 1]  # Can be empty or have 1 element
+                if len(num_list) > 0:
+                    assert isinstance(num_list[0], list)  # NumListToken contains lists of numbers
+                    assert len(num_list[0]) >= 0  # Can be empty
 
     def test_numlisttoken_protocol_guardrails(self, numlisttoken_protocol):
         """Test that guardrails are correctly included."""

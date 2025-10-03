@@ -242,12 +242,18 @@ class TestBasicSimpleProtocolJSON:
         
         tokens = json_output["tokens"]
         
-        # All tokens should be regular tokens (not numeric or user)
+        # Check token types - some tokens may be user tokens
         for token_key, token_info in tokens.items():
             if token_key in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"]:
                 # Special tokens
                 assert token_info["special"] is not None
+            elif token_key == "Alice_":
+                # User token
+                assert token_info["user"] is True
+                assert token_info["num"] is False
+                assert token_info["special"] is None
             else:
+                # Regular tokens
                 assert token_info["num"] is False
                 assert token_info["user"] is False
                 assert token_info["special"] is None

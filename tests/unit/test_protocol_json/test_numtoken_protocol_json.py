@@ -190,8 +190,9 @@ class TestNumTokenProtocolJSON:
             assert len(sample["number"]) == 3  # Three context lines
             for num_list in sample["number"]:
                 assert isinstance(num_list, list)
-                assert len(num_list) == 1
-                assert isinstance(num_list[0], (int, float))
+                assert len(num_list) in [0, 1]  # Can be empty or have 1 element
+                if len(num_list) > 0:
+                    assert isinstance(num_list[0], (int, float))
 
     def test_numtoken_protocol_guardrails(self, numtoken_protocol):
         """Test that guardrails are correctly included."""

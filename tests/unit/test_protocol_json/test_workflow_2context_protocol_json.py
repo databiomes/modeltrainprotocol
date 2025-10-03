@@ -55,8 +55,8 @@ class TestWorkflow2ContextProtocolJSON:
         assert "context" in json_output
         assert isinstance(json_output["context"], list)
         assert len(json_output["context"]) == 2
-        assert json_output["context"][0] == "This is a 2 context line workflow protocol line 1."
-        assert json_output["context"][1] == "This is a 2 context line workflow protocol line 2."
+        assert json_output["context"][0] == "This is a 2 context line workflow protocol."
+        assert json_output["context"][1] == "This is a second context line for the workflow protocol."
 
     def test_workflow_2context_protocol_tokens(self, workflow_2context_protocol):
         """Test that tokens are correctly included."""
@@ -315,8 +315,8 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         assert "context" in json_output
         assert isinstance(json_output["context"], list)
         assert len(json_output["context"]) == 2
-        assert json_output["context"][0] == "This is a 2 context line NumToken workflow protocol line 1."
-        assert json_output["context"][1] == "This is a 2 context line NumToken workflow protocol line 2."
+        assert json_output["context"][0] == "This is a 2 context line NumToken workflow protocol."
+        assert json_output["context"][1] == "This is a second context line for the NumToken workflow protocol."
 
     def test_numtoken_workflow_2context_protocol_tokens(self, numtoken_workflow_2context_protocol):
         """Test that tokens are correctly included."""

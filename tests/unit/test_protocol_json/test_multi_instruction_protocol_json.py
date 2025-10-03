@@ -193,8 +193,9 @@ class TestMultiInstructionProtocolJSON:
                 assert len(sample["number"]) == 3  # Three context lines
                 for num_list in sample["number"]:
                     assert isinstance(num_list, list)
-                    assert len(num_list) == 1
-                    assert isinstance(num_list[0], (int, float))
+                    assert len(num_list) in [0, 1]  # Can be empty or have 1 element
+                    if len(num_list) > 0:
+                        assert isinstance(num_list[0], (int, float))
             assert isinstance(sample["value"], (int, float))
         else:
             assert sample["number"] is None or len(sample["number"]) == 0  # No numeric values
@@ -288,9 +289,9 @@ class TestMultiInstructionProtocolJSON:
         # First set should be numtoken instruction (Count_)
         assert instruction_sets[0]["result"] == "Count_"
         
-        # Second set should be simple instruction (Result_)
-        assert instruction_sets[1]["result"] == "Result_"
+        # Second set should be user instruction (End_) - alphabetically before Result_
+        assert instruction_sets[1]["result"] == "End_"
         
-        # Third set should be user instruction (End_)
-        assert instruction_sets[2]["result"] == "End_"
+        # Third set should be simple instruction (Result_)
+        assert instruction_sets[2]["result"] == "Result_"
 

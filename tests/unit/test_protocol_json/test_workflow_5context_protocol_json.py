@@ -55,11 +55,11 @@ class TestWorkflow5ContextProtocolJSON:
         assert "context" in json_output
         assert isinstance(json_output["context"], list)
         assert len(json_output["context"]) == 5
-        assert json_output["context"][0] == "This is a 5 context line workflow protocol line 1."
-        assert json_output["context"][1] == "This is a 5 context line workflow protocol line 2."
-        assert json_output["context"][2] == "This is a 5 context line workflow protocol line 3."
-        assert json_output["context"][3] == "This is a 5 context line workflow protocol line 4."
-        assert json_output["context"][4] == "This is a 5 context line workflow protocol line 5."
+        assert json_output["context"][0] == "This is a 5 context line workflow protocol."
+        assert json_output["context"][1] == "This is the second context line for the workflow protocol."
+        assert json_output["context"][2] == "This is the third context line for the workflow protocol."
+        assert json_output["context"][3] == "This is the fourth context line for the workflow protocol."
+        assert json_output["context"][4] == "This is the fifth context line for the workflow protocol."
 
     def test_workflow_5context_protocol_tokens(self, workflow_5context_protocol):
         """Test that tokens are correctly included."""
@@ -244,11 +244,11 @@ class TestWorkflow5ContextProtocolJSON:
         # Should have 2 instruction sets
         assert len(instruction_sets) == 2
         
-        # First set should be simple instruction (Result_)
-        assert instruction_sets[0]["result"] == "Result_"
+        # First set should be user instruction (End_) - alphabetically before Result_
+        assert instruction_sets[0]["result"] == "End_"
         
-        # Second set should be user instruction (End_)
-        assert instruction_sets[1]["result"] == "End_"
+        # Second set should be simple instruction (Result_)
+        assert instruction_sets[1]["result"] == "Result_"
 
     def test_workflow_5context_protocol_instruction_context_snippets(self, workflow_5context_protocol):
         """Test that the protocol correctly handles 5 context lines."""
@@ -311,11 +311,11 @@ class TestNumTokenWorkflow5ContextProtocolJSON:
         assert "context" in json_output
         assert isinstance(json_output["context"], list)
         assert len(json_output["context"]) == 5
-        assert json_output["context"][0] == "This is a 5 context line NumToken workflow protocol line 1."
-        assert json_output["context"][1] == "This is a 5 context line NumToken workflow protocol line 2."
-        assert json_output["context"][2] == "This is a 5 context line NumToken workflow protocol line 3."
-        assert json_output["context"][3] == "This is a 5 context line NumToken workflow protocol line 4."
-        assert json_output["context"][4] == "This is a 5 context line NumToken workflow protocol line 5."
+        assert json_output["context"][0] == "This is a 5 context line NumToken workflow protocol"
+        assert json_output["context"][1] == "This is the second context line for the NumToken workflow protocol."
+        assert json_output["context"][2] == "This is the third context line for the NumToken workflow protocol."
+        assert json_output["context"][3] == "This is the fourth context line for the NumToken workflow protocol."
+        assert json_output["context"][4] == "This is the fifth context line for the NumToken workflow protocol."
 
     def test_numtoken_workflow_5context_protocol_tokens(self, numtoken_workflow_5context_protocol):
         """Test that tokens are correctly included."""
