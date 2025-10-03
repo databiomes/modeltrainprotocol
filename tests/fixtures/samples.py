@@ -7,7 +7,7 @@ from typing import Dict, List, Any
 import pytest
 
 from model_train_protocol import Snippet
-from tests.fixtures.test_tokensets import (
+from tests.fixtures.tokensets import (
     get_basic_tokensets,
     get_numtoken_tokensets,
     get_numlisttoken_tokensets,
@@ -296,49 +296,49 @@ def user_result_response_sample(user_result_tokenset) -> Snippet:
 
 # NumToken samples
 @pytest.fixture
-def simple_numtoken_context_sample(simple_numtoken_tokenset):
+def simple_numtoken_context_sample(simple_numtoken_tokenset) -> Snippet:
     """Simple NumToken context sample."""
     return simple_numtoken_tokenset.create_snippet(string="The cat sits in the tree", numbers=[10])
 
 
 @pytest.fixture
-def simple_numtoken_response_sample(simple_numtoken_tokenset):
+def simple_numtoken_response_sample(simple_numtoken_tokenset) -> Snippet:
     """Simple NumToken response sample."""
     return simple_numtoken_tokenset.create_snippet(string="The cat responds with a grin", numbers=[8])
 
 
 @pytest.fixture
-def user_numtoken_context_sample(user_numtoken_tokenset):
+def user_numtoken_context_sample(user_numtoken_tokenset) -> Snippet:
     """User NumToken context sample."""
     return user_numtoken_tokenset.create_snippet(string="Alice asks a question", numbers=[12])
 
 
 @pytest.fixture
-def user_numtoken_response_sample(user_numtoken_tokenset):
+def user_numtoken_response_sample(user_numtoken_tokenset) -> Snippet:
     """User NumToken response sample."""
     return user_numtoken_tokenset.create_snippet(string="Alice receives an answer", numbers=[15])
 
 
 @pytest.fixture
-def result_numtoken_context_sample(result_numtoken_tokenset):
+def result_numtoken_context_sample(result_numtoken_tokenset) -> Snippet:
     """Result NumToken context sample."""
     return result_numtoken_tokenset.create_snippet(string="The conversation continues", numbers=[7])
 
 
 @pytest.fixture
-def result_numtoken_response_sample(result_numtoken_tokenset):
+def result_numtoken_response_sample(result_numtoken_tokenset) -> Snippet:
     """Result NumToken response sample."""
     return result_numtoken_tokenset.create_snippet(string="The result is determined", numbers=[9])
 
 
 @pytest.fixture
-def user_result_numtoken_context_sample(user_result_numtoken_tokenset):
+def user_result_numtoken_context_sample(user_result_numtoken_tokenset) -> Snippet:
     """User result NumToken context sample."""
     return user_result_numtoken_tokenset.create_snippet(string="Alice asks for a result", numbers=[11])
 
 
 @pytest.fixture
-def user_result_numtoken_response_sample(user_result_numtoken_tokenset):
+def user_result_numtoken_response_sample(user_result_numtoken_tokenset) -> Snippet:
     """User result NumToken response sample."""
     return user_result_numtoken_tokenset.create_snippet(string="Alice gets the result", numbers=[13])
 
