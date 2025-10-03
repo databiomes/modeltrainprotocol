@@ -92,7 +92,7 @@ def simple_numlisttoken_instruction_with_samples(simple_numlisttoken_instruction
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
         output_snippet=simple_numlisttoken_response_sample,
-        value=10
+        value=[10, 20, 30]
     )
     return simple_numlisttoken_instruction
 
@@ -134,7 +134,7 @@ def simple_scores_instruction_with_samples(simple_scores_instruction, scores_con
     simple_scores_instruction.add_sample(
         context_snippets=[scores_context_sample],
         output_snippet=scores_response_sample,
-        value=10
+        value=[8, 9, 7, 10, 6]
     )
     return simple_scores_instruction
 
@@ -201,7 +201,7 @@ def user_numlisttoken_instruction_with_samples(user_numlisttoken_instruction, si
         context_snippets=[simple_numlisttoken_context_sample],
         prompt="Provide coordinates",
         output_snippet=user_numlisttoken_response_sample,
-        value=20
+        value=[5, 15, 25]
     )
     return user_numlisttoken_instruction
 
@@ -245,7 +245,7 @@ def user_scores_instruction_with_samples(user_scores_instruction, scores_context
         context_snippets=[scores_context_sample],
         prompt="Rate the performance",
         output_snippet=user_response_sample,
-        value=10  # NumListToken expects a number
+        value=[6.2, 7.5, 8.0, 9.1, 5.4]
     )
     return user_scores_instruction
 
