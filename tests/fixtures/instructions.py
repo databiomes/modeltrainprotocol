@@ -445,21 +445,21 @@ def numlisttoken_instruction_with_samples(
 ) -> SimpleInstruction:
     """NumListToken instruction with samples added."""
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
-    # Note: The final token is a NumListToken, so value should be a number, not a list
+    # Note: The final token is a NumListToken, so value should be a list
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
         output_snippet=simple_numlisttoken_response_sample,
-        value=10
+        value=[10, 20, 30]
     )
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
         output_snippet=simple_numlisttoken_response_sample,
-        value=15
+        value=[15, 25, 35]
     )
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
         output_snippet=simple_numlisttoken_response_sample,
-        value=25
+        value=[25, 35, 45]
     )
     return simple_numlisttoken_instruction
 
