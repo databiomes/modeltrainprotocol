@@ -122,7 +122,8 @@ class ProtocolFile:
         unk_token_dict['emoji'] = unk_token_dict.pop('key')
         unk_token_dict.pop('value')
         protocol_json['tokens'][UNK_TOKEN.value] = unk_token_dict
-        protocol_json['special_tokens'].append(UNK_TOKEN.key)
+        if UNK_TOKEN.key not in protocol_json.get('special_tokens', []):
+            protocol_json['special_tokens'].append(UNK_TOKEN.key)
 
         for token_value, token_info in protocol_json.get('tokens', {}).items():
             # Rename Token 'key' to 'emoji'
