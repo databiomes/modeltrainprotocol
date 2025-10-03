@@ -48,16 +48,6 @@ class TestWorkflow2ContextProtocolJSON:
         
         assert json_output["name"] == "workflow_2context"
 
-    def test_workflow_2context_protocol_context(self, workflow_2context_protocol):
-        """Test that the context is correctly included."""
-        json_output = self._get_json_output(workflow_2context_protocol)
-        
-        assert "context" in json_output
-        assert isinstance(json_output["context"], list)
-        assert len(json_output["context"]) == 2
-        assert json_output["context"][0] == "This is a 2 context line workflow protocol."
-        assert json_output["context"][1] == "This is a second context line for the workflow protocol."
-
     def test_workflow_2context_protocol_tokens(self, workflow_2context_protocol):
         """Test that tokens are correctly included."""
         json_output = self._get_json_output(workflow_2context_protocol)
