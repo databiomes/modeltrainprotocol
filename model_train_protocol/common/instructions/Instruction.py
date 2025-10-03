@@ -164,12 +164,10 @@ class Instruction(ABC):
         """
         if isinstance(self.final, NumToken) and not isinstance(value, NumToken):
             raise ValueError("Value must be provided as a number when final token is a NumToken.")
-        if isinstance(self.final, NumListToken) and not isinstance(value, list):
+        elif isinstance(self.final, NumListToken) and not isinstance(value, list):
             raise ValueError("Value must be provided as a list of numbers when final token is a NumListToken.")
-        if self.final.num and not (isinstance(value, int) or isinstance(value, float)):
-            raise TypeError("Value must be an int or float when final token is a number.")
-        if not self.final.num and value is not None:
-            raise ValueError("Value must be None when final token is not a number.")
+        elif not isinstance(self.final, (NumToken, NumListToken)) and value is not None:
+            raise ValueError("Value must be None when final token is not a NumToken or NumListToken.")
 
     def _validate_snippets_match(self, context_snippets: list[Snippet], output_snippet: Snippet):
         """Validates that all snippets in the samples match their expected token sets."""
