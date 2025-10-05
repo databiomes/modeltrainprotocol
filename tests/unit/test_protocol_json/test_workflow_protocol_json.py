@@ -95,7 +95,7 @@ class TestWorkflowProtocolJSON:
 
         # Check specific token types
         for token_key, token_info in tokens.items():
-            if token_key in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"]:
+            if token_key in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>", "<NON>"]:
                 # Special tokens
                 assert token_info["special"] is not None
             elif token_key == "Alice_":
@@ -155,6 +155,13 @@ class TestWorkflowProtocolJSON:
                 "emoji": "🎬",
                 "num": False,
                 "special": "end",
+                "user": False
+            },
+            "<NON>": {
+                "desc": None,
+                "emoji": "🫙",
+                "num": False,
+                "special": "none",
                 "user": False
             },
             "<PAD>": {

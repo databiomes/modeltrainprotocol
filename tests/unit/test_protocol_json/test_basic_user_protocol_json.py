@@ -277,7 +277,7 @@ class TestBasicUserProtocolJSON:
             if token_key == "Alice_":
                 assert token_info["user"] is True
                 assert token_info["num"] is False
-            elif token_key in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"]:
+            elif token_key in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>", "<NON>"]:
                 # Special tokens
                 assert token_info["special"] is not None
             else:

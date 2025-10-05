@@ -86,7 +86,7 @@ class TestWorkflow2ContextProtocolJSON:
             if token_key == "Alice_":
                 assert token_info["user"] is True
                 assert token_info["num"] is False
-            elif token_key in ["<RUN>", "<PAD>", "<EOS>", "<BOS>", "<UNK>"]:
+            elif token_key in ["<RUN>", "<PAD>", "<EOS>", "<BOS>", "<UNK>", "<NON>"]:
                 # Special tokens
                 assert token_info["special"] is not None
             else:

@@ -155,6 +155,13 @@ class TestMultiInstructionProtocolJSON:
                 "special": "end",
                 "user": False
             },
+            "<NON>": {
+                "desc": None,
+                "emoji": "🫙",
+                "num": False,
+                "special": "none",
+                "user": False
+            },
             "<PAD>": {
                 "desc": None,
                 "emoji": "🗒",
