@@ -11,7 +11,7 @@ For scenarios where the model responds without user input.
 Parameters
 ~~~~~~~~~~
 
-- **context**: Sequence of TokenSets that provide background information
+- **context**: Sequence of TokenSets that provide background information. The number of context samples provided is determined by the protocol's instruction_context_snippets parameter, and must be the same across all instructions.
 - **response**: The TokenSet that defines the model's response pattern (cannot contain UserTokens)
 - **final**: A Token that represents the final action or result. E.g. "Continue", "End", "Explode"
 

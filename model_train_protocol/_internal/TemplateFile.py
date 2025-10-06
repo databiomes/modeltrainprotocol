@@ -21,9 +21,9 @@ class TemplateFile:
 
         inputs: list[list[str]] = list()
 
-        def add_inputs_from_instructions(self, instructions: list[Instruction], context_lines: int):
+        def add_inputs_from_instructions(self, instructions: list[Instruction], instruction_context_snippets: int):
             """Adds input combinations from a list of instructions."""
-            unique_sets = {i: set() for i in range(context_lines + 1)}
+            unique_sets = {i: set() for i in range(instruction_context_snippets + 1)}
             for instruction in instructions:
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_user = [t.user for t in token_set]
@@ -79,17 +79,17 @@ class TemplateFile:
 
             return model_json
 
-    def __init__(self, context_lines: int, instructions: list[Instruction], ):
+    def __init__(self, instruction_context_snippets: int, instructions: list[Instruction], ):
         """Initializes the template"""
         self.model_input: TemplateFile.ModelInput = TemplateFile.ModelInput()
         self.model_output: TemplateFile.ModelOutput = TemplateFile.ModelOutput()
-        self.context_lines: int = context_lines
+        self.instruction_context_snippets: int = instruction_context_snippets
         self.instructions: list[Instruction] = instructions
         self._add_io_from_instructions()
 
     def _add_io_from_instructions(self):
         """Adds input and output sequences from the instructions."""
-        self.model_input.add_inputs_from_instructions(self.instructions, context_lines=self.context_lines)
+        self.model_input.add_inputs_from_instructions(self.instructions, instruction_context_snippets=self.instruction_context_snippets)
         self.model_output.add_results_from_instructions(self.instructions)
 
     def _create_sample_model_output(self):

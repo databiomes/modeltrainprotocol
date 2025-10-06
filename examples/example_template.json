@@ -1,0 +1,33 @@
+{
+    "all_combinations": {
+        "model_input": {
+            "<BOS>": "🏁",
+            "0": [
+                "Tree_English_Alice_Talk_: Tree_English_Alice_Talk_\n<string>"
+            ],
+            "1": [
+                "Tree_English_Vanish_Cat_Talk_: Tree_English_Vanish_Cat_Talk_\n",
+                "Tree_English_Cat_Talk_: Tree_English_Cat_Talk_\n"
+            ],
+            "2": [
+                "Tree_English_Alice_Talk_: Tree_English_Alice_Talk_USER PROMPT\n<string>"
+            ],
+            "<RUN>": "🏃"
+        },
+        "model_output": {
+            "model_response": "<string>",
+            "model_results": {
+                "Answer_": "Answer_",
+                "Appear_": "Appear_",
+                "Continue_": "Continue_",
+                "Leave_": "Leave_",
+                "Vanish_": "Vanish_"
+            },
+            "<EOS>": "🎬"
+        }
+    },
+    "example_usage": {
+        "valid_user_input": "🏁\nTree_English_Alice_Talk_\n<string>\nTree_English_Vanish_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\nUSER PROMPT\n🏃\n",
+        "valid_output": "<string>\nAnswer_\n🎬"
+    }
+}

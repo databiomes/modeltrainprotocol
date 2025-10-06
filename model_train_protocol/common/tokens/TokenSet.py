@@ -41,7 +41,7 @@ class TokenSet:
     def set_guardrail(self, guardrail: Guardrail):
         """Sets a guardrails for the TokenSet."""
         if self.guardrail is not None:
-            warnings.warn("Overwriting existing guardrails for TokenSet.")
+            raise ValueError("Only one guardrail can be set per TokenSet.")
         if not self.is_user:
             raise ValueError("Guardrails can only be added to a user TokenSet.")
         if not isinstance(guardrail, Guardrail):
@@ -51,6 +51,9 @@ class TokenSet:
     def create_snippet(self, string: str,
                        numbers: Collection[int | float] | int | float | None = None, number_lists: Collection[int | float | Collection[int | float]] | None = None) -> Snippet:
         """Create a snippet for the TokenSet"""
+        if not isinstance(string, str):
+            raise TypeError("String must be of type str.")
+
         if numbers is None:
             numbers = []
         elif isinstance(numbers, int):
@@ -101,6 +104,16 @@ class TokenSet:
         for token in self.tokens:
             token_key_set += token.key
         return token_key_set
+
+    def __eq__(self, other):
+        """Equality comparison for TokenSet."""
+        if not isinstance(other, TokenSet):
+            return False
+        return self.key == other.key and all(st == ot for (st, ot) in zip(self.tokens, other.tokens))
+
+    def __hash__(self):
+        """Hash based on the string representation of the TokenSet."""
+        return hash(str(self))
 
     def __repr__(self):
         """String representation of the TokenSet."""
