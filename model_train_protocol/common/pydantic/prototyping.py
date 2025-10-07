@@ -36,6 +36,9 @@ TOKEN_MODEL: dict = {  # Reusable token model definition
     "additionalProperties": False
 }
 
+FINAL_TOKEN_MODEL: dict = TOKEN_MODEL
+FINAL_TOKEN_MODEL["description"] = "A token representing the final action by the model. For example, 'Continue', 'End', or 'Execute'."
+
 GENERATE_MTP_TOOL: dict = {
     "name": "generate_mtp",
     "type": "function",
@@ -46,7 +49,8 @@ GENERATE_MTP_TOOL: dict = {
         "required": [
             "model_name",
             "context",
-            "instruction_sets"
+            "instruction_sets",
+            "final_token"
         ],
         "properties": {
             "model_name": {
@@ -136,6 +140,11 @@ GENERATE_MTP_TOOL: dict = {
                     },
                     "additionalProperties": False
                 }
+            },
+            "final_token": {
+                "type": "object",
+                "description": "A token representing the final action by the model, if applicable. For example, 'Continue', 'End', or 'Execute'",
+                "properties": FINAL_TOKEN_MODEL,
             }
         },
         "additionalProperties": False
