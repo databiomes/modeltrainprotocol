@@ -17,6 +17,7 @@ class Token:
         self.desc: str = desc
         self.user: bool = False
         self.num: int = 0
+        self.num_list: list = []
         self.special: str | None = None
         self.validate_value()
         self.validate_key()
@@ -91,5 +92,5 @@ class Token:
 
     def to_dict(self):
         """Convert the token to a dictionary representation."""
-        return {'value': self.value, 'key': self.key, 'user': self.user, 'num': self.num, 'desc': self.desc,
+        return {'value': self.value, 'key': self.key, 'user': self.user, 'num': self.num, 'num_list': self.num_list, 'desc': self.desc,
                 'special': self.special}

@@ -130,6 +130,9 @@ class ProtocolFile:
             if 'key' in token_info:
                 token_info['emoji'] = token_info.pop('key')
 
+            # Remove num_list
+            token_info.pop('num_list')
+
             # Reassign Token 'num' to boolean
             if 'num' in token_info:
                 num: int = token_info['num']
@@ -228,7 +231,8 @@ class ProtocolFile:
                 num=num,
                 user=token_dict.get('user', False),
                 desc=token_dict.get('desc'),
-                special=token_dict.get('special')
+                special=token_dict.get('special'),
+                num_list=token_dict.get('num_list', [])
             )
             token_info_dict[token_value] = token_info
 

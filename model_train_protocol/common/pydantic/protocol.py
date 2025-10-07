@@ -10,10 +10,11 @@ from pydantic import BaseModel, Field
 class TokenInfoModel(BaseModel):
     """Model for individual token information."""
     key: str
-    num: bool
+    num: Union[bool | int | float]
     user: bool
     desc: Optional[str]
     special: Optional[str]
+    num_list: List[Union[int | float]] = Field(default_factory=list)
 
 
 class SampleModel(BaseModel):
@@ -63,6 +64,7 @@ class GuardrailModel(BaseModel):
             raise ValueError(f"Guardrail value must be string or list, got {type(value)}")
         setattr(self, key, value)
 
+
 class NumberModel(BaseModel):
     """Model for numbers configuration."""
     nil: str = Field(default="", alias="None")
@@ -87,6 +89,7 @@ class NumberModel(BaseModel):
         if not isinstance(value, str):
             raise ValueError(f"Number value must be string, got {type(value)}")
         setattr(self, key, value)
+
 
 class BatchModel(BaseModel):
     """Model for batches configuration."""

@@ -21,6 +21,7 @@ class TestTokenDictMethods:
             'key': None,
             'user': False,
             'num': 0,
+            'num_list': [],
             'desc': None,
             'special': None
         }
@@ -36,6 +37,7 @@ class TestTokenDictMethods:
             'key': '🔑',
             'user': False,
             'num': 0,
+            'num_list': [],
             'desc': 'A test token',
             'special': None
         }
@@ -50,6 +52,7 @@ class TestTokenDictMethods:
             'key': '🏁',
             'user': False,
             'num': 0,
+            'num_list': [],
             'desc': None,
             'special': 'start'
         }
@@ -83,6 +86,7 @@ class TestTokenDictMethods:
             'key': None,
             'user': False,
             'num': 0,
+            'num_list': [],
             'desc': None,
             'special': None
         }
@@ -98,6 +102,7 @@ class TestTokenDictMethods:
             'key': '🔑',
             'user': False,
             'num': 0,
+            'num_list': [],
             'desc': '',
             'special': None
         }
@@ -113,6 +118,7 @@ class TestTokenDictMethods:
             'key': '🚀🌟',
             'user': False,
             'num': 0,
+            'num_list': [],
             'desc': 'Unicode description with émojis',
             'special': None
         }
@@ -254,7 +260,7 @@ class TestTokenDictMethods:
             assert token_dict['desc'] is None
             
             # Check that all expected keys are present
-            expected_keys = {'value', 'key', 'user', 'num', 'desc', 'special'}
+            expected_keys = {'value', 'key', 'user', 'num', 'num_list', 'desc', 'special'}
             assert set(token_dict.keys()) == expected_keys
 
     def test_constant_special_tokens_json_serializable(self):
@@ -310,7 +316,7 @@ class TestTokenDictMethods:
         token_dict = token.to_dict()
         
         # Check all expected keys are present
-        expected_keys = {'value', 'key', 'user', 'num', 'desc', 'special'}
+        expected_keys = {'value', 'key', 'user', 'num', 'num_list', 'desc', 'special'}
         assert set(token_dict.keys()) == expected_keys
         
         # Check values match token attributes
