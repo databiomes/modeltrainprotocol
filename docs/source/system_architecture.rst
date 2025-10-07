@@ -49,8 +49,8 @@ Instructions
 
 Instructions define how the model should respond to different input patterns. There are two main types:
 
-- **Instruction**: For scenarios where the model responds without user input
-- **UnsetInstruction**: For scenarios where the model responds to user prompts
+- **SimpleInstruction**: For scenarios where the model responds without user input
+- **UserInstruction**: For scenarios where the model responds to user prompts
 
 Guardrails
 ~~~~~~~~~~

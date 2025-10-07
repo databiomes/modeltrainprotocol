@@ -61,7 +61,7 @@ Here's a simple example of a protocol to train a Chesire Cat model:
    cat_tree_talk = mtp.TokenSet(tokens=(cat, tree, talk))
 
    # Create a simple instruction using the TokenSets
-   instruction = mtp.Instruction(
+   instruction = mtp.SimpleInstruction(
        context=[alice_talk],
        response=cat_tree_talk,
        final=end

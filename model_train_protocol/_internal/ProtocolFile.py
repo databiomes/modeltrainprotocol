@@ -3,7 +3,7 @@ from typing import Collection
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.constants import UNK_TOKEN
-from model_train_protocol.common.instructions import BaseInstruction
+from model_train_protocol.common.instructions import Instruction
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.tokens import TokenSet, SpecialToken
 from model_train_protocol.common.pydantic.protocol import InstructionModel, TokenInfoModel, SampleModel, \
@@ -40,7 +40,7 @@ class ProtocolFile:
         ppo: list = field(default_factory=list)
 
     def __init__(self, name: str, context: list[str], instruction_context_snippets: int, tokens: Collection[Token],
-                 special_tokens: Collection[Token], instructions: Collection[BaseInstruction]):
+                 special_tokens: Collection[Token], instructions: Collection[Instruction]):
         """Initializes the Template with a name and context."""
         self._name: str = name
         self._context: list[str] = context
@@ -77,7 +77,7 @@ class ProtocolFile:
             if isinstance(token, SpecialToken):
                 self._special_token_keys.add(token.key)
 
-    def add_instructions(self, instructions: Collection[BaseInstruction]):
+    def add_instructions(self, instructions: Collection[Instruction]):
         """Adds instructions to the template."""
         for instruction in instructions:
             instruction_set: ProtocolFile.ProtocolInstructionSet = ProtocolFile.ProtocolInstructionSet(

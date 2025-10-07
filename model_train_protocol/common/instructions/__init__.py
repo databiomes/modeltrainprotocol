@@ -2,12 +2,12 @@
 Instruction classes for the Model Train Protocol package.
 """
 
-from .BaseInstruction import BaseInstruction
 from .Instruction import Instruction
-from .UnsetInstruction import UnsetInstruction
+from .SimpleInstruction import SimpleInstruction
+from .UserInstruction import UserInstruction
 
 __all__ = [
-    "BaseInstruction",
     "Instruction",
-    "UnsetInstruction"
+    "SimpleInstruction",
+    "UserInstruction"
 ]

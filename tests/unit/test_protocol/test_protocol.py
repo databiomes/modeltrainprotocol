@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from model_train_protocol import Protocol, Token, UserToken, TokenSet, Instruction, UnsetInstruction, \
+from model_train_protocol import Protocol, Token, UserToken, TokenSet, SimpleInstruction, UserInstruction, \
     Guardrail
 from tests.fixtures.tokens import get_valid_keyless_tokens
 
@@ -195,7 +195,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         # Create instruction
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],
             response=response_set,
             final=token3
@@ -262,7 +262,7 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],
             response=response_set,
             final=token3
@@ -326,7 +326,7 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],  # Only 2 context sets, but protocol expects 3
             response=response_set,
             final=token3
@@ -369,7 +369,7 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],
             response=response_set,
             final=token3
@@ -416,7 +416,7 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],
             response=response_set,
             final=token3
@@ -463,7 +463,7 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],
             response=response_set,
             final=token3
@@ -513,7 +513,7 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],
             response=response_set,
             final=token3
@@ -560,7 +560,7 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],
             response=response_set,
             final=token3
@@ -672,7 +672,7 @@ class TestProtocol:
         user_set.set_guardrail(guardrail)
 
         # Create instruction
-        instruction = UnsetInstruction(
+        instruction = UserInstruction(
             context=[context_set1, context_set2],
             user=user_set,
             final=token2
@@ -741,7 +741,7 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
-        instruction = Instruction(
+        instruction = SimpleInstruction(
             context=[context_set1, context_set2],
             response=response_set,
             final=token3

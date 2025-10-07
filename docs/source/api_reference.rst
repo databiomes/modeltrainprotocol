@@ -82,30 +82,30 @@ Groups multiple tokens together to define input patterns.
 Instructions
 ------------
 
-Instruction
+SimpleInstruction
 ~~~~~~~~~~~~~~~~~
 
 For scenarios where the model responds without user input.
 
 .. code-block:: python
 
-   class Instruction:
+   class SimpleInstruction:
        def __init__(self, context: tuple, response: TokenSet, final: Token):
-           """Initialize a Instruction."""
+           """Initialize a SimpleInstruction."""
            
        def add_sample(self, context_snippets: list, output_snippet: Snippet, value=None):
            """Add a training sample to the instruction."""
 
-UnsetInstruction
+UserInstruction
 ~~~~~~~~~~~~~~~
 
 For scenarios where the model responds to user prompts.
 
 .. code-block:: python
 
-   class UnsetInstruction:
+   class UserInstruction:
        def __init__(self, context: tuple, user: TokenSet, final: Token):
-           """Initialize a UnsetInstruction."""
+           """Initialize a UserInstruction."""
            
        def add_sample(self, context_snippets: list, prompt: str, output_snippet: Snippet, value=None):
            """Add a training sample to the instruction."""
@@ -142,8 +142,8 @@ The MTP package is organized as follows:
        │   ├── TokenSet.py
        │   └── Snippet.py
        ├── instructions/        # Instruction classes
-       │   ├── Instruction.py
-       │   ├── UnsetInstruction.py
+       │   ├── SimpleInstruction.py
+       │   ├── UserInstruction.py
        │   └── Instruction.py
        └── guardrails/          # Guardrail classes
            └── Guardrail.py

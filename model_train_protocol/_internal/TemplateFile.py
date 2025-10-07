@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from typing import Collection
 
-from model_train_protocol import NumToken, Instruction, UnsetInstruction
+from model_train_protocol import NumToken, SimpleInstruction, UserInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
-from model_train_protocol.common.instructions import BaseInstruction
+from model_train_protocol.common.instructions import Instruction
 
 
 class TemplateFile:
@@ -21,7 +21,7 @@ class TemplateFile:
 
         inputs: list[list[str]] = list()
 
-        def add_inputs_from_instructions(self, instructions: list[BaseInstruction], instruction_context_snippets: int):
+        def add_inputs_from_instructions(self, instructions: list[Instruction], instruction_context_snippets: int):
             """Adds input combinations from a list of instructions."""
             unique_sets = {i: set() for i in range(instruction_context_snippets + 1)}
             for instruction in instructions:
@@ -57,7 +57,7 @@ class TemplateFile:
         def __setitem__(self, key: str, value: str):
             self.model_results[key] = value
 
-        def add_results_from_instructions(self, instructions: list[BaseInstruction]):
+        def add_results_from_instructions(self, instructions: list[Instruction]):
             """Adds model results from a list of instructions."""
             for instruction in instructions:
                 self.model_results[str(instruction.final.value)] = str(instruction.final.key)
@@ -79,12 +79,12 @@ class TemplateFile:
 
             return model_json
 
-    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], ):
+    def __init__(self, instruction_context_snippets: int, instructions: list[Instruction], ):
         """Initializes the template"""
         self.model_input: TemplateFile.ModelInput = TemplateFile.ModelInput()
         self.model_output: TemplateFile.ModelOutput = TemplateFile.ModelOutput()
         self.instruction_context_snippets: int = instruction_context_snippets
-        self.instructions: list[BaseInstruction] = instructions
+        self.instructions: list[Instruction] = instructions
         self._add_io_from_instructions()
 
     def _add_io_from_instructions(self):
@@ -108,10 +108,10 @@ class TemplateFile:
         Creates a simple instruction example and a user instruction example if available.
         """
         examples: dict[str, str] = dict()
-        simple_instruction: Instruction = next(
-            (i for i in self.instructions if isinstance(i, Instruction)), None)
-        user_instruction: UnsetInstruction = next(
-            (i for i in self.instructions if isinstance(i, UnsetInstruction)), None)
+        simple_instruction: SimpleInstruction = next(
+            (i for i in self.instructions if isinstance(i, SimpleInstruction)), None)
+        user_instruction: UserInstruction = next(
+            (i for i in self.instructions if isinstance(i, UserInstruction)), None)
 
         if simple_instruction:
             simple_input: str = ""

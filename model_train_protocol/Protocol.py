@@ -5,7 +5,7 @@ from . import Token
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN
-from .common.instructions.BaseInstruction import BaseInstruction
+from .common.instructions.Instruction import Instruction
 from .common.tokens.SpecialToken import SpecialToken
 from .common.util import get_possible_emojis, hash_string, validate_string_set
 
@@ -28,7 +28,7 @@ class Protocol:
             raise ValueError("A minimum of 2 context lines is required for all instructions.")
         self.context: list[str] = []
         self.tokens: set[Token] = set()
-        self.instructions: set[BaseInstruction] = set()
+        self.instructions: set[Instruction] = set()
         self.guardrails: dict[str, list[str]] = dict()
         self.numbers: dict[str, str] = dict()
         self.none = None
@@ -43,7 +43,7 @@ class Protocol:
 
         self.context.append(context)
 
-    def add_instruction(self, instruction: BaseInstruction):
+    def add_instruction(self, instruction: Instruction):
         """
         Adds an Instruction (and its components) to the protocol.
 
