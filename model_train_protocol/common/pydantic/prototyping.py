@@ -1,6 +1,74 @@
 from typing import List, Dict, Any
 from pydantic import BaseModel, Field, validator
 
+GENERATE_MTP_TOOL: dict = {
+    "name": "generate_mtp",
+    "type": "function",
+    "description": "Generate developer message context array and multiple instruction sets based on the provided developer message.",
+    "strict": True,
+    "parameters": {
+        "type": "object",
+        "required": [
+            "developer_message",
+            "context",
+            "instruction_sets"
+        ],
+        "properties": {
+            "developer_message": {
+                "type": "string",
+                "description": "The main message provided by the developer to base context and instructions on."
+            },
+            "context": {
+                "type": "array",
+                "description": "Array of contexts, each explaining an aspect of the developer message context.",
+                "minItems": 5,
+                "items": {
+                    "type": "object",
+                    "required": [
+                        "context"
+                    ],
+                    "properties": {
+                        "context": {
+                            "type": "string",
+                            "description": "Aspect explaining developer message context."
+                        }
+                    },
+                    "additionalProperties": False
+                }
+            },
+            "instruction_sets": {
+                "type": "array",
+                "description": "Array of instruction sets, each containing an instruction, a possible user prompt, and a response using the developer message context.",
+                "minItems": 3,
+                "items": {
+                    "type": "object",
+                    "required": [
+                        "instruction",
+                        "possible_user_prompt",
+                        "response_using_context"
+                    ],
+                    "properties": {
+                        "instruction": {
+                            "type": "string",
+                            "description": "Instruction derived from the developer message."
+                        },
+                        "possible_user_prompt": {
+                            "type": "string",
+                            "description": "Possible user question or prompt related to this instruction."
+                        },
+                        "response_using_context": {
+                            "type": "string",
+                            "description": "Response that uses the developer message context."
+                        }
+                    },
+                    "additionalProperties": False
+                }
+            }
+        },
+        "additionalProperties": False
+    }
+}
+
 
 # --- Nested Models ---
 
@@ -30,7 +98,7 @@ class InstructionSetModel(BaseModel):
 
 # --- Main Model ---
 
-class PrototypeModel(BaseModel):
+class GenerateMTPResultModel(BaseModel):
     """
     The main model representing the output of the 'generate_mtp' tool.
     Corresponds to the overall 'parameters' object in the schema.
@@ -48,42 +116,61 @@ class PrototypeModel(BaseModel):
         extra = "forbid"  # Enforces 'additionalProperties': false
 
 
-# Example Usage:
-if __name__ == "__main__":
-    example_data = {
-        "developer_message": "Our new service, PhotoVault, launches next week. It offers unlimited, encrypted photo storage for $5/month, and the main benefit is end-to-end encryption. Customers can sign up on our primary domain, photovault.com.",
-        "context": [
-            {"context": "Product Name: PhotoVault"},
-            {"context": "Launch Timeline: Next week"},
-            {"context": "Core Feature: Unlimited, encrypted photo storage"},
-            {"context": "Pricing: $5/month"},
-            {"context": "Sign-up Location: photovault.com"}
-        ],
-        "instruction_sets": [
-            {
-                "instruction": "Mention the service name and its core offering.",
-                "possible_user_prompt": "What is PhotoVault?",
-                "response_using_context": "PhotoVault is our new service launching next week, offering unlimited, encrypted photo storage."
-            },
-            {
-                "instruction": "State the monthly cost and primary security feature.",
-                "possible_user_prompt": "How much does PhotoVault cost and is it secure?",
-                "response_using_context": "It costs $5/month, and its main benefit is end-to-end encryption, ensuring your photos are highly secure."
-            },
-            {
-                "instruction": "Provide the website for sign-up.",
-                "possible_user_prompt": "Where can I sign up for the new photo storage service?",
-                "response_using_context": "You can sign up for PhotoVault on our primary domain: photovault.com."
-            }
-        ]
-    }
+class GenerateMTPContextItemModel(BaseModel):
+    """
+    A single context item explaining an aspect of the developer message.
+    Matches 'context.items' in the generate_mtp schema.
+    """
+    context: str = Field(..., description="Aspect explaining developer message context.")
 
-    try:
-        # Instantiate the model with the example data
-        validated_model = PrototypeModel(**example_data)
-        print("Pydantic model successfully validated the data.")
-        print("\nValidated Data (as dictionary):")
-        print(validated_model.model_dump_json(indent=2))
+    class Config:
+        extra = "allow"  # corresponds to 'additionalProperties': true
 
-    except Exception as e:
-        print(f"Validation Error: {e}")
+
+class GenerateMTPInstructionSetModel(BaseModel):
+    """
+    A single instruction set with an instruction, possible user prompt, and context-based response.
+    Matches 'instruction_sets.items' in the generate_mtp schema.
+    """
+    instruction: str = Field(..., description="Instruction derived from the developer message.")
+    possible_user_prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
+    response_using_context: str = Field(..., description="Response that uses the developer message context.")
+
+    class Config:
+        extra = "allow"  # corresponds to 'additionalProperties': true
+
+
+# --- Main Function Definition Model ---
+
+class GenerateMTPFunctionInput(BaseModel):
+    """
+    Represents the function schema for 'generate_mtp'.
+    This matches the OpenAI function/tool definition JSON.
+    """
+    call_id: str
+
+    developer_message: str = Field(
+        ...,
+        description="The main message provided by the developer to base context and instructions on."
+    )
+    context: List[GenerateMTPContextItemModel] = Field(
+        ...,
+        description="Array of a minimum of five contexts with a description explaining the context of the developer message.",
+        min_items=5
+    )
+    instruction_sets: List[GenerateMTPInstructionSetModel] = Field(
+        ...,
+        description="Array of a minimum of three sets each with instruction, possible user prompt, and context-based response.",
+        min_items=3
+    )
+
+    def dump_parameters(self) -> Dict[str, Any]:
+        """Custom method to dump parameters as a dictionary."""
+        return {
+            "developer_message": self.developer_message,
+            "context": [item.model_dump() for item in self.context],
+            "instruction_sets": [item.model_dump() for item in self.instruction_sets]
+        }
+
+    class Config:
+        extra = "forbid"  # corresponds to 'additionalProperties': false
