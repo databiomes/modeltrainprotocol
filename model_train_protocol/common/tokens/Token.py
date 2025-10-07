@@ -4,7 +4,7 @@ import emoji
 class Token:
     """The lowest level unit for a model. Represents a word, symbol, or concept."""
 
-    def __init__(self, value: str, key: str | None = None, desc: str | None = None):
+    def __init__(self, value: str, key: str | None = None, desc: str | None = None, *args, **kwargs):
         """
         Initializes a Token instance.
 

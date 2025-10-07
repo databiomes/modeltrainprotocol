@@ -3,7 +3,7 @@ from .Token import Token
 
 class NumToken(Token):
     def __init__(self, value: str, min_value: int | float, max_value: int | float, key: str | None = None,
-                 desc: str | None = None):
+                 desc: str | None = None, *args, **kwargs):
         """
         Initializes a NumToken instance.
 

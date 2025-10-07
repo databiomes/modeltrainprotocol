@@ -2,7 +2,7 @@ from .Token import Token
 
 class NumListToken(Token):
     def __init__(self, value: str, min_value: int | float, max_value: int | float, length: int,
-                 key: str | None = None, desc: str | None = None):
+                 key: str | None = None, desc: str | None = None, *args, **kwargs):
         """
         Initializes a NumListToken instance.
 
