@@ -122,7 +122,7 @@ snippet_with_length = character_context_sentence.create_snippet(string="The enem
 
 Instructions define how the model should respond to different input patterns. There are two main types of instructions.
 
-### SimpleInstruction
+### Instruction
 
 #### Parameters
 
@@ -130,7 +130,7 @@ Instructions define how the model should respond to different input patterns. Th
 - **response**: The TokenSet that defines the model's response pattern (cannot contain UserTokens)
 - **final**: A Token that represents the final action or result
 
-#### Create the SimpleInstruction
+#### Create the Instruction
 
 For scenarios where the model responds without user input:
 
@@ -140,7 +140,7 @@ cat_pondering = mtp.TokenSet(tokens=(tree, cat, ponder))
 cat_grinning = mtp.TokenSet(tokens=(tree, cat, grin))
 
 # Create a simple instruction for the Cat's internal thoughts
-instruction = mtp.SimpleInstruction(
+instruction = mtp.Instruction(
     context=(cat_pondering,),
     response=cat_grinning,
     final=disappear
@@ -169,7 +169,7 @@ instruction.add_sample(
 )
 ```
 
-### UserInstruction
+### UnsetInstruction
 
 #### Parameters
 
@@ -177,7 +177,7 @@ instruction.add_sample(
 - **user**: A TokenSet that must include at least one UserToken
 - **final**: A Token that represents the final action or result
 
-#### Create the UserInstruction
+#### Create the UnsetInstruction
 
 For scenarios where the model responds to user prompts:
 
@@ -187,7 +187,7 @@ alice_talk = mtp.TokenSet(tokens=(tree, alice, talk))
 cat_talk = mtp.TokenSet(tokens=(tree, cat, talk))
 
 # Create a user instruction for Alice asking the Cat questions
-user_instruction = mtp.UserInstruction(
+user_instruction = mtp.UnsetInstruction(
     context=(alice_talk,),
     user=alice_talk,  # Must contain at least one UserToken
     final=disappear

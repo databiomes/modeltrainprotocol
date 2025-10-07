@@ -1,10 +1,10 @@
 """
 Comprehensive instruction fixtures for testing all tokenset combinations.
-Tests all possible combinations of tokensets for both SimpleInstruction and UserInstruction.
+Tests all possible combinations of tokensets for both Instruction and UnsetInstruction.
 """
 import pytest
 
-from model_train_protocol import SimpleInstruction, UserInstruction
+from model_train_protocol import Instruction, UnsetInstruction
 from model_train_protocol.common.constants import NON_TOKEN
 from model_train_protocol.common.tokens.NumListToken import NumListToken
 from model_train_protocol.common.tokens.NumToken import NumToken
@@ -33,11 +33,11 @@ TOKEN_USER = UserToken("User", desc="User token")
 
 # Individual instruction fixtures for specific combinations
 
-# Basic SimpleInstruction fixtures
+# Basic Instruction fixtures
 @pytest.fixture
-def simple_basic_instruction(simple_tokenset) -> SimpleInstruction:
+def simple_basic_instruction(simple_tokenset) -> Instruction:
     """Basic simple instruction."""
-    return SimpleInstruction(
+    return Instruction(
         context=[simple_tokenset],
         response=simple_tokenset,
         final=TOKEN_RESULT
@@ -45,7 +45,7 @@ def simple_basic_instruction(simple_tokenset) -> SimpleInstruction:
 
 
 @pytest.fixture
-def simple_basic_instruction_with_samples(simple_basic_instruction, simple_context_sample, simple_response_sample) -> SimpleInstruction:
+def simple_basic_instruction_with_samples(simple_basic_instruction, simple_context_sample, simple_response_sample) -> Instruction:
     """Basic simple instruction with samples."""
     simple_basic_instruction.add_sample(
         context_snippets=[simple_context_sample],
@@ -56,9 +56,9 @@ def simple_basic_instruction_with_samples(simple_basic_instruction, simple_conte
 
 
 @pytest.fixture
-def simple_numtoken_instruction(simple_numtoken_tokenset) -> SimpleInstruction:
+def simple_numtoken_instruction(simple_numtoken_tokenset) -> Instruction:
     """Simple instruction with NumToken."""
-    return SimpleInstruction(
+    return Instruction(
         context=[simple_numtoken_tokenset],
         response=simple_numtoken_tokenset,
         final=TOKEN_COUNT
@@ -66,7 +66,7 @@ def simple_numtoken_instruction(simple_numtoken_tokenset) -> SimpleInstruction:
 
 
 @pytest.fixture
-def simple_numtoken_instruction_with_samples(simple_numtoken_instruction, simple_numtoken_context_sample, simple_numtoken_response_sample) -> SimpleInstruction:
+def simple_numtoken_instruction_with_samples(simple_numtoken_instruction, simple_numtoken_context_sample, simple_numtoken_response_sample) -> Instruction:
     """Simple instruction with NumToken and samples."""
     simple_numtoken_instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample],
@@ -77,9 +77,9 @@ def simple_numtoken_instruction_with_samples(simple_numtoken_instruction, simple
 
 
 @pytest.fixture
-def simple_numlisttoken_instruction(simple_numlisttoken_tokenset) -> SimpleInstruction:
+def simple_numlisttoken_instruction(simple_numlisttoken_tokenset) -> Instruction:
     """Simple instruction with NumListToken."""
-    return SimpleInstruction(
+    return Instruction(
         context=[simple_numlisttoken_tokenset],
         response=simple_numlisttoken_tokenset,
         final=TOKEN_COORDINATES
@@ -87,7 +87,7 @@ def simple_numlisttoken_instruction(simple_numlisttoken_tokenset) -> SimpleInstr
 
 
 @pytest.fixture
-def simple_numlisttoken_instruction_with_samples(simple_numlisttoken_instruction, simple_numlisttoken_context_sample, simple_numlisttoken_response_sample) -> SimpleInstruction:
+def simple_numlisttoken_instruction_with_samples(simple_numlisttoken_instruction, simple_numlisttoken_context_sample, simple_numlisttoken_response_sample) -> Instruction:
     """Simple instruction with NumListToken and samples."""
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
@@ -98,9 +98,9 @@ def simple_numlisttoken_instruction_with_samples(simple_numlisttoken_instruction
 
 
 @pytest.fixture
-def simple_mixed_instruction(simple_mixed_tokenset) -> SimpleInstruction:
+def simple_mixed_instruction(simple_mixed_tokenset) -> Instruction:
     """Simple instruction with mixed numeric tokens."""
-    return SimpleInstruction(
+    return Instruction(
         context=[simple_mixed_tokenset],
         response=simple_mixed_tokenset,
         final=TOKEN_COUNT
@@ -108,7 +108,7 @@ def simple_mixed_instruction(simple_mixed_tokenset) -> SimpleInstruction:
 
 
 @pytest.fixture
-def simple_mixed_instruction_with_samples(simple_mixed_instruction, simple_mixed_context_sample, simple_mixed_response_sample) -> SimpleInstruction:
+def simple_mixed_instruction_with_samples(simple_mixed_instruction, simple_mixed_context_sample, simple_mixed_response_sample) -> Instruction:
     """Simple instruction with mixed numeric tokens and samples."""
     simple_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
@@ -119,9 +119,9 @@ def simple_mixed_instruction_with_samples(simple_mixed_instruction, simple_mixed
 
 
 @pytest.fixture
-def simple_scores_instruction(scores_tokenset) -> SimpleInstruction:
+def simple_scores_instruction(scores_tokenset) -> Instruction:
     """Simple instruction with scores tokenset."""
-    return SimpleInstruction(
+    return Instruction(
         context=[scores_tokenset],
         response=scores_tokenset,
         final=TOKEN_SCORES
@@ -129,7 +129,7 @@ def simple_scores_instruction(scores_tokenset) -> SimpleInstruction:
 
 
 @pytest.fixture
-def simple_scores_instruction_with_samples(simple_scores_instruction, scores_context_sample, scores_response_sample) -> SimpleInstruction:
+def simple_scores_instruction_with_samples(simple_scores_instruction, scores_context_sample, scores_response_sample) -> Instruction:
     """Simple instruction with scores tokenset and samples."""
     simple_scores_instruction.add_sample(
         context_snippets=[scores_context_sample],
@@ -139,11 +139,11 @@ def simple_scores_instruction_with_samples(simple_scores_instruction, scores_con
     return simple_scores_instruction
 
 
-# Basic UserInstruction fixtures
+# Basic UnsetInstruction fixtures
 @pytest.fixture
-def user_basic_instruction(simple_tokenset, user_tokenset) -> UserInstruction:
+def user_basic_instruction(simple_tokenset, user_tokenset) -> UnsetInstruction:
     """Basic user instruction."""
-    return UserInstruction(
+    return UnsetInstruction(
         context=[simple_tokenset],
         user=user_tokenset,
         final=TOKEN_RESULT
@@ -151,7 +151,7 @@ def user_basic_instruction(simple_tokenset, user_tokenset) -> UserInstruction:
 
 
 @pytest.fixture
-def user_basic_instruction_with_samples(user_basic_instruction, simple_context_sample, user_response_sample) -> UserInstruction:
+def user_basic_instruction_with_samples(user_basic_instruction, simple_context_sample, user_response_sample) -> UnsetInstruction:
     """Basic user instruction with samples."""
     user_basic_instruction.add_sample(
         context_snippets=[simple_context_sample],
@@ -163,9 +163,9 @@ def user_basic_instruction_with_samples(user_basic_instruction, simple_context_s
 
 
 @pytest.fixture
-def user_numtoken_instruction(simple_numtoken_tokenset, user_numtoken_tokenset) -> UserInstruction:
+def user_numtoken_instruction(simple_numtoken_tokenset, user_numtoken_tokenset) -> UnsetInstruction:
     """User instruction with NumToken."""
-    return UserInstruction(
+    return UnsetInstruction(
         context=[simple_numtoken_tokenset],
         user=user_numtoken_tokenset,
         final=TOKEN_COUNT
@@ -173,7 +173,7 @@ def user_numtoken_instruction(simple_numtoken_tokenset, user_numtoken_tokenset) 
 
 
 @pytest.fixture
-def user_numtoken_instruction_with_samples(user_numtoken_instruction, simple_numtoken_context_sample, user_numtoken_response_sample) -> UserInstruction:
+def user_numtoken_instruction_with_samples(user_numtoken_instruction, simple_numtoken_context_sample, user_numtoken_response_sample) -> UnsetInstruction:
     """User instruction with NumToken and samples."""
     user_numtoken_instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample],
@@ -185,9 +185,9 @@ def user_numtoken_instruction_with_samples(user_numtoken_instruction, simple_num
 
 
 @pytest.fixture
-def user_numlisttoken_instruction(simple_numlisttoken_tokenset, user_numlisttoken_tokenset) -> UserInstruction:
+def user_numlisttoken_instruction(simple_numlisttoken_tokenset, user_numlisttoken_tokenset) -> UnsetInstruction:
     """User instruction with NumListToken."""
-    return UserInstruction(
+    return UnsetInstruction(
         context=[simple_numlisttoken_tokenset],
         user=user_numlisttoken_tokenset,
         final=TOKEN_COORDINATES
@@ -195,7 +195,7 @@ def user_numlisttoken_instruction(simple_numlisttoken_tokenset, user_numlisttoke
 
 
 @pytest.fixture
-def user_numlisttoken_instruction_with_samples(user_numlisttoken_instruction, simple_numlisttoken_context_sample, user_numlisttoken_response_sample) -> UserInstruction:
+def user_numlisttoken_instruction_with_samples(user_numlisttoken_instruction, simple_numlisttoken_context_sample, user_numlisttoken_response_sample) -> UnsetInstruction:
     """User instruction with NumListToken and samples."""
     user_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
@@ -207,9 +207,9 @@ def user_numlisttoken_instruction_with_samples(user_numlisttoken_instruction, si
 
 
 @pytest.fixture
-def user_mixed_instruction(simple_mixed_tokenset, user_mixed_tokenset) -> UserInstruction:
+def user_mixed_instruction(simple_mixed_tokenset, user_mixed_tokenset) -> UnsetInstruction:
     """User instruction with mixed numeric tokens."""
-    return UserInstruction(
+    return UnsetInstruction(
         context=[simple_mixed_tokenset],
         user=user_mixed_tokenset,
         final=TOKEN_COUNT
@@ -217,7 +217,7 @@ def user_mixed_instruction(simple_mixed_tokenset, user_mixed_tokenset) -> UserIn
 
 
 @pytest.fixture
-def user_mixed_instruction_with_samples(user_mixed_instruction, simple_mixed_context_sample, user_mixed_response_sample) -> UserInstruction:
+def user_mixed_instruction_with_samples(user_mixed_instruction, simple_mixed_context_sample, user_mixed_response_sample) -> UnsetInstruction:
     """User instruction with mixed numeric tokens and samples."""
     user_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
@@ -229,9 +229,9 @@ def user_mixed_instruction_with_samples(user_mixed_instruction, simple_mixed_con
 
 
 @pytest.fixture
-def user_scores_instruction(scores_tokenset, user_tokenset) -> UserInstruction:
+def user_scores_instruction(scores_tokenset, user_tokenset) -> UnsetInstruction:
     """User instruction with scores tokenset."""
-    return UserInstruction(
+    return UnsetInstruction(
         context=[scores_tokenset],
         user=user_tokenset,
         final=TOKEN_SCORES
@@ -239,7 +239,7 @@ def user_scores_instruction(scores_tokenset, user_tokenset) -> UserInstruction:
 
 
 @pytest.fixture
-def user_scores_instruction_with_samples(user_scores_instruction, scores_context_sample, user_response_sample) -> UserInstruction:
+def user_scores_instruction_with_samples(user_scores_instruction, scores_context_sample, user_response_sample) -> UnsetInstruction:
     """User instruction with scores tokenset and samples."""
     user_scores_instruction.add_sample(
         context_snippets=[scores_context_sample],
@@ -252,9 +252,9 @@ def user_scores_instruction_with_samples(user_scores_instruction, scores_context
 
 # Edge case fixtures
 @pytest.fixture
-def simple_instruction_with_none_final(simple_tokenset) -> SimpleInstruction:
+def simple_instruction_with_none_final(simple_tokenset) -> Instruction:
     """Simple instruction with NON_TOKEN final token."""
-    return SimpleInstruction(
+    return Instruction(
         context=[simple_tokenset],
         response=simple_tokenset,
         final=NON_TOKEN
@@ -262,9 +262,9 @@ def simple_instruction_with_none_final(simple_tokenset) -> SimpleInstruction:
 
 
 @pytest.fixture
-def simple_instruction_with_non_token_final(simple_tokenset) -> SimpleInstruction:
+def simple_instruction_with_non_token_final(simple_tokenset) -> Instruction:
     """Simple instruction with NON_TOKEN final."""
-    return SimpleInstruction(
+    return Instruction(
         context=[simple_tokenset],
         response=simple_tokenset,
         final=NON_TOKEN
@@ -272,9 +272,9 @@ def simple_instruction_with_non_token_final(simple_tokenset) -> SimpleInstructio
 
 
 @pytest.fixture
-def simple_instruction_with_empty_samples(simple_tokenset) -> SimpleInstruction:
+def simple_instruction_with_empty_samples(simple_tokenset) -> Instruction:
     """Simple instruction with no samples."""
-    return SimpleInstruction(
+    return Instruction(
         context=[simple_tokenset],
         response=simple_tokenset,
         final=TOKEN_RESULT
@@ -282,9 +282,9 @@ def simple_instruction_with_empty_samples(simple_tokenset) -> SimpleInstruction:
 
 
 @pytest.fixture
-def simple_instruction_with_multiple_samples(simple_tokenset, simple_context_sample, simple_response_sample) -> SimpleInstruction:
+def simple_instruction_with_multiple_samples(simple_tokenset, simple_context_sample, simple_response_sample) -> Instruction:
     """Simple instruction with multiple samples."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_tokenset],
         response=simple_tokenset,
         final=TOKEN_RESULT
@@ -302,9 +302,9 @@ def simple_instruction_with_multiple_samples(simple_tokenset, simple_context_sam
 
 
 @pytest.fixture
-def user_instruction_with_multiple_samples(simple_tokenset, user_tokenset, simple_context_sample, user_response_sample) -> UserInstruction:
+def user_instruction_with_multiple_samples(simple_tokenset, user_tokenset, simple_context_sample, user_response_sample) -> UnsetInstruction:
     """User instruction with multiple samples."""
-    instruction = UserInstruction(
+    instruction = UnsetInstruction(
         context=[simple_tokenset],
         user=user_tokenset,
         final=TOKEN_RESULT

@@ -1,21 +1,21 @@
 """
-Unit tests for the UserInstruction class.
+Unit tests for the UnsetInstruction class.
 """
 import pytest
 
-from model_train_protocol.common.instructions.UserInstruction import UserInstruction
+from model_train_protocol.common.instructions.UnsetInstruction import UnsetInstruction
 from model_train_protocol.common.tokens.TokenSet import TokenSet
 from tests.fixtures.tokens import SIMPLE_TOKENSET, TOKEN_CONTINUE, USER_TOKENSET, \
     SIMPLE_NUMTOKEN_TOKENSET
 
 
-class TestUserInstruction:
-    """Test cases for the UserInstruction class."""
+class TestUnsetInstruction:
+    """Test cases for the UnsetInstruction class."""
 
     def test_user_tokenset(self):
         """Test creating a user instruction with basic tokens."""
         context: list[TokenSet] = [SIMPLE_TOKENSET, SIMPLE_TOKENSET]
-        instruction: UserInstruction = UserInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
+        instruction: UnsetInstruction = UnsetInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
 
         assert len(instruction.context) == 2
         assert instruction.response == USER_TOKENSET
@@ -26,12 +26,12 @@ class TestUserInstruction:
         context: list[TokenSet] = [SIMPLE_TOKENSET, SIMPLE_TOKENSET]
 
         with pytest.raises(ValueError):
-            UserInstruction(context=context, user=SIMPLE_TOKENSET, final=TOKEN_CONTINUE)
+            UnsetInstruction(context=context, user=SIMPLE_TOKENSET, final=TOKEN_CONTINUE)
 
     def test_num_tokensset(self):
         """Test creating an instruction with numeric tokens."""
         context: list[TokenSet] = [SIMPLE_NUMTOKEN_TOKENSET, SIMPLE_TOKENSET]
-        instruction: UserInstruction = UserInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
+        instruction: UnsetInstruction = UnsetInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
 
         assert len(instruction.context) == 2
         assert instruction.response == USER_TOKENSET
@@ -42,7 +42,7 @@ class TestUserInstruction:
         from tests.fixtures.tokens import SIMPLE_NUMTOKEN_NUMLISTTOKEN_TOKENSET
 
         context: list[TokenSet] = [SIMPLE_NUMTOKEN_NUMLISTTOKEN_TOKENSET, SIMPLE_TOKENSET]
-        instruction: UserInstruction = UserInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
+        instruction: UnsetInstruction = UnsetInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
 
         assert len(instruction.context) == 2
         assert instruction.response == USER_TOKENSET
@@ -53,7 +53,7 @@ class TestUserInstruction:
         from tests.fixtures.tokens import SIMPLE_NUMTOKEN_TOKENSET
 
         context: list[TokenSet] = [SIMPLE_NUMTOKEN_TOKENSET, SIMPLE_NUMTOKEN_TOKENSET]
-        instruction: UserInstruction = UserInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
+        instruction: UnsetInstruction = UnsetInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
 
         assert len(instruction.context) == 2
         assert instruction.response == USER_TOKENSET
@@ -62,7 +62,7 @@ class TestUserInstruction:
     def test_wrong_tokenset_snippet(self):
         """Test that creating a snippet with wrong tokenset raises an error."""
         context: list[TokenSet] = [SIMPLE_TOKENSET, SIMPLE_TOKENSET]
-        instruction: UserInstruction = UserInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
+        instruction: UnsetInstruction = UnsetInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
 
         # Create snippet with wrong tokenset (USER_TOKENSET for context instead of SIMPLE_TOKENSET)
         wrong_snippet = USER_TOKENSET.create_snippet("Wrong snippet")
@@ -78,7 +78,7 @@ class TestUserInstruction:
     def test_wrong_number_of_snippets(self):
         """Test that creating a snippet with wrong tokenset raises an error."""
         context: list[TokenSet] = [SIMPLE_TOKENSET, SIMPLE_TOKENSET]
-        instruction: UserInstruction = UserInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
+        instruction: UnsetInstruction = UnsetInstruction(context=context, user=USER_TOKENSET, final=TOKEN_CONTINUE)
 
         # Create snippet with wrong tokenset (USER_TOKENSET for context instead of SIMPLE_TOKENSET)
         correct_snippet = SIMPLE_TOKENSET.create_snippet("Correct snippet")

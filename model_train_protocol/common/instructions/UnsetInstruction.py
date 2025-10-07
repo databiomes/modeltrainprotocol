@@ -1,24 +1,24 @@
 from typing import Sequence
 
-from .Instruction import Instruction, Sample
+from .BaseInstruction import BaseInstruction, Sample
 from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
 
-class UserInstruction(Instruction):
+class UnsetInstruction(BaseInstruction):
     """
-    A UserInstruction is a specialized Instruction that includes at least one user token in the user token set.
+    A UnsetInstruction is a specialized Instruction that includes at least one user token in the user token set.
 
     This Instruction type includes a prompt provided by the user to guide the model's response.
 
-    Note: The response TokenSet is not set in a UserInstruction.
+    Note: The response TokenSet is not set in a UnsetInstruction.
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
 
     def __init__(self, context: Sequence[TokenSet], user: TokenSet, final: Token=NON_TOKEN):
         """
-        Initializes a UserInstruction instance.
+        Initializes a UnsetInstruction instance.
 
         :param context: List of tuples containing Token instances that define the input structure. This precedes the user input.
         :param user: A TokenSet instance that must include at least one user token.
@@ -26,7 +26,7 @@ class UserInstruction(Instruction):
         """
         super().__init__(context=context, response=user, final=final)
         if not self.contains_user():
-            raise ValueError("UserInstruction requires a user token in the response. Use Instruction for non-user inputs.")
+            raise ValueError("UnsetInstruction requires a user token in the response. Use Instruction for non-user inputs.")
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], prompt: str, output_snippet: Snippet,
@@ -50,7 +50,7 @@ class UserInstruction(Instruction):
     # noinspection PyMethodOverriding
     def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet, prompt: str,
                                 value: int | float | list[int | float] | None = None) -> Sample:
-        """Creates a sample UserInstruction string for example usages."""
+        """Creates a sample UnsetInstruction string for example usages."""
         all_snippets: list[Snippet] = context_snippets + [output_snippet]
 
         # format sample

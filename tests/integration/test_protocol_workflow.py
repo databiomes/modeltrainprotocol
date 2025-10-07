@@ -155,7 +155,7 @@ class TestProtocolWorkflow:
         protocol.add_context("It should handle errors gracefully.")
         
         # Test adding instruction without samples - create a simple instruction without samples
-        from model_train_protocol import Token, TokenSet, SimpleInstruction
+        from model_train_protocol import Token, TokenSet, Instruction
         
         token1 = Token("Token1", key="🔑")
         token2 = Token("Token2", key="🔧")
@@ -165,7 +165,7 @@ class TestProtocolWorkflow:
         # Create second context set
         context_set2 = TokenSet(tokens=(token2,))
 
-        instruction: SimpleInstruction = SimpleInstruction(
+        instruction: Instruction = Instruction(
             context=[context_set, context_set2],
             response=response_set,
             final=token2

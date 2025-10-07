@@ -49,7 +49,7 @@ tree_english_disappear_cat_talk: mtp.TokenSet = mtp.TokenSet(
     tokens=(token_tree, token_english, token_vanish, token_cat, token_talk))
 
 # -------------------- Instruction Set: Continue (English) --------------------
-alice_cat_alice_instruction_continue: mtp.UserInstruction = mtp.UserInstruction(
+alice_cat_alice_instruction_continue: mtp.UnsetInstruction = mtp.UnsetInstruction(
     context=(tree_english_alice_talk, tree_english_cat_talk),
     user=tree_english_alice_talk,
     final=token_continue
@@ -98,7 +98,7 @@ alice_cat_alice_instruction_continue.add_sample(
 protocol.add_instruction(alice_cat_alice_instruction_continue)
 
 # -------------------- Instruction Set: Appear (English) --------------------
-alice_disappear_cat_alice_instruction_appear: mtp.UserInstruction = mtp.UserInstruction(
+alice_disappear_cat_alice_instruction_appear: mtp.UnsetInstruction = mtp.UnsetInstruction(
     context=(tree_english_alice_talk, tree_english_disappear_cat_talk),
     user=tree_english_alice_talk,
     final=token_appear
@@ -148,7 +148,7 @@ alice_disappear_cat_alice_instruction_appear.add_sample(
 protocol.add_instruction(alice_disappear_cat_alice_instruction_appear)
 
 # -------------------- Instruction Set: Disappear (English) --------------------
-alice_cat_alice_instruction_disappear: mtp.UserInstruction = mtp.UserInstruction(
+alice_cat_alice_instruction_disappear: mtp.UnsetInstruction = mtp.UnsetInstruction(
     context=(tree_english_alice_talk, tree_english_cat_talk),
     user=tree_english_alice_talk,
     final=token_vanish
@@ -201,7 +201,7 @@ alice_cat_alice_instruction_disappear.add_sample(
 protocol.add_instruction(alice_cat_alice_instruction_disappear)
 
 # -------------------- Instruction Set: Answer (English) --------------------
-alice_cat_alice_instruction_answer: mtp.UserInstruction = mtp.UserInstruction(
+alice_cat_alice_instruction_answer: mtp.UnsetInstruction = mtp.UnsetInstruction(
     context=(tree_english_alice_talk, tree_english_cat_talk),
     user=tree_english_alice_talk,
     final=token_answer
@@ -251,7 +251,7 @@ alice_cat_alice_instruction_answer.add_sample(
 protocol.add_instruction(alice_cat_alice_instruction_answer)
 
 # -------------------- Instruction Set: Leave (English) --------------------
-alice_disappear_cat_alice_instruction_leave: mtp.UserInstruction = mtp.UserInstruction(
+alice_disappear_cat_alice_instruction_leave: mtp.UnsetInstruction = mtp.UnsetInstruction(
     context=(tree_english_alice_talk, tree_english_disappear_cat_talk),
     user=tree_english_alice_talk,
     final=token_leave

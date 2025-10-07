@@ -3,14 +3,14 @@ Workflow instruction fixtures with different context line counts (1, 2, 5).
 """
 import pytest
 
-from model_train_protocol import SimpleInstruction, UserInstruction
+from model_train_protocol import Instruction, UnsetInstruction
 
 
 # 2 Context Line Instructions (existing from protocol_workflow_instructions.py)
 @pytest.fixture
-def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, simple_response_sample, token_workflow_result) -> SimpleInstruction:
+def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, simple_response_sample, token_workflow_result) -> Instruction:
     """Simple instruction with 2 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_tokenset, user_tokenset],
         response=simple_tokenset,
         final=token_workflow_result
@@ -37,9 +37,9 @@ def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_toke
 
 
 @pytest.fixture
-def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, user_response_sample, token_workflow_end) -> UserInstruction:
+def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, user_response_sample, token_workflow_end) -> UnsetInstruction:
     """User instruction with 2 context lines for workflow tests."""
-    instruction = UserInstruction(
+    instruction = UnsetInstruction(
         context=[simple_tokenset, user_tokenset],
         user=user_tokenset,
         final=token_workflow_end
@@ -69,9 +69,9 @@ def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokens
 
 
 @pytest.fixture
-def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_tokenset, user_tokenset, simple_numtoken_context_sample, user_context_sample, simple_numtoken_response_sample, token_workflow_count) -> SimpleInstruction:
+def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_tokenset, user_tokenset, simple_numtoken_context_sample, user_context_sample, simple_numtoken_response_sample, token_workflow_count) -> Instruction:
     """Simple instruction with NumToken and 2 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_numtoken_tokenset, user_tokenset],
         response=simple_numtoken_tokenset,
         final=token_workflow_count
@@ -101,9 +101,9 @@ def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_t
 @pytest.fixture
 def simple_workflow_5context_instruction_with_samples(
     simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, simple_response_sample, token_workflow_result
-) -> SimpleInstruction:
+) -> Instruction:
     """Simple instruction with 5 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset],
         response=simple_tokenset,
         final=token_workflow_result
@@ -132,9 +132,9 @@ def simple_workflow_5context_instruction_with_samples(
 @pytest.fixture
 def user_workflow_5context_instruction_with_samples(
     simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, user_response_sample, token_workflow_end
-) -> UserInstruction:
+) -> UnsetInstruction:
     """User instruction with 5 context lines for workflow tests."""
-    instruction = UserInstruction(
+    instruction = UnsetInstruction(
         context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset],
         user=user_tokenset,
         final=token_workflow_end
@@ -166,9 +166,9 @@ def user_workflow_5context_instruction_with_samples(
 @pytest.fixture
 def simple_numtoken_workflow_5context_instruction_with_samples(
     simple_numtoken_tokenset, user_tokenset, simple_numtoken_context_sample, user_context_sample, simple_numtoken_response_sample, token_workflow_count
-) -> SimpleInstruction:
+) -> Instruction:
     """Simple instruction with NumToken and 5 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_numtoken_tokenset, user_tokenset, simple_numtoken_tokenset, user_tokenset, simple_numtoken_tokenset],
         response=simple_numtoken_tokenset,
         final=token_workflow_count
