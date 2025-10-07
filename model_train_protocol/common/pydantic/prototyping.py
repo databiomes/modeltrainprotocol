@@ -1,5 +1,44 @@
 from typing import List, Dict, Any
-from pydantic import BaseModel, Field, validator
+
+from pydantic import BaseModel, Field
+
+from model_train_protocol.common.pydantic.protocol import TokenInfoModel
+
+TOKEN_MODEL: dict = {  # Reusable token model definition
+    "type": "object",
+    "description": "A single token that defines part of the context of the prompt.",
+    "required": ["key", "value", "user", "num", "num_list", "desc"],
+    "properties": {
+        "key": {
+            "type": "string",
+            "description": "The string representing the token. A noun, verb, adjective, or concept that is one or two words in length."
+        },
+        "value": {
+            "type": "string",
+            "description": "The string representing the token value, same as the key."
+        },
+        "desc": {
+            "type": "string",
+            "description": "Optional description of the token. Extends the value to a detailed description to contextualize its use."
+        },
+        "user": {
+            "type": "boolean",
+            "description": "Indicates if the token is this token represents a user. Signifies that any instruction that contains this token should be treated as a user input."
+        },
+        "num": {
+            "type": "number",
+            "description": "If this token represents a single number, this is the number it represents. Otherwise 0."
+        },
+        "num_list": {
+            "type": "array",
+            "description": "If this token represents a list of numbers, this is the list of numbers it represents. Otherwise an empty list.",
+            "items": {
+                "type": "number"
+            }
+        },
+    },
+    "additionalProperties": False
+}
 
 GENERATE_MTP_TOOL: dict = {
     "name": "generate_mtp",
@@ -9,11 +48,16 @@ GENERATE_MTP_TOOL: dict = {
     "parameters": {
         "type": "object",
         "required": [
+            "model_name",
             "developer_message",
             "context",
             "instruction_sets"
         ],
         "properties": {
+            "model_name": {
+                "type": "string",
+                "description": "The main message provided by the developer to base context and instructions on."
+            },
             "developer_message": {
                 "type": "string",
                 "description": "The main message provided by the developer to base context and instructions on."
@@ -43,7 +87,9 @@ GENERATE_MTP_TOOL: dict = {
                     "required": [
                         "instruction",
                         "prompt",
+                        "prompt_tokens",
                         "response",
+                        "response_tokens",
                         "samples"
                     ],
                     "properties": {
@@ -55,9 +101,19 @@ GENERATE_MTP_TOOL: dict = {
                             "type": "string",
                             "description": "Possible user question, prompt or environment detail related to this instruction. Functions as the prompt for the model."
                         },
+                        "prompt_tokens": {
+                            "type": "array",
+                            "description": "Array of tokens that defines the context of the prompt.",
+                            "items": TOKEN_MODEL
+                        },
                         "response": {
                             "type": "string",
                             "description": "Response that uses the developer message context to answer the prompt."
+                        },
+                        "response_tokens": {
+                            "type": "array",
+                            "description": "Array of tokens that defines the context of the response.",
+                            "items": TOKEN_MODEL
                         },
                         "samples": {
                             "type": "array",
@@ -123,7 +179,13 @@ class InstructionSetModel(BaseModel):
     """
     instruction: str = Field(..., description="Instruction derived from the developer message.")
     prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
+    prompt_tokens: List[TokenInfoModel] = Field(...,
+                                                description="Array of tokens that defines the context of the prompt.",
+                                                min_items=1)
     response: str = Field(..., description="Response that uses the developer message context.")
+    response_tokens: List[TokenInfoModel] = Field(...,
+                                                  description="Array of tokens that defines the context of the response.",
+                                                  min_items=1)
     samples: List[Sample] = Field(...,
                                   description="Array of sample responses demonstrating the instruction in action.",
                                   min_items=3)
@@ -134,11 +196,13 @@ class InstructionSetModel(BaseModel):
 
 # --- Main Model ---
 
-class GenerateMTPResultModel(BaseModel):
+class GenerateMTPPrototypeModel(BaseModel):
     """
     The main model representing the output of the 'generate_mtp' tool.
     Corresponds to the overall 'parameters' object in the schema.
     """
+    model_name: str = Field(...,
+                             description="The name of the model this prototype is for.")
     developer_message: str = Field(...,
                                    description="The main message provided by the developer to base context and instructions on.")
     context: List[ContextItemModel] = Field(...,
