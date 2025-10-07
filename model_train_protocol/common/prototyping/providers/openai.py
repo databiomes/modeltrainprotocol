@@ -46,13 +46,25 @@ def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = Non
         response_json: dict = response.json()
 
         try:
-            prototype_mtp: GenerateMTPPrototypeModel = GenerateMTPPrototypeModel(
-                **json.loads(response_json['output'][1]['arguments'])
-            )
+            # prototype_mtp: GenerateMTPPrototypeModel = GenerateMTPPrototypeModel(
+            #     **json.loads(response_json['output'][1]['arguments'])
+            # )
+            prototype_model_json: dict = json.loads(response_json['output'][1]['arguments'])
+
+            # Add key and special fields to tokens
+            for i, instruction in enumerate(prototype_model_json["instruction_sets"]):
+                for j, token in enumerate(instruction["prompt_tokens"]):
+                    prototype_model_json['instruction_sets'][i]['prompt_tokens'][j]["value"] = prototype_model_json['instruction_sets'][i]['prompt_tokens'][j]["key"]
+                    prototype_model_json['instruction_sets'][i]['prompt_tokens'][j]["special"] = None
+
+                for j, token in enumerate(instruction["response_tokens"]):
+                    prototype_model_json['instruction_sets'][i]['response_tokens'][j]["value"] = prototype_model_json['instruction_sets'][i]['response_tokens'][j]["key"]
+                    prototype_model_json['instruction_sets'][i]['response_tokens'][j]["special"] = None
+
+            return GenerateMTPPrototypeModel(**prototype_model_json)
 
         except (KeyError, IndexError, json.JSONDecodeError) as e:
             raise ValueError("Failed to parse function output from response.") from e
-        return prototype_mtp
 
     except requests.exceptions.HTTPError as e:
         print(f"HTTP Error {response.status_code}: {e}")

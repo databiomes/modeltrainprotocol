@@ -104,7 +104,8 @@ GENERATE_MTP_TOOL: dict = {
                         "prompt_tokens": {
                             "type": "array",
                             "description": "Array of tokens that defines the context of the prompt.",
-                            "items": TOKEN_MODEL
+                            "items": TOKEN_MODEL,
+                            "minItems": 1
                         },
                         "response": {
                             "type": "string",
@@ -113,7 +114,8 @@ GENERATE_MTP_TOOL: dict = {
                         "response_tokens": {
                             "type": "array",
                             "description": "Array of tokens that defines the context of the response.",
-                            "items": TOKEN_MODEL
+                            "items": TOKEN_MODEL,
+                            "minItems": 1
                         },
                         "samples": {
                             "type": "array",
@@ -121,8 +123,12 @@ GENERATE_MTP_TOOL: dict = {
                             "items": {
                                 "type": "object",
                                 "description": "Sample interactions of user or environment prompt and model response for this instruction.",
-                                "required": ["prompt_sample", "response_sample"],
+                                "required": ["prompt_context", "prompt_sample", "response_sample"],
                                 "properties": {
+                                    "prompt_context": {
+                                        "type": "string",
+                                        "description": "The context for the specific instruction, taken from the developer message or context array. Explains what part of the developer message or context this sample is demonstrating."
+                                    },
                                     "prompt_sample": {
                                         "type": "string",
                                         "description": "Sample user prompt for this instruction."
@@ -165,6 +171,8 @@ class Sample(BaseModel):
     A single sample interaction of user prompt and model response for an instruction.
     Corresponds to items in the 'samples' array within an instruction set.
     """
+    prompt_context: str = Field(...,
+                                description="The context for the specific instruction, taken from the developer message or context array. Explains what part of the developer message or context this sample is demonstrating.")
     prompt_sample: str = Field(..., description="Sample user prompt for this instruction.")
     response_sample: str = Field(..., description="Sample response for this instruction.")
 
@@ -181,14 +189,14 @@ class InstructionSetModel(BaseModel):
     prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
     prompt_tokens: List[TokenInfoModel] = Field(...,
                                                 description="Array of tokens that defines the context of the prompt.",
-                                                min_items=1)
+                                                min_length=1)
     response: str = Field(..., description="Response that uses the developer message context.")
     response_tokens: List[TokenInfoModel] = Field(...,
                                                   description="Array of tokens that defines the context of the response.",
-                                                  min_items=1)
+                                                  min_length=1)
     samples: List[Sample] = Field(...,
                                   description="Array of sample responses demonstrating the instruction in action.",
-                                  min_items=3)
+                                  min_length=3)
 
     class Config:
         extra = "allow"  # Enforces 'additionalProperties': true
@@ -202,15 +210,15 @@ class GenerateMTPPrototypeModel(BaseModel):
     Corresponds to the overall 'parameters' object in the schema.
     """
     model_name: str = Field(...,
-                             description="The name of the model this prototype is for.")
+                            description="The name of the model this prototype is for.")
     developer_message: str = Field(...,
                                    description="The main message provided by the developer to base context and instructions on.")
     context: List[ContextItemModel] = Field(...,
                                             description="Array of a minimum of five contexts with a description explaining the context of the developer message.",
-                                            min_items=5)
+                                            min_length=5)
     instruction_sets: List[InstructionSetModel] = Field(...,
                                                         description="Array of a minimum of three sets each with instruction, possible user prompt, and context-based response.",
-                                                        min_items=3)
+                                                        min_length=3)
 
     class Config:
         extra = "forbid"  # Enforces 'additionalProperties': false
@@ -256,12 +264,12 @@ class GenerateMTPFunctionInput(BaseModel):
     context: List[GenerateMTPContextItemModel] = Field(
         ...,
         description="Array of a minimum of five contexts with a description explaining the context of the developer message.",
-        min_items=5
+        min_length=5
     )
     instruction_sets: List[GenerateMTPInstructionSetModel] = Field(
         ...,
         description="Array of a minimum of three sets each with instruction, possible user prompt, and context-based response.",
-        min_items=3
+        min_length=3
     )
 
     def dump_parameters(self) -> Dict[str, Any]:
