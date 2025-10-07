@@ -4,12 +4,12 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from model_train_protocol.common.pydantic.prototyping import GenerateMTPResultModel, GENERATE_MTP_TOOL
+from model_train_protocol.common.pydantic.prototyping import GenerateMTPPrototypeModel, GENERATE_MTP_TOOL
 
-def get_generate_mtp(prompt_id: str, openai_api_key: str | None = None) -> GenerateMTPResultModel:
+def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = None) -> GenerateMTPPrototypeModel:
     """
     Calls the OpenAI API to run the generate_mtp tool based on the provided prompt ID.
-    :return: The parsed function input as a GenerateMTPFunctionInput object.
+    :return: The parsed function output as a GenerateMTPPrototypeModel object, which can be converted into a ProtocolFile.
     """
     if not openai_api_key:
         load_dotenv()
@@ -38,6 +38,7 @@ def get_generate_mtp(prompt_id: str, openai_api_key: str | None = None) -> Gener
         "tools": [GENERATE_MTP_TOOL]
     }
 
+    print("Generating MTP prototype via OpenAI...")
     response = requests.post("https://api.openai.com/v1/responses", headers=headers, json=data)
 
     try:
@@ -45,7 +46,7 @@ def get_generate_mtp(prompt_id: str, openai_api_key: str | None = None) -> Gener
         response_json: dict = response.json()
 
         try:
-            prototype_mtp: GenerateMTPResultModel = GenerateMTPResultModel(
+            prototype_mtp: GenerateMTPPrototypeModel = GenerateMTPPrototypeModel(
                 **json.loads(response_json['output'][1]['arguments'])
             )
 
