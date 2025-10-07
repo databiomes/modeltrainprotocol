@@ -1,4 +1,4 @@
-from model_train_protocol import UserToken, NumToken, NumListToken, Token, TokenSet
+from model_train_protocol import NumToken, NumListToken, Token, TokenSet
 from model_train_protocol.common.pydantic.protocol import TokenInfoModel
 
 
@@ -20,6 +20,7 @@ def add_token_attributes(prototype_model_json: dict,
                 prototype_model_json['instruction_sets'][i][token_subset][j]["value"] = \
                     prototype_model_json['instruction_sets'][i][token_subset][j]["key"]
                 prototype_model_json['instruction_sets'][i][token_subset][j]["special"] = None
+                prototype_model_json['instruction_sets'][i][token_subset][j]["user"] = False
 
     return prototype_model_json
 
@@ -37,9 +38,7 @@ def convert_str_to_camel_case(snake_str: str) -> str:
 
 def token_class_map(token_info_model: TokenInfoModel) -> type[Token]:
     """Maps a token info model to its corresponding class."""
-    if token_info_model.user:
-        return UserToken
-    elif token_info_model.num > 0:
+    if token_info_model.num > 0:
         return NumToken
     elif len(token_info_model.num_list) > 0:
         return NumListToken

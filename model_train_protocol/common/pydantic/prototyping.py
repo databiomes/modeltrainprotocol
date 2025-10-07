@@ -21,10 +21,6 @@ TOKEN_MODEL: dict = {  # Reusable token model definition
             "type": "string",
             "description": "Optional description of the token. Extends the value to a detailed description to contextualize its use."
         },
-        "user": {
-            "type": "boolean",
-            "description": "Indicates if the token is this token represents a user. Signifies that any instruction that contains this token should be treated as a user input."
-        },
         "num": {
             "type": "number",
             "description": "If this token represents a single number, this is the number it represents. Otherwise 0."
