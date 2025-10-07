@@ -20,13 +20,11 @@ GENERATE_MTP_TOOL: dict = {
             },
             "context": {
                 "type": "array",
-                "description": "Array of contexts, each explaining an aspect of the developer message context.",
+                "description": "Array of contexts, each explaining an aspect of the developer message context. Context should be detailed, and more information and items are better.",
                 "minItems": 5,
                 "items": {
                     "type": "object",
-                    "required": [
-                        "context"
-                    ],
+                    "required": ["context"],
                     "properties": {
                         "context": {
                             "type": "string",
@@ -44,21 +42,43 @@ GENERATE_MTP_TOOL: dict = {
                     "type": "object",
                     "required": [
                         "instruction",
-                        "possible_user_prompt",
-                        "response_using_context"
+                        "prompt",
+                        "response",
+                        "samples"
                     ],
                     "properties": {
                         "instruction": {
                             "type": "string",
                             "description": "Instruction derived from the developer message."
                         },
-                        "possible_user_prompt": {
+                        "prompt": {
                             "type": "string",
-                            "description": "Possible user question or prompt related to this instruction."
+                            "description": "Possible user question, prompt or environment detail related to this instruction. Functions as the prompt for the model."
                         },
-                        "response_using_context": {
+                        "response": {
                             "type": "string",
-                            "description": "Response that uses the developer message context."
+                            "description": "Response that uses the developer message context to answer the prompt."
+                        },
+                        "samples": {
+                            "type": "array",
+                            "description": "Array of sample responses demonstrating the instruction in action.",
+                            "items": {
+                                "type": "object",
+                                "description": "Sample interactions of user or environment prompt and model response for this instruction.",
+                                "required": ["prompt_sample", "response_sample"],
+                                "properties": {
+                                    "prompt_sample": {
+                                        "type": "string",
+                                        "description": "Sample user prompt for this instruction."
+                                    },
+                                    "response_sample": {
+                                        "type": "string",
+                                        "description": "Sample response for this instruction."
+                                    }
+                                },
+                                "additionalProperties": False
+                            },
+                            "minItems": 3
                         }
                     },
                     "additionalProperties": False
@@ -72,6 +92,7 @@ GENERATE_MTP_TOOL: dict = {
 
 # --- Nested Models ---
 
+
 class ContextItemModel(BaseModel):
     """
     A single context item explaining an aspect of the developer message.
@@ -83,14 +104,29 @@ class ContextItemModel(BaseModel):
         extra = "allow"  # Enforces 'additionalProperties': true
 
 
+class Sample(BaseModel):
+    """
+    A single sample interaction of user prompt and model response for an instruction.
+    Corresponds to items in the 'samples' array within an instruction set.
+    """
+    prompt_sample: str = Field(..., description="Sample user prompt for this instruction.")
+    response_sample: str = Field(..., description="Sample response for this instruction.")
+
+    class Config:
+        extra = "allow"  # Enforces 'additionalProperties': true
+
+
 class InstructionSetModel(BaseModel):
     """
     A single set containing an instruction, a possible user prompt, and a context-based response.
     Corresponds to the items in the 'instruction_sets' array.
     """
     instruction: str = Field(..., description="Instruction derived from the developer message.")
-    possible_user_prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
-    response_using_context: str = Field(..., description="Response that uses the developer message context.")
+    prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
+    response: str = Field(..., description="Response that uses the developer message context.")
+    samples: List[Sample] = Field(...,
+                                  description="Array of sample responses demonstrating the instruction in action.",
+                                  min_items=3)
 
     class Config:
         extra = "allow"  # Enforces 'additionalProperties': true
@@ -133,8 +169,8 @@ class GenerateMTPInstructionSetModel(BaseModel):
     Matches 'instruction_sets.items' in the generate_mtp schema.
     """
     instruction: str = Field(..., description="Instruction derived from the developer message.")
-    possible_user_prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
-    response_using_context: str = Field(..., description="Response that uses the developer message context.")
+    prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
+    response: str = Field(..., description="Response that uses the developer message context.")
 
     class Config:
         extra = "allow"  # corresponds to 'additionalProperties': true
