@@ -1,12 +1,12 @@
 from typing import Sequence
 
-from .Instruction import Instruction, Sample
+from .BaseInstruction import BaseInstruction, Sample
 from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
 
-class SimpleInstruction(Instruction):
+class SimpleInstruction(BaseInstruction):
     """
     A SimpleInstruction is an instruction without a user prompt.
 

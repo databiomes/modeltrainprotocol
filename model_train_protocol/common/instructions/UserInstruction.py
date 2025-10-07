@@ -1,12 +1,12 @@
 from typing import Sequence
 
-from .Instruction import Instruction, Sample
+from .BaseInstruction import BaseInstruction, Sample
 from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
 
-class UserInstruction(Instruction):
+class UserInstruction(BaseInstruction):
     """
     A UserInstruction is a specialized Instruction that includes at least one user token in the user token set.
 
