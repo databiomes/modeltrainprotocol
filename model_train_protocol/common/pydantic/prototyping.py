@@ -49,16 +49,11 @@ GENERATE_MTP_TOOL: dict = {
         "type": "object",
         "required": [
             "model_name",
-            "developer_message",
             "context",
             "instruction_sets"
         ],
         "properties": {
             "model_name": {
-                "type": "string",
-                "description": "The main message provided by the developer to base context and instructions on."
-            },
-            "developer_message": {
                 "type": "string",
                 "description": "The main message provided by the developer to base context and instructions on."
             },
@@ -211,8 +206,6 @@ class GenerateMTPPrototypeModel(BaseModel):
     """
     model_name: str = Field(...,
                             description="The name of the model this prototype is for.")
-    developer_message: str = Field(...,
-                                   description="The main message provided by the developer to base context and instructions on.")
     context: List[ContextItemModel] = Field(...,
                                             description="Array of a minimum of five contexts with a description explaining the context of the developer message.",
                                             min_length=5)
