@@ -4,7 +4,9 @@ import os
 import requests
 from dotenv import load_dotenv
 
+from model_train_protocol.common.prototyping.utils import add_token_attributes
 from model_train_protocol.common.pydantic.prototyping import GenerateMTPPrototypeModel, GENERATE_MTP_TOOL
+
 
 def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = None) -> GenerateMTPPrototypeModel:
     """
@@ -52,14 +54,8 @@ def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = Non
             prototype_model_json: dict = json.loads(response_json['output'][1]['arguments'])
 
             # Add key and special fields to tokens
-            for i, instruction in enumerate(prototype_model_json["instruction_sets"]):
-                for j, token in enumerate(instruction["prompt_tokens"]):
-                    prototype_model_json['instruction_sets'][i]['prompt_tokens'][j]["value"] = prototype_model_json['instruction_sets'][i]['prompt_tokens'][j]["key"]
-                    prototype_model_json['instruction_sets'][i]['prompt_tokens'][j]["special"] = None
-
-                for j, token in enumerate(instruction["response_tokens"]):
-                    prototype_model_json['instruction_sets'][i]['response_tokens'][j]["value"] = prototype_model_json['instruction_sets'][i]['response_tokens'][j]["key"]
-                    prototype_model_json['instruction_sets'][i]['response_tokens'][j]["special"] = None
+            prototype_model_json: dict = add_token_attributes(prototype_model_json=prototype_model_json,
+                                                              token_subsets=["prompt_tokens", "response_tokens"])
 
             return GenerateMTPPrototypeModel(**prototype_model_json)
 
