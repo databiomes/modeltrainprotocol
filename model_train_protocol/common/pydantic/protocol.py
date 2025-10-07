@@ -12,9 +12,10 @@ class TokenInfoModel(BaseModel):
     key: str
     num: Union[bool | int | float]
     user: bool
-    desc: Optional[str]
-    special: Optional[str]
-    num_list: List[Union[int | float]] = Field(default_factory=list)
+    desc: Union[str | None]
+    special: Union[str | None]
+    num_list: List[Union[int | float]] = Field(default_factory=list) # Should not normally have a default - only until num_list is properly implemented.
+    # TODO: Remove default list for numlist
 
 
 class SampleModel(BaseModel):
