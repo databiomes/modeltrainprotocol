@@ -14,7 +14,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
     :param encrypt: Whether to encrypt the protocol file
     """
     protocol: Protocol = Protocol(name=name if name else prototype_mtp.model_name,
-                                  instruction_context_snippets=3, encrypt=encrypt)
+                                  instruction_context_snippets=2, encrypt=encrypt)
 
     for context_item in prototype_mtp.context:
         protocol.add_context(context_item.context)
