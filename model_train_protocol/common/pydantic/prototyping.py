@@ -111,6 +111,7 @@ GENERATE_MTP_TOOL: dict = {
                         "samples": {
                             "type": "array",
                             "description": "Array of sample responses demonstrating the instruction in action.",
+                            "minItems": 3,
                             "items": {
                                 "type": "object",
                                 "description": "Sample interactions of user or environment prompt and model response for this instruction.",
@@ -130,8 +131,7 @@ GENERATE_MTP_TOOL: dict = {
                                     }
                                 },
                                 "additionalProperties": False
-                            },
-                            "minItems": 3
+                            }
                         }
                     },
                     "additionalProperties": False
