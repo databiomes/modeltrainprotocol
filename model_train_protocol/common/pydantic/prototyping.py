@@ -4,6 +4,13 @@ from pydantic import BaseModel, Field
 
 from model_train_protocol.common.pydantic.protocol import TokenInfoModel
 
+class TokenInfoPrototypeModel(TokenInfoModel):
+    """Extends TokenInfoPrototypeModel to add 'value' field."""
+    value: str = Field(..., description="The string representing the token value, same as the key.")
+
+    class Config:
+        extra = "forbid"  # Enforces 'additionalProperties': false
+
 TOKEN_MODEL: dict = {  # Reusable token model definition
     "type": "object",
     "description": "A single token that defines part of the context of the prompt.",
@@ -183,11 +190,11 @@ class InstructionSetModel(BaseModel):
     """
     instruction: str = Field(..., description="Instruction derived from the developer message.")
     prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
-    prompt_tokens: List[TokenInfoModel] = Field(...,
+    prompt_tokens: List[TokenInfoPrototypeModel] = Field(...,
                                                 description="Array of tokens that defines the context of the prompt.",
                                                 min_length=1)
     response: str = Field(..., description="Response that uses the developer message context.")
-    response_tokens: List[TokenInfoModel] = Field(...,
+    response_tokens: List[TokenInfoPrototypeModel] = Field(...,
                                                   description="Array of tokens that defines the context of the response.",
                                                   min_length=1)
     samples: List[Sample] = Field(...,
@@ -213,7 +220,7 @@ class MTPPrototypeModel(BaseModel):
     instruction_sets: List[InstructionSetModel] = Field(...,
                                                         description="Array of a minimum of three sets each with instruction, possible user prompt, and context-based response.",
                                                         min_length=3)
-    final_token: TokenInfoModel = Field(...,
+    final_token: TokenInfoPrototypeModel = Field(...,
                                         description="A token representing the final action by the model. For example, 'Continue', 'End', or 'Execute'.")
 
     class Config:
