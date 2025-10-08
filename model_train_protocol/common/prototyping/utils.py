@@ -19,12 +19,13 @@ def convert_str_to_camel_case(snake_str: str) -> str:
 
 def token_class_map(token_info_model: TokenInfoPrototypeModel) -> type[Token]:
     """Maps a token info model to its corresponding class."""
-    if token_info_model.num > 0:
-        return NumToken
-    elif len(token_info_model.num_list) > 0:
-        return NumListToken
-    else:
-        return Token
+    # if token_info_model.num > 0:
+    #     return NumToken
+    # elif len(token_info_model.num_list) > 0:
+    #     return NumListToken
+    # else:
+    #     return Token
+    return Token
 
 def create_cleaned_token_from_model(token_info_model: TokenInfoPrototypeModel) -> Token:
     """Creates a cleaned Token from a token info model."""
