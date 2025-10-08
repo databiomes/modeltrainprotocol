@@ -141,11 +141,7 @@ GENERATE_MTP_TOOL: dict = {
                     "additionalProperties": False
                 }
             },
-            "final_token": {
-                "type": "object",
-                "description": "A token representing the final action by the model, if applicable. For example, 'Continue', 'End', or 'Execute'",
-                "properties": FINAL_TOKEN_MODEL,
-            }
+            "final_token": FINAL_TOKEN_MODEL
         },
         "additionalProperties": False
     }
