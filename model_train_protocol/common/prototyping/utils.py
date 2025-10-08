@@ -1,6 +1,7 @@
 from model_train_protocol import Token, TokenSet
 from model_train_protocol.common.pydantic.prototyping import TokenInfoPrototypeModel
 
+
 def clean_token_key(key: str) -> str:
     """Removes non-alphanumeric characters from a token key."""
     return ''.join(char for char in key if char.isalnum() or char == '_')
@@ -27,6 +28,7 @@ def token_class_map(token_info_model: TokenInfoPrototypeModel) -> type[Token]:
     #     return Token
     return Token
 
+
 def create_sanitized_token_from_model(token_info_model: TokenInfoPrototypeModel) -> Token:
     """Creates a cleaned Token from a token info model."""
     token_info: dict = token_info_model.model_dump()
@@ -34,10 +36,11 @@ def create_sanitized_token_from_model(token_info_model: TokenInfoPrototypeModel)
     token_info['value'] = convert_str_to_camel_case(token_info['value'])
     return token_class_map(token_info_model)(**token_info)
 
+
 def create_token_set_from_token_model_array(token_info_models: list[TokenInfoPrototypeModel]) -> TokenSet:
     """Creates a TokenSet from an array of token info models."""
-    tokens: list[Token] = []
+    tokens: dict[Token, None] = {}  # Using dict as an ordered set to avoid third party dependencies
     for token_info_model in token_info_models:
         token: Token = create_sanitized_token_from_model(token_info_model)
-        tokens.append(token)
-    return TokenSet(tokens=tokens)
+        tokens[token] = None
+    return TokenSet(tokens=list(tokens.keys()))

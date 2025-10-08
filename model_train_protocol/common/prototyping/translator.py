@@ -21,6 +21,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
 
     context_token: Token = Token("Context", desc="Context for the model by the model creator.")
     context_tokenset: TokenSet = TokenSet(context_token)
+
     for instruction_set in prototype_mtp.instruction_sets:
 
         prompt_token_set: TokenSet = create_token_set_from_token_model_array(instruction_set.prompt_tokens)
