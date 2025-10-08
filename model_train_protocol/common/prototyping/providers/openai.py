@@ -54,8 +54,7 @@ def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = Non
             prototype_model_json: dict = json.loads(response_json['output'][1]['arguments'])
 
             # Add key and special fields to tokens
-            prototype_model_json: dict = add_token_attributes(prototype_model_json=prototype_model_json,
-                                                              token_subsets=["prompt_tokens", "response_tokens"])
+            prototype_model_json: dict = add_token_attributes(prototype_model_json=prototype_model_json)
 
             return GenerateMTPPrototypeModel(**prototype_model_json)
 
