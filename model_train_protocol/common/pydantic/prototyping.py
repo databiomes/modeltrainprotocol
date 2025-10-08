@@ -2,12 +2,11 @@ from typing import List
 
 from pydantic import BaseModel, Field
 
-from model_train_protocol.common.pydantic.protocol import TokenInfoModel
 
-
-class TokenInfoPrototypeModel(TokenInfoModel):
+class TokenInfoPrototypeModel(BaseModel):
     """Extends TokenInfoPrototypeModel to add 'value' field."""
     value: str = Field(..., description="The string representing the token value, same as the key.")
+    desc: str = Field(..., description="Optional description of the token. Extends the value to a detailed description to contextualize its use.")
 
     class Config:
         extra = "forbid"  # Enforces 'additionalProperties': false
@@ -15,12 +14,8 @@ class TokenInfoPrototypeModel(TokenInfoModel):
 TOKEN_MODEL: dict = {  # Reusable token model definition
     "type": "object",
     "description": "A single token that defines part of the context of the prompt.",
-    "required": ["key", "value", "desc"],
+    "required": ["value", "desc"],
     "properties": {
-        "key": {
-            "type": "string",
-            "description": "The string representing the token. A noun, verb, adjective, or concept that is one or two words in length."
-        },
         "value": {
             "type": "string",
             "description": "The string representing the token value, same as the key."

@@ -4,7 +4,6 @@ import os
 import requests
 from dotenv import load_dotenv
 
-from model_train_protocol.common.prototyping.utils import add_token_attributes
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel, GENERATE_MTP_TOOL
 
 
@@ -49,9 +48,6 @@ def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = Non
 
         try:
             prototype_model_json: dict = json.loads(response_json['output'][1]['arguments'])
-
-            # Add missing fields to tokens
-            prototype_model_json: dict = add_token_attributes(prototype_model_json=prototype_model_json)
 
             return MTPPrototypeModel(**prototype_model_json)
 
