@@ -220,6 +220,7 @@ class TestMultiInstructionProtocolJSON:
             assert isinstance(token_value, dict), f"Token value for '{token_key}' should be a dictionary, got {type(token_value)}"
             
             # Token value should have the required fields
+            # required_fields = {"emoji", "num",  "num_list", "user", "desc", "special"}
             required_fields = {"emoji", "num", "user", "desc", "special"}
             actual_fields = set(token_value.keys())
             assert actual_fields == required_fields, f"Token '{token_key}' has fields {actual_fields}, expected {required_fields}"

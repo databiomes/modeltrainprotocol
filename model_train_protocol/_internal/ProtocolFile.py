@@ -3,7 +3,7 @@ from typing import Collection
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.constants import UNK_TOKEN
-from model_train_protocol.common.instructions import Instruction
+from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.tokens import TokenSet, SpecialToken
 from model_train_protocol.common.pydantic.protocol import InstructionModel, TokenInfoModel, SampleModel, \
@@ -40,7 +40,7 @@ class ProtocolFile:
         ppo: list = field(default_factory=list)
 
     def __init__(self, name: str, context: list[str], instruction_context_snippets: int, tokens: Collection[Token],
-                 special_tokens: Collection[Token], instructions: Collection[Instruction]):
+                 special_tokens: Collection[Token], instructions: Collection[BaseInstruction]):
         """Initializes the Template with a name and context."""
         self._name: str = name
         self._context: list[str] = context
@@ -77,7 +77,7 @@ class ProtocolFile:
             if isinstance(token, SpecialToken):
                 self._special_token_keys.add(token.key)
 
-    def add_instructions(self, instructions: Collection[Instruction]):
+    def add_instructions(self, instructions: Collection[BaseInstruction]):
         """Adds instructions to the template."""
         for instruction in instructions:
             instruction_set: ProtocolFile.ProtocolInstructionSet = ProtocolFile.ProtocolInstructionSet(
@@ -129,6 +129,9 @@ class ProtocolFile:
             # Rename Token 'key' to 'emoji'
             if 'key' in token_info:
                 token_info['emoji'] = token_info.pop('key')
+
+            # Remove num_list
+            token_info.pop('num_list')
 
             # Reassign Token 'num' to boolean
             if 'num' in token_info:
@@ -228,7 +231,8 @@ class ProtocolFile:
                 num=num,
                 user=token_dict.get('user', False),
                 desc=token_dict.get('desc'),
-                special=token_dict.get('special')
+                special=token_dict.get('special'),
+                num_list=token_dict.get('num_list', [])
             )
             token_info_dict[token_value] = token_info
 

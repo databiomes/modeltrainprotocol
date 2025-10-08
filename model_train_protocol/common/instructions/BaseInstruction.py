@@ -41,7 +41,7 @@ class Sample:
         return f"Sample(Context: {self.context}, Response: {self.response}, Result: {result_str})"
 
 
-class Instruction(ABC):
+class BaseInstruction(ABC):
     """
     An Instruction is a set of tokens that show possible input combinations for a model.
 
@@ -206,7 +206,7 @@ class Instruction(ABC):
         Defines equality based on the attributes of the Instruction.
         Returns True if the other object is an Instruction and its attributes match this Instruction's attributes.
         """
-        return isinstance(other, Instruction) and self.__dict__ == other.__dict__
+        return isinstance(other, BaseInstruction) and self.__dict__ == other.__dict__
 
     def __dict__(self) -> dict:
         """Dictionary representation of the Instruction."""

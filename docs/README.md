@@ -1,6 +1,6 @@
-# Model Training Protocol Documentation
+# Model Train Protocol Documentation
 
-This directory contains the Sphinx documentation for the Model Training Protocol (MTP) package.
+This directory contains the Sphinx documentation for the Model Train Protocol (MTP) package.
 
 ## Building the Documentation
 

@@ -1,7 +1,7 @@
-Context: Domain Knowledge
+Context
 ============================
 
-Context is a foundational layer of the Model Training Protocol (MTP) system. It provides the background information and domain knowledge that helps the model understand the training data and respond appropriately in the intended context.
+Context is a foundational layer of the Model Train Protocol (MTP) system. It provides the background information and domain knowledge that helps the model understand the training data and respond appropriately in the intended context.
 
 What is Context?
 ----------------
@@ -31,7 +31,7 @@ Context is added to your protocol using the ``add_context()`` method. You can ad
 
 
 Instruction Context Snippets
---------------
+----------------------------
 Context snippets, set as instruction_context_snippets when initializing the protocol, refers to how many snippets of context are provided to each Instruction.
 Context snippets does NOT refer to the amount of total context that your model has.
 
@@ -125,6 +125,6 @@ Next Steps
 
 After establishing your context, you can proceed to:
 
-- :doc:`tokens` - Define the fundamental building blocks within your context
-- :doc:`tokensets` - Create meaningful patterns that fit your domain
-- :doc:`instructions` - Teach the model how to respond appropriately in your context
+- :doc:`../instructions/tokens` - Define the fundamental building blocks within your context
+- :doc:`../instructions/tokensets` - Create meaningful patterns that fit your domain
+- :doc:`../instructions/instructions` - Teach the model how to respond appropriately in your context

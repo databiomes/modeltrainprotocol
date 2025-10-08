@@ -20,12 +20,12 @@ def get_version() -> str:
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Model Training Protocol'
+project = 'Model Train Protocol'
 copyright = '2025, Databiomes Inc.'
 author = 'Databiomes Inc.'
 
 # Get version from pyproject.toml
-version = get_version()
+version = f"v{get_version()}"
 release = version
 
 # -- General configuration ---------------------------------------------------
@@ -47,8 +47,30 @@ language = 'en'
 # -- Options for HTML output -------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#options-for-html-output
 
-html_theme = 'sphinx_rtd_theme'
+html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
+
+# PyData Sphinx Theme options
+html_theme_options = {
+    "navbar_align": "left",
+    "icon_links": [
+        {
+            "name": "GitHub",
+            "url": "https://github.com/databiomes/modeltrainprotocol",
+            "icon": "fab fa-github-square",
+        },
+    ],
+    "show_toc_level": 1,
+    "navbar_end": ["navbar-icon-links", "theme-switcher"],
+}
+
+# HTML context for edit page button
+html_context = {
+    "github_user": "databiomes",
+    "github_repo": "modeltrainprotocol",
+    "github_version": "main",
+    "doc_path": "docs/source",
+}
 
 # -- Extension configuration -------------------------------------------------
 

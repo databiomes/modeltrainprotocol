@@ -9,7 +9,7 @@ exclude = ["assets", "examples"]
 
 [project]
 name = "model-train-protocol"
-version = "0.1.7"
+version = "0.1.8"
 description = "Standardized protocol to train models on Databiomes"
 requires-python = ">=3.9"
 readme = {file = "README.md", content-type = "text/markdown"}
@@ -28,6 +28,8 @@ dependencies = [
 
 [project.optional-dependencies]
 test = [
+    "requests>=2.0.0",
+    "python-dotenv>=1.0.0",
     "pytest>=7.0.0",
     "pytest-cov>=4.0.0",
     "pytest-mock>=3.10.0",

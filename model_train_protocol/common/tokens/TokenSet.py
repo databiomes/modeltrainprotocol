@@ -20,15 +20,17 @@ class Snippet:
 class TokenSet:
     """A set of Tokens representing a combination of input types."""
 
-    def __init__(self, tokens: Sequence[Token]):
+    def __init__(self, tokens: Sequence[Token] | Token):
         """Initializes a TokenSet instance."""
+        if isinstance(tokens, Token):
+            tokens = [tokens]
         self.tokens: Sequence[Token] = tokens
         self.is_user: bool = any(token.user for token in tokens)
         self.required_numtoken_numbers: int = sum(
             token.num for token in tokens if token.num == 1)  # Count of NumToken
         self.required_numlists: list[int] = [
             token.num for token in tokens if isinstance(token, NumListToken)
-        ] # List of lengths for NumListToken
+        ]  # List of lengths for NumListToken
         self.key: str = ''.join(token.value for token in
                                 tokens)  # Note this key is based on the value of the tokens and not the keys of the tokens
         self._guardrail: Guardrail | None = None
@@ -49,7 +51,8 @@ class TokenSet:
         self._guardrail = guardrail
 
     def create_snippet(self, string: str,
-                       numbers: Collection[int | float] | int | float | None = None, number_lists: Collection[int | float | Collection[int | float]] | None = None) -> Snippet:
+                       numbers: Collection[int | float] | int | float | None = None,
+                       number_lists: Collection[int | float | Collection[int | float]] | None = None) -> Snippet:
         """Create a snippet for the TokenSet"""
         if not isinstance(string, str):
             raise TypeError("String must be of type str.")
@@ -74,17 +77,20 @@ class TokenSet:
             raise TypeError("Number lists must be an Collection of numbers or Collection of Collections or None.")
 
         if len(numbers) != self.required_numtoken_numbers:
-            raise ValueError(f"{self} requires {self.required_numtoken_numbers} numbers but {len(numbers)} were provided.")
+            raise ValueError(
+                f"{self} requires {self.required_numtoken_numbers} numbers but {len(numbers)} were provided.")
         if len(number_lists) != len(self.required_numlists):
-            raise ValueError(f"{self} requires {len(self.required_numlists)} number lists but {len(number_lists or [])} lists were provided.")
+            raise ValueError(
+                f"{self} requires {len(self.required_numlists)} number lists but {len(number_lists or [])} lists were provided.")
         for (i, required_length) in enumerate(self.required_numlists):
             if len(number_lists[i]) != required_length:
-                raise ValueError(f"Number list at index {i} must be of length {required_length} but is of length {len(number_lists[i])}.")
+                raise ValueError(
+                    f"Number list at index {i} must be of length {required_length} but is of length {len(number_lists[i])}.")
 
         # Combine numbers and number_lists into single input for Snippet
         numbers_index = 0
         number_lists_index = 0
-        combined_numbers: list[int | float | Collection[int | float]] = [] # Combined list of numbers and number lists
+        combined_numbers: list[int | float | Collection[int | float]] = []  # Combined list of numbers and number lists
         for index, token in enumerate(self.tokens):
             if not isinstance(token, NumToken):
                 continue

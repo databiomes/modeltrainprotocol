@@ -96,6 +96,7 @@ class TestUserToken:
             'key': '👤',
             'user': True,  # Should be True for UserToken
             'num': 0,
+            'num_list': [],
             'desc': 'A user token',
             'special': None
         }
@@ -111,6 +112,7 @@ class TestUserToken:
             'key': '👤',
             'user': True,  # Should be True for UserToken
             'num': 0,
+            'num_list': [],
             'desc': 'A user token',
             'special': None
         }

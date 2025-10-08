@@ -103,6 +103,7 @@ class TestNumToken:
             'key': '🔢',
             'user': False,
             'num': 1,  # Should be 1 for NumToken
+            'num_list': [],
             'desc': 'A numeric token',
             'special': None
         }
@@ -118,6 +119,7 @@ class TestNumToken:
             'key': '🔢',
             'user': False,
             'num': 1,  # Should be 1 for NumToken
+            'num_list': [],
             'desc': 'A numeric token',
             'special': None
         }

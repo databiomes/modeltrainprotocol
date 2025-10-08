@@ -144,6 +144,7 @@ class TestToken:
             'key': '🔑',
             'user': False,
             'num': 0,
+            'num_list': [],
             'desc': 'A test token',
             'special': None
         }
@@ -159,6 +160,7 @@ class TestToken:
             'key': '🔑',
             'user': False,
             'num': 0,
+            'num_list': [],
             'desc': 'A test token',
             'special': None
         }

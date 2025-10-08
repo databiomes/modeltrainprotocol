@@ -5,17 +5,17 @@ from . import Token
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN
-from .common.instructions.Instruction import Instruction
+from .common.instructions.BaseInstruction import BaseInstruction
 from .common.tokens.SpecialToken import SpecialToken
 from .common.util import get_possible_emojis, hash_string, validate_string_set
 
 
 class Protocol:
-    """Model Training Protocol (MTP) class for creating the training configuration."""
+    """Model Train Protocol (MTP) class for creating the training configuration."""
 
     def __init__(self, name: str, instruction_context_snippets: int, encrypt: bool = True):
         """
-        Initialize the Model Training Protocol (MTP)
+        Initialize the Model Train Protocol (MTP)
 
         :param name: The name of the protocol.
         :param instruction_context_snippets: The number of lines in each instruction sample. Must be at least 2.
@@ -28,7 +28,7 @@ class Protocol:
             raise ValueError("A minimum of 2 context lines is required for all instructions.")
         self.context: list[str] = []
         self.tokens: set[Token] = set()
-        self.instructions: set[Instruction] = set()
+        self.instructions: set[BaseInstruction] = set()
         self.guardrails: dict[str, list[str]] = dict()
         self.numbers: dict[str, str] = dict()
         self.none = None
@@ -43,7 +43,7 @@ class Protocol:
 
         self.context.append(context)
 
-    def add_instruction(self, instruction: Instruction):
+    def add_instruction(self, instruction: BaseInstruction):
         """
         Adds an Instruction (and its components) to the protocol.
 
@@ -71,6 +71,18 @@ class Protocol:
         # Add the instruction to the protocol
         self.instructions.add(instruction)
 
+    def get_protocol_file(self) -> ProtocolFile:
+        """
+        Prepares and returns the ProtocolFile representation of the protocol.
+
+        :return: The ProtocolFile instance representing the protocol.
+        """
+        self._prep_protocol()
+        return ProtocolFile(
+            name=self.name, context=self.context, instruction_context_snippets=self.instruction_context_snippets,
+            tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
+        )
+
     def save(self, name: str | None = None, path: str | None = None):
         """
         Saves the protocol to a JSON file. This file can be submitted to Databiomes for model training.
@@ -85,15 +97,9 @@ class Protocol:
         os.makedirs(path, exist_ok=True)
         filename = f"{path}\\{name}_model.json"
 
-        self._prep_protocol()
-        protocol_file: ProtocolFile = ProtocolFile(
-            name=self.name, context=self.context, instruction_context_snippets=self.instruction_context_snippets,
-            tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
-        )
-
         print(f"Saving Model Train Protocol to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(protocol_file.to_json(), file, indent=4, ensure_ascii=False)
+            json.dump(self.get_protocol_file().to_json(), file, indent=4, ensure_ascii=False)
 
     def template(self, path: str | None = None):
         """

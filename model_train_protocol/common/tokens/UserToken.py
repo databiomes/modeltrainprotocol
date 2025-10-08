@@ -4,7 +4,7 @@ from .Token import Token
 class UserToken(Token):
     """A UserToken is a subclass of Token that includes an additional 'user' attribute"""
 
-    def __init__(self, value: str, key: str | None = None, desc: str | None = None):
+    def __init__(self, value: str, key: str | None = None, desc: str | None = None, *args, **kwargs):
         """
         Initializes a UserToken instance.
 
