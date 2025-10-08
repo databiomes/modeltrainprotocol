@@ -71,6 +71,18 @@ class Protocol:
         # Add the instruction to the protocol
         self.instructions.add(instruction)
 
+    def get_protocol_file(self) -> ProtocolFile:
+        """
+        Prepares and returns the ProtocolFile representation of the protocol.
+
+        :return: The ProtocolFile instance representing the protocol.
+        """
+        self._prep_protocol()
+        return ProtocolFile(
+            name=self.name, context=self.context, instruction_context_snippets=self.instruction_context_snippets,
+            tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
+        )
+
     def save(self, name: str | None = None, path: str | None = None):
         """
         Saves the protocol to a JSON file. This file can be submitted to Databiomes for model training.
@@ -85,15 +97,9 @@ class Protocol:
         os.makedirs(path, exist_ok=True)
         filename = f"{path}\\{name}_model.json"
 
-        self._prep_protocol()
-        protocol_file: ProtocolFile = ProtocolFile(
-            name=self.name, context=self.context, instruction_context_snippets=self.instruction_context_snippets,
-            tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
-        )
-
         print(f"Saving Model Train Protocol to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(protocol_file.to_json(), file, indent=4, ensure_ascii=False)
+            json.dump(self.get_protocol_file().to_json(), file, indent=4, ensure_ascii=False)
 
     def template(self, path: str | None = None):
         """
