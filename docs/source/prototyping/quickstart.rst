@@ -67,4 +67,4 @@ Next Steps
 
 - Review the generated protocol file
 - Customize the protocol if needed
-- Submit to `Databiomes <https://app.databiomes.com>`_ for model training
+- Submit to `Databiomes <https://app.databiomes.com/agent/new>`_ for model training
