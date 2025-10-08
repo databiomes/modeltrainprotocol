@@ -7,7 +7,7 @@ from model_train_protocol.common.pydantic.protocol import TokenInfoModel
 TOKEN_MODEL: dict = {  # Reusable token model definition
     "type": "object",
     "description": "A single token that defines part of the context of the prompt.",
-    "required": ["key", "value", "user", "num", "num_list", "desc"],
+    "required": ["key", "value", "num", "num_list", "desc"],
     "properties": {
         "key": {
             "type": "string",
