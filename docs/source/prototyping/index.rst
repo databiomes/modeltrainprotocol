@@ -1,4 +1,4 @@
-Prototyping Module
+Prototyping
 ==================
 
 The prototyping module provides functionality for automatically generating Model Train Protocol (MTP) files using OpenAI's API. This module streamlines the process of creating training protocols by leveraging AI to generate context, instructions, and samples based on a developer's prompt.
@@ -57,12 +57,10 @@ Example
 
 That's it! Your MTP protocol file has been generated and saved.
 
-What's Next?
+Quickstart?
 ------------
 
 - **Quick Start Guide**: Step-by-step tutorial to get you running
-- **Advanced Usage**: Complex patterns, batch processing, and customization
-- **API Reference**: Complete documentation of all functions and classes
 
 .. toctree::
    :maxdepth: 2
