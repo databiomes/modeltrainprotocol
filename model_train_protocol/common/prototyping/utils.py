@@ -49,8 +49,11 @@ def token_class_map(token_info_model: TokenInfoModel) -> type[Token]:
 
 def create_token_set_from_token_model_array(token_info_models: list[TokenInfoModel]) -> TokenSet:
     """Creates a TokenSet from an array of token info models."""
-    prompt_tokens: list[Token] = []
+    tokens: list[Token] = []
     for token in token_info_models:
-        prompt_tokens.append(
-            (token_class_map(token)(**token.model_dump())))  # Add token by token type to prompt token set
-    return TokenSet(tokens=prompt_tokens)
+        token_info: dict = token.model_dump()
+        token_info['key'] = convert_str_to_camel_case(token_info['key'])
+        token_info['value'] = token_info['key']  # Set value to key by default
+        tokens.append(
+            (token_class_map(token)(**token_info)))  # Add token by token type to prompt token set
+    return TokenSet(tokens=tokens)
