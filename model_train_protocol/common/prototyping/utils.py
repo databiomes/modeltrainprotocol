@@ -1,4 +1,4 @@
-from model_train_protocol import NumToken, NumListToken, Token, TokenSet
+from model_train_protocol import Token, TokenSet
 from model_train_protocol.common.pydantic.prototyping import TokenInfoPrototypeModel
 
 def clean_token_key(key: str) -> str:
@@ -27,7 +27,7 @@ def token_class_map(token_info_model: TokenInfoPrototypeModel) -> type[Token]:
     #     return Token
     return Token
 
-def create_cleaned_token_from_model(token_info_model: TokenInfoPrototypeModel) -> Token:
+def create_sanitized_token_from_model(token_info_model: TokenInfoPrototypeModel) -> Token:
     """Creates a cleaned Token from a token info model."""
     token_info: dict = token_info_model.model_dump()
     token_info['value'] = clean_token_key(token_info['value'])
@@ -38,6 +38,6 @@ def create_token_set_from_token_model_array(token_info_models: list[TokenInfoPro
     """Creates a TokenSet from an array of token info models."""
     tokens: list[Token] = []
     for token_info_model in token_info_models:
-        token: Token = create_cleaned_token_from_model(token_info_model)
+        token: Token = create_sanitized_token_from_model(token_info_model)
         tokens.append(token)
     return TokenSet(tokens=tokens)
