@@ -1,8 +1,9 @@
-from typing import List, Dict, Any
+from typing import List
 
 from pydantic import BaseModel, Field
 
 from model_train_protocol.common.pydantic.protocol import TokenInfoModel
+
 
 class TokenInfoPrototypeModel(TokenInfoModel):
     """Extends TokenInfoPrototypeModel to add 'value' field."""
@@ -214,63 +215,3 @@ class MTPPrototypeModel(BaseModel):
 
     class Config:
         extra = "forbid"  # Enforces 'additionalProperties': false
-
-
-class GenerateMTPContextItemModel(BaseModel):
-    """
-    A single context item explaining an aspect of the developer message.
-    Matches 'context.items' in the generate_mtp schema.
-    """
-    context: str = Field(..., description="Aspect explaining developer message context.")
-
-    class Config:
-        extra = "allow"  # corresponds to 'additionalProperties': true
-
-
-class GenerateMTPInstructionSetModel(BaseModel):
-    """
-    A single instruction set with an instruction, possible user prompt, and context-based response.
-    Matches 'instruction_sets.items' in the generate_mtp schema.
-    """
-    instruction: str = Field(..., description="Instruction derived from the developer message.")
-    prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
-    response: str = Field(..., description="Response that uses the developer message context.")
-
-    class Config:
-        extra = "allow"  # corresponds to 'additionalProperties': true
-
-
-# --- Main Function Definition Model ---
-
-class GenerateMTPFunctionInput(BaseModel):
-    """
-    Represents the function schema for 'generate_mtp'.
-    This matches the OpenAI function/tool definition JSON.
-    """
-    call_id: str
-
-    developer_message: str = Field(
-        ...,
-        description="The main message provided by the developer to base context and instructions on."
-    )
-    context: List[GenerateMTPContextItemModel] = Field(
-        ...,
-        description="Array of a minimum of five contexts with a description explaining the context of the developer message.",
-        min_length=5
-    )
-    instruction_sets: List[GenerateMTPInstructionSetModel] = Field(
-        ...,
-        description="Array of a minimum of three sets each with instruction, possible user prompt, and context-based response.",
-        min_length=3
-    )
-
-    def dump_parameters(self) -> Dict[str, Any]:
-        """Custom method to dump parameters as a dictionary."""
-        return {
-            "developer_message": self.developer_message,
-            "context": [item.model_dump() for item in self.context],
-            "instruction_sets": [item.model_dump() for item in self.instruction_sets]
-        }
-
-    class Config:
-        extra = "forbid"  # corresponds to 'additionalProperties': false
