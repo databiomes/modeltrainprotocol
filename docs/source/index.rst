@@ -1,15 +1,12 @@
 Model Train Protocol (MTP)
 =============================
 
-MTP is an open-source protocol for training custom Language Models on Databiomes. MTP contains all the data that a model is trained on.
+The Model Train Protocol (MTP) is an open-source framework for creating and training custom Language Models on Databiomes. MTP provides a structured approach to defining all the data, patterns, and behaviors that your model will learn.
 
-The MTP system is built on a hierarchical structure of five main components:
+How It Works
+------------
 
-1. **Context** - Background information and domain knowledge for the model
-2. **Tokens** - The fundamental building blocks
-3. **TokenSets** - Combinations of tokens that define input patterns  
-4. **Instructions** - Training patterns that inform the model what to do
-5. **Guardrails** - Safety mechanisms for bad user prompts
+MTP uses a structured approach where you define your model's knowledge and behavior through organized components. The system then converts these definitions into training data that teaches your model to respond appropriately in your domain.
 
 .. toctree::
    :maxdepth: 2

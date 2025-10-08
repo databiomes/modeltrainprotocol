@@ -57,13 +57,24 @@ Specialized token for representing user input.
 NumToken
 ~~~~~~~~
 
-Token that can be associated with numerical values.
+Token that can be associated with numerical values within a specified range.
 
 .. code-block:: python
 
    class NumToken(Token):
-       def __init__(self, value: str, key: str = None, desc: str = None):
-           """Initialize a NumToken for numerical data."""
+       def __init__(self, value: str, min_value: int | float, max_value: int | float, key: str = None, desc: str = None):
+           """Initialize a NumToken for numerical data with required range constraints."""
+
+NumListToken
+~~~~~~~~~~~~
+
+Token that can be associated with a list of numerical values with a fixed length.
+
+.. code-block:: python
+
+   class NumListToken(Token):
+       def __init__(self, value: str, min_value: int | float, max_value: int | float, length: int, key: str = None, desc: str = None):
+           """Initialize a NumListToken for numerical list data with required range and length constraints."""
 
 TokenSet
 --------
@@ -123,30 +134,6 @@ Safety mechanisms for user interactions.
            
        def add_sample(self, bad_prompt_example: str):
            """Add an example of a bad prompt."""
-
-Module Structure
-----------------
-
-The MTP package is organized as follows:
-
-::
-
-   model_train_protocol/
-   ├── __init__.py              # Main package exports
-   ├── Protocol.py              # Core Protocol class
-   └── common/
-       ├── tokens/              # Token-related classes
-       │   ├── Token.py
-       │   ├── UserToken.py
-       │   ├── NumToken.py
-       │   ├── TokenSet.py
-       │   └── Snippet.py
-       ├── instructions/        # Instruction classes
-       │   ├── SimpleInstruction.py
-       │   ├── UserInstruction.py
-       │   └── Instruction.py
-       └── guardrails/          # Guardrail classes
-           └── Guardrail.py
 
 Indices and Tables
 ==================
