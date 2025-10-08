@@ -5,10 +5,10 @@ import requests
 from dotenv import load_dotenv
 
 from model_train_protocol.common.prototyping.utils import add_token_attributes
-from model_train_protocol.common.pydantic.prototyping import GenerateMTPPrototypeModel, GENERATE_MTP_TOOL
+from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel, GENERATE_MTP_TOOL
 
 
-def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = None) -> GenerateMTPPrototypeModel:
+def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = None) -> MTPPrototypeModel:
     """
     Calls the OpenAI API to run the generate_mtp tool based on the provided prompt ID.
     :return: The parsed function output as a GenerateMTPPrototypeModel object, which can be converted into a ProtocolFile.
@@ -48,15 +48,12 @@ def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = Non
         response_json: dict = response.json()
 
         try:
-            # prototype_mtp: GenerateMTPPrototypeModel = GenerateMTPPrototypeModel(
-            #     **json.loads(response_json['output'][1]['arguments'])
-            # )
             prototype_model_json: dict = json.loads(response_json['output'][1]['arguments'])
 
-            # Add key and special fields to tokens
+            # Add missing fields to tokens
             prototype_model_json: dict = add_token_attributes(prototype_model_json=prototype_model_json)
 
-            return GenerateMTPPrototypeModel(**prototype_model_json)
+            return MTPPrototypeModel(**prototype_model_json)
 
         except (KeyError, IndexError, json.JSONDecodeError) as e:
             raise ValueError("Failed to parse function output from response.") from e
