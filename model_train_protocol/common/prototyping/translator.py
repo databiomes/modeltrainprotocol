@@ -1,6 +1,6 @@
 from model_train_protocol._internal.ProtocolFile import ProtocolFile
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel
-from .utils import create_token_set_from_token_model_array
+from .utils import create_token_set_from_token_model_array, create_cleaned_token_from_model
 from ... import Protocol, SimpleInstruction, Token, TokenSet, Snippet
 
 
@@ -22,9 +22,10 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
     context_token: Token = Token("Context", desc="Context for the model by the model creator.")
     context_tokenset: TokenSet = TokenSet(context_token)
     for instruction_set in prototype_mtp.instruction_sets:
+
         prompt_token_set: TokenSet = create_token_set_from_token_model_array(instruction_set.prompt_tokens)
         response_token_set: TokenSet = create_token_set_from_token_model_array(instruction_set.response_tokens)
-        final: Token = Token(**prototype_mtp.final_token.model_dump())
+        final: Token = create_cleaned_token_from_model(prototype_mtp.final_token)
 
         simple_instruction: SimpleInstruction = SimpleInstruction(
             context=[context_tokenset, prompt_token_set], response=response_token_set, final=final
