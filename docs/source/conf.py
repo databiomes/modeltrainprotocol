@@ -56,7 +56,7 @@ html_theme_options = {
     "icon_links": [
         {
             "name": "GitHub",
-            "url": "https://github.com/databiomes/mikoshi",
+            "url": "https://github.com/databiomes/modeltrainprotocol",
             "icon": "fab fa-github-square",
         },
     ],
@@ -67,7 +67,7 @@ html_theme_options = {
 # HTML context for edit page button
 html_context = {
     "github_user": "databiomes",
-    "github_repo": "mikoshi",
+    "github_repo": "modeltrainprotocol",
     "github_version": "main",
     "doc_path": "docs/source",
 }
