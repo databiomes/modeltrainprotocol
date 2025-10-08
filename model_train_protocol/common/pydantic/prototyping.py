@@ -213,6 +213,8 @@ class GenerateMTPPrototypeModel(BaseModel):
     instruction_sets: List[InstructionSetModel] = Field(...,
                                                         description="Array of a minimum of three sets each with instruction, possible user prompt, and context-based response.",
                                                         min_length=3)
+    final_token: TokenInfoModel = Field(...,
+                                        description="A token representing the final action by the model. For example, 'Continue', 'End', or 'Execute'.")
 
     class Config:
         extra = "forbid"  # Enforces 'additionalProperties': false
