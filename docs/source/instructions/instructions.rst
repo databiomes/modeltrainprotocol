@@ -1,4 +1,4 @@
-Instructions: Training Patterns
+Instructions
 ===============================
 
 Instructions define how the model should respond to different input patterns. There are two main types of instructions.

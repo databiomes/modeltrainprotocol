@@ -15,15 +15,9 @@ The MTP system is built on a hierarchical structure of five main components:
    :maxdepth: 2
    :caption: Documentation:
 
-   getting_started
-   system_architecture
-   context
-   tokens
-   tokensets
-   snippets
-   instructions
-   guardrails
+   getting_started/index
+   context/index
+   instructions/index
    saving_models
    prototyping/index
-   api_reference
 

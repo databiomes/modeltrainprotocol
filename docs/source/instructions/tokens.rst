@@ -1,4 +1,4 @@
-Tokens: The Foundation
+Tokens
 ======================
 
 Tokens are the base building blocks of the MTP system. They represent words, symbols, concepts, or actions that the model will understand and use.

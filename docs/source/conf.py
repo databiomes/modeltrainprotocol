@@ -25,7 +25,7 @@ copyright = '2025, Databiomes Inc.'
 author = 'Databiomes Inc.'
 
 # Get version from pyproject.toml
-version = get_version()
+version = f"v{get_version()}"
 release = version
 
 # -- General configuration ---------------------------------------------------

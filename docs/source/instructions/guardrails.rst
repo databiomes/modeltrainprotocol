@@ -1,4 +1,4 @@
-Guardrails: Safety Mechanisms
+Guardrails
 ==============================
 
 Guardrails provide safety mechanisms for user interactions by defining what constitutes good vs. bad user prompts and how the model should respond to inappropriate inputs.

@@ -1,4 +1,4 @@
-TokenSets: Combining Tokens
+TokenSets
 ===========================
 
 TokenSets group multiple Tokens together to define specific input patterns. They represent the structure of data that will be fed to the model.

@@ -1,0 +1,18 @@
+{% extends "!layout.html" %}
+
+{% block extrahead %}
+{{ super() }}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Override the page title to remove "documentation" while preserving styling
+    const titleElement = document.querySelector('.navbar-brand');
+    if (titleElement) {
+        // Preserve the original HTML structure and styling
+        titleElement.innerHTML = '<span class="navbar-brand-text">Model Training Protocol v0.1.8</span>';
+    }
+    
+    // Also update the browser title
+    document.title = 'Model Training Protocol v0.1.8';
+});
+</script>
+{% endblock %}
