@@ -19,5 +19,5 @@ The MTP system is built on a hierarchical structure of five main components:
    context/index
    instructions/index
    saving_models
-   prototyping/index
+   experimental/index
 
