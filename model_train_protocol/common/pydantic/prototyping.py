@@ -13,7 +13,7 @@ class TokenInfoPrototypeModel(BaseModel):
 
 TOKEN_MODEL: dict = {  # Reusable token model definition
     "type": "object",
-    "description": "A single token that defines part of the context of the prompt.",
+    "description": "A single token that defines part of the context of the prompt. A Noun, Adjective, Verb, or concept that defines the defines the specific context of the prompt or response. For example, the HomeRepair model might have tokens like 'Plumbing', 'Electrical', 'Carpentry', 'Painting', 'Handyman', 'Morning' etc. A combination of these tokens like 'Plumbing' and 'Morning' would define a specific context for a prompt or response.",
     "required": ["value", "desc"],
     "properties": {
         "value": {
