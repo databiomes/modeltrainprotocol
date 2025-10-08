@@ -200,7 +200,7 @@ class InstructionSetModel(BaseModel):
 
 # --- Main Model ---
 
-class GenerateMTPPrototypeModel(BaseModel):
+class MTPPrototypeModel(BaseModel):
     """
     The main model representing the output of the 'generate_mtp' tool.
     Corresponds to the overall 'parameters' object in the schema.
