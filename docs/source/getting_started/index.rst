@@ -1,7 +1,7 @@
 Getting Started
 ================
 
-Welcome to the Model Training Protocol (MTP) documentation. This section will help you understand the system architecture and get started with the API.
+Welcome to the Model Train Protocol (MTP) documentation. This section will help you understand the system architecture and get started with the API.
 
 .. toctree::
    :maxdepth: 2

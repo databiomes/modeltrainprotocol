@@ -11,11 +11,11 @@ from .common.util import get_possible_emojis, hash_string, validate_string_set
 
 
 class Protocol:
-    """Model Training Protocol (MTP) class for creating the training configuration."""
+    """Model Train Protocol (MTP) class for creating the training configuration."""
 
     def __init__(self, name: str, instruction_context_snippets: int, encrypt: bool = True):
         """
-        Initialize the Model Training Protocol (MTP)
+        Initialize the Model Train Protocol (MTP)
 
         :param name: The name of the protocol.
         :param instruction_context_snippets: The number of lines in each instruction sample. Must be at least 2.

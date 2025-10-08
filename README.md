@@ -1,6 +1,6 @@
 View the full package documentation at: https://modeltrainprotocol.readthedocs.io/en/latest/
 
-# Model Training Protocol (MTP)
+# Model Train Protocol (MTP)
 
 MTP is an open-source protocol for training custom Language Models on Databiomes. MTP contains all the data that a model is trained on.
 
@@ -20,7 +20,7 @@ py -3 -m pip install model-train-protocol
 
 See examples/example.py to follow along with these steps.
 
-# Creating a Model Training Protocol
+# Creating a Model Train Protocol
 
 The first step in creating a model training protocol is to initialize the Protocol:
 

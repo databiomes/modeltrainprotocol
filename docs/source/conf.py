@@ -20,7 +20,7 @@ def get_version() -> str:
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = 'Model Training Protocol'
+project = 'Model Train Protocol'
 copyright = '2025, Databiomes Inc.'
 author = 'Databiomes Inc.'
 

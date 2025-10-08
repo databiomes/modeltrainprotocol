@@ -1,7 +1,7 @@
 API Reference
 =============
 
-This section provides comprehensive API documentation for the Model Training Protocol (MTP) package.
+This section provides comprehensive API documentation for the Model Train Protocol (MTP) package.
 
 Core Classes
 ------------
@@ -15,7 +15,7 @@ The main Protocol class for creating model training protocols.
 
    class Protocol:
        def __init__(self, name: str, instruction_context_snippets: int):
-           """Initialize the Model Training Protocol (MTP)"""
+           """Initialize the Model Train Protocol (MTP)"""
            
        def add_context(self, context: str):
            """Adds a line of context to the model."""

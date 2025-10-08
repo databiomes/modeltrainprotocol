@@ -1,6 +1,6 @@
 # Documentation Deployment Guide
 
-This guide explains how to build and deploy the Model Training Protocol documentation using GitHub Actions and Read the Docs.
+This guide explains how to build and deploy the Model Train Protocol documentation using GitHub Actions and Read the Docs.
 
 ## Overview
 

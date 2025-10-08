@@ -1,4 +1,4 @@
-Model Training Protocol (MTP)
+Model Train Protocol (MTP)
 =============================
 
 MTP is an open-source protocol for training custom Language Models on Databiomes. MTP contains all the data that a model is trained on.
