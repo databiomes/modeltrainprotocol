@@ -31,19 +31,29 @@ The prototyping workflow is simple:
 2. **Get Prompt ID**: Copy the prompt ID (starts with "pmpt_")
 3. **Generate Protocol**: Use the prototyping module to create your MTP file
 
-Basic Example
-~~~~~~~~~~~~~
+Example
+~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
+   """
+   Example prototype generation using OpenAI
+   
+   Takes a prompt ID and OpenAI API key to generate a Model Train Protocol (MTP) file.
+   
+   Prototype file is then submitted to app.databiomes.com for model generation.
+   """
    from model_train_protocol.prototyping import generate_prototype_protocol
    
-   # Generate a prototype protocol
-   protocol = generate_prototype_protocol(
-       prompt_id="pmpt_68e5abc123def456"
-   )
+   prompt_id: str = "pmpt_68e...4a0"  # Replace with your actual prompt ID
+   openai_api_key: str = "sk-..."  # Replace with your actual OpenAI API key OR set the OPENAI_API_KEY environment variable
    
-   print(f"Generated protocol: {protocol.name}")
+   generate_prototype_protocol(prompt_id=prompt_id,
+                               openai_api_key=openai_api_key,  # Set to None to use environment variable
+                               file_path=None,  # Saves to current directory,
+                               name=None,  # Uses model generated name
+                               encrypt=False  # Whether to encrypt the protocol file
+                               )
 
 That's it! Your MTP protocol file has been generated and saved.
 
@@ -59,5 +69,3 @@ What's Next?
    :caption: Prototyping Documentation:
 
    quickstart
-   advanced
-   api_reference

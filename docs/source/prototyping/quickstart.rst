@@ -42,6 +42,13 @@ Basic Usage
    .. code-block:: text
    
       "Create a model that helps users with home repair tasks. The model should provide step-by-step instructions for common repairs like fixing leaky faucets, replacing light switches, and patching drywall."
+   
+   .. figure:: ../../images/prototyping/create-openai-prompt.png
+      :alt: Creating a prompt in OpenAI interface
+      :width: 100%
+      :align: center
+      
+      Creating a new prompt in the OpenAI interface.
 
 2. **Get Your Prompt ID**
    
@@ -68,3 +75,21 @@ Next Steps
 - Review the generated protocol file
 - Customize the protocol if needed
 - Submit to `Databiomes <https://app.databiomes.com/agent/new>`_ for model training
+
+.. figure:: ../../images/prototyping/upload-json-empty.png
+   :alt: Uploading JSON file to Databiomes
+   :width: 100%
+   :align: center
+   
+   Upload your generated MTP protocol file to Databiomes for model training.
+
+4. **Monitor Training Progress**
+   
+   Once uploaded, you can monitor your model's training progress in the Databiomes interface.
+
+.. figure:: ../../images/prototyping/trained-databiomes-model.png
+   :alt: Trained model in Databiomes
+   :width: 100%
+   :align: center
+   
+   Your trained model will appear in the Databiomes interface once training is complete.
