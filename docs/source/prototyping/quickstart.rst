@@ -67,7 +67,14 @@ Basic Usage
       
       print(f"Generated protocol: {protocol.name}")
 
-That's it! Your MTP protocol file has been generated and saved.
+That's it! Your MTP protocol file has been generated and saved. You will see a file like this.
+
+.. figure:: ../../images/prototyping/generated-protocol-json.png
+   :alt: Generated MTP protocol JSON file
+   :width: 100%
+   :align: center
+   
+   The generated MTP protocol file contains all the training data for your model.
 
 Next Steps
 ----------
