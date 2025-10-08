@@ -1,6 +1,5 @@
 from model_train_protocol._internal.ProtocolFile import ProtocolFile
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel
-from .utils import create_token_set_from_token_model_array, create_sanitized_token_from_model
 from ... import Protocol, SimpleInstruction, Token, TokenSet, Snippet
 
 
@@ -19,30 +18,39 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
     for context_item in prototype_mtp.context:
         protocol.add_context(context_item.context)
 
-    context_token: Token = Token("Context", desc="Context for the model by the model creator.")
+    context_token: Token = Token("Context", desc="Context for the model.")
     context_tokenset: TokenSet = TokenSet(context_token)
+
+    prompt_token: Token = Token("Prompt", desc="The prompt to the model.")
+    prompt_tokenset: TokenSet = TokenSet(prompt_token)
+
+    response_token: Token = Token("Response", desc="The response from the model.")
+    response_tokenset: TokenSet = TokenSet(response_token)
+
+    final: Token = Token("Final", desc="Indicates the end of the model's response.")
 
     for instruction_set in prototype_mtp.instruction_sets:
 
-        prompt_token_set: TokenSet = create_token_set_from_token_model_array(instruction_set.prompt_tokens)
-        response_token_set: TokenSet = create_token_set_from_token_model_array(instruction_set.response_tokens)
-        final: Token = create_sanitized_token_from_model(prototype_mtp.final_token)
+        # Creates tokens dynamically from prototype (needs to account for duplicates still)
+        # prompt_tokenset: TokenSet = create_token_set_from_token_model_array(instruction_set.prompt_tokens)
+        # response_tokenset: TokenSet = create_token_set_from_token_model_array(instruction_set.response_tokens)
+        # final: Token = create_sanitized_token_from_model(prototype_mtp.final_token)
 
         simple_instruction: SimpleInstruction = SimpleInstruction(
-            context=[context_tokenset, prompt_token_set], response=response_token_set, final=final
+            context=[context_tokenset, prompt_tokenset], response=response_tokenset, final=final
         )
 
         for sample in instruction_set.samples:
             context_snippets: list[Snippet] = [
                 context_tokenset.create_snippet(
                     sample.prompt_context
-                ), prompt_token_set.create_snippet(
+                ), prompt_tokenset.create_snippet(
                     sample.prompt_sample
                 )
             ]
             simple_instruction.add_sample(
                 context_snippets=context_snippets,
-                output_snippet=response_token_set.create_snippet(
+                output_snippet=response_tokenset.create_snippet(
                     sample.response_sample
                 )
             )

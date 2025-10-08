@@ -41,8 +41,7 @@ GENERATE_MTP_TOOL: dict = {
         "required": [
             "model_name",
             "context",
-            "instruction_sets",
-            "final_token"
+            "instruction_sets"
         ],
         "properties": {
             "model_name": {
@@ -74,9 +73,7 @@ GENERATE_MTP_TOOL: dict = {
                     "required": [
                         "instruction",
                         "prompt",
-                        "prompt_tokens",
                         "response",
-                        "response_tokens",
                         "samples"
                     ],
                     "properties": {
@@ -88,21 +85,9 @@ GENERATE_MTP_TOOL: dict = {
                             "type": "string",
                             "description": "Possible user question, prompt or environment detail related to this instruction. Functions as the prompt for the model."
                         },
-                        "prompt_tokens": {
-                            "type": "array",
-                            "description": "Array of tokens that defines the context of the prompt.",
-                            "items": TOKEN_MODEL,
-                            "minItems": 1
-                        },
                         "response": {
                             "type": "string",
                             "description": "Response that uses the developer message context to answer the prompt."
-                        },
-                        "response_tokens": {
-                            "type": "array",
-                            "description": "Array of tokens that defines the context of the response.",
-                            "items": TOKEN_MODEL,
-                            "minItems": 1
                         },
                         "samples": {
                             "type": "array",
@@ -132,8 +117,7 @@ GENERATE_MTP_TOOL: dict = {
                     },
                     "additionalProperties": False
                 }
-            },
-            "final_token": FINAL_TOKEN_MODEL
+            }
         },
         "additionalProperties": False
     }
@@ -175,13 +159,13 @@ class InstructionSetModel(BaseModel):
     """
     instruction: str = Field(..., description="Instruction derived from the developer message.")
     prompt: str = Field(..., description="Possible user question or prompt related to this instruction.")
-    prompt_tokens: List[TokenInfoPrototypeModel] = Field(...,
-                                                description="Array of tokens that defines the context of the prompt.",
-                                                min_length=1)
+    # prompt_tokens: List[TokenInfoPrototypeModel] = Field(...,
+    #                                             description="Array of tokens that defines the context of the prompt.",
+    #                                             min_length=1)
     response: str = Field(..., description="Response that uses the developer message context.")
-    response_tokens: List[TokenInfoPrototypeModel] = Field(...,
-                                                  description="Array of tokens that defines the context of the response.",
-                                                  min_length=1)
+    # response_tokens: List[TokenInfoPrototypeModel] = Field(...,
+    #                                               description="Array of tokens that defines the context of the response.",
+    #                                               min_length=1)
     samples: List[Sample] = Field(...,
                                   description="Array of sample responses demonstrating the instruction in action.",
                                   min_length=3)
@@ -205,8 +189,8 @@ class MTPPrototypeModel(BaseModel):
     instruction_sets: List[InstructionSetModel] = Field(...,
                                                         description="Array of a minimum of three sets each with instruction, possible user prompt, and context-based response.",
                                                         min_length=3)
-    final_token: TokenInfoPrototypeModel = Field(...,
-                                        description="A token representing the final action by the model. For example, 'Continue', 'End', or 'Execute'.")
+    # final_token: TokenInfoPrototypeModel = Field(...,
+    #                                     description="A token representing the final action by the model. For example, 'Continue', 'End', or 'Execute'.")
 
     class Config:
         extra = "forbid"  # Enforces 'additionalProperties': false
