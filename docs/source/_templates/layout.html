@@ -1,7 +1,29 @@
 {% extends "!layout.html" %}
 
+{% block page_sidebar_items %}
+  {# Only include the page TOC, nothing else #}
+  {% if pagename != 'index' %}
+    {% include "page-toc.html" %}
+  {% endif %}
+{% endblock %}
+
 {% block extrahead %}
 {{ super() }}
+<style>
+/* Hide the "This Page" section completely */
+.rst-content .sidebar .sidebar-localtoc {
+    display: none !important;
+}
+.rst-content .sidebar .sidebar-this-page {
+    display: none !important;
+}
+/* Alternative selectors for different theme versions */
+.sidebar .sidebar-this-page,
+.sidebar .sidebar-localtoc,
+.sidebar .sidebar-this-page-wrapper {
+    display: none !important;
+}
+</style>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Override the page title to remove "documentation" while preserving styling
@@ -13,6 +35,47 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Also update the browser title
     document.title = 'Model Training Protocol v0.1.8';
+    
+    // Remove "This Page" section with multiple selectors
+    const selectors = [
+        '.sidebar-this-page',
+        '.sidebar-localtoc', 
+        '.sidebar-this-page-wrapper',
+        '[class*="this-page"]',
+        '[class*="localtoc"]',
+        '.bd-sidebar .sidebar-this-page',
+        '.bd-sidebar .sidebar-localtoc'
+    ];
+    
+    selectors.forEach(selector => {
+        const elements = document.querySelectorAll(selector);
+        elements.forEach(el => el.remove());
+    });
+    
+    // Also remove any elements containing "This Page" text
+    const allElements = document.querySelectorAll('*');
+    allElements.forEach(el => {
+        if (el.textContent && el.textContent.trim() === 'This Page') {
+            el.remove();
+        }
+        if (el.textContent && el.textContent.includes('Show Source')) {
+            const parent = el.closest('div, section, nav');
+            if (parent && parent.textContent.includes('This Page')) {
+                parent.remove();
+            }
+        }
+    });
+    
+    // Target the specific sidebar structure
+    const sidebar = document.querySelector('.bd-sidebar, .sidebar, .bd-sidebar-secondary');
+    if (sidebar) {
+        const thisPageElements = sidebar.querySelectorAll('div, section, nav');
+        thisPageElements.forEach(el => {
+            if (el.textContent && el.textContent.includes('This Page')) {
+                el.remove();
+            }
+        });
+    }
 });
 </script>
 {% endblock %}
