@@ -43,7 +43,7 @@ Basic Usage
    
       "Create a model that helps users with home repair tasks. The model should provide step-by-step instructions for common repairs like fixing leaky faucets, replacing light switches, and patching drywall."
    
-   .. figure:: ../../images/prototyping/create-openai-prompt.png
+   .. figure:: ../../../images/prototyping/create-openai-prompt.png
       :alt: Creating a prompt in OpenAI interface
       :width: 100%
       :align: center
@@ -69,7 +69,7 @@ Basic Usage
 
 That's it! Your MTP protocol file has been generated and saved. You will see a file like this.
 
-.. figure:: ../../images/prototyping/generated-protocol-json.png
+.. figure:: ../../../images/prototyping/generated-protocol-json.png
    :alt: Generated MTP protocol JSON file
    :width: 100%
    :align: center
@@ -83,7 +83,7 @@ Next Steps
 - Customize the protocol if needed
 - Submit to `Databiomes <https://app.databiomes.com/agent/new>`_ for model training
 
-.. figure:: ../../images/prototyping/upload-json-empty.png
+.. figure:: ../../../images/prototyping/upload-json-empty.png
    :alt: Uploading JSON file to Databiomes
    :width: 100%
    :align: center
@@ -94,7 +94,7 @@ Next Steps
    
    Once uploaded, you can monitor your model's training progress in the Databiomes interface.
 
-.. figure:: ../../images/prototyping/trained-databiomes-model.png
+.. figure:: ../../../images/prototyping/trained-databiomes-model.png
    :alt: Trained model in Databiomes
    :width: 100%
    :align: center
