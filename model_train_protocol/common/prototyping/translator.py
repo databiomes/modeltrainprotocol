@@ -45,6 +45,6 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
                 )
             )
 
-            protocol.add_instruction(simple_instruction)
+        protocol.add_instruction(simple_instruction)
 
     return protocol.get_protocol_file()
