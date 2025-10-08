@@ -1,10 +1,9 @@
-from model_train_protocol._internal.ProtocolFile import ProtocolFile
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel
 from ... import Protocol, SimpleInstruction, Token, TokenSet, Snippet
 
 
 def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = None,
-                        encrypt: bool = False) -> ProtocolFile:
+                        encrypt: bool = False) -> Protocol:
     """
     Translates a generated mtp prototype into a ProtocolFile
 
@@ -57,4 +56,4 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
 
         protocol.add_instruction(simple_instruction)
 
-    return protocol.get_protocol_file()
+    return protocol
