@@ -14,7 +14,7 @@ class TokenInfoPrototypeModel(TokenInfoModel):
 TOKEN_MODEL: dict = {  # Reusable token model definition
     "type": "object",
     "description": "A single token that defines part of the context of the prompt.",
-    "required": ["key", "value", "num", "num_list", "desc"],
+    "required": ["key", "value", "desc"],
     "properties": {
         "key": {
             "type": "string",
@@ -27,18 +27,7 @@ TOKEN_MODEL: dict = {  # Reusable token model definition
         "desc": {
             "type": "string",
             "description": "Optional description of the token. Extends the value to a detailed description to contextualize its use."
-        },
-        "num": {
-            "type": "number",
-            "description": "If this token represents a single number, this is the number it represents. Otherwise 0."
-        },
-        "num_list": {
-            "type": "array",
-            "description": "If this token represents a list of numbers, this is the list of numbers it represents. Otherwise an empty list.",
-            "items": {
-                "type": "number"
-            }
-        },
+        }
     },
     "additionalProperties": False
 }

@@ -16,12 +16,16 @@ def add_token_attributes(prototype_model_json: dict) -> dict:
                     prototype_model_json['instruction_sets'][i][token_subset][j]["key"]
                 prototype_model_json['instruction_sets'][i][token_subset][j]["special"] = None
                 prototype_model_json['instruction_sets'][i][token_subset][j]["user"] = False
+                prototype_model_json['instruction_sets'][i][token_subset][j]["num"] = 0
+                prototype_model_json['instruction_sets'][i][token_subset][j]["num_list"] = []
 
     # Add attributes to final_token
     prototype_model_json['final_token']["value"] = \
         prototype_model_json['final_token']["key"]
     prototype_model_json['final_token']["special"] = None
     prototype_model_json['final_token']["user"] = False
+    prototype_model_json['final_token']["num"] = 0
+    prototype_model_json['final_token']["num_list"] = []
 
     return prototype_model_json
 
