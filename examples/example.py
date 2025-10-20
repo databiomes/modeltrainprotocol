@@ -301,6 +301,80 @@ alice_disappear_cat_alice_instruction_leave.add_sample(
 )
 protocol.add_instruction(alice_disappear_cat_alice_instruction_leave)
 
+# Optional NumToken and NumListToken usage example
+
+
+# Numerical Tokens
+emotion: mtp.NumToken = mtp.NumToken(
+    value="Emotion",
+    min_value=0,
+    max_value=10,
+    desc="A numerical representation of Alice's emotional state, ranging from 0 (calm) to 10 (extremely agitated)."
+)
+
+coordinates: mtp.NumListToken = mtp.NumListToken(
+    value="Coordinates",
+    min_value=-1000,
+    max_value=1000,
+    length=3,
+    desc="A list of three numerical values representing the X, Y, and Z coordinates of the character's location in a 3D space."
+)
+
+tree_english_cat_talk_coordinates: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_cat, token_talk, coordinates))
+tree_english_alice_talk_emotion: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_alice, token_talk, emotion))
+
+# -------------------- Instruction Set: Continue (English) --------------------
+alice_cat_alice_instruction_numbers_continue: mtp.UserInstruction = mtp.UserInstruction(
+    context=(tree_english_alice_talk_emotion, tree_english_cat_talk_coordinates),
+    user=tree_english_alice_talk,
+    final=token_continue
+)
+
+# 1st Sample
+sample_16_context_1: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
+    string="I don’t much care where", numbers=5)
+sample_16_context_2: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
+    string="Then it doesnt matter which way you go.", number_lists=[100, 200, -50])
+sample_16_prompt: str = "Can you tell me a way?"
+sample_16_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="Oh sure, if you only walk long enough that is a way.")
+
+alice_cat_alice_instruction_numbers_continue.add_sample(
+    context_snippets=[sample_16_context_1, sample_16_context_2],
+    prompt=sample_16_prompt,
+    output_snippet=sample_16_output,
+)
+
+# 2nd Sample
+sample_17_context_1: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
+    string="But I don’t want to go among mad people", numbers=7)
+sample_17_context_2: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
+    string="Oh, you cant help that, were all mad here. Im mad. You are mad.", number_lists=[0, -300, 150])
+sample_17_prompt: str = "How do you know I am mad?"
+sample_17_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="You must be, or you would not have come here.")
+
+alice_cat_alice_instruction_numbers_continue.add_sample(
+    context_snippets=[sample_17_context_1, sample_17_context_2],
+    prompt=sample_17_prompt,
+    output_snippet=sample_17_output,
+)
+
+# 3rd Sample
+sample_18_context_1: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
+    string="And how do you know that you’re mad?", numbers=6)
+sample_18_context_2: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
+    string="To begin with, a dogs not mad. You grant that?", number_lists=[250, 0, -100])
+sample_18_prompt: str = "I suppose so"
+sample_18_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased.")
+alice_cat_alice_instruction_numbers_continue.add_sample(
+    context_snippets=[sample_18_context_1, sample_18_context_2],
+    prompt=sample_18_prompt,
+    output_snippet=sample_18_output,
+)
+
+protocol.add_instruction(alice_cat_alice_instruction_numbers_continue)
 
 
 # -------------------- Guardrail --------------------
