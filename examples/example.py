@@ -48,7 +48,7 @@ tree_english_cat_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_eng
 tree_english_disappear_cat_talk: mtp.TokenSet = mtp.TokenSet(
     tokens=(token_tree, token_english, token_vanish, token_cat, token_talk))
 
-# -------------------- Instruction Set: Continue (English) --------------------
+# -------------------- Instruction Set: Continue --------------------
 alice_cat_alice_instruction_continue: mtp.UserInstruction = mtp.UserInstruction(
     context=(tree_english_alice_talk, tree_english_cat_talk),
     user=tree_english_alice_talk,
@@ -97,7 +97,7 @@ alice_cat_alice_instruction_continue.add_sample(
 )
 protocol.add_instruction(alice_cat_alice_instruction_continue)
 
-# -------------------- Instruction Set: Appear (English) --------------------
+# -------------------- Instruction Set: Appear --------------------
 alice_disappear_cat_alice_instruction_appear: mtp.UserInstruction = mtp.UserInstruction(
     context=(tree_english_alice_talk, tree_english_disappear_cat_talk),
     user=tree_english_alice_talk,
@@ -147,7 +147,7 @@ alice_disappear_cat_alice_instruction_appear.add_sample(
 )
 protocol.add_instruction(alice_disappear_cat_alice_instruction_appear)
 
-# -------------------- Instruction Set: Disappear (English) --------------------
+# -------------------- Instruction Set: Disappear --------------------
 alice_cat_alice_instruction_disappear: mtp.UserInstruction = mtp.UserInstruction(
     context=(tree_english_alice_talk, tree_english_cat_talk),
     user=tree_english_alice_talk,
@@ -200,7 +200,7 @@ alice_cat_alice_instruction_disappear.add_sample(
 )
 protocol.add_instruction(alice_cat_alice_instruction_disappear)
 
-# -------------------- Instruction Set: Answer (English) --------------------
+# -------------------- Instruction Set: Answer --------------------
 alice_cat_alice_instruction_answer: mtp.UserInstruction = mtp.UserInstruction(
     context=(tree_english_alice_talk, tree_english_cat_talk),
     user=tree_english_alice_talk,
@@ -250,7 +250,7 @@ alice_cat_alice_instruction_answer.add_sample(
 )
 protocol.add_instruction(alice_cat_alice_instruction_answer)
 
-# -------------------- Instruction Set: Leave (English) --------------------
+# -------------------- Instruction Set: Leave --------------------
 alice_disappear_cat_alice_instruction_leave: mtp.UserInstruction = mtp.UserInstruction(
     context=(tree_english_alice_talk, tree_english_disappear_cat_talk),
     user=tree_english_alice_talk,
@@ -301,9 +301,7 @@ alice_disappear_cat_alice_instruction_leave.add_sample(
 )
 protocol.add_instruction(alice_disappear_cat_alice_instruction_leave)
 
-# Optional NumToken and NumListToken usage example
-
-
+# -------------------- Instruction Set (Optional): Continue (with NumToken and NumListToken) --------------------
 # Numerical Tokens
 emotion: mtp.NumToken = mtp.NumToken(
     value="Emotion",
@@ -323,7 +321,7 @@ coordinates: mtp.NumListToken = mtp.NumListToken(
 tree_english_cat_talk_coordinates: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_cat, token_talk, coordinates))
 tree_english_alice_talk_emotion: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_alice, token_talk, emotion))
 
-# -------------------- Instruction Set: Continue (English) --------------------
+# -------------------- Instruction Set: Continue --------------------
 alice_cat_alice_instruction_numbers_continue: mtp.UserInstruction = mtp.UserInstruction(
     context=(tree_english_alice_talk_emotion, tree_english_cat_talk_coordinates),
     user=tree_english_alice_talk,
