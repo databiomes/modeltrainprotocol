@@ -150,11 +150,16 @@ class BaseInstruction(ABC):
         for snippet in all_snippets:
             numbers.append(snippet.numbers)
 
+        number_lists: list[list[list[int]]] = []
+        for snippet in all_snippets:
+            number_lists.append(snippet.number_lists)
+
         return Sample(
             context=[snippet.string for snippet in context_snippets],
             response=output_snippet.string,
             prompt=None,
             number=numbers,
+            number_lists=number_lists,
             result=self.final,
             value=value
         )
