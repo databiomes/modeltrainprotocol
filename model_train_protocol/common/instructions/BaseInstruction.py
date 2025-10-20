@@ -10,12 +10,15 @@ from ... import NumToken, NumListToken
 class Sample:
     """A Sample is a single example of input and output for an Instruction."""
 
-    def __init__(self, context: list[str], response: str, prompt: str | None, number: list[list[int]], result: Token,
+    def __init__(self, context: list[str], response: str, prompt: str | None, number: list[list[int]],
+                 number_lists: list[list[list[int]]],
+                 result: Token,
                  value: int | float | None):
         self.context: list[str] = context
         self.response: str = response
         self.prompt: str | None = prompt
-        self.number: list[list[int]] = number
+        self.numbers: list[list[int]] = number
+        self.number_lists: list[list[list[int]]] = number_lists
         self.result: Token = result
         self.value: int | float | None = value
 
@@ -28,7 +31,8 @@ class Sample:
         return {
             'strings': self.strings,
             'prompt': self.prompt,
-            'number': self.number,
+            'numbers': self.numbers,
+            'number_lists': self.number_lists,
             'result': self.result.value,  # We only need the value of the result token
             'value': self.value
         }

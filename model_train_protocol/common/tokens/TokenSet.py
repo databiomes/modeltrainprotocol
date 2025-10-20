@@ -14,7 +14,8 @@ from .NumToken import NumToken
 class Snippet:
     string: str
     token_set_key: str
-    numbers: list[int] = dataclasses.field(default_factory=list)
+    numbers: list[int | float]
+    number_lists: list[list[int | float]]
 
 
 class TokenSet:
@@ -27,9 +28,9 @@ class TokenSet:
         self.tokens: Sequence[Token] = tokens
         self.is_user: bool = any(token.user for token in tokens)
         self.required_numtoken_numbers: int = sum(
-            token.num for token in tokens if token.num == 1)  # Count of NumToken
+            token.num for token in tokens if isinstance(token, NumToken))  # Count of NumToken
         self.required_numlists: list[int] = [
-            token.num for token in tokens if isinstance(token, NumListToken)
+            token.num_list for token in tokens if isinstance(token, NumListToken)
         ]  # List of lengths for NumListToken
         self.key: str = ''.join(token.value for token in
                                 tokens)  # Note this key is based on the value of the tokens and not the keys of the tokens
@@ -90,19 +91,28 @@ class TokenSet:
         # Combine numbers and number_lists into single input for Snippet
         numbers_index = 0
         number_lists_index = 0
-        combined_numbers: list[int | float | Collection[int | float]] = []  # Combined list of numbers and number lists
-        for index, token in enumerate(self.tokens):
-            if not isinstance(token, NumToken):
-                continue
+        # final_numbers: list[int | float] = []
+        # final_number_lists: list[Collection[int | float]] = []
+        # combined_numbers: list[int | float | Collection[int | float]] = []  # Combined list of numbers and number lists
+        # for index, token in enumerate(self.tokens):
+        #     if not isinstance(token, NumToken):
+        #         continue
+        #
+        #     if token.num == 1:
+        #         combined_numbers.append(numbers[numbers_index])
+        #         numbers_index += 1
+        #     elif token.num > 1:
+        #         combined_numbers.append(number_lists[number_lists_index])
+        #         number_lists_index += 1
+        #
+        # for index, token in enumerate(self.tokens):
+        #
+        #     if not isinstance(token, NumListToken):
+        #         continue
+        #
+        #     number_lists.append(numbers[number_lists_index])
 
-            if token.num == 1:
-                combined_numbers.append(numbers[numbers_index])
-                numbers_index += 1
-            elif token.num > 1:
-                combined_numbers.append(number_lists[number_lists_index])
-                number_lists_index += 1
-
-        return Snippet(string=string, numbers=combined_numbers, token_set_key=self.key)
+        return Snippet(string=string, numbers=numbers, number_lists=number_lists, token_set_key=self.key)
 
     def get_token_key_set(self) -> str:
         """Returns a string representing the combined token keys of the individual Tokens in the TokenSet."""

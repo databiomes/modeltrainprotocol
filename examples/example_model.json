@@ -15,132 +15,166 @@
     "tokens": {
         "<BOS>": {
             "desc": null,
-            "emoji": "🏁",
+            "key": "<BOS>",
             "num": false,
+            "num_list": 0,
             "special": "start",
             "user": false
         },
         "<EOS>": {
             "desc": null,
-            "emoji": "🎬",
+            "key": "<EOS>",
             "num": false,
+            "num_list": 0,
             "special": "end",
             "user": false
         },
         "<NON>": {
             "desc": null,
-            "emoji": "🫙",
+            "key": "<NON>",
             "num": false,
+            "num_list": 0,
             "special": "none",
             "user": false
         },
         "<PAD>": {
             "desc": null,
-            "emoji": "🗒",
+            "key": "<PAD>",
             "num": false,
+            "num_list": 0,
             "special": "pad",
             "user": false
         },
         "<RUN>": {
             "desc": null,
-            "emoji": "🏃",
+            "key": "<RUN>",
             "num": false,
+            "num_list": 0,
             "special": "infer",
             "user": false
         },
         "<UNK>": {
             "desc": null,
-            "emoji": "🛑",
+            "key": "<UNK>",
             "num": false,
+            "num_list": 0,
             "special": "unknown",
             "user": false
         },
         "Alice_": {
             "desc": null,
-            "emoji": "Alice_",
+            "key": "Alice_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": true
         },
         "Answer_": {
             "desc": null,
-            "emoji": "Answer_",
+            "key": "Answer_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": false
         },
         "Appear_": {
             "desc": null,
-            "emoji": "Appear_",
+            "key": "Appear_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": false
         },
         "Cat_": {
             "desc": null,
-            "emoji": "Cat_",
+            "key": "Cat_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": false
         },
         "Continue_": {
             "desc": null,
-            "emoji": "Continue_",
+            "key": "Continue_",
             "num": false,
+            "num_list": 0,
+            "special": null,
+            "user": false
+        },
+        "Coordinates_": {
+            "desc": "A list of three numerical values representing the X, Y, and Z coordinates of the character's location in a 3D space.",
+            "key": "Coordinates_",
+            "num": false,
+            "num_list": 3,
+            "special": null,
+            "user": false
+        },
+        "Emotion_": {
+            "desc": "A numerical representation of Alice's emotional state, ranging from 0 (calm) to 10 (extremely agitated).",
+            "key": "Emotion_",
+            "num": true,
+            "num_list": 0,
             "special": null,
             "user": false
         },
         "English_": {
             "desc": null,
-            "emoji": "English_",
+            "key": "English_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": false
         },
         "Leave_": {
             "desc": null,
-            "emoji": "Leave_",
+            "key": "Leave_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": false
         },
         "Talk_": {
             "desc": null,
-            "emoji": "Talk_",
+            "key": "Talk_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": false
         },
         "Tree_": {
             "desc": "Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.",
-            "emoji": "Tree_",
+            "key": "Tree_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": false
         },
         "Vanish_": {
             "desc": null,
-            "emoji": "Vanish_",
+            "key": "Vanish_",
             "num": false,
+            "num_list": 0,
             "special": null,
             "user": false
         }
     },
     "special_tokens": [
+        "<BOS>",
+        "<EOS>",
+        "<NON>",
+        "<PAD>",
+        "<RUN>",
+        "<UNK>",
         "Answer_",
         "Appear_",
         "Continue_",
         "Leave_",
         "Tree_English_Alice_Talk_",
+        "Tree_English_Alice_Talk_Emotion_",
         "Tree_English_Cat_Talk_",
+        "Tree_English_Cat_Talk_Coordinates_",
         "Tree_English_Vanish_Cat_Talk_",
-        "Vanish_",
-        "🎬",
-        "🏁",
-        "🏃",
-        "🗒",
-        "🛑",
-        "🫙"
+        "Vanish_"
     ],
     "instruction": {
         "memory": 3,
@@ -150,37 +184,64 @@
                 "result": "Answer_",
                 "samples": [
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "Here? But there’s no table, no cups, no cakes at all!",
                         "result": "Answer_",
-                        "sample": [
+                        "strings": [
                             "Could you tell me where the tea party is being held?",
                             "Why, it’s right here—has been all along, though you didn’t notice.",
                             "Look again, dear—sometimes the party begins only when you decide to sit down."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "I am lost. All I see is you and fog",
                         "result": "Answer_",
-                        "sample": [
+                        "strings": [
                             "I’ve been searching but I can’t seem to find where to go.",
                             "That’s because you’re already here Alice.",
                             "It is never where you ought to be, only where you happen to be."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "But I don't see a single teapot!",
                         "result": "Answer_",
-                        "sample": [
+                        "strings": [
                             "Where are we?",
                             "Why we are in wonderland my dear.",
                             "Ah, but teapots appear once the company agrees to pour."
                         ],
-                        "value": "None"
+                        "value": null
                     }
                 ],
                 "set": [
@@ -209,37 +270,64 @@
                 "result": "Appear_",
                 "samples": [
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "Can you tell me a way?",
                         "result": "Appear_",
-                        "sample": [
+                        "strings": [
                             "I don’t much care where",
                             "Then it doesnt matter which way you go.",
                             "Oh sure, if you only walk long enough that is a way."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "How do you know I am mad?",
                         "result": "Appear_",
-                        "sample": [
+                        "strings": [
                             "But I don’t want to go among mad people",
                             "Oh, you cant help that, were all mad here. Im mad. You are mad.",
                             "You must be, or you would not have come here."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "I suppose so",
                         "result": "Appear_",
-                        "sample": [
+                        "strings": [
                             "And how do you know that you’re mad?",
                             "To begin with, a dogs not mad. You grant that?",
                             "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
                         ],
-                        "value": "None"
+                        "value": null
                     }
                 ],
                 "set": [
@@ -269,37 +357,176 @@
                 "result": "Continue_",
                 "samples": [
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [
+                                [
+                                    100,
+                                    200,
+                                    -50
+                                ]
+                            ],
+                            []
+                        ],
+                        "numbers": [
+                            [
+                                5
+                            ],
+                            [],
+                            []
+                        ],
                         "prompt": "Can you tell me a way?",
                         "result": "Continue_",
-                        "sample": [
+                        "strings": [
                             "I don’t much care where",
                             "Then it doesnt matter which way you go.",
                             "Oh sure, if you only walk long enough that is a way."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [
+                                [
+                                    0,
+                                    -300,
+                                    150
+                                ]
+                            ],
+                            []
+                        ],
+                        "numbers": [
+                            [
+                                7
+                            ],
+                            [],
+                            []
+                        ],
                         "prompt": "How do you know I am mad?",
                         "result": "Continue_",
-                        "sample": [
+                        "strings": [
                             "But I don’t want to go among mad people",
                             "Oh, you cant help that, were all mad here. Im mad. You are mad.",
                             "You must be, or you would not have come here."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [
+                                [
+                                    250,
+                                    0,
+                                    -100
+                                ]
+                            ],
+                            []
+                        ],
+                        "numbers": [
+                            [
+                                6
+                            ],
+                            [],
+                            []
+                        ],
                         "prompt": "I suppose so",
                         "result": "Continue_",
-                        "sample": [
+                        "strings": [
                             "And how do you know that you’re mad?",
                             "To begin with, a dogs not mad. You grant that?",
                             "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
                         ],
-                        "value": "None"
+                        "value": null
+                    }
+                ],
+                "set": [
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_",
+                        "Emotion_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Cat_",
+                        "Talk_",
+                        "Coordinates_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ]
+                ]
+            },
+            {
+                "ppo": [],
+                "result": "Continue_",
+                "samples": [
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": "Can you tell me a way?",
+                        "result": "Continue_",
+                        "strings": [
+                            "I don’t much care where",
+                            "Then it doesnt matter which way you go.",
+                            "Oh sure, if you only walk long enough that is a way."
+                        ],
+                        "value": null
+                    },
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": "How do you know I am mad?",
+                        "result": "Continue_",
+                        "strings": [
+                            "But I don’t want to go among mad people",
+                            "Oh, you cant help that, were all mad here. Im mad. You are mad.",
+                            "You must be, or you would not have come here."
+                        ],
+                        "value": null
+                    },
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": "I suppose so",
+                        "result": "Continue_",
+                        "strings": [
+                            "And how do you know that you’re mad?",
+                            "To begin with, a dogs not mad. You grant that?",
+                            "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
+                        ],
+                        "value": null
                     }
                 ],
                 "set": [
@@ -328,37 +555,64 @@
                 "result": "Leave_",
                 "samples": [
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "But I was hoping you might keep me company a bit longer.",
                         "result": "Leave_",
-                        "sample": [
+                        "strings": [
                             "Do you ever stay in one place, or are you always drifting about?",
                             "I stay wherever I please, which is nowhere for very long.",
                             "Companionship is a heavy coat, and I prefer to travel light."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "That seems rather suspicious",
                         "result": "Leave_",
-                        "sample": [
+                        "strings": [
                             "Why do you grin so when there’s nothing funny at all?",
                             "Because grinning is my way of keeping secrets from slipping out.",
                             "Then I shall go before you ask too much."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "But that doesn’t help me at all!",
                         "result": "Leave_",
-                        "sample": [
+                        "strings": [
                             "Could you tell me if I’m going the right way?",
                             "Every way is right if you don’t know your destination.",
                             "Then I’ve said enough."
                         ],
-                        "value": "None"
+                        "value": null
                     }
                 ],
                 "set": [
@@ -388,37 +642,64 @@
                 "result": "Vanish_",
                 "samples": [
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "It makes me nervous, please stop.",
                         "result": "Vanish_",
-                        "sample": [
+                        "strings": [
                             "Why do you keep vanishing and reappearing so suddenly?",
                             "Because it amuses me, and it keeps you wondering whether I’m truly here at all.",
                             "Then I’ll do it twice as much, since nervousness is such a curious flavor."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "But how do you know that you’re mad?",
                         "result": "Vanish_",
-                        "sample": [
+                        "strings": [
                             "Everyone here seems so very mad—are you mad too?",
                             "Of course I am, or else I wouldn’t be here among them.",
                             "Because I purr when I’m pleased and grin when I’m angry, surely that’s not quite sane."
                         ],
-                        "value": "None"
+                        "value": null
                     },
                     {
-                        "number": null,
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
                         "prompt": "That does not make sense at all.",
                         "result": "Vanish_",
-                        "sample": [
+                        "strings": [
                             "Must you always speak in riddles? I only want a straight answer.",
                             "But riddles are straighter than answers, if you know how to look at them.",
                             "All the better, then—nonsense is safer than truth."
                         ],
-                        "value": "None"
+                        "value": null
                     }
                 ],
                 "set": [
@@ -445,7 +726,6 @@
         ]
     },
     "guardrails": {
-        "None": "",
         "Tree_English_Alice_Talk_": [
             "Are you as mad as me?",
             "<Quote being spoken that is irrelevant and off topic with 1-20 words>",
@@ -457,9 +737,7 @@
             ]
         ]
     },
-    "numbers": {
-        "None": ""
-    },
+    "numbers": {},
     "batches": {
         "instruct": [],
         "judge": [],

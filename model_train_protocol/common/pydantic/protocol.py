@@ -10,19 +10,19 @@ from pydantic import BaseModel, Field
 class TokenInfoModel(BaseModel):
     """Model for individual token information."""
     key: str
-    num: Union[bool | int | float]
     user: bool
+    num: bool
+    num_list: int
     desc: Union[str | None]
     special: Union[str | None]
-    num_list: List[Union[int | float]] = Field(default_factory=list) # Should not normally have a default - only until num_list is properly implemented.
-    # TODO: Remove default list for numlist
 
 
 class SampleModel(BaseModel):
     """Model for instruction samples."""
-    sample: List[str]
+    strings: List[str]
     prompt: Optional[Union[str]]
-    number: Optional[Union[int, List[int], List[List[int]], List[List[List[int]]]]]
+    numbers: Union[int, List[int], List[List[int]]]
+    number_lists: Union[int, List[int], List[List[int]], List[List[List[int]]]]
     result: str
     value: Optional[Union[str, int, float, List[int], List[float]]]  # Can be string, int, float, or list
 
@@ -32,7 +32,7 @@ class InstructionSetModel(BaseModel):
     set: List[List[str]]
     result: str
     samples: List[SampleModel]
-    ppo: List[Any] = Field(default_factory=list)
+    ppo: List[Any]
 
 
 class InstructionModel(BaseModel):
@@ -43,8 +43,6 @@ class InstructionModel(BaseModel):
 
 class GuardrailModel(BaseModel):
     """Model for guardrails configuration."""
-    nil: str = Field(default="", alias="None")
-
     model_config = {"extra": "allow"}
 
     def __getitem__(self, key: str) -> Any:
@@ -57,7 +55,7 @@ class GuardrailModel(BaseModel):
 
     def get_guardrail_rules(self) -> Dict[str, Any]:
         """Get all guardrail rules as a dictionary."""
-        return {k: v for k, v in self.__dict__.items() if k != 'nil'}
+        return {k: v for k, v in self.__dict__.items()}
 
     def set_guardrail_rule(self, key: str, value: Union[str, List[Union[str, List[str]]]]) -> None:
         """Set a guardrail rule with proper validation."""
@@ -68,8 +66,6 @@ class GuardrailModel(BaseModel):
 
 class NumberModel(BaseModel):
     """Model for numbers configuration."""
-    nil: str = Field(default="", alias="None")
-
     class ConfigDict:
         extra = "allow"  # Allow extra fields for dynamic attributes
 
@@ -83,7 +79,7 @@ class NumberModel(BaseModel):
 
     def get_number_rules(self) -> Dict[str, Any]:
         """Get all number rules as a dictionary."""
-        return {k: v for k, v in self.__dict__.items() if k != 'nil'}
+        return {k: v for k, v in self.__dict__.items()}
 
     def set_number_rule(self, key: str, value: str) -> None:
         """Set a number rule with proper validation."""
@@ -94,10 +90,10 @@ class NumberModel(BaseModel):
 
 class BatchModel(BaseModel):
     """Model for batches configuration."""
-    pretrain: List[Any] = Field(default_factory=list)
-    instruct: List[Any] = Field(default_factory=list)
-    judge: List[Any] = Field(default_factory=list)
-    ppo: List[Any] = Field(default_factory=list)
+    pretrain: List[Any]
+    instruct: List[Any]
+    judge: List[Any]
+    ppo: List[Any]
 
 
 class ProtocolModel(BaseModel):
@@ -123,6 +119,7 @@ class ProtocolModel(BaseModel):
                     "English_": {
                         "emoji": "🇨",
                         "num": False,
+                        "num_list": [],
                         "user": False,
                         "desc": None,
                         "special": None
@@ -130,6 +127,7 @@ class ProtocolModel(BaseModel):
                     "Alice_": {
                         "emoji": "😁",
                         "num": False,
+                        "num_list": [],
                         "user": True,
                         "desc": None,
                         "special": None
@@ -145,10 +143,8 @@ class ProtocolModel(BaseModel):
                     "sets": []
                 },
                 "guardrails": {
-                    "None": ""
                 },
                 "numbers": {
-                    "None": ""
                 },
                 "batches": {
                     "pretrain": [],

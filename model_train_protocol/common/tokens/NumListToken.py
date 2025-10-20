@@ -1,5 +1,6 @@
 from .Token import Token
 
+
 class NumListToken(Token):
     def __init__(self, value: str, min_value: int | float, max_value: int | float, length: int,
                  key: str | None = None, desc: str | None = None, *args, **kwargs):
@@ -16,7 +17,11 @@ class NumListToken(Token):
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         super().__init__(value=value, key=key, desc=desc)
-        self.num: int = length
+
+        if length <= 0:
+            raise ValueError("Length of NumListToken must be a positive non-zero integer.")
+
+        self.num_list: int = length
         self.min_value = min_value
         self.max_value = max_value
         self.protocol_representation: str = f"<List of length {length} of numbers between {min_value} and {max_value}>"
