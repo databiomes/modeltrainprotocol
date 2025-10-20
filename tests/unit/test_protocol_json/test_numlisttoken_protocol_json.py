@@ -72,14 +72,14 @@ class TestNumListTokenProtocolJSON:
         
         # Test token structure
         for token_key, token_info in json_output["tokens"].items():
-            assert "emoji" in token_info
+            assert "key" in token_info
             assert "num" in token_info
             assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
             
             # Check data types
-            assert isinstance(token_info["emoji"], str)
+            assert isinstance(token_info["key"], str)
             assert isinstance(token_info["num"], bool)
             assert isinstance(token_info["user"], bool)
             assert token_info["desc"] is None or isinstance(token_info["desc"], str)
@@ -166,29 +166,29 @@ class TestNumListTokenProtocolJSON:
     def _test_sample_structure(self, sample):
         """Test the structure of a sample."""
         # Test sample keys
-        assert "sample" in sample
+        assert "strings" in sample
         assert "prompt" in sample
-        assert "number" in sample
+        assert "numbers" in sample
         assert "result" in sample
         assert "value" in sample
         
         # Test sample data types
-        assert isinstance(sample["sample"], list)
+        assert isinstance(sample["strings"], list)
         assert isinstance(sample["prompt"], (str, type(None)))
-        assert isinstance(sample["number"], (list, type(None)))
+        assert isinstance(sample["numbers"], (list, type(None)))
         assert isinstance(sample["result"], str)
         assert isinstance(sample["value"], (str, int, float, list, type(None)))
         
         # Test sample content
-        assert len(sample["sample"]) == 3  # Three context snippets (2 context + 1 response)
-        assert isinstance(sample["number"], (list, type(None)))  # Can be list or None
+        assert len(sample["strings"]) == 3  # Three context snippets (2 context + 1 response)
+        assert isinstance(sample["numbers"], (list, type(None)))  # Can be list or None
         assert sample["result"] == "Position_"
         assert isinstance(sample["value"], (str, int, float, list, type(None)))
         
         # Test numeric values (if number is not None)
-        if sample["number"] is not None:
-            assert len(sample["number"]) == 3  # Three context lines
-            for num_list in sample["number"]:
+        if sample["numbers"] is not None:
+            assert len(sample["numbers"]) == 3  # Three context lines
+            for num_list in sample["numbers"]:
                 assert isinstance(num_list, list)
                 assert len(num_list) in [0, 1]  # Can be empty or have 1 element
                 if len(num_list) > 0:

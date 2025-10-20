@@ -89,7 +89,7 @@ class TestNumToken:
         assert "Value: 'Count_'" in str_repr
         assert "Key: '🔢'" in str_repr
         assert "User: False" in str_repr
-        assert "Num: 1" in str_repr  # Should show num=1
+        assert "Num: True" in str_repr  # Should show num=True
         assert "Desc: A numeric token" in str_repr
         assert "Special: None" in str_repr
 
@@ -103,7 +103,7 @@ class TestNumToken:
             'key': '🔢',
             'user': False,
             'num': 1,  # Should be 1 for NumToken
-            'num_list': [],
+            'num_list': 0,
             'desc': 'A numeric token',
             'special': None
         }
@@ -119,7 +119,7 @@ class TestNumToken:
             'key': '🔢',
             'user': False,
             'num': 1,  # Should be 1 for NumToken
-            'num_list': [],
+            'num_list': 0,
             'desc': 'A numeric token',
             'special': None
         }

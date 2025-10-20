@@ -76,14 +76,14 @@ class TestBasicUserProtocolJSON:
         
         # Test token structure
         for token_key, token_info in json_output["tokens"].items():
-            assert "emoji" in token_info
+            assert "key" in token_info
             assert "num" in token_info
             assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
             
             # Check data types
-            assert isinstance(token_info["emoji"], str)
+            assert isinstance(token_info["key"], str)
             assert isinstance(token_info["num"], bool)
             assert isinstance(token_info["user"], bool)
             assert token_info["desc"] is None or isinstance(token_info["desc"], str)
@@ -168,23 +168,25 @@ class TestBasicUserProtocolJSON:
     def _test_sample_structure(self, sample):
         """Test the structure of a sample."""
         # Test sample keys
-        assert "sample" in sample
+        assert "strings" in sample
         assert "prompt" in sample
-        assert "number" in sample
+        assert "numbers" in sample
+        assert "number_lists" in sample
         assert "result" in sample
         assert "value" in sample
         
         # Test sample data types
-        assert isinstance(sample["sample"], list)
+        assert isinstance(sample["strings"], list)
         assert isinstance(sample["prompt"], str)
-        assert isinstance(sample["number"], (list, type(None)))
+        assert isinstance(sample["numbers"], (list, type(None)))
+        assert isinstance(sample["number_lists"], (list, type(None)))
         assert isinstance(sample["result"], str)
-        assert isinstance(sample["value"], str)
+        assert isinstance(sample["value"], (str, type(None)))
         
         # Test sample content
-        assert len(sample["sample"]) == 3  # Three context snippets (2 context + 1 response)
+        assert len(sample["strings"]) == 3  # Three context snippets (2 context + 1 response)
         assert sample["result"] == "End_"
-        assert sample["value"] == "None"  # No value for user instruction
+        assert sample["value"] is None  # No value for user instruction
         
         # User instruction should have prompts
         assert len(sample["prompt"]) > 0

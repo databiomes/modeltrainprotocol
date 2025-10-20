@@ -62,14 +62,14 @@ class TestWorkflow5ContextProtocolJSON:
         
         # Test token structure
         for token_key, token_info in json_output["tokens"].items():
-            assert "emoji" in token_info
+            assert "key" in token_info
             assert "num" in token_info
             assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
             
             # Check data types
-            assert isinstance(token_info["emoji"], str)
+            assert isinstance(token_info["key"], str)
             assert isinstance(token_info["num"], bool)
             assert isinstance(token_info["user"], bool)
             assert token_info["desc"] is None or isinstance(token_info["desc"], str)
@@ -155,23 +155,23 @@ class TestWorkflow5ContextProtocolJSON:
     def _test_sample_structure(self, sample):
         """Test the structure of a sample."""
         # Test sample keys
-        assert "sample" in sample
+        assert "strings" in sample
         assert "prompt" in sample
-        assert "number" in sample
+        assert "numbers" in sample
         assert "result" in sample
         assert "value" in sample
         
         # Test sample data types
-        assert isinstance(sample["sample"], list)
+        assert isinstance(sample["strings"], list)
         assert isinstance(sample["prompt"], (str, type(None)))
-        assert isinstance(sample["number"], (list, type(None)))
+        assert isinstance(sample["numbers"], (list, type(None)))
         assert isinstance(sample["result"], str)
         assert isinstance(sample["value"], (str, int, float, type(None)))
         
         # Test sample content
-        assert len(sample["sample"]) == 6  # Six context snippets (5 context + 1 response)
+        assert len(sample["strings"]) == 6  # Six context snippets (5 context + 1 response)
         assert sample["result"] in ["Result_", "End_"]
-        assert sample["value"] == "None"  # No value for workflow instructions
+        assert sample["value"] is None  # No value for workflow instructions
         
         # User instruction should have prompts
         if sample["result"] == "End_":
@@ -250,7 +250,7 @@ class TestWorkflow5ContextProtocolJSON:
             
             # Each sample should have 6 context snippets (5 context + 1 response)
             for sample in instruction_set["samples"]:
-                assert len(sample["sample"]) == 6
+                assert len(sample["strings"]) == 6
 
 
 class TestNumTokenWorkflow5ContextProtocolJSON:
@@ -334,8 +334,8 @@ class TestNumTokenWorkflow5ContextProtocolJSON:
         
         # Test samples
         for sample in instruction_set["samples"]:
-            assert len(sample["sample"]) == 6  # Six context snippets (5 context + 1 response)
-            assert len(sample["number"]) == 6  # Six numeric values (5 context + 1 response)
+            assert len(sample["strings"]) == 6  # Six context snippets (5 context + 1 response)
+            assert len(sample["numbers"]) == 6  # Six numeric values (5 context + 1 response)
             assert sample["result"] == "Count_"
             assert sample["value"] in [10, 15, 20]
 

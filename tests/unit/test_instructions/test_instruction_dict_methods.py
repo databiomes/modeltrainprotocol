@@ -42,7 +42,7 @@ class TestInstructionDictMethods:
             sample_dict = sample.to_dict()
             assert 'strings' in sample_dict
             assert 'prompt' in sample_dict
-            assert 'number' in sample_dict
+            assert 'numbers' in sample_dict
             assert 'result' in sample_dict
             assert 'value' in sample_dict
 
@@ -268,7 +268,7 @@ class TestInstructionDictMethods:
                 sample_dict = sample.to_dict()
                 assert 'strings' in sample_dict
                 assert 'prompt' in sample_dict
-                assert 'number' in sample_dict
+                assert 'numbers' in sample_dict
                 assert 'result' in sample_dict
                 assert 'value' in sample_dict
 

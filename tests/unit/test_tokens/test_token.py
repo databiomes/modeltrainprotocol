@@ -130,7 +130,7 @@ class TestToken:
         assert "Value: 'Test_'" in str_repr
         assert "Key: '🔑'" in str_repr
         assert "User: False" in str_repr
-        assert "Num: 0" in str_repr
+        assert "Num: False" in str_repr
         assert "Desc: A test token" in str_repr
         assert "Special: None" in str_repr
 
@@ -144,7 +144,7 @@ class TestToken:
             'key': '🔑',
             'user': False,
             'num': 0,
-            'num_list': [],
+            'num_list': 0,
             'desc': 'A test token',
             'special': None
         }
@@ -160,7 +160,7 @@ class TestToken:
             'key': '🔑',
             'user': False,
             'num': 0,
-            'num_list': [],
+            'num_list': 0,
             'desc': 'A test token',
             'special': None
         }
