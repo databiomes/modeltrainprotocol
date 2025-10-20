@@ -49,8 +49,8 @@ class ProtocolFile:
         self._instruction_token_keys: set[str] = set()
         self._instruction: ProtocolFile.ProtocolInstruction = ProtocolFile.ProtocolInstruction(
             instruction_context_snippets=instruction_context_snippets)
-        self._guardrails: dict[str, list[str] | str] = {'None': ''}
-        self._numbers: dict[str, str] = {'None': ''}
+        self._guardrails: dict[str, list[str] | str] = {}
+        self._numbers: dict[str, str] = {}
         self._batches: ProtocolFile.Batches = ProtocolFile.Batches()
 
         # Add regular tokens
