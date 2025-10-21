@@ -25,7 +25,7 @@ protocol.add_context("Alice was not a bit hurt, and she jumped up on to her feet
 token_english: mtp.Token = mtp.Token("English")
 
 # Characters
-token_alice: mtp.UserToken = mtp.UserToken("Alice")
+token_alice: mtp.Token = mtp.Token("Alice")
 token_cat: mtp.Token = mtp.Token("Cat")
 
 # Scenes
