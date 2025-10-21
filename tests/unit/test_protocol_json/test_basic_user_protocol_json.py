@@ -78,32 +78,29 @@ class TestBasicUserProtocolJSON:
         for token_key, token_info in json_output["tokens"].items():
             assert "key" in token_info
             assert "num" in token_info
-            assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
             
             # Check data types
             assert isinstance(token_info["key"], str)
             assert isinstance(token_info["num"], bool)
-            assert isinstance(token_info["user"], bool)
             assert token_info["desc"] is None or isinstance(token_info["desc"], str)
             assert token_info["special"] is None or isinstance(token_info["special"], str)
 
-    def test_basic_user_protocol_user_tokens(self, basic_user_protocol):
-        """Test that user tokens are correctly identified."""
+    def test_basic_user_protocol_token_types(self, basic_user_protocol):
+        """Test that token types are correctly identified."""
         json_output = self._get_json_output(basic_user_protocol)
         
         tokens = json_output["tokens"]
         
-        # Alice should be marked as a user token
+        # Alice should be a regular token now
         if "Alice_" in tokens:
-            assert tokens["Alice_"]["user"] is True
             assert tokens["Alice_"]["num"] is False
         
-        # Other tokens should not be user tokens
+        # Other tokens should be regular tokens
         for token_key, token_info in tokens.items():
-            if token_key != "Alice_" and token_key not in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"]:
-                assert token_info["user"] is False
+            if token_key not in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"]:
+                assert token_info["num"] is False
 
     def test_basic_user_protocol_special_tokens(self, basic_user_protocol):
         """Test that special tokens are correctly included."""
@@ -265,21 +262,17 @@ class TestBasicUserProtocolJSON:
         if "Result" in tokens:
             assert tokens["Result"]["desc"] == "Result token"
 
-    def test_basic_user_protocol_token_types(self, basic_user_protocol):
+    def test_basic_user_protocol_token_types_final(self, basic_user_protocol):
         """Test that token types are correctly set."""
         json_output = self._get_json_output(basic_user_protocol)
         
         tokens = json_output["tokens"]
         
-        # Alice should be a user token, others should be regular tokens
+        # Alice should be a regular token, others should be regular tokens
         for token_key, token_info in tokens.items():
-            if token_key == "Alice_":
-                assert token_info["user"] is True
-                assert token_info["num"] is False
-            elif token_key in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>", "<NON>"]:
+            if token_key in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>", "<NON>"]:
                 # Special tokens
                 assert token_info["special"] is not None
             else:
-                assert token_info["user"] is False
                 assert token_info["num"] is False
                 assert token_info["special"] is None

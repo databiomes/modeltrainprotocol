@@ -40,28 +40,24 @@ def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_toke
 def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, user_response_sample, token_workflow_end) -> ExtendedInstruction:
     """User instruction with 2 context lines for workflow tests."""
     instruction = ExtendedInstruction(
-        context=[simple_tokenset, user_tokenset],
-        user=user_tokenset,
+        context=[simple_tokenset, user_tokenset, user_tokenset],
         final=token_workflow_end
     )
     
-    # Add samples with 2 context snippets
+    # Add samples with 2 context snippets plus output snippet
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 0",
-        output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 1",
-        output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 2",
-        output_snippet=user_response_sample,
         value=None
     )
     
@@ -135,28 +131,24 @@ def user_workflow_5context_instruction_with_samples(
 ) -> ExtendedInstruction:
     """User instruction with 5 context lines for workflow tests."""
     instruction = ExtendedInstruction(
-        context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset],
-        user=user_tokenset,
+        context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset, user_tokenset],
         final=token_workflow_end
     )
     
-    # Add samples with 5 context snippets
+    # Add samples with 5 context snippets plus output snippet
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
         response_string="User prompt 0",
-        output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
         response_string="User prompt 1",
-        output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
         response_string="User prompt 2",
-        output_snippet=user_response_sample,
         value=None
     )
     

@@ -359,7 +359,7 @@ class TestInstructionDictMethods:
         for sample in instruction_dict['samples']:
             sample_dict = sample.to_dict()
             assert sample_dict['prompt'] is not None
-            assert 'User prompt' in sample_dict['prompt']
+            assert sample_dict['prompt'] == 'What should I do?'
 
     def test_edge_case_instructions(self, simple_instruction_with_none_final, simple_instruction_with_non_token_final, simple_instruction_with_empty_samples):
         """Test edge case instructions."""

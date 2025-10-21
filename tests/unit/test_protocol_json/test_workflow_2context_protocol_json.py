@@ -64,14 +64,12 @@ class TestWorkflow2ContextProtocolJSON:
         for token_key, token_info in json_output["tokens"].items():
             assert "key" in token_info
             assert "num" in token_info
-            assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
             
             # Check data types
             assert isinstance(token_info["key"], str)
             assert isinstance(token_info["num"], bool)
-            assert isinstance(token_info["user"], bool)
             assert token_info["desc"] is None or isinstance(token_info["desc"], str)
             assert token_info["special"] is None or isinstance(token_info["special"], str)
 
@@ -84,13 +82,11 @@ class TestWorkflow2ContextProtocolJSON:
         # Check specific token types
         for token_key, token_info in tokens.items():
             if token_key == "Alice_":
-                assert token_info["user"] is True
                 assert token_info["num"] is False
             elif token_key in ["<RUN>", "<PAD>", "<EOS>", "<BOS>", "<UNK>", "<NON>"]:
                 # Special tokens
                 assert token_info["special"] is not None
             else:
-                assert token_info["user"] is False
                 assert token_info["num"] is False
                 assert token_info["special"] is None
 
@@ -323,7 +319,6 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         # Count should be marked as a numeric token
         if "Count" in tokens:
             assert tokens["Count"]["num"] is True
-            assert tokens["Count"]["user"] is False
 
     def test_numtoken_workflow_2context_protocol_instruction(self, numtoken_workflow_2context_protocol):
         """Test that instruction structure is correct."""

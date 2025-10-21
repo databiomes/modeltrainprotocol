@@ -14,7 +14,6 @@ class TestNumToken:
         assert token.value == "Count_"
         assert token.key is None
         assert token.desc is None
-        assert token.user is False
         assert token.num == 1  # NumToken should have num=1
         assert token.special is None
         assert token.protocol_representation == "<Number between 1 and 10>"
@@ -88,7 +87,6 @@ class TestNumToken:
         assert "Token(" in str_repr
         assert "Value: 'Count_'" in str_repr
         assert "Key: '🔢'" in str_repr
-        assert "User: False" in str_repr
         assert "Num: True" in str_repr  # Should show num=True
         assert "Desc: A numeric token" in str_repr
         assert "Special: None" in str_repr
@@ -101,7 +99,6 @@ class TestNumToken:
         expected_dict = {
             'value': 'Count_',
             'key': '🔢',
-            'user': False,
             'num': 1,  # Should be 1 for NumToken
             'num_list': 0,
             'desc': 'A numeric token',
@@ -117,7 +114,6 @@ class TestNumToken:
         expected_dict = {
             'value': 'Count_',
             'key': '🔢',
-            'user': False,
             'num': 1,  # Should be 1 for NumToken
             'num_list': 0,
             'desc': 'A numeric token',

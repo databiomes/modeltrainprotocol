@@ -15,7 +15,6 @@ class TestToken:
         assert token.value == "Test_"
         assert token.key is None
         assert token.desc is None
-        assert token.user is False
         assert token.num == 0
         assert token.special is None
 
@@ -129,7 +128,6 @@ class TestToken:
         assert "Token(" in str_repr
         assert "Value: 'Test_'" in str_repr
         assert "Key: '🔑'" in str_repr
-        assert "User: False" in str_repr
         assert "Num: False" in str_repr
         assert "Desc: A test token" in str_repr
         assert "Special: None" in str_repr
@@ -142,7 +140,6 @@ class TestToken:
         expected_dict = {
             'value': 'Test_',
             'key': '🔑',
-            'user': False,
             'num': 0,
             'num_list': 0,
             'desc': 'A test token',
@@ -158,7 +155,6 @@ class TestToken:
         expected_dict = {
             'value': 'Test_',
             'key': '🔑',
-            'user': False,
             'num': 0,
             'num_list': 0,
             'desc': 'A test token',

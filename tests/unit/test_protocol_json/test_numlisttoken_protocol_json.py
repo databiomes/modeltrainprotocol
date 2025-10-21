@@ -74,14 +74,12 @@ class TestNumListTokenProtocolJSON:
         for token_key, token_info in json_output["tokens"].items():
             assert "key" in token_info
             assert "num" in token_info
-            assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
             
             # Check data types
             assert isinstance(token_info["key"], str)
             assert isinstance(token_info["num"], bool)
-            assert isinstance(token_info["user"], bool)
             assert token_info["desc"] is None or isinstance(token_info["desc"], str)
             assert token_info["special"] is None or isinstance(token_info["special"], str)
 
@@ -94,7 +92,6 @@ class TestNumListTokenProtocolJSON:
         # Scores_ should be marked as a numeric token
         if "Scores_" in tokens:
             assert tokens["Scores_"]["num"] is True
-            assert tokens["Scores_"]["user"] is False
         
         # Other tokens should not be numeric tokens (excluding special tokens)
         for token_key, token_info in tokens.items():
@@ -278,7 +275,6 @@ class TestNumListTokenProtocolJSON:
         for token_key, token_info in tokens.items():
             if token_key == "Scores_":
                 assert token_info["num"] is True
-                assert token_info["user"] is False
             elif token_key not in ["<BOS>", "<EOS>", "<PAD>", "<RUN>", "<UNK>"]:
                 # Some tokens might be marked as numeric due to the way the protocol processes them
                 # We'll just check that Scores_ is definitely numeric

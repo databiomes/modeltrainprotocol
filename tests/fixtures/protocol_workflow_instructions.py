@@ -54,28 +54,24 @@ def user_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simpl
                                            safety_guardrail) -> ExtendedInstruction:
     """User instruction with 2 context lines for workflow tests."""
     instruction = ExtendedInstruction(
-        context=[simple_tokenset, user_tokenset],
-        user=user_tokenset,
+        context=[simple_tokenset, user_tokenset, user_tokenset],
         final=token_workflow_end
     )
 
-    # Add samples with 2 context snippets - one from each tokenset
+    # Add samples with 2 context snippets plus output snippet
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 0",
-        output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 1",
-        output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 2",
-        output_snippet=user_response_sample,
         value=None
     )
 

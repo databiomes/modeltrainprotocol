@@ -11,7 +11,6 @@ tests/
 │   ├── test_tokens/               # Token-related tests
 │   │   ├── __init__.py
 │   │   ├── test_token.py          # Basic Token tests
-│   │   ├── test_user_token.py     # UserToken tests
 │   │   ├── test_num_token.py      # NumToken tests
 │   │   └── test_token_set.py      # TokenSet tests
 │   ├── test_tokensets/            # TokenSet tests

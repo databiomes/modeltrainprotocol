@@ -6,7 +6,6 @@ import pytest
 from model_train_protocol import NumListToken
 from model_train_protocol.common.tokens.TokenSet import TokenSet, Snippet
 from model_train_protocol.common.tokens.Token import Token
-from model_train_protocol.common.tokens.UserToken import UserToken
 from model_train_protocol.common.tokens.NumToken import NumToken
 
 
@@ -123,18 +122,6 @@ class TestTokenSet:
         assert token_set1 != token_set2
 
 
-    def test_token_set_contains_user_token(self):
-        """Test token set user token detection."""
-        user_token = UserToken("User")
-        regular_token = Token("Regular")
-        
-        # Token set with user token
-        user_set = TokenSet(tokens=(user_token, regular_token))
-        assert user_set.is_user is True
-        
-        # Token set without user token
-        regular_set = TokenSet(tokens=(regular_token,))
-        assert regular_set.is_user is False
 
     def test_token_set_create_snippet_basic(self):
         """Test token set snippet creation."""
@@ -217,7 +204,7 @@ class TestTokenSet:
     def test_token_set_with_mixed_token_types(self):
         """Test token set with mixed token types."""
         regular_token = Token("Regular")
-        user_token = UserToken("User")
+        user_token = Token("User")
         num_token = NumToken("Count", min_value=1, max_value=10)
         
         token_set = TokenSet(tokens=(regular_token, user_token, num_token))
@@ -226,19 +213,17 @@ class TestTokenSet:
         assert regular_token in token_set.tokens
         assert user_token in token_set.tokens
         assert num_token in token_set.tokens
-        assert token_set.is_user is True
 
     def test_token_set_with_only_user_tokens(self):
         """Test token set with only user tokens."""
-        user_token1 = UserToken("User1")
-        user_token2 = UserToken("User2")
+        user_token1 = Token("User1")
+        user_token2 = Token("User2")
         
         token_set = TokenSet(tokens=(user_token1, user_token2))
         
         assert len(token_set.tokens) == 2
         assert user_token1 in token_set.tokens
         assert user_token2 in token_set.tokens
-        assert token_set.is_user is True
 
     def test_token_set_with_only_regular_tokens(self):
         """Test token set with only regular tokens."""
@@ -250,7 +235,6 @@ class TestTokenSet:
         assert len(token_set.tokens) == 2
         assert token1 in token_set.tokens
         assert token2 in token_set.tokens
-        assert token_set.is_user is False
 
     def test_token_set_with_only_numeric_tokens(self):
         """Test token set with only numeric tokens."""
@@ -262,7 +246,6 @@ class TestTokenSet:
         assert len(token_set.tokens) == 2
         assert num_token1 in token_set.tokens
         assert num_token2 in token_set.tokens
-        assert token_set.is_user is False
 
     def test_token_set_duplicate_tokens(self):
         """Test token set with duplicate tokens."""
@@ -307,7 +290,7 @@ class TestTokenSet:
         """Test token set equality with guardrail."""
         from model_train_protocol.common.guardrails import Guardrail
         
-        token = UserToken("Test")
+        token = Token("Test")
         token_set1 = TokenSet(tokens=(token,))
         token_set2 = TokenSet(tokens=(token,))
         

@@ -391,8 +391,9 @@ class TestGuardrail:
             bad_prompt="Bad prompt description",
             bad_output="Bad output response"
         )
-        with pytest.raises(ValueError):
-            SIMPLE_TOKENSET.set_guardrail(guardrail)
+        # Should not raise error since UserToken validation is no longer required
+        SIMPLE_TOKENSET.set_guardrail(guardrail)
+        assert SIMPLE_TOKENSET.guardrail is not None
 
     def test_guardrail_assignment_user_tokenset(self):
         """Tests adding a guardrail to a user tokenset"""

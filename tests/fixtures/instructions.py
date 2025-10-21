@@ -10,7 +10,6 @@ from model_train_protocol import Instruction, ExtendedInstruction
 from model_train_protocol.common.tokens.NumListToken import NumListToken
 from model_train_protocol.common.tokens.NumToken import NumToken
 from model_train_protocol.common.tokens.Token import Token
-from model_train_protocol.common.tokens.UserToken import UserToken
 
 # Basic tokens for creating instructions
 TOKEN_TREE = Token("Tree", desc="A tree token")
@@ -26,7 +25,7 @@ TOKEN_COUNT = NumToken("Count", min_value=1, max_value=100, desc="Count token")
 TOKEN_SCORES = NumListToken("Scores", min_value=0, max_value=10, length=5, desc="Scores token")
 
 # User tokens
-TOKEN_USER = UserToken("User", desc="User token")
+TOKEN_USER = Token("User", desc="User token")
 
 
 def get_basic_instructions() -> Dict[str, Any]:
@@ -195,8 +194,7 @@ def simple_instruction(simple_tokenset) -> Instruction:
 def user_instruction(simple_tokenset, user_tokenset) -> ExtendedInstruction:
     """Basic user instruction."""
     return ExtendedInstruction(
-        context=[simple_tokenset],
-        user=user_tokenset,
+        context=[simple_tokenset, user_tokenset],
         final=TOKEN_RESULT
     )
 
@@ -391,21 +389,18 @@ def user_instruction_with_samples(
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     # For ExtendedInstruction, the output snippet should match the user TokenSet
     user_instruction.add_sample(
-        context_snippets=[simple_context_sample],
+        context_snippets=[simple_context_sample, user_response_sample],
         response_string="What should I do?",
-        output_snippet=user_response_sample,
         value=None
     )
     user_instruction.add_sample(
-        context_snippets=[simple_context_sample],
+        context_snippets=[simple_context_sample, user_response_sample],
         response_string="How can I help?",
-        output_snippet=user_response_sample,
         value=None
     )
     user_instruction.add_sample(
-        context_snippets=[simple_context_sample],
+        context_snippets=[simple_context_sample, user_response_sample],
         response_string="What's the next step?",
-        output_snippet=user_response_sample,
         value=None
     )
     return user_instruction

@@ -76,14 +76,12 @@ class TestBasicSimpleProtocolJSON:
         for token_key, token_info in json_output["tokens"].items():
             assert "key" in token_info
             assert "num" in token_info
-            assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
 
             # Check data types
             assert isinstance(token_info["key"], str)
             assert isinstance(token_info["num"], bool)
-            assert isinstance(token_info["user"], bool)
             assert token_info["desc"] is None or isinstance(token_info["desc"], str)
             assert token_info["special"] is None or isinstance(token_info["special"], str)
 
@@ -126,42 +124,36 @@ class TestBasicSimpleProtocolJSON:
                 "key": "<BOS>",
                 "num": False,
                 "special": "start",
-                "user": False
             },
             "<EOS>": {
                 "desc": None,
                 "key": "<EOS>",
                 "num": False,
                 "special": "end",
-                "user": False
             },
             "<NON>": {
                 "desc": None,
                 "key": "<NON>",
                 "num": False,
                 "special": "none",
-                "user": False
             },
             "<PAD>": {
                 "desc": None,
                 "key": "<PAD>",
                 "num": False,
                 "special": "pad",
-                "user": False
             },
             "<RUN>": {
                 "desc": None,
                 "key": "<RUN>",
                 "num": False,
                 "special": "infer",
-                "user": False
             },
             "<UNK>": {
                 "desc": None,
                 "key": "<UNK>",
                 "num": False,
                 "special": "unknown",
-                "user": False
             }
         }
 
@@ -202,15 +194,14 @@ class TestBasicSimpleProtocolJSON:
                               dict), f"Token value for '{token_key}' should be a dictionary, got {type(token_value)}"
 
             # Token value should have the required fields
-            # required_fields = {"emoji", "num", "num_list", "user", "desc", "special"}
-            required_fields = {"key", "num", "num_list", "user", "desc", "special"}
+            # required_fields = {"emoji", "num", "num_list", "desc", "special"}
+            required_fields = {"key", "num", "num_list", "desc", "special"}
             actual_fields = set(token_value.keys())
             assert actual_fields == required_fields, f"Token '{token_key}' has fields {actual_fields}, expected {required_fields}"
 
             # Check field types
             assert isinstance(token_value["key"], str), f"Token '{token_key}' key should be string"
             assert isinstance(token_value["num"], (bool, int)), f"Token '{token_key}' num should be bool or int"
-            assert isinstance(token_value["user"], bool), f"Token '{token_key}' user should be bool"
             assert token_value["desc"] is None or isinstance(token_value["desc"],
                                                              str), f"Token '{token_key}' desc should be None or string"
             assert token_value["special"] is None or isinstance(token_value["special"],
@@ -614,11 +605,9 @@ class TestBasicSimpleProtocolJSON:
                 assert token_info["special"] is not None
             elif token_key == "Alice_":
                 # User token
-                assert token_info["user"] is True
                 assert token_info["num"] is False
                 assert token_info["special"] is None
             else:
                 # Regular tokens
                 assert token_info["num"] is False
-                assert token_info["user"] is False
                 assert token_info["special"] is None

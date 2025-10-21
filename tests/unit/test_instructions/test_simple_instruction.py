@@ -22,11 +22,12 @@ class TestSimpleInstruction:
         assert instruction.final == TOKEN_CONTINUE
 
     def test_user_tokenset(self):
-        """Test that adding a user token in the final tokenset raises an error"""
+        """Test that adding a user token in the final tokenset succeeds"""
         context: list[TokenSet] = [USER_TOKENSET, SIMPLE_TOKENSET]
 
-        with pytest.raises(ValueError):
-            Instruction(context=context, response=USER_TOKENSET, final=TOKEN_CONTINUE)
+        # Should not raise error since UserToken validation is no longer required
+        instruction = Instruction(context=context, response=USER_TOKENSET, final=TOKEN_CONTINUE)
+        assert instruction is not None
 
     def test_num_tokensset(self):
         """Test creating an instruction with numeric tokens."""

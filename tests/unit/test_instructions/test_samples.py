@@ -4,7 +4,7 @@ Tests error handling when values are not provided or wrong types are provided.
 """
 
 import pytest
-from model_train_protocol.common.tokens import Token, NumToken, NumListToken, UserToken
+from model_train_protocol.common.tokens import Token, NumToken, NumListToken
 from model_train_protocol.common.tokens import TokenSet
 from model_train_protocol.common.instructions import Instruction, ExtendedInstruction
 
@@ -193,11 +193,10 @@ class TestSampleValueValidation:
         )
 
     def test_user_token_result_none_value_allowed(self, simple_tokenset, user_tokenset):
-        """Test that UserToken result token allows None value."""
-        user_token = UserToken("User")
+        """Test that Token result token allows None value."""
+        user_token = Token("User")
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=user_token
         )
 
@@ -207,9 +206,8 @@ class TestSampleValueValidation:
 
         # Should not raise error
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
+            context_snippets=[context_snippet1, output_snippet],
             response_string="User prompt",
-            output_snippet=output_snippet,
             value=None  # None value allowed for user tokens
         )
 
@@ -234,11 +232,10 @@ class TestSampleValueValidation:
             )
 
     def test_user_token_result_non_none_value_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that UserToken result token raises error when value is not None."""
-        user_token = UserToken("User")
+        """Test that Token result token raises error when value is not None."""
+        user_token = Token("User")
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=user_token
         )
 
@@ -248,9 +245,8 @@ class TestSampleValueValidation:
 
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
+                context_snippets=[context_snippet1, context_snippet2, output_snippet],
                 response_string="User prompt",
-                output_snippet=output_snippet,
                 value="some_value"  # Non-None value not allowed for user tokens
             )
 
@@ -521,7 +517,6 @@ class TestInstructionValidation:
         """Test that ExtendedInstruction raises error when context snippet count doesn't match."""
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=Token("Result")
         )
 
@@ -529,18 +524,16 @@ class TestInstructionValidation:
         # Only provide 1 context snippet when 2 are expected
         output_snippet = user_tokenset.create_snippet("Output")
 
-        with pytest.raises(ValueError, match="Number of context snippets \\(1\\) must match number of context token sets \\(2\\)"):
+        with pytest.raises(ValueError, match="Number of context snippets \\(0\\) must match number of context token sets \\(1\\)"):
             instruction.add_sample(
-                context_snippets=[context_snippet1],  # Only 1 snippet, but need 2
-                response_string="User prompt",
-                output_snippet=output_snippet
+                context_snippets=[],  # No context snippets, but need 1
+                response_string="User prompt"
             )
 
     def test_user_instruction_wrong_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when snippet doesn't match expected token set."""
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=Token("Result")
         )
 
@@ -552,16 +545,14 @@ class TestInstructionValidation:
 
         with pytest.raises(ValueError, match="Snippet f.* does not match expected token set"):
             instruction.add_sample(
-                context_snippets=[wrong_snippet, context_snippet2],  # First snippet has wrong token set
-                response_string="User prompt",
-                output_snippet=output_snippet
+                context_snippets=[wrong_snippet, output_snippet],  # First snippet has wrong token set
+                response_string="User prompt"
             )
 
     def test_user_instruction_wrong_output_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when output snippet doesn't match user token set."""
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=Token("Result")
         )
 
@@ -572,16 +563,14 @@ class TestInstructionValidation:
 
         with pytest.raises(ValueError, match="Snippet f.* does not match expected token set"):
             instruction.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                response_string="User prompt",
-                output_snippet=wrong_output_snippet  # Wrong token set for output
+                context_snippets=[context_snippet1, wrong_output_snippet],  # Wrong token set for output
+                response_string="User prompt"
             )
 
     def test_user_instruction_missing_prompt_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when prompt is missing."""
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=Token("Result")
         )
 
@@ -589,18 +578,16 @@ class TestInstructionValidation:
         context_snippet2 = user_tokenset.create_snippet("Context 2")
         output_snippet = user_tokenset.create_snippet("Output")
 
-        with pytest.raises(TypeError, match="missing 1 required positional argument: 'prompt'"):
+        with pytest.raises(TypeError, match="missing 1 required positional argument: 'response_string'"):
             instruction.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                # Missing prompt parameter
-                output_snippet=output_snippet
+                context_snippets=[context_snippet1, output_snippet]
+                # Missing response_string parameter
             )
 
     def test_user_instruction_invalid_value_type_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when value is not int or float."""
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=Token("Result")
         )
 
@@ -610,9 +597,8 @@ class TestInstructionValidation:
 
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
+                context_snippets=[context_snippet1, output_snippet],
                 response_string="User prompt",
-                output_snippet=output_snippet,
                 value="invalid_string"  # Wrong type for ExtendedInstruction
             )
 
@@ -620,7 +606,6 @@ class TestInstructionValidation:
         """Test that ExtendedInstruction raises error when value is a list."""
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=Token("Result")
         )
 
@@ -630,29 +615,29 @@ class TestInstructionValidation:
 
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
+                context_snippets=[context_snippet1, output_snippet],
                 response_string="User prompt",
-                output_snippet=output_snippet,
                 value=[1, 2, 3]  # List not allowed for ExtendedInstruction
             )
 
-    def test_simple_instruction_creation_with_user_token_in_response_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that Instruction raises error when created with user token in response."""
-        with pytest.raises(ValueError, match="Instruction requires that the response does not contain a UserToken"):
-            Instruction(
-                context=[simple_tokenset],
-                response=user_tokenset,  # Contains user token
-                final=Token("Result")
-            )
+    def test_simple_instruction_creation_with_token_in_response_succeeds(self, simple_tokenset, user_tokenset):
+        """Test that Instruction succeeds when created with token in response."""
+        # This should not raise an error since UserToken no longer exists
+        instruction = Instruction(
+            context=[simple_tokenset],
+            response=user_tokenset,  # Token in response is now allowed
+            final=Token("Result")
+        )
+        assert instruction is not None
 
-    def test_user_instruction_creation_without_user_token_raises_error(self, simple_tokenset):
-        """Test that ExtendedInstruction raises error when created without user token."""
-        with pytest.raises(ValueError, match="ExtendedInstruction requires a user token in the response"):
-            ExtendedInstruction(
-                context=[simple_tokenset],
-                user=simple_tokenset,  # No user token
-                final=Token("Result")
-            )
+    def test_user_instruction_creation_without_user_token_succeeds(self, simple_tokenset):
+        """Test that ExtendedInstruction succeeds when created without user token."""
+        # This should not raise an error since UserToken no longer exists
+        instruction = ExtendedInstruction(
+            context=[simple_tokenset],
+            final=Token("Result")
+        )
+        assert instruction is not None
 
     def test_instruction_creation_with_invalid_context_type_raises_error(self):
         """Test that Instruction raises error when context is not a sequence."""
@@ -712,7 +697,6 @@ class TestInstructionValidation:
         """Test that ExtendedInstruction accepts valid sample."""
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=Token("Result")
         )
 
@@ -722,16 +706,14 @@ class TestInstructionValidation:
 
         # Should not raise error
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_string="User prompt",
-            output_snippet=output_snippet
+            context_snippets=[context_snippet1, output_snippet],
+            response_string="User prompt"
         )
 
     def test_user_instruction_valid_sample_with_none_value_succeeds(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction accepts valid sample with None value."""
         instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
-            user=user_tokenset,
             final=Token("Result")
         )
 
@@ -741,9 +723,8 @@ class TestInstructionValidation:
 
         # Should not raise error
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
+            context_snippets=[context_snippet1, output_snippet],
             response_string="User prompt",
-            output_snippet=output_snippet,
             value=None  # Valid None value for non-numeric final token
         )
 

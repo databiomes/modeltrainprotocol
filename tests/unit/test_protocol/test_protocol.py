@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from model_train_protocol import Protocol, Token, UserToken, TokenSet, Instruction, ExtendedInstruction, \
+from model_train_protocol import Protocol, Token, TokenSet, Instruction, ExtendedInstruction, \
     Guardrail
 from tests.fixtures.tokens import get_valid_keyless_tokens
 
@@ -650,7 +650,7 @@ class TestProtocol:
         protocol = Protocol("test_protocol", instruction_context_snippets=2)
 
         # Create tokens and token sets
-        user_token = UserToken("User", key="👤")
+        user_token = Token("User", key="👤")
         token1 = Token("Token1", key="🔑")
         token2 = Token("Token2", key="🔧")
         context_set1 = TokenSet(tokens=(user_token,))
@@ -673,8 +673,7 @@ class TestProtocol:
 
         # Create instruction
         instruction = ExtendedInstruction(
-            context=[context_set1, context_set2],
-            user=user_set,
+            context=[context_set1, context_set2, user_set],
             final=token2
         )
 
@@ -683,19 +682,16 @@ class TestProtocol:
         output_snippet = user_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_string="User prompt",
-            output_snippet=output_snippet
+            context_snippets=[context_snippet1, context_snippet2, output_snippet],
+            response_string="User prompt"
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_string="User prompt 2",
-            output_snippet=output_snippet
+            context_snippets=[context_snippet1, context_snippet2, output_snippet],
+            response_string="User prompt 2"
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_string="User prompt 3",
-            output_snippet=output_snippet
+            context_snippets=[context_snippet1, context_snippet2, output_snippet],
+            response_string="User prompt 3"
         )
 
         protocol.add_instruction(instruction)
