@@ -12,9 +12,9 @@ name = "model-train-protocol"
 version = "0.2.0"
 description = "Standardized protocol to train models on Databiomes"
 requires-python = ">=3.9"
-readme = {file = "README.md", content-type = "text/markdown"}
+readme = { file = "README.md", content-type = "text/markdown" }
 authors = [
-  {name = "Databiomes Inc.", email = "dev@databiomes.com"}
+    { name = "Databiomes Inc.", email = "dev@databiomes.com" }
 ]
 classifiers = [
     "Programming Language :: Python :: 3",
