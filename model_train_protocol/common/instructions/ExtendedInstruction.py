@@ -43,7 +43,6 @@ class ExtendedInstruction(BaseInstruction):
                                              response=response, value=value)
         self.samples.append(sample)
 
-    # noinspection PyMethodOverriding
     def _create_sample(self, context_snippets: list[Snippet], response: str,
                        value: int | float | list[int | float] | None = None) -> Sample:
         """Creates a sample ExtendedInstruction string for example usages."""
