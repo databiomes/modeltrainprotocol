@@ -100,12 +100,6 @@ class BaseInstruction(ABC):
         all_tokens.append(self.final)
         return all_tokens
 
-    def contains_user(self) -> bool:
-        """
-        Returns True if the response contains a user token, else False
-        """
-        return self.response.is_user
-
     def serialize_samples(self) -> list[dict]:
         """Serializes the Instruction samples"""
         serialized_samples: list[dict] = []

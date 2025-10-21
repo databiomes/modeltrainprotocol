@@ -3,7 +3,7 @@ Instructions
 
 Instructions define how the model should respond to different input patterns. There are two main types of instructions.
 
-SimpleInstruction
+Instruction
 -----------------
 
 For scenarios where the model responds without user input.
@@ -25,7 +25,7 @@ Creating SimpleInstructions
    cat_grinning = mtp.TokenSet(tokens=(tree, cat, grin))
 
    # Create a simple instruction for the Cat's internal thoughts
-   instruction = mtp.SimpleInstruction(
+   instruction = mtp.Instruction(
        context=[cat_pondering],
        response=cat_grinning,
        final=disappear
@@ -55,7 +55,7 @@ Adding Samples to SimpleInstructions
        output_snippet=sample_output
    )
 
-UserInstruction
+ExtendedInstruction
 ---------------
 
 For scenarios where the model responds to user prompts.
@@ -77,7 +77,7 @@ Creating UserInstructions
    cat_talk = mtp.TokenSet(tokens=(tree, cat, talk))
 
    # Create a user instruction for Alice asking the Cat questions
-   user_instruction = mtp.UserInstruction(
+   user_instruction = mtp.ExtendedInstruction(
        context=[alice_talk],
        user=alice_talk,  # Must contain at least one UserToken
        final=disappear
@@ -121,7 +121,7 @@ Conversational Patterns
    conversation_context = mtp.TokenSet(tokens=(speaker, context))
    conversation_response = mtp.TokenSet(tokens=(responder, response))
 
-   conversation_instruction = mtp.SimpleInstruction(
+   conversation_instruction = mtp.Instruction(
        context=[conversation_context],
        response=conversation_response,
        final=mtp.Token("Continue")
@@ -136,7 +136,7 @@ Question-Answer Patterns
    question_context = mtp.TokenSet(tokens=(question, context))
    answer_response = mtp.TokenSet(tokens=(answer, response))
 
-   qa_instruction = mtp.SimpleInstruction(
+   qa_instruction = mtp.Instruction(
        context=[question_context],
        response=answer_response,
        final=mtp.Token("Complete")
@@ -151,7 +151,7 @@ Interactive Patterns
    user_context = mtp.TokenSet(tokens=(user, context))
    system_response = mtp.TokenSet(tokens=(system, response))
 
-   interactive_instruction = mtp.UserInstruction(
+   interactive_instruction = mtp.ExtendedInstruction(
        context=[user_context],
        user=user_context,
        final=mtp.Token("Respond")
@@ -169,7 +169,7 @@ Complex instructions with multiple context steps:
    step2_context = mtp.TokenSet(tokens=(step2, context))
    final_response = mtp.TokenSet(tokens=(final, response))
 
-   multi_step_instruction = mtp.SimpleInstruction(
+   multi_step_instruction = mtp.Instruction(
        context=[step1_context, step2_context],
        response=final_response,
        final=mtp.Token("Complete")
@@ -186,7 +186,7 @@ Instructions that depend on specific conditions:
    condition_context = mtp.TokenSet(tokens=(condition, context))
    conditional_response = mtp.TokenSet(tokens=(conditional, response))
 
-   conditional_instruction = mtp.SimpleInstruction(
+   conditional_instruction = mtp.Instruction(
        context=[condition_context],
        response=conditional_response,
        final=mtp.Token("Conditional")
@@ -224,7 +224,7 @@ Educational Instructions
    lesson_context = mtp.TokenSet(tokens=(lesson, topic, level))
    explanation_response = mtp.TokenSet(tokens=(explanation, detail, example))
 
-   educational_instruction = mtp.SimpleInstruction(
+   educational_instruction = mtp.Instruction(
        context=[lesson_context],
        response=explanation_response,
        final=mtp.Token("Learned")
@@ -239,7 +239,7 @@ Creative Instructions
    creative_context = mtp.TokenSet(tokens=(creative, prompt, style))
    creative_response = mtp.TokenSet(tokens=(creative, output, result))
 
-   creative_instruction = mtp.SimpleInstruction(
+   creative_instruction = mtp.Instruction(
        context=[creative_context],
        response=creative_response,
        final=mtp.Token("Created")
@@ -254,7 +254,7 @@ Analytical Instructions
    analysis_context = mtp.TokenSet(tokens=(analysis, data, method))
    analysis_response = mtp.TokenSet(tokens=(analysis, result, conclusion))
 
-   analytical_instruction = mtp.SimpleInstruction(
+   analytical_instruction = mtp.Instruction(
        context=[analysis_context],
        response=analysis_response,
        final=mtp.Token("Analyzed")
@@ -274,7 +274,7 @@ Instructions that adapt based on input:
    dynamic_context = mtp.TokenSet(tokens=(dynamic, context, condition))
    dynamic_response = mtp.TokenSet(tokens=(dynamic, response, adaptation))
 
-   dynamic_instruction = mtp.SimpleInstruction(
+   dynamic_instruction = mtp.Instruction(
        context=[dynamic_context],
        response=dynamic_response,
        final=mtp.Token("Adapted")
@@ -292,7 +292,7 @@ Instructions with nested or hierarchical structures:
    child_context = mtp.TokenSet(tokens=(child, context, parent))
    hierarchical_response = mtp.TokenSet(tokens=(hierarchical, response, level))
 
-   hierarchical_instruction = mtp.SimpleInstruction(
+   hierarchical_instruction = mtp.Instruction(
        context=[parent_context, child_context],
        response=hierarchical_response,
        final=mtp.Token("Hierarchical")

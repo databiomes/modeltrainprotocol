@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Collection
 
-from model_train_protocol import NumToken, SimpleInstruction, UserInstruction
+from model_train_protocol import NumToken, Instruction, ExtendedInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 
@@ -108,10 +108,10 @@ class TemplateFile:
         Creates a simple instruction example and a user instruction example if available.
         """
         examples: dict[str, str] = dict()
-        simple_instruction: SimpleInstruction = next(
-            (i for i in self.instructions if isinstance(i, SimpleInstruction)), None)
-        user_instruction: UserInstruction = next(
-            (i for i in self.instructions if isinstance(i, UserInstruction)), None)
+        simple_instruction: Instruction = next(
+            (i for i in self.instructions if isinstance(i, Instruction)), None)
+        user_instruction: ExtendedInstruction = next(
+            (i for i in self.instructions if isinstance(i, ExtendedInstruction)), None)
 
         if simple_instruction:
             simple_input: str = ""

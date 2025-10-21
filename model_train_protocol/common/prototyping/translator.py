@@ -1,5 +1,5 @@
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel
-from ... import Protocol, SimpleInstruction, Token, TokenSet, Snippet
+from ... import Protocol, Instruction, Token, TokenSet, Snippet
 
 
 def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = None,
@@ -35,7 +35,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
         # response_tokenset: TokenSet = create_token_set_from_token_model_array(instruction_set.response_tokens)
         # final: Token = create_sanitized_token_from_model(prototype_mtp.final_token)
 
-        simple_instruction: SimpleInstruction = SimpleInstruction(
+        simple_instruction: Instruction = Instruction(
             context=[context_tokenset, prompt_tokenset], response=response_tokenset, final=final
         )
 

@@ -49,108 +49,99 @@ tree_english_disappear_cat_talk: mtp.TokenSet = mtp.TokenSet(
     tokens=(token_tree, token_english, token_vanish, token_cat, token_talk))
 
 # -------------------- Instruction Set: Continue --------------------
-alice_cat_alice_instruction_continue: mtp.UserInstruction = mtp.UserInstruction(
-    context=(tree_english_alice_talk, tree_english_cat_talk),
-    user=tree_english_alice_talk,
+alice_cat_alice_instruction_continue: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
+    context=[tree_english_alice_talk, tree_english_cat_talk, tree_english_alice_talk],
     final=token_continue
 )
 
 # 1st Sample
-sample_1_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="I don’t much care where")
+sample_1_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="I don't much care where")
 sample_1_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(string="Then it doesnt matter which way you go.")
-sample_1_prompt: str = "Can you tell me a way?"
-sample_1_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Oh sure, if you only walk long enough that is a way.")
+sample_1_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="Can you tell me a way?")
+sample_1_response: str = "Oh sure, if you only walk long enough that is a way."
 
 alice_cat_alice_instruction_continue.add_sample(
-    context_snippets=[sample_1_context_1, sample_1_context_2],
-    prompt=sample_1_prompt,
-    output_snippet=sample_1_output,
+    context_snippets=[sample_1_context_1, sample_1_context_2, sample_1_context_3],
+    response=sample_1_response,
 )
 
 # 2nd Sample
-sample_2_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="But I don’t want to go among mad people")
+sample_2_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="But I don't want to go among mad people")
 sample_2_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(
     string="Oh, you cant help that, were all mad here. Im mad. You are mad.")
-sample_2_prompt: str = "How do you know I am mad?"
-sample_2_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="You must be, or you would not have come here.")
+sample_2_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="How do you know I am mad?")
+sample_2_response: str = "You must be, or you would not have come here."
 
 alice_cat_alice_instruction_continue.add_sample(
-    context_snippets=[sample_2_context_1, sample_2_context_2],
-    prompt=sample_2_prompt,
-    output_snippet=sample_2_output,
+    context_snippets=[sample_2_context_1, sample_2_context_2, sample_2_context_3],
+    response=sample_2_response,
 )
 
 # 3rd Sample
-sample_3_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="And how do you know that you’re mad?")
+sample_3_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="And how do you know that you're mad?")
 sample_3_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(
     string="To begin with, a dogs not mad. You grant that?")
-sample_3_prompt: str = "I suppose so"
-sample_3_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased.")
+sample_3_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="I suppose so")
+sample_3_response: str = "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
 
 alice_cat_alice_instruction_continue.add_sample(
-    context_snippets=[sample_3_context_1, sample_3_context_2],
-    prompt=sample_3_prompt,
-    output_snippet=sample_3_output,
+    context_snippets=[sample_3_context_1, sample_3_context_2, sample_3_context_3],
+    response=sample_3_response,
 )
 protocol.add_instruction(alice_cat_alice_instruction_continue)
 
 # -------------------- Instruction Set: Appear --------------------
-alice_disappear_cat_alice_instruction_appear: mtp.UserInstruction = mtp.UserInstruction(
-    context=(tree_english_alice_talk, tree_english_disappear_cat_talk),
-    user=tree_english_alice_talk,
+alice_disappear_cat_alice_instruction_appear: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
+    context=[tree_english_alice_talk, tree_english_disappear_cat_talk, tree_english_alice_talk],
     final=token_appear
 )
 
 # 1st Sample
-sample_4_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="I don’t much care where")
+sample_4_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="I don't much care where")
 sample_4_context_2: mtp.Snippet = tree_english_disappear_cat_talk.create_snippet(
     string="Then it doesnt matter which way you go.")
-sample_4_prompt: str = "Can you tell me a way?"
-sample_4_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Oh sure, if you only walk long enough that is a way.")
+sample_4_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="Can you tell me a way?")
+sample_4_response: str = "Oh sure, if you only walk long enough that is a way."
 
 alice_disappear_cat_alice_instruction_appear.add_sample(
-    context_snippets=[sample_4_context_1, sample_4_context_2],
-    prompt=sample_4_prompt,
-    output_snippet=sample_4_output
+    context_snippets=[sample_4_context_1, sample_4_context_2, sample_4_context_3],
+    response=sample_4_response,
 )
 
 # 2nd Sample
-sample_5_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="But I don’t want to go among mad people")
+sample_5_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="But I don't want to go among mad people")
 sample_5_context_2: mtp.Snippet = tree_english_disappear_cat_talk.create_snippet(
     string="Oh, you cant help that, were all mad here. Im mad. You are mad.")
-sample_5_prompt: str = "How do you know I am mad?"
-sample_5_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="You must be, or you would not have come here.")
+sample_5_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="How do you know I am mad?")
+sample_5_response: str = "You must be, or you would not have come here."
 
 alice_disappear_cat_alice_instruction_appear.add_sample(
-    context_snippets=[sample_5_context_1, sample_5_context_2],
-    prompt=sample_5_prompt,
-    output_snippet=sample_5_output
+    context_snippets=[sample_5_context_1, sample_5_context_2, sample_5_context_3],
+    response=sample_5_response,
 )
 
 # 3rd Sample
-sample_6_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="And how do you know that you’re mad?")
+sample_6_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="And how do you know that you're mad?")
 sample_6_context_2: mtp.Snippet = tree_english_disappear_cat_talk.create_snippet(
     string="To begin with, a dogs not mad. You grant that?")
-sample_6_prompt: str = "I suppose so"
-sample_6_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased.")
+sample_6_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="I suppose so")
+sample_6_response: str = "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
 
 alice_disappear_cat_alice_instruction_appear.add_sample(
-    context_snippets=[sample_6_context_1, sample_6_context_2],
-    prompt=sample_6_prompt,
-    output_snippet=sample_6_output
+    context_snippets=[sample_6_context_1, sample_6_context_2, sample_6_context_3],
+    response=sample_6_response,
 )
 protocol.add_instruction(alice_disappear_cat_alice_instruction_appear)
 
 # -------------------- Instruction Set: Disappear --------------------
-alice_cat_alice_instruction_disappear: mtp.UserInstruction = mtp.UserInstruction(
-    context=(tree_english_alice_talk, tree_english_cat_talk),
-    user=tree_english_alice_talk,
+alice_cat_alice_instruction_disappear: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
+    context=[tree_english_alice_talk, tree_english_cat_talk, tree_english_alice_talk],
     final=token_vanish
 )
 
@@ -158,30 +149,28 @@ alice_cat_alice_instruction_disappear: mtp.UserInstruction = mtp.UserInstruction
 sample_7_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
     string="Why do you keep vanishing and reappearing so suddenly?")
 sample_7_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Because it amuses me, and it keeps you wondering whether I’m truly here at all.")
-sample_7_prompt: str = "It makes me nervous, please stop."
-sample_7_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Then I’ll do it twice as much, since nervousness is such a curious flavor.")
+    string="Because it amuses me, and it keeps you wondering whether I'm truly here at all.")
+sample_7_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="It makes me nervous, please stop.")
+sample_7_response: str = "Then I'll do it twice as much, since nervousness is such a curious flavor."
 
 alice_cat_alice_instruction_disappear.add_sample(
-    context_snippets=[sample_7_context_1, sample_7_context_2],
-    prompt=sample_7_prompt,
-    output_snippet=sample_7_output
+    context_snippets=[sample_7_context_1, sample_7_context_2, sample_7_context_3],
+    response=sample_7_response,
 )
 
 # 2nd Sample
 sample_8_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
     string="Everyone here seems so very mad—are you mad too?")
 sample_8_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Of course I am, or else I wouldn’t be here among them.")
-sample_8_prompt: str = "But how do you know that you’re mad?"
-sample_8_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Because I purr when I’m pleased and grin when I’m angry, surely that’s not quite sane.")
+    string="Of course I am, or else I wouldn't be here among them.")
+sample_8_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="But how do you know that you're mad?")
+sample_8_response: str = "Because I purr when I'm pleased and grin when I'm angry, surely that's not quite sane."
 
 alice_cat_alice_instruction_disappear.add_sample(
-    context_snippets=[sample_8_context_1, sample_8_context_2],
-    prompt=sample_8_prompt,
-    output_snippet=sample_8_output
+    context_snippets=[sample_8_context_1, sample_8_context_2, sample_8_context_3],
+    response=sample_8_response,
 )
 
 # 3rd Sample
@@ -189,21 +178,19 @@ sample_9_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
     string="Must you always speak in riddles? I only want a straight answer.")
 sample_9_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(
     string="But riddles are straighter than answers, if you know how to look at them.")
-sample_9_prompt: str = "That does not make sense at all."
-sample_9_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="All the better, then—nonsense is safer than truth.")
+sample_9_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="That does not make sense at all.")
+sample_9_response: str = "All the better, then—nonsense is safer than truth."
 
 alice_cat_alice_instruction_disappear.add_sample(
-    context_snippets=[sample_9_context_1, sample_9_context_2],
-    prompt=sample_9_prompt,
-    output_snippet=sample_9_output
+    context_snippets=[sample_9_context_1, sample_9_context_2, sample_9_context_3],
+    response=sample_9_response,
 )
 protocol.add_instruction(alice_cat_alice_instruction_disappear)
 
 # -------------------- Instruction Set: Answer --------------------
-alice_cat_alice_instruction_answer: mtp.UserInstruction = mtp.UserInstruction(
-    context=(tree_english_alice_talk, tree_english_cat_talk),
-    user=tree_english_alice_talk,
+alice_cat_alice_instruction_answer: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
+    context=[tree_english_alice_talk, tree_english_cat_talk, tree_english_alice_talk],
     final=token_answer
 )
 
@@ -211,49 +198,45 @@ alice_cat_alice_instruction_answer: mtp.UserInstruction = mtp.UserInstruction(
 sample_10_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
     string="Could you tell me where the tea party is being held?")
 sample_10_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Why, it’s right here—has been all along, though you didn’t notice.")
-sample_10_prompt: str = "Here? But there’s no table, no cups, no cakes at all!"
-sample_10_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Look again, dear—sometimes the party begins only when you decide to sit down.")
+    string="Why, it's right here—has been all along, though you didn't notice.")
+sample_10_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="Here? But there's no table, no cups, no cakes at all!")
+sample_10_response: str = "Look again, dear—sometimes the party begins only when you decide to sit down."
 
 alice_cat_alice_instruction_answer.add_sample(
-    context_snippets=[sample_10_context_1, sample_10_context_2],
-    prompt=sample_10_prompt,
-    output_snippet=sample_10_output
+    context_snippets=[sample_10_context_1, sample_10_context_2, sample_10_context_3],
+    response=sample_10_response,
 )
 
 # 2nd Sample
 sample_11_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="I’ve been searching but I can’t seem to find where to go.")
-sample_11_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(string="That’s because you’re already here Alice.")
-sample_11_prompt: str = "I am lost. All I see is you and fog"
-sample_11_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="It is never where you ought to be, only where you happen to be.")
+    string="I've been searching but I can't seem to find where to go.")
+sample_11_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(string="That's because you're already here Alice.")
+sample_11_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="I am lost. All I see is you and fog")
+sample_11_response: str = "It is never where you ought to be, only where you happen to be."
 
 alice_cat_alice_instruction_answer.add_sample(
-    context_snippets=[sample_11_context_1, sample_11_context_2],
-    prompt=sample_11_prompt,
-    output_snippet=sample_11_output
+    context_snippets=[sample_11_context_1, sample_11_context_2, sample_11_context_3],
+    response=sample_11_response,
 )
 
 # 3rd Sample
 sample_12_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(string="Where are we?")
 sample_12_context_2: mtp.Snippet = tree_english_cat_talk.create_snippet(string="Why we are in wonderland my dear.")
-sample_12_prompt: str = "But I don't see a single teapot!"
-sample_12_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Ah, but teapots appear once the company agrees to pour.")
+sample_12_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="But I don't see a single teapot!")
+sample_12_response: str = "Ah, but teapots appear once the company agrees to pour."
 
 alice_cat_alice_instruction_answer.add_sample(
-    context_snippets=[sample_12_context_1, sample_12_context_2],
-    prompt=sample_12_prompt,
-    output_snippet=sample_12_output
+    context_snippets=[sample_12_context_1, sample_12_context_2, sample_12_context_3],
+    response=sample_12_response,
 )
 protocol.add_instruction(alice_cat_alice_instruction_answer)
 
 # -------------------- Instruction Set: Leave --------------------
-alice_disappear_cat_alice_instruction_leave: mtp.UserInstruction = mtp.UserInstruction(
-    context=(tree_english_alice_talk, tree_english_disappear_cat_talk),
-    user=tree_english_alice_talk,
+alice_disappear_cat_alice_instruction_leave: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
+    context=[tree_english_alice_talk, tree_english_disappear_cat_talk, tree_english_alice_talk],
     final=token_leave
 )
 
@@ -262,42 +245,41 @@ sample_13_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
     string="Do you ever stay in one place, or are you always drifting about?")
 sample_13_context_2: mtp.Snippet = tree_english_disappear_cat_talk.create_snippet(
     string="I stay wherever I please, which is nowhere for very long.")
-sample_13_prompt: str = "But I was hoping you might keep me company a bit longer."
-sample_13_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Companionship is a heavy coat, and I prefer to travel light.")
+sample_13_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="But I was hoping you might keep me company a bit longer.")
+sample_13_response: str = "Companionship is a heavy coat, and I prefer to travel light."
 
 alice_disappear_cat_alice_instruction_leave.add_sample(
-    context_snippets=[sample_13_context_1, sample_13_context_2],
-    prompt=sample_13_prompt,
-    output_snippet=sample_13_output
+    context_snippets=[sample_13_context_1, sample_13_context_2, sample_13_context_3],
+    response=sample_13_response,
 )
 
 # 2nd Sample
 sample_14_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Why do you grin so when there’s nothing funny at all?")
+    string="Why do you grin so when there's nothing funny at all?")
 sample_14_context_2: mtp.Snippet = tree_english_disappear_cat_talk.create_snippet(
     string="Because grinning is my way of keeping secrets from slipping out.")
-sample_14_prompt: str = "That seems rather suspicious"
-sample_14_output: mtp.Snippet = tree_english_alice_talk.create_snippet(string="Then I shall go before you ask too much.")
+sample_14_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="That seems rather suspicious")
+sample_14_response: str = "Then I shall go before you ask too much."
 
 alice_disappear_cat_alice_instruction_leave.add_sample(
-    context_snippets=[sample_14_context_1, sample_14_context_2],
-    prompt=sample_14_prompt,
-    output_snippet=sample_14_output
+    context_snippets=[sample_14_context_1, sample_14_context_2, sample_14_context_3],
+    response=sample_14_response,
 )
 
 # 3rd Sample
 sample_15_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Could you tell me if I’m going the right way?")
+    string="Could you tell me if I'm going the right way?")
 sample_15_context_2: mtp.Snippet = tree_english_disappear_cat_talk.create_snippet(
-    string="Every way is right if you don’t know your destination.")
-sample_15_prompt: str = "But that doesn’t help me at all!"
-sample_15_output: mtp.Snippet = tree_english_alice_talk.create_snippet(string="Then I’ve said enough.")
+    string="Every way is right if you don't know your destination.")
+sample_15_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="But that doesn't help me at all!")
+sample_15_response: str = "Then I've said enough."
 
 alice_disappear_cat_alice_instruction_leave.add_sample(
-    context_snippets=[sample_15_context_1, sample_15_context_2],
-    prompt=sample_15_prompt,
-    output_snippet=sample_15_output
+    context_snippets=[sample_15_context_1, sample_15_context_2, sample_15_context_3],
+    response=sample_15_response,
 )
 protocol.add_instruction(alice_disappear_cat_alice_instruction_leave)
 
@@ -322,54 +304,50 @@ tree_english_cat_talk_coordinates: mtp.TokenSet = mtp.TokenSet(tokens=(token_tre
 tree_english_alice_talk_emotion: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_alice, token_talk, emotion))
 
 # -------------------- Instruction Set: Continue --------------------
-alice_cat_alice_instruction_numbers_continue: mtp.UserInstruction = mtp.UserInstruction(
-    context=(tree_english_alice_talk_emotion, tree_english_cat_talk_coordinates),
-    user=tree_english_alice_talk,
+alice_cat_alice_instruction_numbers_continue: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
+    context=[tree_english_alice_talk_emotion, tree_english_cat_talk_coordinates, tree_english_alice_talk],
     final=token_continue
 )
 
 # 1st Sample
 sample_16_context_1: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
-    string="I don’t much care where", numbers=5)
+    string="I don't much care where", numbers=5)
 sample_16_context_2: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
     string="Then it doesnt matter which way you go.", number_lists=[100, 200, -50])
-sample_16_prompt: str = "Can you tell me a way?"
-sample_16_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Oh sure, if you only walk long enough that is a way.")
+sample_16_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="Can you tell me a way?")
+sample_16_response: str = "Oh sure, if you only walk long enough that is a way."
 
 alice_cat_alice_instruction_numbers_continue.add_sample(
-    context_snippets=[sample_16_context_1, sample_16_context_2],
-    prompt=sample_16_prompt,
-    output_snippet=sample_16_output,
+    context_snippets=[sample_16_context_1, sample_16_context_2, sample_16_context_3],
+    response=sample_16_response,
 )
 
 # 2nd Sample
 sample_17_context_1: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
-    string="But I don’t want to go among mad people", numbers=7)
+    string="But I don't want to go among mad people", numbers=7)
 sample_17_context_2: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
     string="Oh, you cant help that, were all mad here. Im mad. You are mad.", number_lists=[0, -300, 150])
-sample_17_prompt: str = "How do you know I am mad?"
-sample_17_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="You must be, or you would not have come here.")
+sample_17_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="How do you know I am mad?")
+sample_17_response: str = "You must be, or you would not have come here."
 
 alice_cat_alice_instruction_numbers_continue.add_sample(
-    context_snippets=[sample_17_context_1, sample_17_context_2],
-    prompt=sample_17_prompt,
-    output_snippet=sample_17_output,
+    context_snippets=[sample_17_context_1, sample_17_context_2, sample_17_context_3],
+    response=sample_17_response,
 )
 
 # 3rd Sample
 sample_18_context_1: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
-    string="And how do you know that you’re mad?", numbers=6)
+    string="And how do you know that you're mad?", numbers=6)
 sample_18_context_2: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
     string="To begin with, a dogs not mad. You grant that?", number_lists=[250, 0, -100])
-sample_18_prompt: str = "I suppose so"
-sample_18_output: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased.")
+sample_18_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
+    string="I suppose so")
+sample_18_response: str = "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
 alice_cat_alice_instruction_numbers_continue.add_sample(
-    context_snippets=[sample_18_context_1, sample_18_context_2],
-    prompt=sample_18_prompt,
-    output_snippet=sample_18_output,
+    context_snippets=[sample_18_context_1, sample_18_context_2, sample_18_context_3],
+    response=sample_18_response,
 )
 
 protocol.add_instruction(alice_cat_alice_instruction_numbers_continue)

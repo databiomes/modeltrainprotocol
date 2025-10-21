@@ -6,26 +6,25 @@ from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 
 
-class SimpleInstruction(BaseInstruction):
+class Instruction(BaseInstruction):
     """
-    A SimpleInstruction is an instruction without a user prompt.
+    Instructions are provided to the model to guide its behavior.
+
+    It includes context Tokens that define the input structure and a response TokenSet that defines the expected output.
 
     Samples must be added to the Instruction to provide context for the model.
     A minimum of 3 samples must be added to an Instruction.
     """
 
     def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token = NON_TOKEN):
-        """
+        f"""
         Initializes an Instruction instance.
 
         :param context: List of tuples containing Token instances that define the input structure. This precedes the model's response.
         :param response: A TokenSet instance that does not include any user tokens.
-        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken.
+        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken designated {NON_TOKEN.value}.
         """
         super().__init__(context=context, response=response, final=final)
-        if self.contains_user():
-            raise ValueError(
-                "SimpleInstruction requires that the response does not contain a UserToken. Use UserInstruction for user inputs.")
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,

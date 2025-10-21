@@ -3,15 +3,15 @@ Protocol workflow instruction fixtures with 2 context lines.
 """
 import pytest
 
-from model_train_protocol import SimpleInstruction, UserInstruction
+from model_train_protocol import Instruction, ExtendedInstruction
 
 
 @pytest.fixture
 def simple_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample,
                                              simple_response_sample, token_workflow_result,
-                                             content_guardrail) -> SimpleInstruction:
+                                             content_guardrail) -> Instruction:
     """Simple instruction with 2 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_tokenset, user_tokenset],
         response=simple_tokenset,
         final=token_workflow_result
@@ -39,7 +39,7 @@ def simple_workflow_instruction_with_samples(simple_tokenset, user_tokenset, sim
 
 @pytest.fixture
 def simple_workflow_instruction_with_samples_with_guardrail(simple_workflow_instruction_with_samples,
-                                                            content_guardrail) -> SimpleInstruction:
+                                                            content_guardrail) -> Instruction:
     """Simple instruction with 2 context lines for workflow tests."""
     instruction = simple_workflow_instruction_with_samples
     # Set guardrail on the user tokenset
@@ -51,9 +51,9 @@ def simple_workflow_instruction_with_samples_with_guardrail(simple_workflow_inst
 @pytest.fixture
 def user_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample,
                                            user_response_sample, token_workflow_end,
-                                           safety_guardrail) -> UserInstruction:
+                                           safety_guardrail) -> ExtendedInstruction:
     """User instruction with 2 context lines for workflow tests."""
-    instruction = UserInstruction(
+    instruction = ExtendedInstruction(
         context=[simple_tokenset, user_tokenset],
         user=user_tokenset,
         final=token_workflow_end
@@ -62,19 +62,19 @@ def user_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simpl
     # Add samples with 2 context snippets - one from each tokenset
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        prompt="User prompt 0",
+        response="User prompt 0",
         output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        prompt="User prompt 1",
+        response="User prompt 1",
         output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        prompt="User prompt 2",
+        response="User prompt 2",
         output_snippet=user_response_sample,
         value=None
     )
@@ -84,7 +84,7 @@ def user_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simpl
 
 @pytest.fixture
 def user_workflow_instruction_with_samples_and_guardrail(user_workflow_instruction_with_samples,
-                                                        safety_guardrail) -> UserInstruction:
+                                                        safety_guardrail) -> ExtendedInstruction:
     """User instruction with guardrail for workflow tests."""
     instruction = user_workflow_instruction_with_samples
     # Set guardrail on the user tokenset
@@ -96,12 +96,12 @@ def user_workflow_instruction_with_samples_and_guardrail(user_workflow_instructi
 def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, user_tokenset,
                                                       simple_numtoken_context_sample, user_context_sample,
                                                       simple_numtoken_response_sample, token_workflow_count,
-                                                      content_guardrail) -> SimpleInstruction:
+                                                      content_guardrail) -> Instruction:
     """Simple instruction with NumToken and 2 context lines for workflow tests."""
     # Set guardrail on the user tokenset
     user_tokenset.set_guardrail(content_guardrail)
 
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_numtoken_tokenset, user_tokenset],
         response=simple_numtoken_tokenset,
         final=token_workflow_count
@@ -131,9 +131,9 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
 def simple_numlisttoken_workflow_instruction_with_samples(
         simple_numlisttoken_tokenset, user_tokenset, simple_numlisttoken_context_sample, user_context_sample,
         simple_numlisttoken_response_sample, token_workflow_coordinates, safety_guardrail
-) -> SimpleInstruction:
+) -> Instruction:
     """Simple NumListToken instruction with 2 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_numlisttoken_tokenset, user_tokenset],
         response=simple_numlisttoken_tokenset,
         final=token_workflow_coordinates

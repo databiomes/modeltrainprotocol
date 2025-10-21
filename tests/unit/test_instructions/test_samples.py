@@ -6,7 +6,7 @@ Tests error handling when values are not provided or wrong types are provided.
 import pytest
 from model_train_protocol.common.tokens import Token, NumToken, NumListToken, UserToken
 from model_train_protocol.common.tokens import TokenSet
-from model_train_protocol.common.instructions import SimpleInstruction, UserInstruction
+from model_train_protocol.common.instructions import Instruction, ExtendedInstruction
 
 
 class TestSampleValueValidation:
@@ -15,7 +15,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_missing_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token raises error when value is not provided."""
         num_token = NumToken("Count", min_value=1, max_value=10)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=num_token
@@ -35,7 +35,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_wrong_type_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token raises error when value is wrong type."""
         num_token = NumToken("Count", min_value=1, max_value=10)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=num_token
@@ -55,7 +55,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_none_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token raises error when value is None."""
         num_token = NumToken("Count", min_value=1, max_value=10)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=num_token
@@ -75,7 +75,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_valid_numeric_value_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token accepts valid numeric value."""
         num_token = NumToken("Count", min_value=1, max_value=10)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=num_token
@@ -95,7 +95,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_missing_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token raises error when value is not provided."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -115,7 +115,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_wrong_type_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token raises error when value is wrong type."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -135,7 +135,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_none_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token raises error when value is None."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -155,7 +155,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_valid_list_value_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token accepts valid list value."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -175,7 +175,7 @@ class TestSampleValueValidation:
     def test_regular_token_result_none_value_allowed(self, simple_tokenset, user_tokenset):
         """Test that regular Token result token allows None value."""
         regular_token = Token("Result")
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=regular_token
@@ -195,7 +195,7 @@ class TestSampleValueValidation:
     def test_user_token_result_none_value_allowed(self, simple_tokenset, user_tokenset):
         """Test that UserToken result token allows None value."""
         user_token = UserToken("User")
-        instruction = UserInstruction(
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=user_token
@@ -208,7 +208,7 @@ class TestSampleValueValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            prompt="User prompt",
+            response="User prompt",
             output_snippet=output_snippet,
             value=None  # None value allowed for user tokens
         )
@@ -216,7 +216,7 @@ class TestSampleValueValidation:
     def test_regular_token_result_non_none_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that regular Token result token raises error when value is not None."""
         regular_token = Token("Result")
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=regular_token
@@ -236,7 +236,7 @@ class TestSampleValueValidation:
     def test_user_token_result_non_none_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that UserToken result token raises error when value is not None."""
         user_token = UserToken("User")
-        instruction = UserInstruction(
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=user_token
@@ -249,7 +249,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                prompt="User prompt",
+                response="User prompt",
                 output_snippet=output_snippet,
                 value="some_value"  # Non-None value not allowed for user tokens
             )
@@ -257,7 +257,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_list_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token raises error when value is a list."""
         num_token = NumToken("Count", min_value=1, max_value=10)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=num_token
@@ -278,7 +278,7 @@ class TestSampleValueValidation:
         """Test that NumListToken result token raises error when value is a NumToken."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
         num_token = NumToken("Count", min_value=1, max_value=10)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -298,7 +298,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_dict_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token raises error when value is a dict."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -318,7 +318,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_boolean_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token raises error when value is a boolean."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -338,7 +338,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_empty_list_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token accepts empty list."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=1)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -358,7 +358,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_single_element_list_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token accepts single element list."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=1)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -378,7 +378,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_multi_element_list_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token accepts multi-element list."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=5)
-        instruction = SimpleInstruction(
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -402,7 +402,7 @@ class TestSampleValueValidation:
         regular_token = Token("Result")
         
         # Test with NumToken
-        instruction1 = SimpleInstruction(
+        instruction1 = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=num_token
@@ -421,7 +421,7 @@ class TestSampleValueValidation:
             )
         
         # Test with NumListToken
-        instruction2 = SimpleInstruction(
+        instruction2 = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=numlist_token
@@ -436,7 +436,7 @@ class TestSampleValueValidation:
             )
         
         # Test with regular Token
-        instruction3 = SimpleInstruction(
+        instruction3 = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=regular_token
@@ -462,8 +462,8 @@ class TestInstructionValidation:
     """Test instruction validation for add_sample method."""
 
     def test_simple_instruction_wrong_context_snippet_count_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that SimpleInstruction raises error when context snippet count doesn't match."""
-        instruction = SimpleInstruction(
+        """Test that Instruction raises error when context snippet count doesn't match."""
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=Token("Result")
@@ -480,8 +480,8 @@ class TestInstructionValidation:
             )
 
     def test_simple_instruction_wrong_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that SimpleInstruction raises error when snippet doesn't match expected token set."""
-        instruction = SimpleInstruction(
+        """Test that Instruction raises error when snippet doesn't match expected token set."""
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=Token("Result")
@@ -499,8 +499,8 @@ class TestInstructionValidation:
             )
 
     def test_simple_instruction_wrong_output_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that SimpleInstruction raises error when output snippet doesn't match response token set."""
-        instruction = SimpleInstruction(
+        """Test that Instruction raises error when output snippet doesn't match response token set."""
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=Token("Result")
@@ -518,8 +518,8 @@ class TestInstructionValidation:
             )
 
     def test_user_instruction_wrong_context_snippet_count_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that UserInstruction raises error when context snippet count doesn't match."""
-        instruction = UserInstruction(
+        """Test that ExtendedInstruction raises error when context snippet count doesn't match."""
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=Token("Result")
@@ -532,13 +532,13 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Number of context snippets \\(1\\) must match number of context token sets \\(2\\)"):
             instruction.add_sample(
                 context_snippets=[context_snippet1],  # Only 1 snippet, but need 2
-                prompt="User prompt",
+                response="User prompt",
                 output_snippet=output_snippet
             )
 
     def test_user_instruction_wrong_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that UserInstruction raises error when snippet doesn't match expected token set."""
-        instruction = UserInstruction(
+        """Test that ExtendedInstruction raises error when snippet doesn't match expected token set."""
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=Token("Result")
@@ -553,13 +553,13 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Snippet f.* does not match expected token set"):
             instruction.add_sample(
                 context_snippets=[wrong_snippet, context_snippet2],  # First snippet has wrong token set
-                prompt="User prompt",
+                response="User prompt",
                 output_snippet=output_snippet
             )
 
     def test_user_instruction_wrong_output_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that UserInstruction raises error when output snippet doesn't match user token set."""
-        instruction = UserInstruction(
+        """Test that ExtendedInstruction raises error when output snippet doesn't match user token set."""
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=Token("Result")
@@ -573,13 +573,13 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Snippet f.* does not match expected token set"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                prompt="User prompt",
+                response="User prompt",
                 output_snippet=wrong_output_snippet  # Wrong token set for output
             )
 
     def test_user_instruction_missing_prompt_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that UserInstruction raises error when prompt is missing."""
-        instruction = UserInstruction(
+        """Test that ExtendedInstruction raises error when prompt is missing."""
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=Token("Result")
@@ -597,8 +597,8 @@ class TestInstructionValidation:
             )
 
     def test_user_instruction_invalid_value_type_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that UserInstruction raises error when value is not int or float."""
-        instruction = UserInstruction(
+        """Test that ExtendedInstruction raises error when value is not int or float."""
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=Token("Result")
@@ -611,14 +611,14 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                prompt="User prompt",
+                response="User prompt",
                 output_snippet=output_snippet,
-                value="invalid_string"  # Wrong type for UserInstruction
+                value="invalid_string"  # Wrong type for ExtendedInstruction
             )
 
     def test_user_instruction_list_value_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that UserInstruction raises error when value is a list."""
-        instruction = UserInstruction(
+        """Test that ExtendedInstruction raises error when value is a list."""
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=Token("Result")
@@ -631,24 +631,24 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                prompt="User prompt",
+                response="User prompt",
                 output_snippet=output_snippet,
-                value=[1, 2, 3]  # List not allowed for UserInstruction
+                value=[1, 2, 3]  # List not allowed for ExtendedInstruction
             )
 
     def test_simple_instruction_creation_with_user_token_in_response_raises_error(self, simple_tokenset, user_tokenset):
-        """Test that SimpleInstruction raises error when created with user token in response."""
-        with pytest.raises(ValueError, match="SimpleInstruction requires that the response does not contain a UserToken"):
-            SimpleInstruction(
+        """Test that Instruction raises error when created with user token in response."""
+        with pytest.raises(ValueError, match="Instruction requires that the response does not contain a UserToken"):
+            Instruction(
                 context=[simple_tokenset],
                 response=user_tokenset,  # Contains user token
                 final=Token("Result")
             )
 
     def test_user_instruction_creation_without_user_token_raises_error(self, simple_tokenset):
-        """Test that UserInstruction raises error when created without user token."""
-        with pytest.raises(ValueError, match="UserInstruction requires a user token in the response"):
-            UserInstruction(
+        """Test that ExtendedInstruction raises error when created without user token."""
+        with pytest.raises(ValueError, match="ExtendedInstruction requires a user token in the response"):
+            ExtendedInstruction(
                 context=[simple_tokenset],
                 user=simple_tokenset,  # No user token
                 final=Token("Result")
@@ -657,7 +657,7 @@ class TestInstructionValidation:
     def test_instruction_creation_with_invalid_context_type_raises_error(self):
         """Test that Instruction raises error when context is not a sequence."""
         with pytest.raises(TypeError, match="All items in context must be instances of TokenSet"):
-            SimpleInstruction(
+            Instruction(
                 context="not_a_sequence",  # Wrong type
                 response=TokenSet(tokens=(Token("Test"),)),
                 final=Token("Result")
@@ -666,7 +666,7 @@ class TestInstructionValidation:
     def test_instruction_creation_with_invalid_context_items_raises_error(self):
         """Test that Instruction raises error when context contains non-TokenSet items."""
         with pytest.raises(TypeError, match="All items in context must be instances of TokenSet"):
-            SimpleInstruction(
+            Instruction(
                 context=[TokenSet(tokens=(Token("Test"),)), "not_a_tokenset"],  # Mixed types
                 response=TokenSet(tokens=(Token("Test"),)),
                 final=Token("Result")
@@ -675,7 +675,7 @@ class TestInstructionValidation:
     def test_instruction_creation_with_invalid_response_type_raises_error(self):
         """Test that Instruction raises error when response is not a TokenSet."""
         with pytest.raises(TypeError, match="Response must be an instance of TokenSet"):
-            SimpleInstruction(
+            Instruction(
                 context=[TokenSet(tokens=(Token("Test"),))],
                 response="not_a_tokenset",  # Wrong type
                 final=Token("Result")
@@ -684,15 +684,15 @@ class TestInstructionValidation:
     def test_instruction_creation_with_invalid_final_type_raises_error(self):
         """Test that Instruction raises error when final is not a Token."""
         with pytest.raises(TypeError, match="Final must be an instance of Token"):
-            SimpleInstruction(
+            Instruction(
                 context=[TokenSet(tokens=(Token("Test"),))],
                 response=TokenSet(tokens=(Token("Test"),)),
                 final="not_a_token"  # Wrong type
             )
 
     def test_simple_instruction_valid_sample_succeeds(self, simple_tokenset, user_tokenset):
-        """Test that SimpleInstruction accepts valid sample."""
-        instruction = SimpleInstruction(
+        """Test that Instruction accepts valid sample."""
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=Token("Result")
@@ -709,8 +709,8 @@ class TestInstructionValidation:
         )
 
     def test_user_instruction_valid_sample_succeeds(self, simple_tokenset, user_tokenset):
-        """Test that UserInstruction accepts valid sample."""
-        instruction = UserInstruction(
+        """Test that ExtendedInstruction accepts valid sample."""
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=Token("Result")
@@ -723,13 +723,13 @@ class TestInstructionValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            prompt="User prompt",
+            response="User prompt",
             output_snippet=output_snippet
         )
 
     def test_user_instruction_valid_sample_with_none_value_succeeds(self, simple_tokenset, user_tokenset):
-        """Test that UserInstruction accepts valid sample with None value."""
-        instruction = UserInstruction(
+        """Test that ExtendedInstruction accepts valid sample with None value."""
+        instruction = ExtendedInstruction(
             context=[simple_tokenset, user_tokenset],
             user=user_tokenset,
             final=Token("Result")
@@ -742,14 +742,14 @@ class TestInstructionValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            prompt="User prompt",
+            response="User prompt",
             output_snippet=output_snippet,
             value=None  # Valid None value for non-numeric final token
         )
 
     def test_simple_instruction_valid_sample_with_none_value_succeeds(self, simple_tokenset, user_tokenset):
-        """Test that SimpleInstruction accepts valid sample with None value."""
-        instruction = SimpleInstruction(
+        """Test that Instruction accepts valid sample with None value."""
+        instruction = Instruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,
             final=Token("Result")
