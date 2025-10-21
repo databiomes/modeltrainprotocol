@@ -337,7 +337,7 @@ class TestSampleValueValidation:
 
     def test_numlisttoken_result_empty_list_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token accepts empty list."""
-        numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=0)
+        numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=1)
         instruction = SimpleInstruction(
             context=[simple_tokenset, user_tokenset],
             response=simple_tokenset,

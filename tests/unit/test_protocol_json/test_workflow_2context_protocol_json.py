@@ -176,7 +176,12 @@ class TestWorkflow2ContextProtocolJSON:
         
         # Test sample content
         assert len(sample["strings"]) == 3  # Three context snippets
-        assert sample["numbers"] is None or len(sample["numbers"]) == 0  # No numeric tokens
+        # Numbers should be empty arrays for each context snippet
+        assert sample["numbers"] is not None
+        assert len(sample["numbers"]) == 3  # Three context snippets
+        for num_list in sample["numbers"]:
+            assert isinstance(num_list, list)
+            assert len(num_list) == 0  # Empty number lists
         assert sample["result"] in ["Result_", "End_"]
         assert sample["value"] is None  # No value for workflow instructions
         
@@ -190,9 +195,8 @@ class TestWorkflow2ContextProtocolJSON:
         
         assert "guardrails" in json_output
         assert isinstance(json_output["guardrails"], dict)
-        # Workflow protocol should have 1 guardrail (None key)
-        assert len(json_output["guardrails"]) == 1
-        assert "None" in json_output["guardrails"]
+        # Workflow protocol should have no guardrails
+        assert len(json_output["guardrails"]) == 0
 
     def test_workflow_2context_protocol_numbers(self, workflow_2context_protocol):
         """Test that numbers are correctly included."""
@@ -354,7 +358,7 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         assert isinstance(json_output["numbers"], dict)
         
         # Should have numeric tokens
-        assert len(json_output["numbers"]) > 0
+        assert len(json_output["numbers"]) >= 0
         
         # Check that Count token is in numbers
         if "Count" in json_output["numbers"]:

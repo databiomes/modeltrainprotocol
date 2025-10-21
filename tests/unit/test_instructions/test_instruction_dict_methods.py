@@ -68,8 +68,8 @@ class TestInstructionDictMethods:
         sample = instruction_dict['samples'][0]
         sample_dict = sample.to_dict()
         assert sample_dict['value'] == 10
-        # Check that number array is present
-        assert 'number' in sample_dict
+        # Check that numbers array is present
+        assert 'numbers' in sample_dict
 
     def test_instruction_to_dict_with_complex_token_sets(self, simple_mixed_instruction_with_samples):
         """Test instruction to_dict with complex token sets using fixtures."""

@@ -435,9 +435,9 @@ class TestSampleDictMethods:
         sample = mixed_instruction_with_samples.samples[0]
         
         sample_dict = sample.to_dict()
-        # Test that the sample has a number field with nested structure
+        # Test that the sample has a numbers field with nested structure
         assert 'numbers' in sample_dict
-        assert isinstance(sample_dict['number'], list)
+        assert isinstance(sample_dict['numbers'], list)
 
     def test_sample_to_dict_consistency(self, simple_instruction_with_samples):
         """Test that identical samples produce identical dictionaries using instruction fixtures."""
@@ -476,13 +476,13 @@ class TestSampleDictMethods:
         sample_dict = sample.to_dict()
         
         # Check all expected keys are present
-        expected_keys = {'strings', 'prompt', 'number', 'result', 'value'}
+        expected_keys = {'strings', 'prompt', 'numbers', 'number_lists', 'result', 'value'}
         assert set(sample_dict.keys()) == expected_keys
         
         # Check values match sample attributes
         assert sample_dict['strings'] == sample.strings
         assert sample_dict['prompt'] == sample.prompt
-        assert sample_dict['number'] == sample.numbers
+        assert sample_dict['numbers'] == sample.numbers
         assert sample_dict['result'] == sample.result.value
         assert sample_dict['value'] == sample.value
 
