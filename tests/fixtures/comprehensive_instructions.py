@@ -49,7 +49,7 @@ def simple_basic_instruction_with_samples(simple_basic_instruction, simple_conte
     """Basic simple instruction with samples."""
     simple_basic_instruction.add_sample(
         context_snippets=[simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     return simple_basic_instruction
@@ -70,7 +70,7 @@ def simple_numtoken_instruction_with_samples(simple_numtoken_instruction, simple
     """Simple instruction with NumToken and samples."""
     simple_numtoken_instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=10
     )
     return simple_numtoken_instruction
@@ -91,7 +91,7 @@ def simple_numlisttoken_instruction_with_samples(simple_numlisttoken_instruction
     """Simple instruction with NumListToken and samples."""
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        response_snippet=simple_numlisttoken_response_sample,
         value=[10, 20, 30]
     )
     return simple_numlisttoken_instruction
@@ -112,7 +112,7 @@ def simple_mixed_instruction_with_samples(simple_mixed_instruction, simple_mixed
     """Simple instruction with mixed numeric tokens and samples."""
     simple_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
-        output_snippet=simple_mixed_response_sample,
+        response_snippet=simple_mixed_response_sample,
         value=25.5
     )
     return simple_mixed_instruction
@@ -133,7 +133,7 @@ def simple_scores_instruction_with_samples(simple_scores_instruction, scores_con
     """Simple instruction with scores tokenset and samples."""
     simple_scores_instruction.add_sample(
         context_snippets=[scores_context_sample],
-        output_snippet=scores_response_sample,
+        response_snippet=scores_response_sample,
         value=[8, 9, 7, 10, 6]
     )
     return simple_scores_instruction
@@ -155,7 +155,7 @@ def user_basic_instruction_with_samples(user_basic_instruction, simple_context_s
     """Basic user instruction with samples."""
     user_basic_instruction.add_sample(
         context_snippets=[simple_context_sample],
-        response="What should I do?",
+        response_string="What should I do?",
         output_snippet=user_response_sample,
         value=None
     )
@@ -177,7 +177,7 @@ def user_numtoken_instruction_with_samples(user_numtoken_instruction, simple_num
     """User instruction with NumToken and samples."""
     user_numtoken_instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample],
-        response="Count the items",
+        response_string="Count the items",
         output_snippet=user_numtoken_response_sample,
         value=20
     )
@@ -199,7 +199,7 @@ def user_numlisttoken_instruction_with_samples(user_numlisttoken_instruction, si
     """User instruction with NumListToken and samples."""
     user_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
-        response="Provide coordinates",
+        response_string="Provide coordinates",
         output_snippet=user_numlisttoken_response_sample,
         value=[5, 15, 25]
     )
@@ -221,7 +221,7 @@ def user_mixed_instruction_with_samples(user_mixed_instruction, simple_mixed_con
     """User instruction with mixed numeric tokens and samples."""
     user_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
-        response="Generate mixed data",
+        response_string="Generate mixed data",
         output_snippet=user_mixed_response_sample,
         value=35.5
     )
@@ -243,7 +243,7 @@ def user_scores_instruction_with_samples(user_scores_instruction, scores_context
     """User instruction with scores tokenset and samples."""
     user_scores_instruction.add_sample(
         context_snippets=[scores_context_sample],
-        response="Rate the performance",
+        response_string="Rate the performance",
         output_snippet=user_response_sample,
         value=[6.2, 7.5, 8.0, 9.1, 5.4]
     )
@@ -294,7 +294,7 @@ def simple_instruction_with_multiple_samples(simple_tokenset, simple_context_sam
     for i in range(3):
         instruction.add_sample(
             context_snippets=[simple_context_sample],
-            output_snippet=simple_response_sample,
+            response_snippet=simple_response_sample,
             value=None
         )
     
@@ -314,7 +314,7 @@ def user_instruction_with_multiple_samples(simple_tokenset, user_tokenset, simpl
     for i in range(3):
         instruction.add_sample(
             context_snippets=[simple_context_sample],
-            response=f"User prompt {i}",
+            response_string=f"User prompt {i}",
             output_snippet=user_response_sample,
             value=None
         )

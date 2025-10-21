@@ -19,17 +19,17 @@ def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_toke
     # Add samples with 2 context snippets
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     
@@ -48,19 +48,19 @@ def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokens
     # Add samples with 2 context snippets
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        response="User prompt 0",
+        response_string="User prompt 0",
         output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        response="User prompt 1",
+        response_string="User prompt 1",
         output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        response="User prompt 2",
+        response_string="User prompt 2",
         output_snippet=user_response_sample,
         value=None
     )
@@ -80,17 +80,17 @@ def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_t
     # Add samples with 2 context snippets
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=10
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=15
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=20
     )
     
@@ -112,17 +112,17 @@ def simple_workflow_5context_instruction_with_samples(
     # Add samples with 5 context snippets
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     
@@ -143,19 +143,19 @@ def user_workflow_5context_instruction_with_samples(
     # Add samples with 5 context snippets
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        response="User prompt 0",
+        response_string="User prompt 0",
         output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        response="User prompt 1",
+        response_string="User prompt 1",
         output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        response="User prompt 2",
+        response_string="User prompt 2",
         output_snippet=user_response_sample,
         value=None
     )
@@ -177,17 +177,17 @@ def simple_numtoken_workflow_5context_instruction_with_samples(
     # Add samples with 5 context snippets
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=10
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=15
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=20
     )
     

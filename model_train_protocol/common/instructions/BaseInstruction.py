@@ -134,10 +134,10 @@ class BaseInstruction(ABC):
             memory_set.append(token_strings)
         return memory_set
 
-    def _create_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
+    def _create_sample(self, context_snippets: list[Snippet], response_snippet: Snippet,
                        value: int | float | list[int | float] | None = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
-        all_snippets: list[Snippet] = context_snippets + [output_snippet]
+        all_snippets: list[Snippet] = context_snippets + [response_snippet]
 
         # format sample
         numbers: list[list[int]] = []
@@ -150,7 +150,7 @@ class BaseInstruction(ABC):
 
         return Sample(
             context=[snippet.string for snippet in context_snippets],
-            response=output_snippet.string,
+            response=response_snippet.string,
             prompt=None,
             number=numbers,
             number_lists=number_lists,

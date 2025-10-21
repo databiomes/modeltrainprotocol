@@ -157,15 +157,15 @@ instruction = mtp.Instruction(
 ```python
 # Samples must be made on their associated TokenSets
 sample_context = cat_pondering.create_snippet(
-    string="Why do I keep vanishing and reappearing so suddenly?"
+  string="Why do I keep vanishing and reappearing so suddenly?"
 )
 sample_output = cat_grinning.create_snippet(
-    string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
+  string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
 )
 
 instruction.add_sample(
-    context_snippets=[sample_context],
-    output_snippet=sample_output
+  context_snippets=[sample_context],
+  response_snippet=sample_output
 )
 ```
 
@@ -205,16 +205,16 @@ user_instruction = mtp.ExtendedInstruction(
 ```python
 # Samples must be made on their associated TokenSets
 sample_context = alice_talk.create_snippet(
-    string="I don't much care where—"
+  string="I don't much care where—"
 )
 sample_output = cat_talk.create_snippet(
-    string="Then it doesn't matter which way you go."
+  string="Then it doesn't matter which way you go."
 )
 
 user_instruction.add_sample(
-    context_snippets=[sample_context],
-    response="Can you tell me which way I ought to go?",
-    output_snippet=sample_output
+  context_snippets=[sample_context],
+  response_string="Can you tell me which way I ought to go?",
+  response_snippet=sample_output
 )
 ```
 

@@ -71,7 +71,7 @@ class TestSimpleInstruction:
         with pytest.raises(ValueError, match="does not match expected token set"):
             instruction.add_sample(
                 context_snippets=[wrong_snippet, correct_snippet],
-                output_snippet=correct_snippet
+                response_snippet=correct_snippet
             )
     def test_wrong_number_of_snippets(self):
         """Test that creating a snippet with wrong tokenset raises an error."""
@@ -84,5 +84,5 @@ class TestSimpleInstruction:
         with pytest.raises(ValueError):
             instruction.add_sample(
                 context_snippets=[correct_snippet],
-                output_snippet=correct_snippet
+                response_snippet=correct_snippet
             )

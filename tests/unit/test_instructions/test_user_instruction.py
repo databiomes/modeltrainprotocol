@@ -71,7 +71,7 @@ class TestUserInstruction:
         with pytest.raises(ValueError, match="does not match expected token set"):
             instruction.add_sample(
                 context_snippets=[wrong_snippet, correct_snippet],
-                response="User prompt",
+                response_string="User prompt",
                 output_snippet=correct_snippet
             )
 
@@ -86,6 +86,6 @@ class TestUserInstruction:
         with pytest.raises(ValueError):
             instruction.add_sample(
                 context_snippets=[correct_snippet],
-                response="User prompt",
+                response_string="User prompt",
                 output_snippet=correct_snippet
             )

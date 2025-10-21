@@ -27,19 +27,19 @@ class Instruction(BaseInstruction):
         super().__init__(context=context, response=response, final=final)
 
     # noinspection PyMethodOverriding
-    def add_sample(self, context_snippets: list[Snippet], output_snippet: Snippet,
+    def add_sample(self, context_snippets: list[Snippet], response_snippet: Snippet,
                    value: int | float | list[int | float] | None = None):
         """
         Add a sample to the Instruction.
 
         :param context_snippets: List of context snippets that will be added to the Instruction.
-        :param output_snippet: The model's output snippet.
+        :param response_snippet: The model's response snippet.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         """
         self._assert_valid_value(value=value)
         self._assert_context_snippet_count(context_snippets=context_snippets)
-        self._validate_snippets_match(context_snippets=context_snippets, output_snippet=output_snippet)
+        self._validate_snippets_match(context_snippets=context_snippets, output_snippet=response_snippet)
 
-        sample: Sample = self._create_sample(context_snippets=context_snippets, output_snippet=output_snippet,
+        sample: Sample = self._create_sample(context_snippets=context_snippets, response_snippet=response_snippet,
                                              value=value)
         self.samples.append(sample)

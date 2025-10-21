@@ -365,17 +365,17 @@ def simple_instruction_with_samples(
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     simple_instruction.add_sample(
         context_snippets=[simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     simple_instruction.add_sample(
         context_snippets=[simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     simple_instruction.add_sample(
         context_snippets=[simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     return simple_instruction
@@ -392,19 +392,19 @@ def user_instruction_with_samples(
     # For ExtendedInstruction, the output snippet should match the user TokenSet
     user_instruction.add_sample(
         context_snippets=[simple_context_sample],
-        response="What should I do?",
+        response_string="What should I do?",
         output_snippet=user_response_sample,
         value=None
     )
     user_instruction.add_sample(
         context_snippets=[simple_context_sample],
-        response="How can I help?",
+        response_string="How can I help?",
         output_snippet=user_response_sample,
         value=None
     )
     user_instruction.add_sample(
         context_snippets=[simple_context_sample],
-        response="What's the next step?",
+        response_string="What's the next step?",
         output_snippet=user_response_sample,
         value=None
     )
@@ -421,17 +421,17 @@ def numtoken_instruction_with_samples(
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     simple_numtoken_instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=10
     )
     simple_numtoken_instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=15
     )
     simple_numtoken_instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=25
     )
     return simple_numtoken_instruction
@@ -448,17 +448,17 @@ def numlisttoken_instruction_with_samples(
     # Note: The final token is a NumListToken, so value should be a list
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        response_snippet=simple_numlisttoken_response_sample,
         value=[10, 20, 30]
     )
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        response_snippet=simple_numlisttoken_response_sample,
         value=[15, 25, 35]
     )
     simple_numlisttoken_instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        response_snippet=simple_numlisttoken_response_sample,
         value=[25, 35, 45]
     )
     return simple_numlisttoken_instruction
@@ -474,17 +474,17 @@ def mixed_instruction_with_samples(
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     simple_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
-        output_snippet=simple_mixed_response_sample,
+        response_snippet=simple_mixed_response_sample,
         value=42.5
     )
     simple_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
-        output_snippet=simple_mixed_response_sample,
+        response_snippet=simple_mixed_response_sample,
         value=37.2
     )
     simple_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
-        output_snippet=simple_mixed_response_sample,
+        response_snippet=simple_mixed_response_sample,
         value=79.7
     )
     return simple_mixed_instruction
@@ -501,19 +501,19 @@ def user_mixed_instruction_with_samples(
     # For ExtendedInstruction, the output snippet should match the user TokenSet
     user_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
-        response="Generate mixed data",
+        response_string="Generate mixed data",
         output_snippet=user_mixed_response_sample,
         value=42.5
     )
     user_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
-        response="What are the coordinates?",
+        response_string="What are the coordinates?",
         output_snippet=user_mixed_response_sample,
         value=37.2
     )
     user_mixed_instruction.add_sample(
         context_snippets=[simple_mixed_context_sample],
-        response="Calculate the result",
+        response_string="Calculate the result",
         output_snippet=user_mixed_response_sample,
         value=79.7
     )

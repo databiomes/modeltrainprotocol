@@ -49,7 +49,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
             ]
             simple_instruction.add_sample(
                 context_snippets=context_snippets,
-                output_snippet=response_tokenset.create_snippet(
+                response_snippet=response_tokenset.create_snippet(
                     sample.response_sample
                 )
             )

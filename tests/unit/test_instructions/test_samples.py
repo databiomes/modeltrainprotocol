@@ -28,7 +28,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as an int or float when final token is a NumToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet
+                response_snippet=output_snippet
                 # Missing value parameter
             )
 
@@ -48,7 +48,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as an int or float when final token is a NumToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value="invalid_string"  # Wrong type
             )
 
@@ -68,7 +68,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as an int or float when final token is a NumToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value=None  # None value
             )
 
@@ -88,7 +88,7 @@ class TestSampleValueValidation:
         # Should not raise error - numeric values are now accepted
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet,
+            response_snippet=output_snippet,
             value=5  # Pass a numeric value
         )
 
@@ -108,7 +108,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet
+                response_snippet=output_snippet
                 # Missing value parameter
             )
 
@@ -128,7 +128,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value="invalid_string"  # Wrong type
             )
 
@@ -148,7 +148,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value=None  # None value
             )
 
@@ -168,7 +168,7 @@ class TestSampleValueValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet,
+            response_snippet=output_snippet,
             value=[1, 2, 3]  # Valid list value
         )
 
@@ -188,7 +188,7 @@ class TestSampleValueValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet,
+            response_snippet=output_snippet,
             value=None  # None value allowed for regular tokens
         )
 
@@ -208,7 +208,7 @@ class TestSampleValueValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            response="User prompt",
+            response_string="User prompt",
             output_snippet=output_snippet,
             value=None  # None value allowed for user tokens
         )
@@ -229,7 +229,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value="some_value"  # Non-None value not allowed for regular tokens
             )
 
@@ -249,7 +249,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                response="User prompt",
+                response_string="User prompt",
                 output_snippet=output_snippet,
                 value="some_value"  # Non-None value not allowed for user tokens
             )
@@ -270,7 +270,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as an int or float when final token is a NumToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value=[1, 2, 3]  # List value not allowed for NumToken
             )
 
@@ -291,7 +291,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value=num_token  # NumToken value not allowed for NumListToken
             )
 
@@ -311,7 +311,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value={"key": "value"}  # Dict value not allowed
             )
 
@@ -331,7 +331,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError, match="Value must be provided as a list of int or float when final token is a NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value=True  # Boolean value not allowed
             )
 
@@ -351,7 +351,7 @@ class TestSampleValueValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet,
+            response_snippet=output_snippet,
             value=[]  # Empty list
         )
 
@@ -371,7 +371,7 @@ class TestSampleValueValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet,
+            response_snippet=output_snippet,
             value=[50]  # Single element list
         )
 
@@ -391,7 +391,7 @@ class TestSampleValueValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet,
+            response_snippet=output_snippet,
             value=[10, 20, 30, 40, 50]  # Multi-element list
         )
 
@@ -416,7 +416,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError):
             instruction1.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value="invalid"
             )
         
@@ -431,7 +431,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError):
             instruction2.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value="invalid"
             )
         
@@ -445,7 +445,7 @@ class TestSampleValueValidation:
         # Should allow None only
         instruction3.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet,
+            response_snippet=output_snippet,
             value=None
         )
         
@@ -453,7 +453,7 @@ class TestSampleValueValidation:
         with pytest.raises(ValueError):
             instruction3.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=output_snippet,
+                response_snippet=output_snippet,
                 value="any_value"
             )
 
@@ -476,7 +476,7 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Number of context snippets \\(1\\) must match number of context token sets \\(2\\)"):
             instruction.add_sample(
                 context_snippets=[context_snippet1],  # Only 1 snippet, but need 2
-                output_snippet=output_snippet
+                response_snippet=output_snippet
             )
 
     def test_simple_instruction_wrong_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
@@ -495,7 +495,7 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Snippet f.* does not match expected token set"):
             instruction.add_sample(
                 context_snippets=[wrong_snippet, context_snippet2],  # First snippet has wrong token set
-                output_snippet=output_snippet
+                response_snippet=output_snippet
             )
 
     def test_simple_instruction_wrong_output_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
@@ -514,7 +514,7 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Snippet f.* does not match expected token set"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                output_snippet=wrong_output_snippet  # Wrong token set for output
+                response_snippet=wrong_output_snippet  # Wrong token set for output
             )
 
     def test_user_instruction_wrong_context_snippet_count_raises_error(self, simple_tokenset, user_tokenset):
@@ -532,7 +532,7 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Number of context snippets \\(1\\) must match number of context token sets \\(2\\)"):
             instruction.add_sample(
                 context_snippets=[context_snippet1],  # Only 1 snippet, but need 2
-                response="User prompt",
+                response_string="User prompt",
                 output_snippet=output_snippet
             )
 
@@ -553,7 +553,7 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Snippet f.* does not match expected token set"):
             instruction.add_sample(
                 context_snippets=[wrong_snippet, context_snippet2],  # First snippet has wrong token set
-                response="User prompt",
+                response_string="User prompt",
                 output_snippet=output_snippet
             )
 
@@ -573,7 +573,7 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Snippet f.* does not match expected token set"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                response="User prompt",
+                response_string="User prompt",
                 output_snippet=wrong_output_snippet  # Wrong token set for output
             )
 
@@ -611,7 +611,7 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                response="User prompt",
+                response_string="User prompt",
                 output_snippet=output_snippet,
                 value="invalid_string"  # Wrong type for ExtendedInstruction
             )
@@ -631,7 +631,7 @@ class TestInstructionValidation:
         with pytest.raises(ValueError, match="Value must be None when final token is not a NumToken or NumListToken"):
             instruction.add_sample(
                 context_snippets=[context_snippet1, context_snippet2],
-                response="User prompt",
+                response_string="User prompt",
                 output_snippet=output_snippet,
                 value=[1, 2, 3]  # List not allowed for ExtendedInstruction
             )
@@ -705,7 +705,7 @@ class TestInstructionValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet
+            response_snippet=output_snippet
         )
 
     def test_user_instruction_valid_sample_succeeds(self, simple_tokenset, user_tokenset):
@@ -723,7 +723,7 @@ class TestInstructionValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            response="User prompt",
+            response_string="User prompt",
             output_snippet=output_snippet
         )
 
@@ -742,7 +742,7 @@ class TestInstructionValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            response="User prompt",
+            response_string="User prompt",
             output_snippet=output_snippet,
             value=None  # Valid None value for non-numeric final token
         )
@@ -762,6 +762,6 @@ class TestInstructionValidation:
         # Should not raise error
         instruction.add_sample(
             context_snippets=[context_snippet1, context_snippet2],
-            output_snippet=output_snippet,
+            response_snippet=output_snippet,
             value=None  # Valid None value
         )

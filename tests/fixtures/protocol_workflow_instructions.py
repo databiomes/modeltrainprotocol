@@ -20,17 +20,17 @@ def simple_workflow_instruction_with_samples(simple_tokenset, user_tokenset, sim
     # Add samples with 2 context snippets - one from each tokenset
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
 
@@ -62,19 +62,19 @@ def user_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simpl
     # Add samples with 2 context snippets - one from each tokenset
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        response="User prompt 0",
+        response_string="User prompt 0",
         output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        response="User prompt 1",
+        response_string="User prompt 1",
         output_snippet=user_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        response="User prompt 2",
+        response_string="User prompt 2",
         output_snippet=user_response_sample,
         value=None
     )
@@ -110,17 +110,17 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
     # Add samples with 2 context snippets - one from each tokenset
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=10
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=15
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=20
     )
 
@@ -142,17 +142,17 @@ def simple_numlisttoken_workflow_instruction_with_samples(
     # Add samples with 2 context snippets - one from each tokenset
     instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        response_snippet=simple_numlisttoken_response_sample,
         value=[1, 2, 3]
     )
     instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        response_snippet=simple_numlisttoken_response_sample,
         value=[4.2, .45, 6.8]
     )
     instruction.add_sample(
         context_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        response_snippet=simple_numlisttoken_response_sample,
         value=[7, 8, 9]
     )
 

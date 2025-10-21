@@ -26,13 +26,13 @@ class ExtendedInstruction(BaseInstruction):
         super().__init__(context=context[:-1], response=context[-1], final=final)
 
     # noinspection PyMethodOverriding
-    def add_sample(self, context_snippets: list[Snippet], response: str,
+    def add_sample(self, context_snippets: list[Snippet], response_string: str,
                    value: int | float | list[int | float] | None = None):
         """
         Add a sample to the Instruction.
 
         :param context_snippets: List of context snippets that will be added to the Instruction.
-        :param response: The prompt provided by the user.
+        :param response_string: The response provided by the model as a string.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         """
         self._assert_valid_value(value=value)
@@ -40,10 +40,10 @@ class ExtendedInstruction(BaseInstruction):
         self._validate_snippets_match(context_snippets=context_snippets[:-1], output_snippet=context_snippets[-1])
 
         sample: Sample = self._create_sample(context_snippets=context_snippets,
-                                             response=response, value=value)
+                                             response_string=response_string, value=value)
         self.samples.append(sample)
 
-    def _create_sample(self, context_snippets: list[Snippet], response: str,
+    def _create_sample(self, context_snippets: list[Snippet], response_string: str,
                        value: int | float | list[int | float] | None = None) -> Sample:
         """Creates a sample ExtendedInstruction string for example usages."""
 
@@ -58,7 +58,7 @@ class ExtendedInstruction(BaseInstruction):
 
         return Sample(
             context=[snippet.string for snippet in context_snippets[:-1]],
-            response=response,
+            response=response_string,
             prompt=context_snippets[-1].string,
             number=numbers,
             number_lists=number_lists,
