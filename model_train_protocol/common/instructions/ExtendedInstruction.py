@@ -36,7 +36,7 @@ class ExtendedInstruction(BaseInstruction):
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         """
         self._assert_valid_value(value=value)
-        self._assert_context_snippet_count(context_snippets=context_snippets)
+        self._assert_context_snippet_count(context_snippets=context_snippets[:-1]) # exclude last snippet for special case
         self._validate_snippets_match(context_snippets=context_snippets[:-1], output_snippet=context_snippets[-1])
 
         sample: Sample = self._create_sample(context_snippets=context_snippets,
