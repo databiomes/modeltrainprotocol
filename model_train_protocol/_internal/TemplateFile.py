@@ -26,7 +26,6 @@ class TemplateFile:
             unique_sets = {i: set() for i in range(instruction_context_snippets + 1)}
             for instruction in instructions:
                 for idx, token_set in enumerate(instruction.get_token_sets()):
-                    token_user = [t.user for t in token_set]
                     token_strings = "".join([t.value for t in token_set])
                     token_keys = []
                     for token in token_set:
@@ -34,7 +33,7 @@ class TemplateFile:
                             token.key + (token.protocol_representation if isinstance(token, NumToken) else ""))
                     token_keys = "".join(token_keys)
                     unique_sets[idx].add(str(token_strings) + ": " + (
-                        (str(token_keys) + "USER PROMPT") if any(token_user) and (
+                        (str(token_keys) + "USER PROMPT") if isinstance(instruction, ExtendedInstruction) and (
                                 idx == (len(unique_sets) - 1)) else str(
                             token_keys)) + "\n" + ("<string>" if idx != (len(instruction.context) - 1) else ""))
 

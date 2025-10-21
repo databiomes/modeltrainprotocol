@@ -177,7 +177,6 @@ class ProtocolFile:
                 key=token_dict['key'],
                 num=token_dict['num'],
                 num_list=token_dict['num_list'],
-                user=token_dict['user'],
                 desc=token_dict['desc'],
                 special=token_dict['special'],
             )

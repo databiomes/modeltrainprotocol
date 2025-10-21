@@ -15,7 +15,6 @@ class Token:
         self.value: str = value + "_"
         self._key: str | None = key
         self.desc: str = desc
-        self.user: bool = False
         self.num: bool = False
         self.num_list: int = 0
         self.special: str | None = None
@@ -73,7 +72,7 @@ class Token:
 
     def __str__(self):
         """String representation of the token."""
-        return f"Token(Value: '{self.value}', Key: '{self.key}', User: {self.user}, Num: {self.num}, Desc: {self.desc}, Special: {self.special})"
+        return f"Token(Value: '{self.value}', Key: '{self.key}', Num: {self.num}, Desc: {self.desc}, Special: {self.special})"
 
     def __hash__(self):
         """Hash based on the string representation of the token."""
@@ -92,5 +91,5 @@ class Token:
 
     def to_dict(self):
         """Convert the token to a dictionary representation."""
-        return {'value': self.value, 'key': self.key, 'user': self.user, 'num': self.num, 'num_list': self.num_list, 'desc': self.desc,
+        return {'value': self.value, 'key': self.key, 'num': self.num, 'num_list': self.num_list, 'desc': self.desc,
                 'special': self.special}

@@ -10,7 +10,6 @@ from pydantic import BaseModel, Field
 class TokenInfoModel(BaseModel):
     """Model for individual token information."""
     key: str
-    user: bool
     num: bool
     num_list: int
     desc: Union[str | None]
