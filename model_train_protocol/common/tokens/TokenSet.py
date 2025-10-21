@@ -26,7 +26,6 @@ class TokenSet:
         if isinstance(tokens, Token):
             tokens = [tokens]
         self.tokens: Sequence[Token] = tokens
-        self.is_user: bool = any(token.user for token in tokens)
         self.required_numtoken_numbers: int = sum(
             token.num for token in tokens if isinstance(token, NumToken))  # Count of NumToken
         self.required_numlists: list[int] = [
@@ -45,8 +44,6 @@ class TokenSet:
         """Sets a guardrails for the TokenSet."""
         if self.guardrail is not None:
             raise ValueError("Only one guardrail can be set per TokenSet.")
-        if not self.is_user:
-            raise ValueError("Guardrails can only be added to a user TokenSet.")
         if not isinstance(guardrail, Guardrail):
             raise TypeError("Guardrail must be an instance of the Guardrail class.")
         self._guardrail = guardrail
