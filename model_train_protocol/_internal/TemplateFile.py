@@ -41,7 +41,7 @@ class TemplateFile:
                             token_keys)) + "\n" + ("<string>" if idx != (len(instruction.context) - 1) else ""))
 
             for input_set in unique_sets.values():
-                self.inputs.append(input_set)
+                self.inputs.append(list(input_set))
 
         def to_json(self):
             """Converts the model input to a JSON-serializable dictionary."""
@@ -140,6 +140,8 @@ class TemplateFile:
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
         examples: dict[str, str] = self._create_examples()
+        model_output_json = self.model_output.to_json()
+        combined = {**self.model_input.unique_token_key_sets, **self.model_output.model_results}
         json_dict: dict = {
             "tokens": self.model_input.unique_token_key_sets,
             "model_input": self.model_input.to_json(),

@@ -64,7 +64,8 @@ class BaseInstruction(ABC):
         instruction = Instruction(context=context, response=response, final=final)
     """
 
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token):
+    # TODO: optional name of instruction (tklempka)
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token): 
         """Initializes the common attributes to all Instructions."""
         self.context: Sequence[TokenSet] = context
         self.response: TokenSet = response
