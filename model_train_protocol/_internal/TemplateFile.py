@@ -19,7 +19,8 @@ class TemplateFile:
     class ModelInput:
         """Represents inputs to the model."""
 
-        inputs: list[list[str]] = list()
+        inputs: list[dict[str, str]] = list()
+        unique_token_key_sets: dict[str, str] = dict()
 
         def add_inputs_from_instructions(self, instructions: list[BaseInstruction], instruction_context_snippets: int):
             """Adds input combinations from a list of instructions."""
@@ -27,6 +28,8 @@ class TemplateFile:
             for instruction in instructions:
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_strings = "".join([t.value for t in token_set])
+
+                    # Create token keys
                     token_keys = []
                     for token in token_set:
                         token_keys.append(
@@ -38,7 +41,7 @@ class TemplateFile:
                             token_keys)) + "\n" + ("<string>" if idx != (len(instruction.context) - 1) else ""))
 
             for input_set in unique_sets.values():
-                self.inputs.append(list(input_set))
+                self.inputs.append(input_set)
 
         def to_json(self):
             """Converts the model input to a JSON-serializable dictionary."""
@@ -126,11 +129,11 @@ class TemplateFile:
             for idx, token_set in enumerate(user_instruction.get_token_sets()):
                 token_strings = "".join([token.key for token in token_set])
                 user_input += token_strings + "\n"
-                user_input += "<string>\n" if idx != (len(user_instruction.get_token_sets()) - 1) else "USER PROMPT\n"
+                user_input += "<string>\n" if idx != (len(user_instruction.get_token_sets()) - 1) else "<prompt>\n"
             user_input = BOS_TOKEN.key + "\n" + user_input + RUN_TOKEN.key + "\n"
-            examples["valid_user_input"] = user_input
+            examples["user_instruction_input"] = user_input
 
-        examples["valid_output"] = self._create_sample_model_output()
+        examples["valid_model_output"] = self._create_sample_model_output()
 
         return examples
 
@@ -138,10 +141,9 @@ class TemplateFile:
         """Converts the entire template to a JSON-serializable dictionary."""
         examples: dict[str, str] = self._create_examples()
         json_dict: dict = {
-            "all_combinations": {
-                "model_input": self.model_input.to_json(),
-                "model_output": self.model_output.to_json()
-            },
+            "tokens": self.model_input.unique_token_key_sets,
+            "model_input": self.model_input.to_json(),
+            "model_output": self.model_output.to_json(),
             "example_usage": examples
         }
         return json_dict

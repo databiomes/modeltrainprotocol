@@ -177,7 +177,7 @@
         "Vanish_"
     ],
     "instruction": {
-        "memory": 3,
+        "memory": 2,
         "sets": [
             {
                 "ppo": [],
