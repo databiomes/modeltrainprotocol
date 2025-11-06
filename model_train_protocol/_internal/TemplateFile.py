@@ -35,6 +35,10 @@ class TemplateFile:
                         token_keys.append(
                             token.key + (token.protocol_representation if isinstance(token, NumToken) else ""))
                     token_keys = "".join(token_keys)
+                    
+                    # Store unique token sets
+                    self.unique_token_key_sets[token_strings] = token_keys
+
                     unique_sets[idx].add(str(token_strings) + ": " + (
                         (str(token_keys) + "USER PROMPT") if isinstance(instruction, ExtendedInstruction) and (
                                 idx == (len(unique_sets) - 1)) else str(
@@ -81,12 +85,13 @@ class TemplateFile:
 
             return model_json
 
-    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], ):
+    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool):
         """Initializes the template"""
         self.model_input: TemplateFile.ModelInput = TemplateFile.ModelInput()
         self.model_output: TemplateFile.ModelOutput = TemplateFile.ModelOutput()
         self.instruction_context_snippets: int = instruction_context_snippets
         self.instructions: list[BaseInstruction] = instructions
+        self.encrypt: bool = encrypt
         self._add_io_from_instructions()
 
     def _add_io_from_instructions(self):
@@ -141,9 +146,9 @@ class TemplateFile:
         """Converts the entire template to a JSON-serializable dictionary."""
         examples: dict[str, str] = self._create_examples()
         model_output_json = self.model_output.to_json()
-        combined = {**self.model_input.unique_token_key_sets, **self.model_output.model_results}
         json_dict: dict = {
-            "tokens": self.model_input.unique_token_key_sets,
+            "encrypt": self.encrypt,
+            "tokens": {**self.model_input.unique_token_key_sets, **self.model_output.model_results},
             "model_input": self.model_input.to_json(),
             "model_output": self.model_output.to_json(),
             "example_usage": examples

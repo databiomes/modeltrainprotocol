@@ -16,14 +16,14 @@ class ExtendedInstruction(BaseInstruction):
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
 
-    def __init__(self, context: Sequence[TokenSet], final: Token=NON_TOKEN):
+    def __init__(self, context: Sequence[TokenSet], final: Token=NON_TOKEN, name: str = "extended_instruction"):
         """
         Initializes a ExtendedInstruction instance.
 
         :param context: List of tuples containing Token instances that define the input structure. This precedes the user input.
         :param final: A Token instance designating the final action by the model.
         """
-        super().__init__(context=context[:-1], response=context[-1], final=final)
+        super().__init__(context=context[:-1], response=context[-1], final=final, name=name)
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], response_string: str,

@@ -64,12 +64,12 @@ class BaseInstruction(ABC):
         instruction = Instruction(context=context, response=response, final=final)
     """
 
-    # TODO: optional name of instruction (tklempka)
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token): 
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token, name: str): 
         """Initializes the common attributes to all Instructions."""
         self.context: Sequence[TokenSet] = context
         self.response: TokenSet = response
         self.final: Token = final
+        self.name: str = name
         self.samples: list[Sample] = []
         if not isinstance(context, Sequence):
             raise TypeError("Context must be a sequence of TokenSet instances.")
@@ -79,6 +79,8 @@ class BaseInstruction(ABC):
             raise TypeError("Response must be an instance of TokenSet.")
         if not isinstance(final, Token):
             raise TypeError("Final must be an instance of Token.")
+        if not name or not isinstance(name, str):
+            raise ValueError("Name must be a non-empty string.")
 
     @abc.abstractmethod
     def add_sample(self):
@@ -219,6 +221,7 @@ class BaseInstruction(ABC):
     def to_dict(self) -> dict:
         """Convert the Instruction to a dictionary representation."""
         return {
+            'name': self.name,
             'tokens': [[token.to_dict() for token in token_set.tokens] for token_set in self.get_token_sets()],
             'result': self.final.to_dict() if self.final else None,
             'samples': self.samples

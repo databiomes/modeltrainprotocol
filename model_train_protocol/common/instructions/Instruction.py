@@ -16,7 +16,7 @@ class Instruction(BaseInstruction):
     A minimum of 3 samples must be added to an Instruction.
     """
 
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token = NON_TOKEN):
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token = NON_TOKEN, name: str = "instruction"):
         f"""
         Initializes an Instruction instance.
 
@@ -24,7 +24,7 @@ class Instruction(BaseInstruction):
         :param response: A TokenSet instance that does not include any user tokens.
         :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken designated {NON_TOKEN.value}.
         """
-        super().__init__(context=context, response=response, final=final)
+        super().__init__(context=context, response=response, final=final, name=name)
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: list[Snippet], response_snippet: Snippet,

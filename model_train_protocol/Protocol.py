@@ -117,7 +117,8 @@ class Protocol:
         self._prep_protocol()
         template_file: TemplateFile = TemplateFile(
             instructions=list(self.instructions),
-            instruction_context_snippets=self.instruction_context_snippets
+            instruction_context_snippets=self.instruction_context_snippets,
+            encrypt=self.encrypt,
         )
 
         print(f"Saving Model Train Protocol Template to {filename}...")
