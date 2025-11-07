@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-import json
 from typing import Collection
 
 from model_train_protocol import NumToken, Instruction, ExtendedInstruction
@@ -17,74 +16,34 @@ class TemplateFile:
         input: str
         output: str
 
-    class ModelInput:
-        """Represents inputs to the model."""
+    class Tokens:
+        """Represents all tokens used in the template."""
+        
+        def __init__(self):
+            self.instructions_list: list[BaseInstruction] = []
+        
+        def add_tokens_from_instructions(self, instructions: list[BaseInstruction]):
+            """Stores instruction data for later token extraction."""
 
-        inputs: list[dict[str, str]] = list()
-        unique_token_key_sets: dict[str, str] = dict()
+            self.instructions_list = instructions
+        
+        def to_json(self) -> dict[str, str]:
+            """Extracts tokens from stored instructions and converts to JSON-serializable dictionary."""
 
-        def add_inputs_from_instructions(self, instructions: list[BaseInstruction], instruction_context_snippets: int):
-            """Adds input combinations from a list of instructions."""
-            unique_sets = {i: set() for i in range(instruction_context_snippets + 1)}
-            for instruction in instructions:
-                for idx, token_set in enumerate(instruction.get_token_sets()):
-                    token_strings = "".join([t.value for t in token_set])
-
-                    # Create token keys
-                    token_keys = []
-                    for token in token_set:
-                        token_keys.append(
-                            token.key + (token.protocol_representation if isinstance(token, NumToken) else ""))
-                    token_keys = "".join(token_keys)
+            token_mapping: dict[str, str] = {}
+            
+            for instruction in self.instructions_list:
+                for token_set in instruction.get_token_sets():
+                    token_value = "".join([t.value for t in token_set])
+                    token_key = "".join([
+                        t.key + (t.protocol_representation if isinstance(t, NumToken) else "")
+                        for t in token_set
+                    ])
                     
-                    # Store unique token sets
-                    self.unique_token_key_sets[token_strings] = token_keys
+                    token_mapping[token_value] = token_key
+                token_mapping[instruction.final.value] = instruction.final.key
 
-                    unique_sets[idx].add(str(token_strings) + ": " + (
-                        (str(token_keys) + "USER PROMPT") if isinstance(instruction, ExtendedInstruction) and (
-                                idx == (len(unique_sets) - 1)) else str(
-                            token_keys)) + "\n" + ("<string>" if idx != (len(instruction.context) - 1) else ""))
-
-            for input_set in unique_sets.values():
-                self.inputs.append(list(input_set))
-
-        def to_json(self):
-            """Converts the model input to a JSON-serializable dictionary."""
-            model_json: dict[str, Collection[str] | str] = {"<BOS>": BOS_TOKEN.key}
-            # Add each input sequence with its index as the key
-            for idx, input_seq in enumerate(self.inputs):
-                model_json[str(idx)] = input_seq
-            model_json["<RUN>"] = RUN_TOKEN.key
-            return model_json
-
-    class ModelOutput:
-        model_results: dict[str, str] = dict()
-        model_response: str = "<string>"
-
-        def __setitem__(self, key: str, value: str):
-            self.model_results[key] = value
-
-        def add_results_from_instructions(self, instructions: list[BaseInstruction]):
-            """Adds model results from a list of instructions."""
-            for instruction in instructions:
-                self.model_results[str(instruction.final.value)] = str(instruction.final.key)
-
-        def to_json(self):
-            """Converts the model output to a JSON-serializable dictionary."""
-            model_json: dict[str, str | dict] = {
-                "model_response": self.model_response,
-                "model_results": {}
-            }
-            # Add each model result with its key
-            for key, value in self.model_results.items():
-                model_json["model_results"][key] = value
-
-            model_json["<EOS>"] = EOS_TOKEN.key
-
-            # Sort alphabetically for readability and consistency across runs
-            model_json["model_results"] = dict(sorted(model_json["model_results"].items()))
-
-            return model_json
+            return dict(sorted(token_mapping.items()))
         
     class Instructions:
         """Represents the instruction set of the template."""
@@ -94,10 +53,12 @@ class TemplateFile:
         
         def add_inputs_from_instructions(self, instructions: list[BaseInstruction]):
             """Stores instruction data for later JSON conversion."""
+
             self.instructions_list = instructions
 
         def to_json(self):
             """Converts stored instructions to JSON-serializable dictionary."""
+
             instructions_dict: dict[str, dict] = {}
             
             for instruction in self.instructions_list:
@@ -110,12 +71,11 @@ class TemplateFile:
                     ])
                     
                     token_value = "".join([t.value for t in token_set])
-                    
                     is_last_context = idx == len(instruction.get_token_sets()) - 1
                     is_user_prompt = isinstance(instruction, ExtendedInstruction) and is_last_context
                     
                     if is_user_prompt:
-                        token_key += "USER PROMPT"
+                        token_key += "<prompt>"
                     token_key += "\n"
                     
                     if not is_last_context:
@@ -124,7 +84,6 @@ class TemplateFile:
                     input_dict[str(idx)] = {token_value: token_key}
                 
                 input_dict["<RUN>"] = RUN_TOKEN.key
-
                 output_str = "<string>\n" + instruction.final.key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
@@ -136,8 +95,8 @@ class TemplateFile:
 
     def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool):
         """Initializes the template"""
-        self.model_input: TemplateFile.ModelInput = TemplateFile.ModelInput()
-        self.model_output: TemplateFile.ModelOutput = TemplateFile.ModelOutput()
+        
+        self.tokens: TemplateFile.Tokens = TemplateFile.Tokens()
         self.instructions: TemplateFile.Instructions = TemplateFile.Instructions()
         self.instruction_context_snippets: int = instruction_context_snippets
         self.instructions_list: list[BaseInstruction] = instructions
@@ -146,61 +105,63 @@ class TemplateFile:
 
     def _add_io_from_instructions(self):
         """Adds input and output sequences from the instructions."""
-        self.model_input.add_inputs_from_instructions(self.instructions_list, instruction_context_snippets=self.instruction_context_snippets)
-        self.model_output.add_results_from_instructions(self.instructions_list)
+
+        self.tokens.add_tokens_from_instructions(self.instructions_list)
         self.instructions.add_inputs_from_instructions(self.instructions_list)
 
-    def _create_sample_model_output(self):
-        """Creates a sample model output string for example usages."""
-        sample_output: str = ""
-        sample_output += self.model_output.model_response + "\n"
-        sorted_model_results: list[tuple[str, str]] = list(sorted(self.model_output.model_results.items()))
-        sample_output += sorted_model_results[0][1] + "\n"
+    def _create_sample_model_output(self, instruction: BaseInstruction) -> str:
+        """Creates a sample model output string for a given instruction."""
+
+        sample_output = "<string>\n"
+        sample_output += instruction.final.key + "\n"
         sample_output += EOS_TOKEN.key
         return sample_output
 
     def _create_examples(self) -> dict[str, str]:
-        """
-        Creates example usages of the template.
+        """Creates example usages of the template."""
 
-        Creates a simple instruction example and a user instruction example if available.
-        """
         examples: dict[str, str] = dict()
         simple_instruction: Instruction = next(
-            (i for i in self.instructions_list if isinstance(i, Instruction)), None)
+            (i for i in self.instructions.instructions_list if isinstance(i, Instruction)), None)
         user_instruction: ExtendedInstruction = next(
-            (i for i in self.instructions_list if isinstance(i, ExtendedInstruction)), None)
+            (i for i in self.instructions.instructions_list if isinstance(i, ExtendedInstruction)), None)
 
         if simple_instruction:
-            simple_input: str = ""
+            simple_input = BOS_TOKEN.key + "\n"
             for token_set in simple_instruction.get_token_sets():
-                token_strings = "".join([token.key for token in token_set])
-                simple_input += token_strings + "\n"
+                token_keys = "".join([token.key for token in token_set])
+                simple_input += token_keys + "\n"
                 simple_input += "<string>\n"
-            simple_input = BOS_TOKEN.key + "\n" + simple_input + RUN_TOKEN.key + "\n"
-            examples["simple_instruction_input"] = simple_input + self._create_sample_model_output()
+            simple_input += RUN_TOKEN.key + "\n"
+            examples["simple_instruction_input"] = simple_input + self._create_sample_model_output(simple_instruction)
 
         if user_instruction:
-            user_input: str = ""
-            for idx, token_set in enumerate(user_instruction.get_token_sets()):
-                token_strings = "".join([token.key for token in token_set])
-                user_input += token_strings + "\n"
-                user_input += "<string>\n" if idx != (len(user_instruction.get_token_sets()) - 1) else "<prompt>\n"
-            user_input = BOS_TOKEN.key + "\n" + user_input + RUN_TOKEN.key + "\n"
+            user_input = BOS_TOKEN.key + "\n"
+            token_sets = user_instruction.get_token_sets()
+            for idx, token_set in enumerate(token_sets):
+                token_keys = "".join([token.key for token in token_set])
+                user_input += token_keys + "\n"
+                if idx != len(token_sets) - 1:
+                    user_input += "<string>\n"
+                else:
+                    user_input += "<prompt>\n"
+            user_input += RUN_TOKEN.key + "\n"
             examples["user_instruction_input"] = user_input
 
-        examples["valid_model_output"] = self._create_sample_model_output()
+        first_instruction = simple_instruction or user_instruction
+        if first_instruction:
+            examples["valid_model_output"] = self._create_sample_model_output(first_instruction)
 
         return examples
 
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
+
         examples: dict[str, str] = self._create_examples()
         json_dict: dict = {
-            # Version is hardcoded for now; update as needed
-            "version": "0.1",
+            "version": "0.1",       # Version is hardcoded for now; update as needed
             "encrypt": self.encrypt,
-            "tokens": {**self.model_input.unique_token_key_sets, **self.model_output.model_results},
+            "tokens": self.tokens.to_json(),
             "instructions": self.instructions.to_json(),
             "example_usage": examples
         }
