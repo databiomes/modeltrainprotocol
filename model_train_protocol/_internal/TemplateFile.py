@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+import json
 from typing import Collection
 
 from model_train_protocol import NumToken, Instruction, ExtendedInstruction
@@ -84,20 +85,63 @@ class TemplateFile:
             model_json["model_results"] = dict(sorted(model_json["model_results"].items()))
 
             return model_json
+        
+    class Instructions:
+        """Represents the instruction set of the template."""
+        
+        def __init__(self):
+            self.instructions_list: list[BaseInstruction] = []
+        
+        def add_inputs_from_instructions(self, instructions: list[BaseInstruction]):
+            """Stores instruction data for later JSON conversion."""
+            self.instructions_list = instructions
+
+        def to_json(self):
+            """Converts stored instructions to JSON-serializable dictionary."""
+            instructions_dict: dict[str, dict] = {}
+            
+            for instruction in self.instructions_list:
+                input_dict = {"<BOS>": BOS_TOKEN.key}
+                
+                for idx, token_set in enumerate(instruction.get_token_sets()):
+                    token_key = "".join([
+                        t.key + (t.protocol_representation if isinstance(t, NumToken) else "")
+                        for t in token_set
+                    ])
+                    token_value = "".join([t.value for t in token_set])
+                    
+                    # Determine suffix based on instruction type and position
+                    if isinstance(instruction, ExtendedInstruction) and idx == len(instruction.context) - 1:
+                        suffix = "\n<prompt>"
+                    else:
+                        suffix = "\n<string>"
+                    
+                    input_dict[str(idx)] = {token_value: token_key + suffix}
+                
+                input_dict["<RUN>"] = RUN_TOKEN.key
+                output_str = "<string>\n" + instruction.final.key + "\n" + EOS_TOKEN.key
+                instructions_dict[instruction.name] = {
+                    "input": input_dict,
+                    "output": output_str
+                }
+            
+            return instructions_dict
 
     def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool):
         """Initializes the template"""
         self.model_input: TemplateFile.ModelInput = TemplateFile.ModelInput()
         self.model_output: TemplateFile.ModelOutput = TemplateFile.ModelOutput()
+        self.instructions: TemplateFile.Instructions = TemplateFile.Instructions()
         self.instruction_context_snippets: int = instruction_context_snippets
-        self.instructions: list[BaseInstruction] = instructions
+        self.instructions_list: list[BaseInstruction] = instructions
         self.encrypt: bool = encrypt
         self._add_io_from_instructions()
 
     def _add_io_from_instructions(self):
         """Adds input and output sequences from the instructions."""
-        self.model_input.add_inputs_from_instructions(self.instructions, instruction_context_snippets=self.instruction_context_snippets)
-        self.model_output.add_results_from_instructions(self.instructions)
+        self.model_input.add_inputs_from_instructions(self.instructions_list, instruction_context_snippets=self.instruction_context_snippets)
+        self.model_output.add_results_from_instructions(self.instructions_list)
+        self.instructions.add_inputs_from_instructions(self.instructions_list)
 
     def _create_sample_model_output(self):
         """Creates a sample model output string for example usages."""
@@ -116,9 +160,9 @@ class TemplateFile:
         """
         examples: dict[str, str] = dict()
         simple_instruction: Instruction = next(
-            (i for i in self.instructions if isinstance(i, Instruction)), None)
+            (i for i in self.instructions_list if isinstance(i, Instruction)), None)
         user_instruction: ExtendedInstruction = next(
-            (i for i in self.instructions if isinstance(i, ExtendedInstruction)), None)
+            (i for i in self.instructions_list if isinstance(i, ExtendedInstruction)), None)
 
         if simple_instruction:
             simple_input: str = ""
@@ -145,12 +189,12 @@ class TemplateFile:
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
         examples: dict[str, str] = self._create_examples()
-        model_output_json = self.model_output.to_json()
         json_dict: dict = {
             "encrypt": self.encrypt,
             "tokens": {**self.model_input.unique_token_key_sets, **self.model_output.model_results},
-            "model_input": self.model_input.to_json(),
-            "model_output": self.model_output.to_json(),
+            "instructions": self.instructions.to_json(),
+            #"model_input": self.model_input.to_json(),
+            #"model_output": self.model_output.to_json(),
             "example_usage": examples
         }
         return json_dict

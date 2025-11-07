@@ -188,7 +188,8 @@ protocol.add_instruction(alice_cat_alice_instruction_disappear)
 # -------------------- ExtendedInstruction Set (Optional): Leave (With an additional line of context) --------------------
 alice_disappear_cat_alice_instruction_leave: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
     context=[tree_english_alice_talk, tree_english_disappear_cat_talk, tree_english_alice_talk],
-    final=token_leave
+    final=token_leave,
+    name="alice_disappear_cat_alice_instruction_leave"
 )
 
 # 1st Sample
