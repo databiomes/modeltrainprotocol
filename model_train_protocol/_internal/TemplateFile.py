@@ -108,18 +108,25 @@ class TemplateFile:
                         t.key + (t.protocol_representation if isinstance(t, NumToken) else "")
                         for t in token_set
                     ])
+                    
                     token_value = "".join([t.value for t in token_set])
                     
-                    # Determine suffix based on instruction type and position
-                    if isinstance(instruction, ExtendedInstruction) and idx == len(instruction.context) - 1:
-                        suffix = "\n<prompt>"
-                    else:
-                        suffix = "\n<string>"
+                    is_last_context = idx == len(instruction.get_token_sets()) - 1
+                    is_user_prompt = isinstance(instruction, ExtendedInstruction) and is_last_context
                     
-                    input_dict[str(idx)] = {token_value: token_key + suffix}
+                    if is_user_prompt:
+                        token_key += "USER PROMPT"
+                    token_key += "\n"
+                    
+                    if not is_last_context:
+                        token_key += "<string>"
+                    
+                    input_dict[str(idx)] = {token_value: token_key}
                 
                 input_dict["<RUN>"] = RUN_TOKEN.key
+
                 output_str = "<string>\n" + instruction.final.key + "\n" + EOS_TOKEN.key
+
                 instructions_dict[instruction.name] = {
                     "input": input_dict,
                     "output": output_str
@@ -190,11 +197,10 @@ class TemplateFile:
         """Converts the entire template to a JSON-serializable dictionary."""
         examples: dict[str, str] = self._create_examples()
         json_dict: dict = {
+            "version": "0.1",
             "encrypt": self.encrypt,
             "tokens": {**self.model_input.unique_token_key_sets, **self.model_output.model_results},
             "instructions": self.instructions.to_json(),
-            #"model_input": self.model_input.to_json(),
-            #"model_output": self.model_output.to_json(),
             "example_usage": examples
         }
         return json_dict
