@@ -61,7 +61,7 @@ class BaseInstruction(ABC):
                  ]
         response = TokenSet( Token("SentenceLength", num=True), Token("PoliteResponse") )
         final = Token("End")
-        instruction = Instruction(context=context, response=response, final=final)
+        instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
 
     def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token, name: str): 

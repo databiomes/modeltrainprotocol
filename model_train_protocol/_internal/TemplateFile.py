@@ -197,6 +197,7 @@ class TemplateFile:
         """Converts the entire template to a JSON-serializable dictionary."""
         examples: dict[str, str] = self._create_examples()
         json_dict: dict = {
+            # Version is hardcoded for now; update as needed
             "version": "0.1",
             "encrypt": self.encrypt,
             "tokens": {**self.model_input.unique_token_key_sets, **self.model_output.model_results},

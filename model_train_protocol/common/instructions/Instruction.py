@@ -23,6 +23,7 @@ class Instruction(BaseInstruction):
         :param context: List of tuples containing Token instances that define the input structure. This precedes the model's response.
         :param response: A TokenSet instance that does not include any user tokens.
         :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken designated {NON_TOKEN.value}.
+        :param name: Optional name for the Instruction. Defaults to 'instruction'.
         """
         super().__init__(context=context, response=response, final=final, name=name)
 
