@@ -51,6 +51,10 @@ class Protocol:
         """
         if instruction in self.instructions:
             raise ValueError("Instruction already added to the protocol.")
+        
+        for existing_instruction in self.instructions:
+            if existing_instruction.name == instruction.name:
+                raise ValueError(f"An instruction with name '{instruction.name}' already exists in the protocol.")
 
         if len(instruction.samples) < 3:
             raise ValueError(f"Instruction must have at least three samples. Found {len(instruction.samples)} samples.")

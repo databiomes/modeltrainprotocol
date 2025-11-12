@@ -211,8 +211,15 @@ class BaseInstruction(ABC):
         """
         Defines equality based on the attributes of the Instruction.
         Returns True if the other object is an Instruction and its attributes match this Instruction's attributes.
+        Ignores the 'name' field in comparison.
         """
-        return isinstance(other, BaseInstruction) and self.__dict__ == other.__dict__
+        if not isinstance(other, BaseInstruction):
+            return False
+        
+        self_dict = {k: v for k, v in self.__dict__.items() if k != 'name'}
+        other_dict = {k: v for k, v in other.__dict__.items() if k != 'name'}
+        
+        return self_dict == other_dict
 
     def __dict__(self) -> dict:
         """Dictionary representation of the Instruction."""
