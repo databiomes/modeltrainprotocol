@@ -13,7 +13,8 @@ def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_toke
     instruction = Instruction(
         context=[simple_tokenset, user_tokenset],
         response=simple_tokenset,
-        final=token_workflow_result
+        final=token_workflow_result,
+        name="simple_workflow_2context_instruction"
     )
     
     # Add samples with 2 context snippets
@@ -41,7 +42,8 @@ def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokens
     """User instruction with 2 context lines for workflow tests."""
     instruction = ExtendedInstruction(
         context=[simple_tokenset, user_tokenset, user_tokenset],
-        final=token_workflow_end
+        final=token_workflow_end,
+        name="user_workflow_2context_instruction"
     )
     
     # Add samples with 2 context snippets plus output snippet
@@ -70,7 +72,8 @@ def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_t
     instruction = Instruction(
         context=[simple_numtoken_tokenset, user_tokenset],
         response=simple_numtoken_tokenset,
-        final=token_workflow_count
+        final=token_workflow_count,
+        name="simple_numtoken_workflow_2context_instruction"
     )
     
     # Add samples with 2 context snippets
@@ -102,7 +105,8 @@ def simple_workflow_5context_instruction_with_samples(
     instruction = Instruction(
         context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset],
         response=simple_tokenset,
-        final=token_workflow_result
+        final=token_workflow_result,
+        name="simple_workflow_5context_instruction"
     )
     
     # Add samples with 5 context snippets
@@ -132,7 +136,8 @@ def user_workflow_5context_instruction_with_samples(
     """User instruction with 5 context lines for workflow tests."""
     instruction = ExtendedInstruction(
         context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset, user_tokenset],
-        final=token_workflow_end
+        final=token_workflow_end,
+        name="user_workflow_5context_instruction"
     )
     
     # Add samples with 5 context snippets plus output snippet
@@ -163,7 +168,8 @@ def simple_numtoken_workflow_5context_instruction_with_samples(
     instruction = Instruction(
         context=[simple_numtoken_tokenset, user_tokenset, simple_numtoken_tokenset, user_tokenset, simple_numtoken_tokenset],
         response=simple_numtoken_tokenset,
-        final=token_workflow_count
+        final=token_workflow_count,
+        name="simple_numtoken_workflow_5context_instruction"
     )
     
     # Add samples with 5 context snippets
