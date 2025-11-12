@@ -24,4 +24,4 @@ class NumListToken(Token):
         self.num_list: int = length
         self.min_value = min_value
         self.max_value = max_value
-        self.template_representation: str = f"<List of length {length} of numbers between {min_value} and {max_value}>"
+        self.template_representation: str = f"<num_{min_value}_{max_value}_{length}>"
