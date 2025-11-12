@@ -84,10 +84,33 @@ class TemplateFile:
                     input_dict[str(idx)] = {token_value: token_key}
                 
                 input_dict["<RUN>"] = RUN_TOKEN.key
+                
+                # Build input string from structure
+                input_parts = [BOS_TOKEN.key]
+                for idx, token_set in enumerate(instruction.get_token_sets()):
+                    token_key = "".join([
+                        t.key + (t.protocol_representation if isinstance(t, NumToken) else "")
+                        for t in token_set
+                    ])
+                    input_parts.append(token_key)
+                    
+                    is_last_context = idx == len(instruction.get_token_sets()) - 1
+                    is_user_prompt = isinstance(instruction, ExtendedInstruction) and is_last_context
+                    
+                    if is_user_prompt:
+                        input_parts.append("<prompt>")
+                    elif not is_last_context:
+                        input_parts.append("<string>")
+                
+                input_parts.append(RUN_TOKEN.key)
+                input_str = "\n".join(input_parts)
+                
                 output_str = "<string>\n" + instruction.final.key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
-                    "input": input_dict,
+                    "type": isinstance(instruction, ExtendedInstruction) and "extended" or "basic",
+                    "structure": input_dict,
+                    "input": input_str,
                     "output": output_str
                 }
             

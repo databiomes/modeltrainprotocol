@@ -20,7 +20,7 @@ class NumToken(Token):
         self.num: bool = True
         self.min_value: int | float = min_value
         self.max_value: int | float = max_value
-        self.protocol_representation: str = f"<Number between {min_value} and {max_value}>"
+        self.protocol_representation: str = f"<num_{min_value}_{max_value}>"
 
     def __eq__(self, other):
         """Equality comparison for NumToken."""
