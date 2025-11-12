@@ -6,14 +6,15 @@
         "Continue_": "Continue_",
         "Leave_": "Leave_",
         "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_",
-        "Tree_English_Alice_Talk_Emotion_": "Tree_English_Alice_Talk_Emotion_<Number between 0 and 10>",
+        "Tree_English_Alice_Talk_Emotion_": "Tree_English_Alice_Talk_Emotion_<num_0_10>",
         "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_",
         "Tree_English_Cat_Talk_Coordinates_": "Tree_English_Cat_Talk_Coordinates_",
         "Tree_English_Vanish_Cat_Talk_": "Tree_English_Vanish_Cat_Talk_"
     },
     "instructions": {
         "alice_disappear_cat_alice_instruction_leave": {
-            "input": {
+            "type": "extended",
+            "structure": {
                 "<BOS>": "<BOS>",
                 "0": {
                     "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_\n<string>"
@@ -22,30 +23,16 @@
                     "Tree_English_Vanish_Cat_Talk_": "Tree_English_Vanish_Cat_Talk_\n<string>"
                 },
                 "2": {
-                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_<prompt>\n"
+                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_<string>\n"
                 },
                 "<RUN>": "<RUN>"
             },
+            "input": "<BOS>\nTree_English_Alice_Talk_\n<string>\nTree_English_Vanish_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\n<RUN>",
             "output": "<string>\nLeave_\n<EOS>"
         },
-        "alice_cat_alice_instruction_continue": {
-            "input": {
-                "<BOS>": "<BOS>",
-                "0": {
-                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n<string>"
-                },
-                "1": {
-                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_\n<string>"
-                },
-                "2": {
-                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n"
-                },
-                "<RUN>": "<RUN>"
-            },
-            "output": "<string>\n<NON>\n<EOS>"
-        },
         "alice_cat_alice_instruction_disappear": {
-            "input": {
+            "type": "basic",
+            "structure": {
                 "<BOS>": "<BOS>",
                 "0": {
                     "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n<string>"
@@ -58,26 +45,48 @@
                 },
                 "<RUN>": "<RUN>"
             },
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
             "output": "<string>\n<NON>\n<EOS>"
         },
         "alice_cat_alice_instruction_numbers_continue": {
-            "input": {
+            "type": "basic",
+            "structure": {
                 "<BOS>": "<BOS>",
                 "0": {
                     "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n<string>"
                 },
                 "1": {
-                    "Tree_English_Alice_Talk_Emotion_": "Tree_English_Alice_Talk_Emotion_<Number between 0 and 10>\n<string>"
+                    "Tree_English_Alice_Talk_Emotion_": "Tree_English_Alice_Talk_Emotion_<num_0_10>\n<string>"
                 },
                 "2": {
-                    "Tree_English_Cat_Talk_Coordinates_": "Tree_English_Cat_Talk_Coordinates_\n"
+                    "Tree_English_Cat_Talk_Coordinates_": "Tree_English_Cat_Talk_Coordinates_<num_-1000_1000_3>\n"
                 },
                 "<RUN>": "<RUN>"
             },
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_Emotion_<num_0_10>\n<string>\nTree_English_Cat_Talk_Coordinates_\n<RUN>",
             "output": "<string>\nContinue_\n<EOS>"
         },
+        "alice_cat_alice_instruction_continue": {
+            "type": "basic",
+            "structure": {
+                "<BOS>": "<BOS>",
+                "0": {
+                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n<string>"
+                },
+                "1": {
+                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_\n<string>"
+                },
+                "2": {
+                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n"
+                },
+                "<RUN>": "<RUN>"
+            },
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\n<NON>\n<EOS>"
+        },
         "alice_disappear_cat_alice_instruction_appear": {
-            "input": {
+            "type": "basic",
+            "structure": {
                 "<BOS>": "<BOS>",
                 "0": {
                     "Tree_English_Vanish_Cat_Talk_": "Tree_English_Vanish_Cat_Talk_\n<string>"
@@ -90,6 +99,7 @@
                 },
                 "<RUN>": "<RUN>"
             },
+            "input": "<BOS>\nTree_English_Vanish_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
             "output": "<string>\n<NON>\n<EOS>"
         }
     },

@@ -1,7 +1,6 @@
 from dataclasses import dataclass
-from typing import Collection
 
-from model_train_protocol import NumToken, Instruction, ExtendedInstruction, NumListToken
+from model_train_protocol import Instruction, ExtendedInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 
@@ -36,8 +35,7 @@ class TemplateFile:
                 for token_set in instruction.get_token_sets():
                     token_value = "".join([t.value for t in token_set])
                     token_key = "".join([
-                        t.key + (t.template_representation if isinstance(t, NumToken) else "")
-                        for t in token_set
+                        t.key + t.template_representation for t in token_set
                     ])
                     
                     token_mapping[token_value] = token_key
@@ -70,11 +68,18 @@ class TemplateFile:
                     ])
                     
                     token_value = "".join([t.value for t in token_set])
-                    is_extended_instruction = isinstance(instruction, ExtendedInstruction)
-                    
-                    if is_extended_instruction:
+
+
+                    is_last_context = idx == len(instruction.get_token_sets()) - 1
+                    is_extended_instruction_extra_string = isinstance(instruction, ExtendedInstruction) and is_last_context
+
+                    if is_extended_instruction_extra_string:
                         token_key += "<string>"
+
                     token_key += "\n"
+
+                    if not is_last_context:
+                        token_key += "<string>"
                     
                     input_dict[str(idx)] = {token_value: token_key}
                 
@@ -84,17 +89,14 @@ class TemplateFile:
                 input_parts = [BOS_TOKEN.key]
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_key = "".join([
-                        t.key + (t.template_representation if isinstance(t, NumToken) else "")
-                        for t in token_set
+                        t.key + t.template_representation for t in token_set
                     ])
                     input_parts.append(token_key)
                     
                     is_last_context = idx == len(instruction.get_token_sets()) - 1
-                    is_extended_instruction = isinstance(instruction, ExtendedInstruction) and is_last_context
+                    is_extended_instruction_extra_string = isinstance(instruction, ExtendedInstruction) and is_last_context
                     
-                    if is_extended_instruction:
-                        input_parts.append("<prompt>")
-                    elif not is_last_context:
+                    if is_extended_instruction_extra_string or not is_last_context:
                         input_parts.append("<string>")
                 
                 input_parts.append(RUN_TOKEN.key)
@@ -127,7 +129,8 @@ class TemplateFile:
         self.tokens.add_tokens_from_instructions(self.instructions_list)
         self.instructions.add_inputs_from_instructions(self.instructions_list)
 
-    def _create_sample_model_output(self, instruction: BaseInstruction) -> str:
+    @classmethod
+    def _create_sample_model_output(cls, instruction: BaseInstruction) -> str:
         """Creates a sample model output string for a given instruction."""
 
         sample_output = "<string>\n"
@@ -141,7 +144,7 @@ class TemplateFile:
         examples: dict[str, str] = dict()
         simple_instruction: Instruction = next(
             (i for i in self.instructions.instructions_list if isinstance(i, Instruction)), None)
-        user_instruction: ExtendedInstruction = next(
+        extended_instruction: ExtendedInstruction = next(
             (i for i in self.instructions.instructions_list if isinstance(i, ExtendedInstruction)), None)
 
         if simple_instruction:
@@ -151,22 +154,20 @@ class TemplateFile:
                 simple_input += token_keys + "\n"
                 simple_input += "<string>\n"
             simple_input += RUN_TOKEN.key + "\n"
-            examples["simple_instruction_input"] = simple_input + self._create_sample_model_output(simple_instruction)
+            examples["instruction_input"] = simple_input + self._create_sample_model_output(simple_instruction)
 
-        if user_instruction:
+        if extended_instruction:
             user_input = BOS_TOKEN.key + "\n"
-            token_sets = user_instruction.get_token_sets()
+            token_sets = extended_instruction.get_token_sets()
             for idx, token_set in enumerate(token_sets):
                 token_keys = "".join([token.key for token in token_set])
                 user_input += token_keys + "\n"
-                if idx != len(token_sets) - 1:
-                    user_input += "<string>\n"
-                else:
-                    user_input += "<prompt>\n"
-            user_input += RUN_TOKEN.key + "\n"
-            examples["user_instruction_input"] = user_input
+                user_input += "<string>\n"
 
-        first_instruction = simple_instruction or user_instruction
+            user_input += RUN_TOKEN.key + "\n"
+            examples["extended_instruction_input"] = user_input
+
+        first_instruction = simple_instruction or extended_instruction
         if first_instruction:
             examples["valid_model_output"] = self._create_sample_model_output(first_instruction)
 
