@@ -70,7 +70,7 @@ class ProtocolFile:
 
             # Add numbers to the numbers dictionary
             if isinstance(token, NumToken):
-                self._numbers[token.value] = token.protocol_representation
+                self._numbers[token.value] = token.template_representation
 
             # Add special tokens to the special tokens set
             if isinstance(token, SpecialToken):

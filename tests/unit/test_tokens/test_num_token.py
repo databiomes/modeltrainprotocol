@@ -16,7 +16,7 @@ class TestNumToken:
         assert token.desc is None
         assert token.num == 1  # NumToken should have num=1
         assert token.special is None
-        assert token.protocol_representation == "<num_1_10>"
+        assert token.template_representation == "<num_1_10>"
 
     def test_num_token_creation_with_key(self):
         """Test numeric token creation with key."""
@@ -39,7 +39,7 @@ class TestNumToken:
         assert token.key == "🔢"
         assert token.desc == "A numeric token"
         assert token.num == 1
-        assert token.protocol_representation == "<num_1_10>"
+        assert token.template_representation == "<num_1_10>"
 
     def test_num_token_equality_same_tokens(self):
         """Test numeric token equality with same tokens."""
@@ -285,5 +285,5 @@ class TestNumToken:
         """Test numeric token with various ranges."""
         token = NumToken("Count", min_value=min_val, max_value=max_val)
         assert token.num == 1
-        assert token.protocol_representation == f"<num_{min_val}_{max_val}>"
+        assert token.template_representation == f"<num_{min_val}_{max_val}>"
 

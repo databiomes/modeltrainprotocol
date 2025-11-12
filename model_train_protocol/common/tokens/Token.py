@@ -18,6 +18,7 @@ class Token:
         self.num: bool = False
         self.num_list: int = 0
         self.special: str | None = None
+        self.template_representation: str = ""
         self.validate_value()
         self.validate_key()
 

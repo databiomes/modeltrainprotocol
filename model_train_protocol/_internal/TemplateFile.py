@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Collection
 
-from model_train_protocol import NumToken, Instruction, ExtendedInstruction
+from model_train_protocol import NumToken, Instruction, ExtendedInstruction, NumListToken
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 
@@ -36,7 +36,7 @@ class TemplateFile:
                 for token_set in instruction.get_token_sets():
                     token_value = "".join([t.value for t in token_set])
                     token_key = "".join([
-                        t.key + (t.protocol_representation if isinstance(t, NumToken) else "")
+                        t.key + (t.template_representation if isinstance(t, NumToken) else "")
                         for t in token_set
                     ])
                     
@@ -62,24 +62,19 @@ class TemplateFile:
             instructions_dict: dict[str, dict] = {}
             
             for instruction in self.instructions_list:
-                input_dict = {"<BOS>": BOS_TOKEN.key}
+                input_dict: dict[str, str | dict] = {"<BOS>": BOS_TOKEN.key}
                 
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_key = "".join([
-                        t.key + (t.protocol_representation if isinstance(t, NumToken) else "")
-                        for t in token_set
+                        t.key + t.template_representation for t in token_set
                     ])
                     
                     token_value = "".join([t.value for t in token_set])
-                    is_last_context = idx == len(instruction.get_token_sets()) - 1
-                    is_user_prompt = isinstance(instruction, ExtendedInstruction) and is_last_context
+                    is_extended_instruction = isinstance(instruction, ExtendedInstruction)
                     
-                    if is_user_prompt:
-                        token_key += "<prompt>"
-                    token_key += "\n"
-                    
-                    if not is_last_context:
+                    if is_extended_instruction:
                         token_key += "<string>"
+                    token_key += "\n"
                     
                     input_dict[str(idx)] = {token_value: token_key}
                 
@@ -89,15 +84,15 @@ class TemplateFile:
                 input_parts = [BOS_TOKEN.key]
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_key = "".join([
-                        t.key + (t.protocol_representation if isinstance(t, NumToken) else "")
+                        t.key + (t.template_representation if isinstance(t, NumToken) else "")
                         for t in token_set
                     ])
                     input_parts.append(token_key)
                     
                     is_last_context = idx == len(instruction.get_token_sets()) - 1
-                    is_user_prompt = isinstance(instruction, ExtendedInstruction) and is_last_context
+                    is_extended_instruction = isinstance(instruction, ExtendedInstruction) and is_last_context
                     
-                    if is_user_prompt:
+                    if is_extended_instruction:
                         input_parts.append("<prompt>")
                     elif not is_last_context:
                         input_parts.append("<string>")
