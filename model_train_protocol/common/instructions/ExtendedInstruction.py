@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import List, Optional, Sequence, Union
 
 from .BaseInstruction import BaseInstruction, Sample
 from ..constants import NON_TOKEN
@@ -26,8 +26,8 @@ class ExtendedInstruction(BaseInstruction):
         super().__init__(context=context[:-1], response=context[-1], final=final)
 
     # noinspection PyMethodOverriding
-    def add_sample(self, context_snippets: list[Snippet], response_string: str,
-                   value: int | float | list[int | float] | None = None):
+    def add_sample(self, context_snippets: List[Snippet], response_string: str,
+                   value: Union[int, float, List[Union[int, float]], None] = None):
         """
         Add a sample to the Instruction.
 
@@ -43,16 +43,16 @@ class ExtendedInstruction(BaseInstruction):
                                              response_string=response_string, value=value)
         self.samples.append(sample)
 
-    def _create_sample(self, context_snippets: list[Snippet], response_string: str,
-                       value: int | float | list[int | float] | None = None) -> Sample:
+    def _create_sample(self, context_snippets: List[Snippet], response_string: str,
+                       value: Union[int, float, List[Union[int, float]], None] = None) -> Sample:
         """Creates a sample ExtendedInstruction string for example usages."""
 
         # format sample
-        numbers: list[list[int]] = []
+        numbers: List[List[int]] = []
         for snippet in context_snippets:
             numbers.append(snippet.numbers)
 
-        number_lists: list[list[list[int]]] = []
+        number_lists: List[List[List[int]]] = []
         for snippet in context_snippets:
             number_lists.append(snippet.number_lists)
 

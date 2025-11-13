@@ -1,10 +1,12 @@
+from typing import Optional
+
 import emoji
 
 
 class Token:
     """The lowest level unit for a model. Represents a word, symbol, or concept."""
 
-    def __init__(self, value: str, key: str | None = None, desc: str | None = None, *args, **kwargs):
+    def __init__(self, value: str, key: Optional[str] = None, desc: Optional[str] = None, *args, **kwargs):
         """
         Initializes a Token instance.
 
@@ -13,11 +15,11 @@ class Token:
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         self.value: str = value + "_"
-        self._key: str | None = key
+        self._key: Optional[str] = key
         self.desc: str = desc
         self.num: bool = False
         self.num_list: int = 0
-        self.special: str | None = None
+        self.special: Optional[str] = None
         self.validate_value()
         self.validate_key()
 

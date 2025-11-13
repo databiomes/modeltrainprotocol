@@ -1,8 +1,10 @@
+from typing import Optional
+
 from .Token import Token
 
 
 class SpecialToken(Token):
-    def __init__(self, value: str, key: str, desc: str | None = None, special: str = None, *args, **kwargs):
+    def __init__(self, value: str, key: str, desc: Optional[str] = None, special: str = None, *args, **kwargs):
         """
         Initializes a SpecialToken instance.
 

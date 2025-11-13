@@ -1,3 +1,6 @@
+from typing import List
+
+
 class Guardrail:
     """
     Defines a guardrails response to bad prompts.
@@ -26,7 +29,7 @@ class Guardrail:
         self.good_prompt: str = good_prompt
         self.bad_prompt: str = bad_prompt
         self.bad_output: str = bad_output
-        self.samples: list[str] = []
+        self.samples: List[str] = []
 
     def add_sample(self, sample: str):
         """
@@ -44,7 +47,7 @@ class Guardrail:
             raise ValueError("Sample prompt cannot contain digits.")
         self.samples.append(sample)
 
-    def format_samples(self) -> list[str]:
+    def format_samples(self) -> List[str]:
         """Return the guardrails as a list of strings for JSON formatting."""
         if len(self.samples) < 3:
             raise ValueError("At least 3 sample prompts are required. Call add_sample() to add more.")
