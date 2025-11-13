@@ -17,38 +17,38 @@ class TemplateFile:
 
     class Tokens:
         """Represents all tokens used in the template."""
-        
+
         def __init__(self):
             self.instructions_list: list[BaseInstruction] = []
-        
+
         def add_tokens_from_instructions(self, instructions: list[BaseInstruction]):
             """Stores instruction data for later token extraction."""
 
             self.instructions_list = instructions
-        
+
         def to_json(self) -> dict[str, str]:
             """Extracts tokens from stored instructions and converts to JSON-serializable dictionary."""
 
             token_mapping: dict[str, str] = {}
-            
+
             for instruction in self.instructions_list:
                 for token_set in instruction.get_token_sets():
                     token_value = "".join([t.value for t in token_set])
                     token_key = "".join([
                         t.key + t.template_representation for t in token_set
                     ])
-                    
+
                     token_mapping[token_value] = token_key
                 token_mapping[instruction.final.value] = instruction.final.key
 
             return dict(sorted(token_mapping.items()))
-        
+
     class Instructions:
         """Represents the instruction set of the template."""
-        
+
         def __init__(self):
             self.instructions_list: list[BaseInstruction] = []
-        
+
         def add_inputs_from_instructions(self, instructions: list[BaseInstruction]):
             """Stores instruction data for later JSON conversion."""
 
@@ -58,20 +58,20 @@ class TemplateFile:
             """Converts stored instructions to JSON-serializable dictionary."""
 
             instructions_dict: dict[str, dict] = {}
-            
+
             for instruction in self.instructions_list:
                 input_dict: dict[str, str | dict] = {"<BOS>": BOS_TOKEN.key}
-                
+
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_key = "".join([
                         t.key + t.template_representation for t in token_set
                     ])
-                    
+
                     token_value = "".join([t.value for t in token_set])
 
-
                     is_last_context = idx == len(instruction.get_token_sets()) - 1
-                    is_extended_instruction_extra_string = isinstance(instruction, ExtendedInstruction) and is_last_context
+                    is_extended_instruction_extra_string = isinstance(instruction,
+                                                                      ExtendedInstruction) and is_last_context
 
                     if is_extended_instruction_extra_string:
                         token_key += "<string>"
@@ -80,28 +80,34 @@ class TemplateFile:
 
                     if not is_last_context:
                         token_key += "<string>"
-                    
+
                     input_dict[str(idx)] = {token_value: token_key}
-                
+
                 input_dict["<RUN>"] = RUN_TOKEN.key
-                
+
                 # Build input string from structure
                 input_parts = [BOS_TOKEN.key]
                 for idx, token_set in enumerate(instruction.get_token_sets()):
+
+                    is_last_context = idx == len(instruction.get_token_sets()) - 1
+                    is_extended_instruction_extra_string = isinstance(instruction,
+                                                                      ExtendedInstruction) and is_last_context
+
                     token_key = "".join([
                         t.key + t.template_representation for t in token_set
                     ])
+
+                    if is_extended_instruction_extra_string:
+                        token_key += "<string>" # Extra <string> for extended instruction embedded in key
+
                     input_parts.append(token_key)
-                    
-                    is_last_context = idx == len(instruction.get_token_sets()) - 1
-                    is_extended_instruction_extra_string = isinstance(instruction, ExtendedInstruction) and is_last_context
-                    
-                    if is_extended_instruction_extra_string or not is_last_context:
+
+                    if not is_last_context:
                         input_parts.append("<string>")
-                
+
                 input_parts.append(RUN_TOKEN.key)
                 input_str = "\n".join(input_parts)
-                
+
                 output_str = "<string>\n" + instruction.final.key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
@@ -110,12 +116,12 @@ class TemplateFile:
                     "input": input_str,
                     "output": output_str
                 }
-            
+
             return instructions_dict
 
     def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool):
         """Initializes the template"""
-        
+
         self.tokens: TemplateFile.Tokens = TemplateFile.Tokens()
         self.instructions: TemplateFile.Instructions = TemplateFile.Instructions()
         self.instruction_context_snippets: int = instruction_context_snippets
@@ -178,7 +184,7 @@ class TemplateFile:
 
         examples: dict[str, str] = self._create_examples()
         json_dict: dict = {
-            "version": "0.1",       # Version is hardcoded for now; update as needed
+            "version": "0.1",  # Version is hardcoded for now; update as needed
             "encrypt": self.encrypt,
             "tokens": self.tokens.to_json(),
             "instructions": self.instructions.to_json(),
