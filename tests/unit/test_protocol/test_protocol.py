@@ -314,6 +314,217 @@ class TestProtocol:
         with pytest.raises(ValueError, match="already added"):
             protocol.add_instruction(instruction)
 
+    def test_protocol_add_multiple_instructions_non_conflicting_names(self):
+        """Test that adding an instruction with the same name raises an error and stops."""
+        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+
+        # Create first instruction
+        token1 = Token("Token1", key="🔑")
+        token2 = Token("Token2", key="🔧")
+        token3 = Token("Token3", key="🔨")
+        context_set1 = TokenSet(tokens=(token1,))
+        context_set2 = TokenSet(tokens=(token2,))
+        response_set = TokenSet(tokens=(token3,))
+
+        instruction1 = Instruction(
+            context=[context_set1, context_set2],
+            response=response_set,
+            final=token3,
+            name="same_name"
+        )
+
+        context_snippet1 = context_set1.create_snippet("Context 1")
+        context_snippet2 = context_set2.create_snippet("Context 2")
+        output_snippet = response_set.create_snippet("Output")
+
+        for _ in range(3):
+            instruction1.add_sample(
+                context_snippets=[context_snippet1, context_snippet2],
+                response_snippet=output_snippet
+            )
+
+        # Create second instruction with the same name
+        instruction2 = Instruction(
+            context=[context_set1, context_set2],
+            response=response_set,
+            final=token3,
+            name="same_name"  # Same name as instruction1
+        )
+
+        for _ in range(3):
+            instruction2.add_sample(
+                context_snippets=[context_snippet1, context_snippet2],
+                response_snippet=output_snippet
+            )
+
+        # Add first instruction - should succeed
+        protocol.add_instruction(instruction1)
+        assert len(protocol.instructions) == 1
+
+        # Try to add second instruction with same name - should raise ValueError and stop
+        with pytest.raises(ValueError, match="An instruction with name 'same_name' already exists"):
+            protocol.add_instruction(instruction2)
+
+        # Verify only the first instruction was added (error stopped execution)
+        assert len(protocol.instructions) == 1
+        assert instruction1 in protocol.instructions
+        assert instruction2 not in protocol.instructions
+
+    def test_protocol_add_multiple_instructions_conflicting_names(self):
+        """Test adding multiple instructions with conflicting names raises error."""
+        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+
+        # Create first instruction
+        token1 = Token("Token1", key="🔑")
+        token2 = Token("Token2", key="🔧")
+        token3 = Token("Token3", key="🔨")
+        context_set1 = TokenSet(tokens=(token1,))
+        context_set2 = TokenSet(tokens=(token2,))
+        response_set = TokenSet(tokens=(token3,))
+
+        instruction1 = Instruction(
+            context=[context_set1, context_set2],
+            response=response_set,
+            final=token3,
+            name="conflicting_name"
+        )
+
+        context_snippet1 = context_set1.create_snippet("Context 1")
+        context_snippet2 = context_set2.create_snippet("Context 2")
+        output_snippet = response_set.create_snippet("Output")
+
+        for _ in range(3):
+            instruction1.add_sample(
+                context_snippets=[context_snippet1, context_snippet2],
+                response_snippet=output_snippet
+            )
+
+        # Create second instruction with the same name
+        token4 = Token("Token4", key="🔩")
+        token5 = Token("Token5", key="⚡")
+        context_set3 = TokenSet(tokens=(token4,))
+        response_set2 = TokenSet(tokens=(token5,))
+
+        instruction2 = Instruction(
+            context=[context_set1, context_set3],
+            response=response_set2,
+            final=token5,
+            name="conflicting_name"  # Same name as instruction1
+        )
+
+        context_snippet3 = context_set3.create_snippet("Context 3")
+
+        for _ in range(3):
+            instruction2.add_sample(
+                context_snippets=[context_snippet1, context_snippet3],
+                response_snippet=response_set2.create_snippet("Output 2")
+            )
+
+        # Add first instruction - should succeed
+        protocol.add_instruction(instruction1)
+        assert len(protocol.instructions) == 1
+
+        # Try to add second instruction with same name - should raise ValueError
+        with pytest.raises(ValueError, match="An instruction with name 'conflicting_name' already exists"):
+            protocol.add_instruction(instruction2)
+
+        # Verify only the first instruction was added
+        assert len(protocol.instructions) == 1
+        assert instruction1 in protocol.instructions
+        assert instruction2 not in protocol.instructions
+
+    def test_protocol_add_instruction_conflicting_name_after_multiple(self):
+        """Test adding instruction with conflicting name after multiple non-conflicting ones."""
+        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+
+        # Create tokens
+        token1 = Token("Token1", key="🔑")
+        token2 = Token("Token2", key="🔧")
+        token3 = Token("Token3", key="🔨")
+        context_set1 = TokenSet(tokens=(token1,))
+        context_set2 = TokenSet(tokens=(token2,))
+        response_set = TokenSet(tokens=(token3,))
+
+        context_snippet1 = context_set1.create_snippet("Context 1")
+        context_snippet2 = context_set2.create_snippet("Context 2")
+        output_snippet = response_set.create_snippet("Output")
+
+        # Add first instruction
+        instruction1 = Instruction(
+            context=[context_set1, context_set2],
+            response=response_set,
+            final=token3,
+            name="first_instruction"
+        )
+
+        for _ in range(3):
+            instruction1.add_sample(
+                context_snippets=[context_snippet1, context_snippet2],
+                response_snippet=output_snippet
+            )
+
+        protocol.add_instruction(instruction1)
+
+        # Add second instruction with different name
+        token4 = Token("Token4", key="🔩")
+        context_set3 = TokenSet(tokens=(token4,))
+
+        instruction2 = Instruction(
+            context=[context_set1, context_set3],
+            response=response_set,
+            final=token3,
+            name="second_instruction"
+        )
+
+        context_snippet3 = context_set3.create_snippet("Context 3")
+
+        for _ in range(3):
+            instruction2.add_sample(
+                context_snippets=[context_snippet1, context_snippet3],
+                response_snippet=output_snippet
+            )
+
+        protocol.add_instruction(instruction2)
+
+        # Add third instruction with different name
+        instruction3 = Instruction(
+            context=[context_set1, context_set2],
+            response=response_set,
+            final=token3,
+            name="third_instruction"
+        )
+
+        for _ in range(3):
+            instruction3.add_sample(
+                context_snippets=[context_snippet1, context_snippet2],
+                response_snippet=output_snippet
+            )
+
+        protocol.add_instruction(instruction3)
+
+        # Verify three instructions were added successfully
+        assert len(protocol.instructions) == 3
+
+        # Try to add fourth instruction with name that conflicts with first
+        instruction4 = Instruction(
+            context=[context_set1, context_set2],
+            response=response_set,
+            final=token3,
+            name="first_instruction"  # Conflicts with instruction1
+        )
+
+        for _ in range(3):
+            instruction4.add_sample(
+                context_snippets=[context_snippet1, context_snippet2],
+                response_snippet=output_snippet
+            )
+
+        with pytest.raises(ValueError, match="An instruction with name 'first_instruction' already exists"):
+            protocol.add_instruction(instruction4)
+
+        # Verify still only three instructions
+        assert len(protocol.instructions) == 3
+
     def test_protocol_add_instruction_invalid_instruction_context_snippets(self):
         """Test adding instruction with invalid context lines."""
         protocol = Protocol("test_protocol", instruction_context_snippets=3)

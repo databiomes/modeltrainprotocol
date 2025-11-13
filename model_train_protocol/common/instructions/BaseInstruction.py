@@ -61,15 +61,17 @@ class BaseInstruction(ABC):
                  ]
         response = TokenSet( Token("SentenceLength", num=True), Token("PoliteResponse") )
         final = Token("End")
-        instruction = Instruction(context=context, response=response, final=final)
+        instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
 
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token):
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token, name: str):
         """Initializes the common attributes to all Instructions."""
         self.context: Sequence[TokenSet] = context
         self.response: TokenSet = response
         self.final: Token = final
         self.samples: List[Sample] = []
+        self.name: str = name
+        self.samples: list[Sample] = []
         if not isinstance(context, Sequence):
             raise TypeError("Context must be a sequence of TokenSet instances.")
         if not all(isinstance(ts, TokenSet) for ts in context):
@@ -78,6 +80,8 @@ class BaseInstruction(ABC):
             raise TypeError("Response must be an instance of TokenSet.")
         if not isinstance(final, Token):
             raise TypeError("Final must be an instance of Token.")
+        if not name or not isinstance(name, str):
+            raise ValueError("Name must be a non-empty string.")
 
     @abc.abstractmethod
     def add_sample(self):
@@ -208,8 +212,22 @@ class BaseInstruction(ABC):
         """
         Defines equality based on the attributes of the Instruction.
         Returns True if the other object is an Instruction and its attributes match this Instruction's attributes.
+        Includes the 'name' field in comparison.
         """
-        return isinstance(other, BaseInstruction) and self.__dict__ == other.__dict__
+        if not isinstance(other, BaseInstruction):
+            return False
+
+        attrs_to_compare = ['name', 'context', 'response', 'final', 'samples']
+        for attr in attrs_to_compare:
+            try:
+                self_val = getattr(self, attr, None)
+                other_val = getattr(other, attr, None)
+                if self_val != other_val:
+                    return False
+            except AttributeError:
+                return False
+
+        return True
 
     def __dict__(self) -> dict:
         """Dictionary representation of the Instruction."""
@@ -218,6 +236,7 @@ class BaseInstruction(ABC):
     def to_dict(self) -> dict:
         """Convert the Instruction to a dictionary representation."""
         return {
+            'name': self.name,
             'tokens': [[token.to_dict() for token in token_set.tokens] for token_set in self.get_token_sets()],
             'result': self.final.to_dict() if self.final else None,
             'samples': self.samples

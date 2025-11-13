@@ -214,7 +214,7 @@ class TestInstructionDictMethods:
         instruction_dict = simple_basic_instruction_with_samples.to_dict()
         
         # Check all expected keys are present
-        expected_keys = {'tokens', 'result', 'samples'}
+        expected_keys = {'name', 'tokens', 'result', 'samples'}
         assert set(instruction_dict.keys()) == expected_keys
         
         # Check that tokens structure matches instruction structure

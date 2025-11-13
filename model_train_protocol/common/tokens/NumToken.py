@@ -25,14 +25,14 @@ class NumToken(Token):
         self.num: bool = True
         self.min_value: Union[int, float] = min_value
         self.max_value: Union[int, float] = max_value
-        self.protocol_representation: str = f"<Number between {min_value} and {max_value}>"
+        self.template_representation: str = f"<num_{min_value}_{max_value}>"
 
     def __eq__(self, other):
         """Equality comparison for NumToken."""
         if not isinstance(other, NumToken):
             return False
-        return self.value == other.value and self.key == other.key and self.desc == other.desc and self.num == other.num and self.protocol_representation == other.protocol_representation and self.min_value == other.min_value and self.max_value == other.max_value
+        return self.value == other.value and self.key == other.key and self.desc == other.desc and self.num == other.num and self.template_representation == other.template_representation and self.min_value == other.min_value and self.max_value == other.max_value
 
     def __hash__(self):
         """Hash based on the string representation of the NumToken."""
-        return hash((self.value, self.key, self.desc, self.num, self.min_value, self.max_value, self.protocol_representation))
+        return hash((self.value, self.key, self.desc, self.num, self.min_value, self.max_value, self.template_representation))
