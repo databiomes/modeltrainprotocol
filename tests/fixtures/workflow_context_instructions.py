@@ -3,33 +3,34 @@ Workflow instruction fixtures with different context line counts (1, 2, 5).
 """
 import pytest
 
-from model_train_protocol import SimpleInstruction, UserInstruction
+from model_train_protocol import Instruction, ExtendedInstruction
 
 
 # 2 Context Line Instructions (existing from protocol_workflow_instructions.py)
 @pytest.fixture
-def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, simple_response_sample, token_workflow_result) -> SimpleInstruction:
+def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, simple_response_sample, token_workflow_result) -> Instruction:
     """Simple instruction with 2 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_tokenset, user_tokenset],
         response=simple_tokenset,
-        final=token_workflow_result
+        final=token_workflow_result,
+        name="simple_workflow_2context_instruction"
     )
     
     # Add samples with 2 context snippets
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     
@@ -37,31 +38,28 @@ def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_toke
 
 
 @pytest.fixture
-def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, user_response_sample, token_workflow_end) -> UserInstruction:
+def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, user_response_sample, token_workflow_end) -> ExtendedInstruction:
     """User instruction with 2 context lines for workflow tests."""
-    instruction = UserInstruction(
-        context=[simple_tokenset, user_tokenset],
-        user=user_tokenset,
-        final=token_workflow_end
+    instruction = ExtendedInstruction(
+        context=[simple_tokenset, user_tokenset, user_tokenset],
+        final=token_workflow_end,
+        name="user_workflow_2context_instruction"
     )
     
-    # Add samples with 2 context snippets
+    # Add samples with 2 context snippets plus output snippet
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
-        prompt="User prompt 0",
-        output_snippet=user_response_sample,
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
+        response_string="User prompt 0",
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
-        prompt="User prompt 1",
-        output_snippet=user_response_sample,
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
+        response_string="User prompt 1",
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample],
-        prompt="User prompt 2",
-        output_snippet=user_response_sample,
+        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
+        response_string="User prompt 2",
         value=None
     )
     
@@ -69,28 +67,29 @@ def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokens
 
 
 @pytest.fixture
-def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_tokenset, user_tokenset, simple_numtoken_context_sample, user_context_sample, simple_numtoken_response_sample, token_workflow_count) -> SimpleInstruction:
+def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_tokenset, user_tokenset, simple_numtoken_context_sample, user_context_sample, simple_numtoken_response_sample, token_workflow_count) -> Instruction:
     """Simple instruction with NumToken and 2 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_numtoken_tokenset, user_tokenset],
         response=simple_numtoken_tokenset,
-        final=token_workflow_count
+        final=token_workflow_count,
+        name="simple_numtoken_workflow_2context_instruction"
     )
     
     # Add samples with 2 context snippets
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=10
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=15
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=20
     )
     
@@ -101,28 +100,29 @@ def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_t
 @pytest.fixture
 def simple_workflow_5context_instruction_with_samples(
     simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, simple_response_sample, token_workflow_result
-) -> SimpleInstruction:
+) -> Instruction:
     """Simple instruction with 5 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset],
         response=simple_tokenset,
-        final=token_workflow_result
+        final=token_workflow_result,
+        name="simple_workflow_5context_instruction"
     )
     
     # Add samples with 5 context snippets
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     instruction.add_sample(
         context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        output_snippet=simple_response_sample,
+        response_snippet=simple_response_sample,
         value=None
     )
     
@@ -132,31 +132,28 @@ def simple_workflow_5context_instruction_with_samples(
 @pytest.fixture
 def user_workflow_5context_instruction_with_samples(
     simple_tokenset, user_tokenset, simple_context_sample, user_context_sample, user_response_sample, token_workflow_end
-) -> UserInstruction:
+) -> ExtendedInstruction:
     """User instruction with 5 context lines for workflow tests."""
-    instruction = UserInstruction(
-        context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset],
-        user=user_tokenset,
-        final=token_workflow_end
+    instruction = ExtendedInstruction(
+        context=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset, user_tokenset],
+        final=token_workflow_end,
+        name="user_workflow_5context_instruction"
     )
     
-    # Add samples with 5 context snippets
+    # Add samples with 5 context snippets plus output snippet
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        prompt="User prompt 0",
-        output_snippet=user_response_sample,
+        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
+        response_string="User prompt 0",
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        prompt="User prompt 1",
-        output_snippet=user_response_sample,
+        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
+        response_string="User prompt 1",
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
-        prompt="User prompt 2",
-        output_snippet=user_response_sample,
+        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
+        response_string="User prompt 2",
         value=None
     )
     
@@ -166,28 +163,29 @@ def user_workflow_5context_instruction_with_samples(
 @pytest.fixture
 def simple_numtoken_workflow_5context_instruction_with_samples(
     simple_numtoken_tokenset, user_tokenset, simple_numtoken_context_sample, user_context_sample, simple_numtoken_response_sample, token_workflow_count
-) -> SimpleInstruction:
+) -> Instruction:
     """Simple instruction with NumToken and 5 context lines for workflow tests."""
-    instruction = SimpleInstruction(
+    instruction = Instruction(
         context=[simple_numtoken_tokenset, user_tokenset, simple_numtoken_tokenset, user_tokenset, simple_numtoken_tokenset],
         response=simple_numtoken_tokenset,
-        final=token_workflow_count
+        final=token_workflow_count,
+        name="simple_numtoken_workflow_5context_instruction"
     )
     
     # Add samples with 5 context snippets
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=10
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=15
     )
     instruction.add_sample(
         context_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        response_snippet=simple_numtoken_response_sample,
         value=20
     )
     

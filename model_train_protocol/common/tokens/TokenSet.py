@@ -1,42 +1,36 @@
-import dataclasses
-import warnings
-from typing import Sequence, Collection
-
 from dataclasses import dataclass
+from typing import List, Optional, Sequence, Collection, Union
 
 from . import NumListToken
+from .NumToken import NumToken
 from .Token import Token
 from ..guardrails.Guardrail import Guardrail
-from .NumToken import NumToken
 
 
 @dataclass
 class Snippet:
     string: str
     token_set_key: str
-    numbers: list[int] = dataclasses.field(default_factory=list)
+    numbers: List[Union[int, float]]
+    number_lists: List[List[Union[int, float]]]
 
 
 class TokenSet:
     """A set of Tokens representing a combination of input types."""
 
-    def __init__(self, tokens: Sequence[Token] | Token):
+    def __init__(self, tokens: Union[Sequence[Token], Token]):
         """Initializes a TokenSet instance."""
         if isinstance(tokens, Token):
             tokens = [tokens]
         self.tokens: Sequence[Token] = tokens
-        self.is_user: bool = any(token.user for token in tokens)
-        self.required_numtoken_numbers: int = sum(
-            token.num for token in tokens if token.num == 1)  # Count of NumToken
-        self.required_numlists: list[int] = [
-            token.num for token in tokens if isinstance(token, NumListToken)
-        ]  # List of lengths for NumListToken
         self.key: str = ''.join(token.value for token in
                                 tokens)  # Note this key is based on the value of the tokens and not the keys of the tokens
-        self._guardrail: Guardrail | None = None
+        self._num_tokens: List[NumToken] = [token for token in tokens if isinstance(token, NumToken)]
+        self._num_list_tokens: List[NumListToken] = [token for token in tokens if isinstance(token, NumListToken)]
+        self._guardrail: Optional[Guardrail] = None
 
     @property
-    def guardrail(self) -> Guardrail | None:
+    def guardrail(self) -> Optional[Guardrail]:
         """Returns the guardrails for the TokenSet, if any."""
         return self._guardrail
 
@@ -44,15 +38,44 @@ class TokenSet:
         """Sets a guardrails for the TokenSet."""
         if self.guardrail is not None:
             raise ValueError("Only one guardrail can be set per TokenSet.")
-        if not self.is_user:
-            raise ValueError("Guardrails can only be added to a user TokenSet.")
         if not isinstance(guardrail, Guardrail):
             raise TypeError("Guardrail must be an instance of the Guardrail class.")
         self._guardrail = guardrail
 
+    def _validate_num_tokens(self, numbers: Collection[Union[int, float]]):
+        """Validates the numbers against the TokenSet requirements."""
+        required_numtoken_numbers: int = sum(
+            token.num for token in self.tokens if isinstance(token, NumToken))  # Count of NumToken
+        if len(numbers) != required_numtoken_numbers:
+            raise ValueError(
+                f"{self} requires {required_numtoken_numbers} numbers but {len(numbers or [])} were provided.")
+        for (i, number) in enumerate(numbers):
+            corresponding_token = self._num_tokens[i]
+            if not (corresponding_token.min_value <= number <= corresponding_token.max_value):
+                raise ValueError(
+                    f"Number at index {i} with value {number} is out of bounds for token {corresponding_token}. Must be between {corresponding_token.min_value} and {corresponding_token.max_value}.")
+
+    def _validate_numlist_tokens(self, number_lists: Collection[Collection[Union[int, float]]]):
+        """Validates the number lists against the TokenSet requirements."""
+        required_numlists: List[int] = [
+            token.num_list for token in self.tokens if isinstance(token, NumListToken)]
+        if len(number_lists) != len(required_numlists):
+            raise ValueError(
+                f"{self} requires {len(required_numlists)} number lists but {len(number_lists or [])} lists were provided.")
+        for (i, required_length) in enumerate(required_numlists):
+            if len(number_lists[i]) != required_length:
+                raise ValueError(
+                    f"Number list at index {i} must be of length {required_length} but is of length {len(number_lists[i])}.")
+        for (i, number_list) in enumerate(number_lists):
+            corresponding_token = self._num_list_tokens[i]
+            for number in number_list:
+                if not (corresponding_token.min_value <= number <= corresponding_token.max_value):
+                    raise ValueError(
+                        f"Number {number} in number list at index {i} is out of bounds for token {corresponding_token}. Must be between {corresponding_token.min_value} and {corresponding_token.max_value}.")
+
     def create_snippet(self, string: str,
-                       numbers: Collection[int | float] | int | float | None = None,
-                       number_lists: Collection[int | float | Collection[int | float]] | None = None) -> Snippet:
+                       numbers: Union[Collection[Union[int, float]], int, float, None] = None,
+                       number_lists: Union[Collection[Union[int, float, Collection[Union[int, float]]]], None] = None) -> Snippet:
         """Create a snippet for the TokenSet"""
         if not isinstance(string, str):
             raise TypeError("String must be of type str.")
@@ -76,33 +99,34 @@ class TokenSet:
         else:
             raise TypeError("Number lists must be an Collection of numbers or Collection of Collections or None.")
 
-        if len(numbers) != self.required_numtoken_numbers:
-            raise ValueError(
-                f"{self} requires {self.required_numtoken_numbers} numbers but {len(numbers)} were provided.")
-        if len(number_lists) != len(self.required_numlists):
-            raise ValueError(
-                f"{self} requires {len(self.required_numlists)} number lists but {len(number_lists or [])} lists were provided.")
-        for (i, required_length) in enumerate(self.required_numlists):
-            if len(number_lists[i]) != required_length:
-                raise ValueError(
-                    f"Number list at index {i} must be of length {required_length} but is of length {len(number_lists[i])}.")
+        self._validate_num_tokens(numbers=numbers)
+        self._validate_numlist_tokens(number_lists=number_lists)
 
         # Combine numbers and number_lists into single input for Snippet
         numbers_index = 0
         number_lists_index = 0
-        combined_numbers: list[int | float | Collection[int | float]] = []  # Combined list of numbers and number lists
-        for index, token in enumerate(self.tokens):
-            if not isinstance(token, NumToken):
-                continue
+        # final_numbers: list[int | float] = []
+        # final_number_lists: list[Collection[int | float]] = []
+        # combined_numbers: list[int | float | Collection[int | float]] = []  # Combined list of numbers and number lists
+        # for index, token in enumerate(self.tokens):
+        #     if not isinstance(token, NumToken):
+        #         continue
+        #
+        #     if token.num == 1:
+        #         combined_numbers.append(numbers[numbers_index])
+        #         numbers_index += 1
+        #     elif token.num > 1:
+        #         combined_numbers.append(number_lists[number_lists_index])
+        #         number_lists_index += 1
+        #
+        # for index, token in enumerate(self.tokens):
+        #
+        #     if not isinstance(token, NumListToken):
+        #         continue
+        #
+        #     number_lists.append(numbers[number_lists_index])
 
-            if token.num == 1:
-                combined_numbers.append(numbers[numbers_index])
-                numbers_index += 1
-            elif token.num > 1:
-                combined_numbers.append(number_lists[number_lists_index])
-                number_lists_index += 1
-
-        return Snippet(string=string, numbers=combined_numbers, token_set_key=self.key)
+        return Snippet(string=string, numbers=numbers, number_lists=number_lists, token_set_key=self.key)
 
     def get_token_key_set(self) -> str:
         """Returns a string representing the combined token keys of the individual Tokens in the TokenSet."""

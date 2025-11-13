@@ -14,10 +14,9 @@ class TestNumToken:
         assert token.value == "Count_"
         assert token.key is None
         assert token.desc is None
-        assert token.user is False
         assert token.num == 1  # NumToken should have num=1
         assert token.special is None
-        assert token.protocol_representation == "<Number between 1 and 10>"
+        assert token.template_representation == "<num_1_10>"
 
     def test_num_token_creation_with_key(self):
         """Test numeric token creation with key."""
@@ -40,7 +39,7 @@ class TestNumToken:
         assert token.key == "🔢"
         assert token.desc == "A numeric token"
         assert token.num == 1
-        assert token.protocol_representation == "<Number between 1 and 10>"
+        assert token.template_representation == "<num_1_10>"
 
     def test_num_token_equality_same_tokens(self):
         """Test numeric token equality with same tokens."""
@@ -88,8 +87,7 @@ class TestNumToken:
         assert "Token(" in str_repr
         assert "Value: 'Count_'" in str_repr
         assert "Key: '🔢'" in str_repr
-        assert "User: False" in str_repr
-        assert "Num: 1" in str_repr  # Should show num=1
+        assert "Num: True" in str_repr  # Should show num=True
         assert "Desc: A numeric token" in str_repr
         assert "Special: None" in str_repr
 
@@ -101,9 +99,8 @@ class TestNumToken:
         expected_dict = {
             'value': 'Count_',
             'key': '🔢',
-            'user': False,
             'num': 1,  # Should be 1 for NumToken
-            'num_list': [],
+            'num_list': 0,
             'desc': 'A numeric token',
             'special': None
         }
@@ -117,9 +114,8 @@ class TestNumToken:
         expected_dict = {
             'value': 'Count_',
             'key': '🔢',
-            'user': False,
             'num': 1,  # Should be 1 for NumToken
-            'num_list': [],
+            'num_list': 0,
             'desc': 'A numeric token',
             'special': None
         }
@@ -289,5 +285,5 @@ class TestNumToken:
         """Test numeric token with various ranges."""
         token = NumToken("Count", min_value=min_val, max_value=max_val)
         assert token.num == 1
-        assert token.protocol_representation == f"<Number between {min_val} and {max_val}>"
+        assert token.template_representation == f"<num_{min_val}_{max_val}>"
 

@@ -1,10 +1,12 @@
+from typing import Optional
+
 import emoji
 
 
 class Token:
     """The lowest level unit for a model. Represents a word, symbol, or concept."""
 
-    def __init__(self, value: str, key: str | None = None, desc: str | None = None, *args, **kwargs):
+    def __init__(self, value: str, key: Optional[str] = None, desc: Optional[str] = None, *args, **kwargs):
         """
         Initializes a Token instance.
 
@@ -13,12 +15,12 @@ class Token:
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         self.value: str = value + "_"
-        self._key: str | None = key
+        self._key: Optional[str] = key
         self.desc: str = desc
-        self.user: bool = False
-        self.num: int = 0
-        self.num_list: list = []
-        self.special: str | None = None
+        self.num: bool = False
+        self.num_list: int = 0
+        self.template_representation: str = ""
+        self.special: Optional[str] = None
         self.validate_value()
         self.validate_key()
 
@@ -73,7 +75,7 @@ class Token:
 
     def __str__(self):
         """String representation of the token."""
-        return f"Token(Value: '{self.value}', Key: '{self.key}', User: {self.user}, Num: {self.num}, Desc: {self.desc}, Special: {self.special})"
+        return f"Token(Value: '{self.value}', Key: '{self.key}', Num: {self.num}, Desc: {self.desc}, Special: {self.special})"
 
     def __hash__(self):
         """Hash based on the string representation of the token."""
@@ -92,5 +94,5 @@ class Token:
 
     def to_dict(self):
         """Convert the token to a dictionary representation."""
-        return {'value': self.value, 'key': self.key, 'user': self.user, 'num': self.num, 'num_list': self.num_list, 'desc': self.desc,
+        return {'value': self.value, 'key': self.key, 'num': self.num, 'num_list': self.num_list, 'desc': self.desc,
                 'special': self.special}

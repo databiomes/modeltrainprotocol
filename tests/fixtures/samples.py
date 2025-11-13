@@ -271,6 +271,12 @@ def user_response_sample(user_tokenset) -> Snippet:
 
 
 @pytest.fixture
+def user_prompt_sample(user_tokenset) -> Snippet:
+    """User prompt sample created on user tokenset."""
+    return user_tokenset.create_snippet(string="What should I do?")
+
+
+@pytest.fixture
 def result_context_sample(result_tokenset) -> Snippet:
     """Result context sample created on result tokenset."""
     return result_tokenset.create_snippet(string="The conversation continues")

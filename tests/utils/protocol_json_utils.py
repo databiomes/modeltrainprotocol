@@ -1,7 +1,7 @@
 def assert_special_tokens_in_tokens(json_output: dict, special_tokens: list):
     """Assert that all special tokens in the protocol JSON are also present in the tokens dictionary."""
     tokens = json_output["tokens"]
-    all_token_keys: set[str] = set([token["emoji"] for token in tokens.values()])
+    all_token_keys: set[str] = set([token["key"] for token in tokens.values()])
     for token in special_tokens:
         if '_' in token:
             for token_subset in token.split("_")[:-1]:  # Exclude the trailing empty string after last '_'

@@ -36,7 +36,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -52,7 +53,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -68,7 +70,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -84,7 +87,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -100,7 +104,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -116,7 +121,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -132,7 +138,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -148,7 +155,7 @@ class TestSampleDictMethods:
         # For this test, we need to add a sample to the scores instruction first
         scores_instruction.add_sample(
             context_snippets=[scores_context_sample],
-            output_snippet=scores_response_sample,
+            response_snippet=scores_response_sample,
             value=[85, 90, 95]
         )
         
@@ -160,7 +167,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -176,7 +184,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -192,7 +201,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -222,7 +232,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -266,7 +277,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -282,7 +294,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -298,7 +311,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -314,7 +328,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -330,7 +345,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -346,7 +362,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -362,7 +379,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -378,7 +396,8 @@ class TestSampleDictMethods:
         expected_dict = {
             'strings': sample.strings,
             'prompt': sample.prompt,
-            'number': sample.number,
+            'numbers': sample.numbers,
+            'number_lists': sample.number_lists,
             'result': sample.result.value,
             'value': sample.value
         }
@@ -408,7 +427,7 @@ class TestSampleDictMethods:
         
         sample_dict = sample.to_dict()
         # Test that the sample has a number field
-        assert 'number' in sample_dict
+        assert 'numbers' in sample_dict
 
     def test_sample_to_dict_nested_numbers(self, mixed_instruction_with_samples):
         """Test sample to_dict with nested number structures using instruction fixtures."""
@@ -416,9 +435,9 @@ class TestSampleDictMethods:
         sample = mixed_instruction_with_samples.samples[0]
         
         sample_dict = sample.to_dict()
-        # Test that the sample has a number field with nested structure
-        assert 'number' in sample_dict
-        assert isinstance(sample_dict['number'], list)
+        # Test that the sample has a numbers field with nested structure
+        assert 'numbers' in sample_dict
+        assert isinstance(sample_dict['numbers'], list)
 
     def test_sample_to_dict_consistency(self, simple_instruction_with_samples):
         """Test that identical samples produce identical dictionaries using instruction fixtures."""
@@ -457,13 +476,13 @@ class TestSampleDictMethods:
         sample_dict = sample.to_dict()
         
         # Check all expected keys are present
-        expected_keys = {'strings', 'prompt', 'number', 'result', 'value'}
+        expected_keys = {'strings', 'prompt', 'numbers', 'number_lists', 'result', 'value'}
         assert set(sample_dict.keys()) == expected_keys
         
         # Check values match sample attributes
         assert sample_dict['strings'] == sample.strings
         assert sample_dict['prompt'] == sample.prompt
-        assert sample_dict['number'] == sample.number
+        assert sample_dict['numbers'] == sample.numbers
         assert sample_dict['result'] == sample.result.value
         assert sample_dict['value'] == sample.value
 

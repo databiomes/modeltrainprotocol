@@ -42,7 +42,7 @@ class TestInstructionDictMethods:
             sample_dict = sample.to_dict()
             assert 'strings' in sample_dict
             assert 'prompt' in sample_dict
-            assert 'number' in sample_dict
+            assert 'numbers' in sample_dict
             assert 'result' in sample_dict
             assert 'value' in sample_dict
 
@@ -68,8 +68,8 @@ class TestInstructionDictMethods:
         sample = instruction_dict['samples'][0]
         sample_dict = sample.to_dict()
         assert sample_dict['value'] == 10
-        # Check that number array is present
-        assert 'number' in sample_dict
+        # Check that numbers array is present
+        assert 'numbers' in sample_dict
 
     def test_instruction_to_dict_with_complex_token_sets(self, simple_mixed_instruction_with_samples):
         """Test instruction to_dict with complex token sets using fixtures."""
@@ -214,7 +214,7 @@ class TestInstructionDictMethods:
         instruction_dict = simple_basic_instruction_with_samples.to_dict()
         
         # Check all expected keys are present
-        expected_keys = {'tokens', 'result', 'samples'}
+        expected_keys = {'name', 'tokens', 'result', 'samples'}
         assert set(instruction_dict.keys()) == expected_keys
         
         # Check that tokens structure matches instruction structure
@@ -268,7 +268,7 @@ class TestInstructionDictMethods:
                 sample_dict = sample.to_dict()
                 assert 'strings' in sample_dict
                 assert 'prompt' in sample_dict
-                assert 'number' in sample_dict
+                assert 'numbers' in sample_dict
                 assert 'result' in sample_dict
                 assert 'value' in sample_dict
 
@@ -359,7 +359,7 @@ class TestInstructionDictMethods:
         for sample in instruction_dict['samples']:
             sample_dict = sample.to_dict()
             assert sample_dict['prompt'] is not None
-            assert 'User prompt' in sample_dict['prompt']
+            assert sample_dict['prompt'] == 'What should I do?'
 
     def test_edge_case_instructions(self, simple_instruction_with_none_final, simple_instruction_with_non_token_final, simple_instruction_with_empty_samples):
         """Test edge case instructions."""

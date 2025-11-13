@@ -1,33 +1,111 @@
 {
-    "all_combinations": {
-        "model_input": {
-            "<BOS>": "🏁",
-            "0": [
-                "Tree_English_Alice_Talk_: Tree_English_Alice_Talk_\n<string>"
-            ],
-            "1": [
-                "Tree_English_Vanish_Cat_Talk_: Tree_English_Vanish_Cat_Talk_\n",
-                "Tree_English_Cat_Talk_: Tree_English_Cat_Talk_\n"
-            ],
-            "2": [
-                "Tree_English_Alice_Talk_: Tree_English_Alice_Talk_USER PROMPT\n<string>"
-            ],
-            "<RUN>": "🏃"
-        },
-        "model_output": {
-            "model_response": "<string>",
-            "model_results": {
-                "Answer_": "Answer_",
-                "Appear_": "Appear_",
-                "Continue_": "Continue_",
-                "Leave_": "Leave_",
-                "Vanish_": "Vanish_"
+    "version": "0.1",
+    "encrypt": false,
+    "tokens": {
+        "<NON>": "<NON>",
+        "Continue_": "Continue_",
+        "Leave_": "Leave_",
+        "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_",
+        "Tree_English_Alice_Talk_Emotion_": "Tree_English_Alice_Talk_Emotion_<num_0_10>",
+        "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_",
+        "Tree_English_Cat_Talk_Coordinates_": "Tree_English_Cat_Talk_Coordinates_<num_-1000_1000_3>",
+        "Tree_English_Vanish_Cat_Talk_": "Tree_English_Vanish_Cat_Talk_"
+    },
+    "instructions": {
+        "alice_disappear_cat_alice_instruction_leave": {
+            "type": "extended",
+            "structure": {
+                "<BOS>": "<BOS>",
+                "0": {
+                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_\n<string>"
+                },
+                "1": {
+                    "Tree_English_Vanish_Cat_Talk_": "Tree_English_Vanish_Cat_Talk_\n<string>"
+                },
+                "2": {
+                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_<string>\n"
+                },
+                "<RUN>": "<RUN>"
             },
-            "<EOS>": "🎬"
+            "input": "<BOS>\nTree_English_Alice_Talk_\n<string>\nTree_English_Vanish_Cat_Talk_\n<string>\nTree_English_Alice_Talk_<string>\n<RUN>",
+            "output": "<string>\nLeave_\n<EOS>"
+        },
+        "alice_cat_alice_instruction_numbers_continue": {
+            "type": "basic",
+            "structure": {
+                "<BOS>": "<BOS>",
+                "0": {
+                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n<string>"
+                },
+                "1": {
+                    "Tree_English_Alice_Talk_Emotion_": "Tree_English_Alice_Talk_Emotion_<num_0_10>\n<string>"
+                },
+                "2": {
+                    "Tree_English_Cat_Talk_Coordinates_": "Tree_English_Cat_Talk_Coordinates_<num_-1000_1000_3>\n"
+                },
+                "<RUN>": "<RUN>"
+            },
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_Emotion_<num_0_10>\n<string>\nTree_English_Cat_Talk_Coordinates_<num_-1000_1000_3>\n<RUN>",
+            "output": "<string>\nContinue_\n<EOS>"
+        },
+        "alice_cat_alice_instruction_disappear": {
+            "type": "basic",
+            "structure": {
+                "<BOS>": "<BOS>",
+                "0": {
+                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n<string>"
+                },
+                "1": {
+                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_\n<string>"
+                },
+                "2": {
+                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n"
+                },
+                "<RUN>": "<RUN>"
+            },
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\n<NON>\n<EOS>"
+        },
+        "alice_cat_alice_instruction_continue": {
+            "type": "basic",
+            "structure": {
+                "<BOS>": "<BOS>",
+                "0": {
+                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n<string>"
+                },
+                "1": {
+                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_\n<string>"
+                },
+                "2": {
+                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n"
+                },
+                "<RUN>": "<RUN>"
+            },
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\n<NON>\n<EOS>"
+        },
+        "alice_disappear_cat_alice_instruction_appear": {
+            "type": "basic",
+            "structure": {
+                "<BOS>": "<BOS>",
+                "0": {
+                    "Tree_English_Vanish_Cat_Talk_": "Tree_English_Vanish_Cat_Talk_\n<string>"
+                },
+                "1": {
+                    "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_\n<string>"
+                },
+                "2": {
+                    "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_\n"
+                },
+                "<RUN>": "<RUN>"
+            },
+            "input": "<BOS>\nTree_English_Vanish_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\n<NON>\n<EOS>"
         }
     },
     "example_usage": {
-        "valid_user_input": "🏁\nTree_English_Alice_Talk_\n<string>\nTree_English_Vanish_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\nUSER PROMPT\n🏃\n",
-        "valid_output": "<string>\nAnswer_\n🎬"
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_Emotion_\n<string>\nTree_English_Cat_Talk_Coordinates_\n<string>\n<RUN>\n<string>\nContinue_\n<EOS>",
+        "extended_instruction_input": "<BOS>\nTree_English_Alice_Talk_\n<string>\nTree_English_Vanish_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\n<RUN>\n",
+        "valid_model_output": "<string>\nContinue_\n<EOS>"
     }
 }

@@ -1,12 +1,14 @@
+from typing import Optional
+
 from model_train_protocol import Protocol
 from model_train_protocol.common.prototyping.providers.openai import generate_mtp_prototype_file
 from model_train_protocol.common.prototyping.translator import translate_prototype
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel
 
 
-def generate_prototype_protocol(prompt_id: str, openai_api_key: str | None = None,
-                                file_path: str | None = None,
-                                name: str | None = None, encrypt: bool = False):
+def generate_prototype_protocol(prompt_id: str, openai_api_key: Optional[str] = None,
+                                file_path: Optional[str] = None,
+                                name: Optional[str] = None, encrypt: bool = False):
     """
     Generates a protocol file prototype based on a given prompt ID using OpenAI's API.
 

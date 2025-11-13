@@ -1,8 +1,10 @@
+from typing import List, Optional
+
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel
-from ... import Protocol, SimpleInstruction, Token, TokenSet, Snippet
+from ... import Protocol, Instruction, Token, TokenSet, Snippet
 
 
-def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = None,
+def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = None,
                         encrypt: bool = False) -> Protocol:
     """
     Translates a generated mtp prototype into a ProtocolFile
@@ -35,12 +37,12 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
         # response_tokenset: TokenSet = create_token_set_from_token_model_array(instruction_set.response_tokens)
         # final: Token = create_sanitized_token_from_model(prototype_mtp.final_token)
 
-        simple_instruction: SimpleInstruction = SimpleInstruction(
+        simple_instruction: Instruction = Instruction(
             context=[context_tokenset, prompt_tokenset], response=response_tokenset, final=final
         )
 
         for sample in instruction_set.samples:
-            context_snippets: list[Snippet] = [
+            context_snippets: List[Snippet] = [
                 context_tokenset.create_snippet(
                     sample.prompt_context
                 ), prompt_tokenset.create_snippet(
@@ -49,7 +51,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
             ]
             simple_instruction.add_sample(
                 context_snippets=context_snippets,
-                output_snippet=response_tokenset.create_snippet(
+                response_snippet=response_tokenset.create_snippet(
                     sample.response_sample
                 )
             )

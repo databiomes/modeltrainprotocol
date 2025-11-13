@@ -3,11 +3,11 @@ Instruction classes for the Model Train Protocol package.
 """
 
 from .BaseInstruction import BaseInstruction
-from .SimpleInstruction import SimpleInstruction
-from .UserInstruction import UserInstruction
+from .Instruction import Instruction
+from .ExtendedInstruction import ExtendedInstruction
 
 __all__ = [
     "BaseInstruction",
-    "SimpleInstruction",
-    "UserInstruction"
+    "Instruction",
+    "ExtendedInstruction"
 ]

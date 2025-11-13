@@ -122,7 +122,7 @@ snippet_with_length = character_context_sentence.create_snippet(string="The enem
 
 Instructions define how the model should respond to different input patterns. There are two main types of instructions.
 
-### SimpleInstruction
+### Instruction
 
 #### Parameters
 
@@ -130,7 +130,7 @@ Instructions define how the model should respond to different input patterns. Th
 - **response**: The TokenSet that defines the model's response pattern (cannot contain UserTokens)
 - **final**: A Token that represents the final action or result
 
-#### Create the SimpleInstruction
+#### Create the Instruction
 
 For scenarios where the model responds without user input:
 
@@ -140,7 +140,7 @@ cat_pondering = mtp.TokenSet(tokens=(tree, cat, ponder))
 cat_grinning = mtp.TokenSet(tokens=(tree, cat, grin))
 
 # Create a simple instruction for the Cat's internal thoughts
-instruction = mtp.SimpleInstruction(
+instruction = mtp.Instruction(
     context=(cat_pondering,),
     response=cat_grinning,
     final=disappear
@@ -157,19 +157,19 @@ instruction = mtp.SimpleInstruction(
 ```python
 # Samples must be made on their associated TokenSets
 sample_context = cat_pondering.create_snippet(
-    string="Why do I keep vanishing and reappearing so suddenly?"
+  string="Why do I keep vanishing and reappearing so suddenly?"
 )
 sample_output = cat_grinning.create_snippet(
-    string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
+  string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
 )
 
 instruction.add_sample(
-    context_snippets=[sample_context],
-    output_snippet=sample_output
+  context_snippets=[sample_context],
+  response_snippet=sample_output
 )
 ```
 
-### UserInstruction
+### ExtendedInstruction
 
 #### Parameters
 
@@ -177,7 +177,7 @@ instruction.add_sample(
 - **user**: A TokenSet that must include at least one UserToken
 - **final**: A Token that represents the final action or result
 
-#### Create the UserInstruction
+#### Create the ExtendedInstruction
 
 For scenarios where the model responds to user prompts:
 
@@ -187,7 +187,7 @@ alice_talk = mtp.TokenSet(tokens=(tree, alice, talk))
 cat_talk = mtp.TokenSet(tokens=(tree, cat, talk))
 
 # Create a user instruction for Alice asking the Cat questions
-user_instruction = mtp.UserInstruction(
+user_instruction = mtp.ExtendedInstruction(
     context=(alice_talk,),
     user=alice_talk,  # Must contain at least one UserToken
     final=disappear
@@ -205,16 +205,16 @@ user_instruction = mtp.UserInstruction(
 ```python
 # Samples must be made on their associated TokenSets
 sample_context = alice_talk.create_snippet(
-    string="I don't much care where—"
+  string="I don't much care where—"
 )
 sample_output = cat_talk.create_snippet(
-    string="Then it doesn't matter which way you go."
+  string="Then it doesn't matter which way you go."
 )
 
 user_instruction.add_sample(
-    context_snippets=[sample_context],
-    prompt="Can you tell me which way I ought to go?",
-    output_snippet=sample_output
+  context_snippets=[sample_context],
+  response_string="Can you tell me which way I ought to go?",
+  response_snippet=sample_output
 )
 ```
 

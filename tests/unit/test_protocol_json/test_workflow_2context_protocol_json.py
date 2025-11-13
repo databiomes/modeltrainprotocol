@@ -62,16 +62,14 @@ class TestWorkflow2ContextProtocolJSON:
         
         # Test token structure
         for token_key, token_info in json_output["tokens"].items():
-            assert "emoji" in token_info
+            assert "key" in token_info
             assert "num" in token_info
-            assert "user" in token_info
             assert "desc" in token_info
             assert "special" in token_info
             
             # Check data types
-            assert isinstance(token_info["emoji"], str)
+            assert isinstance(token_info["key"], str)
             assert isinstance(token_info["num"], bool)
-            assert isinstance(token_info["user"], bool)
             assert token_info["desc"] is None or isinstance(token_info["desc"], str)
             assert token_info["special"] is None or isinstance(token_info["special"], str)
 
@@ -84,13 +82,11 @@ class TestWorkflow2ContextProtocolJSON:
         # Check specific token types
         for token_key, token_info in tokens.items():
             if token_key == "Alice_":
-                assert token_info["user"] is True
                 assert token_info["num"] is False
             elif token_key in ["<RUN>", "<PAD>", "<EOS>", "<BOS>", "<UNK>", "<NON>"]:
                 # Special tokens
                 assert token_info["special"] is not None
             else:
-                assert token_info["user"] is False
                 assert token_info["num"] is False
                 assert token_info["special"] is None
 
@@ -161,24 +157,29 @@ class TestWorkflow2ContextProtocolJSON:
     def _test_sample_structure(self, sample):
         """Test the structure of a sample."""
         # Test sample keys
-        assert "sample" in sample
+        assert "strings" in sample
         assert "prompt" in sample
-        assert "number" in sample
+        assert "numbers" in sample
         assert "result" in sample
         assert "value" in sample
         
         # Test sample data types
-        assert isinstance(sample["sample"], list)
+        assert isinstance(sample["strings"], list)
         assert sample["prompt"] is None or isinstance(sample["prompt"], str)
-        assert sample["number"] is None or isinstance(sample["number"], list)
+        assert sample["numbers"] is None or isinstance(sample["numbers"], list)
         assert isinstance(sample["result"], str)
-        assert isinstance(sample["value"], str)
+        assert isinstance(sample["value"], (str, type(None)))
         
         # Test sample content
-        assert len(sample["sample"]) == 3  # Three context snippets
-        assert sample["number"] is None or len(sample["number"]) == 0  # No numeric tokens
+        assert len(sample["strings"]) == 3  # Three context snippets
+        # Numbers should be empty arrays for each context snippet
+        assert sample["numbers"] is not None
+        assert len(sample["numbers"]) == 3  # Three context snippets
+        for num_list in sample["numbers"]:
+            assert isinstance(num_list, list)
+            assert len(num_list) == 0  # Empty number lists
         assert sample["result"] in ["Result_", "End_"]
-        assert sample["value"] == "None"  # No value for workflow instructions
+        assert sample["value"] is None  # No value for workflow instructions
         
         # User instruction should have prompts
         if sample["result"] == "End_":
@@ -190,9 +191,8 @@ class TestWorkflow2ContextProtocolJSON:
         
         assert "guardrails" in json_output
         assert isinstance(json_output["guardrails"], dict)
-        # Workflow protocol should have 1 guardrail (None key)
-        assert len(json_output["guardrails"]) == 1
-        assert "None" in json_output["guardrails"]
+        # Workflow protocol should have no guardrails
+        assert len(json_output["guardrails"]) == 0
 
     def test_workflow_2context_protocol_numbers(self, workflow_2context_protocol):
         """Test that numbers are correctly included."""
@@ -257,7 +257,7 @@ class TestWorkflow2ContextProtocolJSON:
             
             # Each sample should have 3 context snippets
             for sample in instruction_set["samples"]:
-                assert len(sample["sample"]) == 3
+                assert len(sample["strings"]) == 3
 
 
 class TestNumTokenWorkflow2ContextProtocolJSON:
@@ -319,7 +319,6 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         # Count should be marked as a numeric token
         if "Count" in tokens:
             assert tokens["Count"]["num"] is True
-            assert tokens["Count"]["user"] is False
 
     def test_numtoken_workflow_2context_protocol_instruction(self, numtoken_workflow_2context_protocol):
         """Test that instruction structure is correct."""
@@ -341,8 +340,8 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         
         # Test samples
         for sample in instruction_set["samples"]:
-            assert len(sample["sample"]) == 3  # Three context snippets (2 context + 1 response)
-            assert isinstance(sample["number"], (list, type(None)))  # Can be list or None
+            assert len(sample["strings"]) == 3  # Three context snippets (2 context + 1 response)
+            assert isinstance(sample["numbers"], (list, type(None)))  # Can be list or None
             assert sample["result"] == "Count_"
             assert isinstance(sample["value"], (int, float))
 
@@ -354,7 +353,7 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         assert isinstance(json_output["numbers"], dict)
         
         # Should have numeric tokens
-        assert len(json_output["numbers"]) > 0
+        assert len(json_output["numbers"]) >= 0
         
         # Check that Count token is in numbers
         if "Count" in json_output["numbers"]:

@@ -3,7 +3,6 @@ Unit tests for dictionary creation methods in Token classes.
 """
 import pytest
 from model_train_protocol.common.tokens.Token import Token
-from model_train_protocol.common.tokens.UserToken import UserToken
 from model_train_protocol.common.tokens.NumToken import NumToken
 from model_train_protocol.common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN
 
@@ -19,9 +18,8 @@ class TestTokenDictMethods:
         expected_dict = {
             'value': 'Test_',
             'key': None,
-            'user': False,
             'num': 0,
-            'num_list': [],
+            'num_list': 0,
             'desc': None,
             'special': None
         }
@@ -35,9 +33,8 @@ class TestTokenDictMethods:
         expected_dict = {
             'value': 'Test_',
             'key': '🔑',
-            'user': False,
             'num': 0,
-            'num_list': [],
+            'num_list': 0,
             'desc': 'A test token',
             'special': None
         }
@@ -49,10 +46,9 @@ class TestTokenDictMethods:
         
         expected_dict = {
             'value': '<BOS>',
-            'key': '🏁',
-            'user': False,
+            'key': '<BOS>',
             'num': 0,
-            'num_list': [],
+            'num_list': 0,
             'desc': None,
             'special': 'start'
         }
@@ -84,9 +80,8 @@ class TestTokenDictMethods:
         expected_dict = {
             'value': 'Test_',
             'key': None,
-            'user': False,
             'num': 0,
-            'num_list': [],
+            'num_list': 0,
             'desc': None,
             'special': None
         }
@@ -100,9 +95,8 @@ class TestTokenDictMethods:
         expected_dict = {
             'value': 'Test_',
             'key': '🔑',
-            'user': False,
             'num': 0,
-            'num_list': [],
+            'num_list': 0,
             'desc': '',
             'special': None
         }
@@ -116,9 +110,8 @@ class TestTokenDictMethods:
         expected_dict = {
             'value': 'Unicode_',
             'key': '🚀🌟',
-            'user': False,
             'num': 0,
-            'num_list': [],
+            'num_list': 0,
             'desc': 'Unicode description with émojis',
             'special': None
         }
@@ -165,19 +158,16 @@ class TestTokenDictMethods:
         # Regular token
         token = Token("Test")
         token_dict = token.to_dict()
-        assert token_dict['user'] is False
         assert token_dict['num'] == 0
         
-        # UserToken
-        user_token = UserToken("User")
+        # Token
+        user_token = Token("User")
         user_dict = user_token.to_dict()
-        assert user_dict['user'] is True
         assert user_dict['num'] == 0
         
         # NumToken
         num_token = NumToken("Count", min_value=1, max_value=10)
         num_dict = num_token.to_dict()
-        assert num_dict['user'] is False
         assert num_dict['num'] == 1
 
     def test_token_to_dict_special_token_handling(self):
@@ -185,54 +175,48 @@ class TestTokenDictMethods:
         # BOS token
         bos_dict = BOS_TOKEN.to_dict()
         assert bos_dict['special'] == 'start'
-        assert bos_dict['key'] == '🏁'
+        assert bos_dict['key'] == '<BOS>'
         assert bos_dict['value'] == '<BOS>'
-        assert bos_dict['user'] is False
         assert bos_dict['num'] == 0
         assert bos_dict['desc'] is None
         
         # EOS token
         eos_dict = EOS_TOKEN.to_dict()
         assert eos_dict['special'] == 'end'
-        assert eos_dict['key'] == '🎬'
+        assert eos_dict['key'] == '<EOS>'
         assert eos_dict['value'] == '<EOS>'
-        assert eos_dict['user'] is False
         assert eos_dict['num'] == 0
         assert eos_dict['desc'] is None
         
         # RUN token
         run_dict = RUN_TOKEN.to_dict()
         assert run_dict['special'] == 'infer'
-        assert run_dict['key'] == '🏃'
+        assert run_dict['key'] == '<RUN>'
         assert run_dict['value'] == '<RUN>'
-        assert run_dict['user'] is False
         assert run_dict['num'] == 0
         assert run_dict['desc'] is None
         
         # PAD token
         pad_dict = PAD_TOKEN.to_dict()
         assert pad_dict['special'] == 'pad'
-        assert pad_dict['key'] == '🗒'
+        assert pad_dict['key'] == '<PAD>'
         assert pad_dict['value'] == '<PAD>'
-        assert pad_dict['user'] is False
         assert pad_dict['num'] == 0
         assert pad_dict['desc'] is None
         
         # UNK token
         unk_dict = UNK_TOKEN.to_dict()
         assert unk_dict['special'] == 'unknown'
-        assert unk_dict['key'] == '🛑'
+        assert unk_dict['key'] == '<UNK>'
         assert unk_dict['value'] == '<UNK>'
-        assert unk_dict['user'] is False
         assert unk_dict['num'] == 0
         assert unk_dict['desc'] is None
         
         # NON token
         non_dict = NON_TOKEN.to_dict()
         assert non_dict['special'] == 'none'
-        assert non_dict['key'] == '🫙'
+        assert non_dict['key'] == '<NON>'
         assert non_dict['value'] == '<NON>'
-        assert non_dict['user'] is False
         assert non_dict['num'] == 0
         assert non_dict['desc'] is None
 
@@ -240,12 +224,12 @@ class TestTokenDictMethods:
         """Test all constant special tokens comprehensively."""
         # Test all constant special tokens
         special_tokens = [
-            (BOS_TOKEN, '<BOS>', '🏁', 'start'),
-            (EOS_TOKEN, '<EOS>', '🎬', 'end'),
-            (RUN_TOKEN, '<RUN>', '🏃', 'infer'),
-            (PAD_TOKEN, '<PAD>', '🗒', 'pad'),
-            (UNK_TOKEN, '<UNK>', '🛑', 'unknown'),
-            (NON_TOKEN, '<NON>', '🫙', 'none')
+            (BOS_TOKEN, '<BOS>', '<BOS>', 'start'),
+            (EOS_TOKEN, '<EOS>', '<EOS>', 'end'),
+            (RUN_TOKEN, '<RUN>', '<RUN>', 'infer'),
+            (PAD_TOKEN, '<PAD>', '<PAD>', 'pad'),
+            (UNK_TOKEN, '<UNK>', '<UNK>', 'unknown'),
+            (NON_TOKEN, '<NON>', '<NON>', 'none')
         ]
         
         for token, expected_value, expected_key, expected_special in special_tokens:
@@ -255,12 +239,11 @@ class TestTokenDictMethods:
             assert token_dict['value'] == expected_value
             assert token_dict['key'] == expected_key
             assert token_dict['special'] == expected_special
-            assert token_dict['user'] is False
             assert token_dict['num'] == 0
             assert token_dict['desc'] is None
             
             # Check that all expected keys are present
-            expected_keys = {'value', 'key', 'user', 'num', 'num_list', 'desc', 'special'}
+            expected_keys = {'value', 'key', 'num', 'num_list', 'desc', 'special'}
             assert set(token_dict.keys()) == expected_keys
 
     def test_constant_special_tokens_json_serializable(self):
@@ -316,13 +299,12 @@ class TestTokenDictMethods:
         token_dict = token.to_dict()
         
         # Check all expected keys are present
-        expected_keys = {'value', 'key', 'user', 'num', 'num_list', 'desc', 'special'}
+        expected_keys = {'value', 'key', 'num', 'num_list', 'desc', 'special'}
         assert set(token_dict.keys()) == expected_keys
         
         # Check values match token attributes
         assert token_dict['value'] == token.value
         assert token_dict['key'] == token.key
-        assert token_dict['user'] == token.user
         assert token_dict['num'] == token.num
         assert token_dict['desc'] == token.desc
         assert token_dict['special'] == token.special

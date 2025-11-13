@@ -1,5 +1,6 @@
 import json
 import os
+from typing import Optional
 
 import requests
 from dotenv import load_dotenv
@@ -7,7 +8,7 @@ from dotenv import load_dotenv
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel, GENERATE_MTP_TOOL
 
 
-def generate_mtp_prototype_file(prompt_id: str, openai_api_key: str | None = None) -> MTPPrototypeModel:
+def generate_mtp_prototype_file(prompt_id: str, openai_api_key: Optional[str] = None) -> MTPPrototypeModel:
     """
     Calls the OpenAI API to run the generate_mtp tool based on the provided prompt ID.
     :return: The parsed function output as a GenerateMTPPrototypeModel object, which can be converted into a ProtocolFile.

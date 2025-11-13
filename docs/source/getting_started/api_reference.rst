@@ -93,30 +93,30 @@ Groups multiple tokens together to define input patterns.
 Instructions
 ------------
 
-SimpleInstruction
+Instruction
 ~~~~~~~~~~~~~~~~~
 
 For scenarios where the model responds without user input.
 
 .. code-block:: python
 
-   class SimpleInstruction:
+   class Instruction:
        def __init__(self, context: tuple, response: TokenSet, final: Token):
-           """Initialize a SimpleInstruction."""
+           """Initialize a Instruction."""
            
        def add_sample(self, context_snippets: list, output_snippet: Snippet, value=None):
            """Add a training sample to the instruction."""
 
-UserInstruction
+ExtendedInstruction
 ~~~~~~~~~~~~~~~
 
 For scenarios where the model responds to user prompts.
 
 .. code-block:: python
 
-   class UserInstruction:
+   class ExtendedInstruction:
        def __init__(self, context: tuple, user: TokenSet, final: Token):
-           """Initialize a UserInstruction."""
+           """Initialize a ExtendedInstruction."""
            
        def add_sample(self, context_snippets: list, prompt: str, output_snippet: Snippet, value=None):
            """Add a training sample to the instruction."""
