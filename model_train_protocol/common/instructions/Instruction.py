@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import List, Optional, Sequence, Union
 
 from .BaseInstruction import BaseInstruction, Sample
 from ..constants import NON_TOKEN
@@ -28,8 +28,8 @@ class Instruction(BaseInstruction):
         super().__init__(context=context, response=response, final=final, name=name)
 
     # noinspection PyMethodOverriding
-    def add_sample(self, context_snippets: list[Snippet], response_snippet: Snippet,
-                   value: int | float | list[int | float] | None = None):
+    def add_sample(self, context_snippets: List[Snippet], response_snippet: Snippet,
+                   value: Union[int, float, List[Union[int, float]], None] = None):
         """
         Add a sample to the Instruction.
 

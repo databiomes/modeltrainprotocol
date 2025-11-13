@@ -1,8 +1,10 @@
+from typing import List, Optional
+
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel
 from ... import Protocol, Instruction, Token, TokenSet, Snippet
 
 
-def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = None,
+def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = None,
                         encrypt: bool = False) -> Protocol:
     """
     Translates a generated mtp prototype into a ProtocolFile
@@ -40,7 +42,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: str | None = Non
         )
 
         for sample in instruction_set.samples:
-            context_snippets: list[Snippet] = [
+            context_snippets: List[Snippet] = [
                 context_tokenset.create_snippet(
                     sample.prompt_context
                 ), prompt_tokenset.create_snippet(

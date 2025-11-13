@@ -1,9 +1,11 @@
+from typing import Optional, Union
+
 from .Token import Token
 
 
 class NumToken(Token):
-    def __init__(self, value: str, min_value: int | float, max_value: int | float, key: str | None = None,
-                 desc: str | None = None, *args, **kwargs):
+    def __init__(self, value: str, min_value: Union[int, float], max_value: Union[int, float], key: Optional[str] = None,
+                 desc: Optional[str] = None, *args, **kwargs):
         """
         Initializes a NumToken instance.
 
@@ -16,10 +18,13 @@ class NumToken(Token):
         :param key: Optional key associated with the token, a symbol, emoji, or short string.
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
+        if max_value < min_value:
+            raise ValueError("Num value must be greater than or equal to max_value.")
+
         super().__init__(value, key, desc)
         self.num: bool = True
-        self.min_value: int | float = min_value
-        self.max_value: int | float = max_value
+        self.min_value: Union[int, float] = min_value
+        self.max_value: Union[int, float] = max_value
         self.template_representation: str = f"<num_{min_value}_{max_value}>"
 
     def __eq__(self, other):

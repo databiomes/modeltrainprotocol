@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import Collection
+from typing import Collection, List, Dict, Set, Union
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.instructions import BaseInstruction
@@ -18,38 +18,38 @@ class ProtocolFile:
         """Represents an instruction in the template."""
 
         instruction_context_snippets: int
-        sets: list = field(default_factory=list)
+        sets: List = field(default_factory=list)
 
     @dataclass
     class ProtocolInstructionSet:
         """Represents an instruction set in the template."""
 
-        set: list[list[str]]
+        set: List[List[str]]
         result: str
-        samples: list
-        ppo: list
+        samples: List
+        ppo: List
 
     @dataclass
     class Batches:
         """Represents batches in the template."""
 
-        pretrain: list = field(default_factory=list)
-        instruct: list = field(default_factory=list)
-        judge: list = field(default_factory=list)
-        ppo: list = field(default_factory=list)
+        pretrain: List = field(default_factory=list)
+        instruct: List = field(default_factory=list)
+        judge: List = field(default_factory=list)
+        ppo: List = field(default_factory=list)
 
-    def __init__(self, name: str, context: list[str], instruction_context_snippets: int, tokens: Collection[Token],
+    def __init__(self, name: str, context: List[str], instruction_context_snippets: int, tokens: Collection[Token],
                  special_tokens: Collection[Token], instructions: Collection[BaseInstruction]):
         """Initializes the Template with a name and context."""
         self._name: str = name
-        self._context: list[str] = context
-        self._tokens: dict[str, dict] = {}
-        self._special_token_keys: set[str] = set()
-        self._instruction_token_keys: set[str] = set()
+        self._context: List[str] = context
+        self._tokens: Dict[str, dict] = {}
+        self._special_token_keys: Set[str] = set()
+        self._instruction_token_keys: Set[str] = set()
         self._instruction: ProtocolFile.ProtocolInstruction = ProtocolFile.ProtocolInstruction(
             instruction_context_snippets=instruction_context_snippets)
-        self._guardrails: dict[str, list[str] | str] = {}
-        self._numbers: dict[str, str] = {}
+        self._guardrails: Dict[str, Union[List[str], str]] = {}
+        self._numbers: Dict[str, str] = {}
         self._batches: ProtocolFile.Batches = ProtocolFile.Batches()
 
         # Add regular tokens
@@ -64,7 +64,7 @@ class ProtocolFile:
     def add_tokens(self, tokens: Collection[Token]):
         """Adds tokens to the template."""
         for token in tokens:
-            token_dict: dict[str, dict] = token.to_dict()
+            token_dict: Dict[str, dict] = token.to_dict()
             token_dict.pop("value")
             self._tokens[token.value] = token_dict
 
@@ -145,7 +145,7 @@ class ProtocolFile:
         return _recursively_alphabetize(data, 0)
 
     @classmethod
-    def _alphabetize_list_of_dict_by_key_value(cls, data: list, key: str) -> list:
+    def _alphabetize_list_of_dict_by_key_value(cls, data: List, key: str) -> List:
         """
         Alphabetizes a list of dictionaries by the value of a specific key.
         
