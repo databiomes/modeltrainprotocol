@@ -96,7 +96,7 @@ class Protocol:
         if path is None:
             path = os.getcwd()
         os.makedirs(path, exist_ok=True)
-        filename = f"{path}\\{name}_model.json"
+        filename = os.path.join(path, f"{name}_model.json")
 
         print(f"Saving Model Train Protocol to {filename}...")
         with open(filename, 'w', encoding="utf-8") as file:
@@ -113,7 +113,7 @@ class Protocol:
         """
         if path is None:
             path = os.getcwd()
-        filename = f"{path}\\{self.name}_template.json"
+        filename = os.path.join(path, f"{self.name}_template.json")
 
         self._prep_protocol()
         template_file: TemplateFile = TemplateFile(
