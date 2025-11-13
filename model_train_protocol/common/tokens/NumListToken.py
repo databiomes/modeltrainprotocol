@@ -20,6 +20,8 @@ class NumListToken(Token):
 
         if length <= 0:
             raise ValueError("Length of NumListToken must be a positive non-zero integer.")
+        if max_value < min_value:
+            raise ValueError("Num value must be greater than or equal to max_value.")
 
         self.num_list: int = length
         self.min_value = min_value
