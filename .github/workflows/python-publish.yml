@@ -11,6 +11,12 @@ name: Upload Python Package
 on:
   release:
     types: [published, created]
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to publish (must match pyproject.toml)'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -25,6 +31,16 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.x"
+
+      - name: Install toml package
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python -m pip install toml
+
+      - name: Verify version matches pyproject.toml
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          python -c "import toml; pyproject_version = toml.load('pyproject.toml')['project']['version']; input_version = '${{ github.event.inputs.version }}'; assert pyproject_version == input_version, f'Version mismatch: pyproject.toml has {pyproject_version} but input is {input_version}'; print(f'Version match confirmed: {pyproject_version}')"
 
       - name: Build release distributions
         run: |
