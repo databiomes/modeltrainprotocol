@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Sequence, Collection
+from typing import List, Optional, Sequence, Collection, Union
 
 from . import NumListToken
 from .NumToken import NumToken
@@ -11,26 +11,26 @@ from ..guardrails.Guardrail import Guardrail
 class Snippet:
     string: str
     token_set_key: str
-    numbers: list[int | float]
-    number_lists: list[list[int | float]]
+    numbers: List[Union[int, float]]
+    number_lists: List[List[Union[int, float]]]
 
 
 class TokenSet:
     """A set of Tokens representing a combination of input types."""
 
-    def __init__(self, tokens: Sequence[Token] | Token):
+    def __init__(self, tokens: Union[Sequence[Token], Token]):
         """Initializes a TokenSet instance."""
         if isinstance(tokens, Token):
             tokens = [tokens]
         self.tokens: Sequence[Token] = tokens
         self.key: str = ''.join(token.value for token in
                                 tokens)  # Note this key is based on the value of the tokens and not the keys of the tokens
-        self._num_tokens: list[NumToken] = [token for token in tokens if isinstance(token, NumToken)]
-        self._num_list_tokens: list[NumListToken] = [token for token in tokens if isinstance(token, NumListToken)]
-        self._guardrail: Guardrail | None = None
+        self._num_tokens: List[NumToken] = [token for token in tokens if isinstance(token, NumToken)]
+        self._num_list_tokens: List[NumListToken] = [token for token in tokens if isinstance(token, NumListToken)]
+        self._guardrail: Optional[Guardrail] = None
 
     @property
-    def guardrail(self) -> Guardrail | None:
+    def guardrail(self) -> Optional[Guardrail]:
         """Returns the guardrails for the TokenSet, if any."""
         return self._guardrail
 
@@ -42,7 +42,7 @@ class TokenSet:
             raise TypeError("Guardrail must be an instance of the Guardrail class.")
         self._guardrail = guardrail
 
-    def _validate_num_tokens(self, numbers: Collection[int | float]):
+    def _validate_num_tokens(self, numbers: Collection[Union[int, float]]):
         """Validates the numbers against the TokenSet requirements."""
         required_numtoken_numbers: int = sum(
             token.num for token in self.tokens if isinstance(token, NumToken))  # Count of NumToken
@@ -55,9 +55,9 @@ class TokenSet:
                 raise ValueError(
                     f"Number at index {i} with value {number} is out of bounds for token {corresponding_token}. Must be between {corresponding_token.min_value} and {corresponding_token.max_value}.")
 
-    def _validate_numlist_tokens(self, number_lists: Collection[Collection[int | float]]):
+    def _validate_numlist_tokens(self, number_lists: Collection[Collection[Union[int, float]]]):
         """Validates the number lists against the TokenSet requirements."""
-        required_numlists: list[int] = [
+        required_numlists: List[int] = [
             token.num_list for token in self.tokens if isinstance(token, NumListToken)]
         if len(number_lists) != len(required_numlists):
             raise ValueError(
@@ -74,8 +74,8 @@ class TokenSet:
                         f"Number {number} in number list at index {i} is out of bounds for token {corresponding_token}. Must be between {corresponding_token.min_value} and {corresponding_token.max_value}.")
 
     def create_snippet(self, string: str,
-                       numbers: Collection[int | float] | int | float | None = None,
-                       number_lists: Collection[int | float | Collection[int | float]] | None = None) -> Snippet:
+                       numbers: Union[Collection[Union[int, float]], int, float, None] = None,
+                       number_lists: Union[Collection[Union[int, float, Collection[Union[int, float]]]], None] = None) -> Snippet:
         """Create a snippet for the TokenSet"""
         if not isinstance(string, str):
             raise TypeError("String must be of type str.")

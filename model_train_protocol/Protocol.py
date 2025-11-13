@@ -1,5 +1,6 @@
 import json
 import os
+from typing import List, Optional, Set, Dict
 
 from . import Token
 from ._internal.ProtocolFile import ProtocolFile
@@ -26,15 +27,15 @@ class Protocol:
         self.encrypt: bool = encrypt
         if self.instruction_context_snippets < 2:
             raise ValueError("A minimum of 2 context lines is required for all instructions.")
-        self.context: list[str] = []
-        self.tokens: set[Token] = set()
-        self.instructions: set[BaseInstruction] = set()
-        self.guardrails: dict[str, list[str]] = dict()
-        self.numbers: dict[str, str] = dict()
+        self.context: List[str] = []
+        self.tokens: Set[Token] = set()
+        self.instructions: Set[BaseInstruction] = set()
+        self.guardrails: Dict[str, List[str]] = dict()
+        self.numbers: Dict[str, str] = dict()
         self.none = None
-        self.special_tokens: set[Token] = set()
-        self.possible_emoji_keys: set[str] = get_possible_emojis()
-        self.used_keys: set[str] = set()
+        self.special_tokens: Set[Token] = set()
+        self.possible_emoji_keys: Set[str] = get_possible_emojis()
+        self.used_keys: Set[str] = set()
 
     def add_context(self, context: str):
         """Adds a line of context to the model."""
@@ -83,7 +84,7 @@ class Protocol:
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
-    def save(self, name: str | None = None, path: str | None = None):
+    def save(self, name: Optional[str] = None, path: Optional[str] = None):
         """
         Saves the protocol to a JSON file. This file can be submitted to Databiomes for model training.
 
@@ -101,7 +102,7 @@ class Protocol:
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(self.get_protocol_file().to_json(), file, indent=4, ensure_ascii=False)
 
-    def template(self, path: str | None = None):
+    def template(self, path: Optional[str] = None):
         """
         Create a template JSON file for the model training protocol.
 
@@ -195,6 +196,6 @@ class Protocol:
 
         self._set_guardrails()
         self._add_default_special_tokens()
-        used_values: set[str] = {token.value for token in self.tokens}
+        used_values: Set[str] = {token.value for token in self.tokens}
         validate_string_set(used_values)
         validate_string_set(self.used_keys)

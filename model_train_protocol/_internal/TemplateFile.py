@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Collection
+from typing import Collection, List, Dict, Union
 
 from model_train_protocol import NumToken, Instruction, ExtendedInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
@@ -19,9 +19,9 @@ class TemplateFile:
     class ModelInput:
         """Represents inputs to the model."""
 
-        inputs: list[list[str]] = list()
+        inputs: List[List[str]] = list()
 
-        def add_inputs_from_instructions(self, instructions: list[BaseInstruction], instruction_context_snippets: int):
+        def add_inputs_from_instructions(self, instructions: List[BaseInstruction], instruction_context_snippets: int):
             """Adds input combinations from a list of instructions."""
             unique_sets = {i: set() for i in range(instruction_context_snippets + 1)}
             for instruction in instructions:
@@ -42,7 +42,7 @@ class TemplateFile:
 
         def to_json(self):
             """Converts the model input to a JSON-serializable dictionary."""
-            model_json: dict[str, Collection[str] | str] = {"<BOS>": BOS_TOKEN.key}
+            model_json: Dict[str, Union[Collection[str], str]] = {"<BOS>": BOS_TOKEN.key}
             # Add each input sequence with its index as the key
             for idx, input_seq in enumerate(self.inputs):
                 model_json[str(idx)] = input_seq
@@ -50,20 +50,20 @@ class TemplateFile:
             return model_json
 
     class ModelOutput:
-        model_results: dict[str, str] = dict()
+        model_results: Dict[str, str] = dict()
         model_response: str = "<string>"
 
         def __setitem__(self, key: str, value: str):
             self.model_results[key] = value
 
-        def add_results_from_instructions(self, instructions: list[BaseInstruction]):
+        def add_results_from_instructions(self, instructions: List[BaseInstruction]):
             """Adds model results from a list of instructions."""
             for instruction in instructions:
                 self.model_results[str(instruction.final.value)] = str(instruction.final.key)
 
         def to_json(self):
             """Converts the model output to a JSON-serializable dictionary."""
-            model_json: dict[str, str | dict] = {
+            model_json: Dict[str, Union[str, dict]] = {
                 "model_response": self.model_response,
                 "model_results": {}
             }
@@ -78,12 +78,12 @@ class TemplateFile:
 
             return model_json
 
-    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], ):
+    def __init__(self, instruction_context_snippets: int, instructions: List[BaseInstruction], ):
         """Initializes the template"""
         self.model_input: TemplateFile.ModelInput = TemplateFile.ModelInput()
         self.model_output: TemplateFile.ModelOutput = TemplateFile.ModelOutput()
         self.instruction_context_snippets: int = instruction_context_snippets
-        self.instructions: list[BaseInstruction] = instructions
+        self.instructions: List[BaseInstruction] = instructions
         self._add_io_from_instructions()
 
     def _add_io_from_instructions(self):
@@ -95,18 +95,18 @@ class TemplateFile:
         """Creates a sample model output string for example usages."""
         sample_output: str = ""
         sample_output += self.model_output.model_response + "\n"
-        sorted_model_results: list[tuple[str, str]] = list(sorted(self.model_output.model_results.items()))
+        sorted_model_results: List[tuple[str, str]] = list(sorted(self.model_output.model_results.items()))
         sample_output += sorted_model_results[0][1] + "\n"
         sample_output += EOS_TOKEN.key
         return sample_output
 
-    def _create_examples(self) -> dict[str, str]:
+    def _create_examples(self) -> Dict[str, str]:
         """
         Creates example usages of the template.
 
         Creates a simple instruction example and a user instruction example if available.
         """
-        examples: dict[str, str] = dict()
+        examples: Dict[str, str] = dict()
         simple_instruction: Instruction = next(
             (i for i in self.instructions if isinstance(i, Instruction)), None)
         user_instruction: ExtendedInstruction = next(
@@ -134,10 +134,10 @@ class TemplateFile:
 
         return examples
 
-    def to_json(self) -> dict:
+    def to_json(self) -> Dict:
         """Converts the entire template to a JSON-serializable dictionary."""
-        examples: dict[str, str] = self._create_examples()
-        json_dict: dict = {
+        examples: Dict[str, str] = self._create_examples()
+        json_dict: Dict = {
             "all_combinations": {
                 "model_input": self.model_input.to_json(),
                 "model_output": self.model_output.to_json()

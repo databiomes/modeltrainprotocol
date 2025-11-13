@@ -1,9 +1,11 @@
+from typing import Optional, Union
+
 from .Token import Token
 
 
 class NumListToken(Token):
-    def __init__(self, value: str, min_value: int | float, max_value: int | float, length: int,
-                 key: str | None = None, desc: str | None = None, *args, **kwargs):
+    def __init__(self, value: str, min_value: Union[int, float], max_value: Union[int, float], length: int,
+                 key: Optional[str] = None, desc: Optional[str] = None, *args, **kwargs):
         """
         Initializes a NumListToken instance.
 

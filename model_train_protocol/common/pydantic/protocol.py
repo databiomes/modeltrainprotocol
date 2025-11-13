@@ -12,8 +12,8 @@ class TokenInfoModel(BaseModel):
     key: str
     num: bool
     num_list: int
-    desc: Union[str | None]
-    special: Union[str | None]
+    desc: Optional[str]
+    special: Optional[str]
 
 
 class SampleModel(BaseModel):
