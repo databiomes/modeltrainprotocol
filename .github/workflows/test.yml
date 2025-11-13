@@ -10,6 +10,7 @@ on:
       - master
       - develop
       - release/*
+  workflow_dispatch:
 
 jobs:
   test:
