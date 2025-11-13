@@ -1,4 +1,4 @@
-View the full package documentation at: https://modeltrainprotocol.readthedocs.io/en/latest/
+View the full package documentation at: https://docs.databiomes.com/mtp/intro
 
 # Model Train Protocol (MTP)
 
@@ -129,6 +129,7 @@ Instructions define how the model should respond to different input patterns. Th
 - **context**: Sequence of TokenSets that provide background information
 - **response**: The TokenSet that defines the model's response pattern (cannot contain UserTokens)
 - **final**: A Token that represents the final action or result
+- **name**: A unique name for the instruction (required)
 
 #### Create the Instruction
 
@@ -140,10 +141,11 @@ cat_pondering = mtp.TokenSet(tokens=(tree, cat, ponder))
 cat_grinning = mtp.TokenSet(tokens=(tree, cat, grin))
 
 # Create a simple instruction for the Cat's internal thoughts
-instruction = mtp.Instruction(
-    context=(cat_pondering,),
+cat_pondering_instruction_disappear = mtp.Instruction(
+    context=[cat_pondering],
     response=cat_grinning,
-    final=disappear
+    final=disappear,
+    name="cat_pondering_instruction_disappear"
 )
 ```
 
@@ -151,7 +153,7 @@ instruction = mtp.Instruction(
 
 - **add_sample() parameters**:
   - **context_snippets**: List of context snippets that will be added to the Instruction
-  - **output_snippet**: The model's output snippet
+  - **response_snippet**: The model's output snippet
   - **value**: Optional numerical value (required if final Token is a NumToken)
 
 ```python
@@ -163,7 +165,7 @@ sample_output = cat_grinning.create_snippet(
   string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
 )
 
-instruction.add_sample(
+cat_pondering_instruction_disappear.add_sample(
   context_snippets=[sample_context],
   response_snippet=sample_output
 )
@@ -173,9 +175,9 @@ instruction.add_sample(
 
 #### Parameters
 
-- **context**: Sequence of TokenSets that provide background information
-- **user**: A TokenSet that must include at least one UserToken
+- **context**: Sequence of TokenSets that provide background information (the last TokenSet must include at least one UserToken)
 - **final**: A Token that represents the final action or result
+- **name**: A unique name for the instruction (required)
 
 #### Create the ExtendedInstruction
 
@@ -187,34 +189,35 @@ alice_talk = mtp.TokenSet(tokens=(tree, alice, talk))
 cat_talk = mtp.TokenSet(tokens=(tree, cat, talk))
 
 # Create a user instruction for Alice asking the Cat questions
-user_instruction = mtp.ExtendedInstruction(
-    context=(alice_talk,),
-    user=alice_talk,  # Must contain at least one UserToken
-    final=disappear
+alice_cat_instruction_leave = mtp.ExtendedInstruction(
+    context=[alice_talk, cat_talk, alice_talk],  # Last TokenSet must contain at least one UserToken
+    final=disappear,
+    name="alice_cat_instruction_leave"
 )
 ```
 
 #### Adding Samples
 
 - **add_sample() parameters**:
-  - **context_snippets**: List of context snippets that will be added to the Instruction
-  - **prompt**: The prompt provided by the user
-  - **output_snippet**: The model's output snippet
+  - **context_snippets**: List of context snippets that will be added to the Instruction (must match the context TokenSets)
+  - **response_string**: The response provided by the model as a string
   - **value**: Optional numerical value (required if final Token is a NumToken)
 
 ```python
 # Samples must be made on their associated TokenSets
-sample_context = alice_talk.create_snippet(
+sample_context_1 = alice_talk.create_snippet(
   string="I don't much care where—"
 )
-sample_output = cat_talk.create_snippet(
+sample_context_2 = cat_talk.create_snippet(
   string="Then it doesn't matter which way you go."
 )
+sample_context_3 = alice_talk.create_snippet(
+  string="Can you tell me which way I ought to go?"
+)
 
-user_instruction.add_sample(
-  context_snippets=[sample_context],
-  response_string="Can you tell me which way I ought to go?",
-  response_snippet=sample_output
+alice_cat_instruction_leave.add_sample(
+  context_snippets=[sample_context_1, sample_context_2, sample_context_3],
+  response_string="Then I'll do it twice as much, since nervousness is such a curious flavor."
 )
 ```
 
