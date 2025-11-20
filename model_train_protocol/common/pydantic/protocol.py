@@ -29,7 +29,6 @@ class SampleModel(BaseModel):
 class InstructionSetModel(BaseModel):
     """Model for instruction sets."""
     set: List[List[str]]
-    result: str
     samples: List[SampleModel]
     ppo: List[Any]
 

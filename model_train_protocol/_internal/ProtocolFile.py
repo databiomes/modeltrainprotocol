@@ -25,7 +25,6 @@ class ProtocolFile:
         """Represents an instruction set in the template."""
 
         set: List[List[str]]
-        result: str
         samples: List
         ppo: List
 
@@ -81,7 +80,6 @@ class ProtocolFile:
         for instruction in instructions:
             instruction_set: ProtocolFile.ProtocolInstructionSet = ProtocolFile.ProtocolInstructionSet(
                 set=instruction.serialize_memory_set(),
-                result=instruction.final.value,
                 samples=instruction.serialize_samples(),
                 ppo=instruction.serialize_ppo(),
             )
@@ -201,7 +199,6 @@ class ProtocolFile:
             # Create InstructionSet
             instruction_set_obj = InstructionSetModel(
                 set=instruction_set.set,
-                result=instruction_set.result,
                 samples=samples,
                 ppo=instruction_set.ppo
             )
