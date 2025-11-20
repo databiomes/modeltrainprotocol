@@ -51,7 +51,7 @@ tree_english_disappear_cat_talk: mtp.TokenSet = mtp.TokenSet(
 # -------------------- Instruction Set: Continue --------------------
 alice_cat_alice_instruction_continue: mtp.Instruction = mtp.Instruction(
     context=[tree_english_cat_talk, tree_english_alice_talk],
-    response=tree_english_cat_talk, name="alice_cat_alice_instruction_continue"
+    response=tree_english_cat_talk, name="alice_cat_alice_instruction_continue",
 )
 
 # 1st Sample
@@ -188,13 +188,12 @@ protocol.add_instruction(alice_cat_alice_instruction_disappear)
 # -------------------- ExtendedInstruction Set (Optional): Leave (With an additional line of context) --------------------
 alice_disappear_cat_alice_instruction_leave: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
     context=[tree_english_alice_talk, tree_english_disappear_cat_talk, tree_english_alice_talk],
-    final=token_leave,
     name="alice_disappear_cat_alice_instruction_leave"
 )
 
 # 1st Sample
 sample_13_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Do you ever stay in one place, or are you always drifting about?")
+    string="Do you ever stay in one place, or are you always drifting about?",)
 sample_13_context_2: mtp.Snippet = tree_english_disappear_cat_talk.create_snippet(
     string="I stay wherever I please, which is nowhere for very long.")
 sample_13_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
@@ -204,6 +203,7 @@ sample_13_response: str = "Companionship is a heavy coat, and I prefer to travel
 alice_disappear_cat_alice_instruction_leave.add_sample(
     context_snippets=[sample_13_context_1, sample_13_context_2, sample_13_context_3],
     response_string=sample_13_response,
+    final=token_leave,
 )
 
 # 2nd Sample
@@ -218,6 +218,7 @@ sample_14_response: str = "Then I shall go before you ask too much."
 alice_disappear_cat_alice_instruction_leave.add_sample(
     context_snippets=[sample_14_context_1, sample_14_context_2, sample_14_context_3],
     response_string=sample_14_response,
+    final=token_leave,
 )
 
 # 3rd Sample
@@ -232,6 +233,7 @@ sample_15_response: str = "Then I've said enough."
 alice_disappear_cat_alice_instruction_leave.add_sample(
     context_snippets=[sample_15_context_1, sample_15_context_2, sample_15_context_3],
     response_string=sample_15_response,
+    final=token_leave,
 )
 protocol.add_instruction(alice_disappear_cat_alice_instruction_leave)
 
@@ -258,7 +260,6 @@ tree_english_alice_talk_emotion: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree,
 alice_cat_alice_instruction_numbers_continue: mtp.Instruction = mtp.Instruction(
     context=[tree_english_cat_talk, tree_english_alice_talk_emotion],
     response=tree_english_cat_talk_coordinates,
-    final=token_continue,
     name="alice_cat_alice_instruction_numbers_continue"
 )
 
@@ -273,6 +274,7 @@ sample_16_response: mtp.Snippet = tree_english_cat_talk_coordinates.create_snipp
 alice_cat_alice_instruction_numbers_continue.add_sample(
     context_snippets=[sample_16_context_1, sample_16_context_2],
     response_snippet=sample_16_response,
+    final=token_continue,
 )
 
 # 2nd Sample
@@ -286,6 +288,7 @@ sample_17_response: mtp.Snippet = tree_english_cat_talk_coordinates.create_snipp
 alice_cat_alice_instruction_numbers_continue.add_sample(
     context_snippets=[sample_17_context_1, sample_17_context_2],
     response_snippet=sample_17_response,
+    final=token_continue,
 )
 
 # 3rd Sample
@@ -299,6 +302,7 @@ sample_18_response: mtp.Snippet = tree_english_cat_talk_coordinates.create_snipp
 alice_cat_alice_instruction_numbers_continue.add_sample(
     context_snippets=[sample_18_context_1, sample_18_context_2],
     response_snippet=sample_18_response,
+    final=token_continue,
 )
 
 protocol.add_instruction(alice_cat_alice_instruction_numbers_continue)
