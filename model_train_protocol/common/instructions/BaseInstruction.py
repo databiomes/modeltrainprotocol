@@ -2,6 +2,7 @@ import abc
 from abc import ABC
 from typing import List, Optional, Sequence, Union
 
+from ..constants import NON_TOKEN
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 from ... import NumToken, NumListToken
@@ -63,12 +64,12 @@ class BaseInstruction(ABC):
         final = Token("End")
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
+    final: Token = NON_TOKEN
 
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token, name: str):
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, name: str):
         """Initializes the common attributes to all Instructions."""
         self.context: Sequence[TokenSet] = context
         self.response: TokenSet = response
-        self.final: Token = final
         self.samples: List[Sample] = []
         self.name: str = name
         self.samples: list[Sample] = []
@@ -78,8 +79,6 @@ class BaseInstruction(ABC):
             raise TypeError("All items in context must be instances of TokenSet.")
         if not isinstance(response, TokenSet):
             raise TypeError("Response must be an instance of TokenSet.")
-        if not isinstance(final, Token):
-            raise TypeError("Final must be an instance of Token.")
         if not name or not isinstance(name, str):
             raise ValueError("Name must be a non-empty string.")
 
@@ -138,7 +137,7 @@ class BaseInstruction(ABC):
             memory_set.append(token_strings)
         return memory_set
 
-    def _create_sample(self, context_snippets: List[Snippet], response_snippet: Snippet,
+    def _create_sample(self, context_snippets: List[Snippet], response_snippet: Snippet, final: Token,
                        value: Union[int, float, List[Union[int, float]], None] = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
         all_snippets: List[Snippet] = context_snippets + [response_snippet]
@@ -158,7 +157,7 @@ class BaseInstruction(ABC):
             prompt=None,
             number=numbers,
             number_lists=number_lists,
-            result=self.final,
+            result=final,
             value=value
         )
 
@@ -196,6 +195,12 @@ class BaseInstruction(ABC):
         if len(context_snippets) != len(self.context):
             raise ValueError(
                 f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.context)}).")
+
+    def _assign_final_token(self, final: Optional[Token]) -> Token:
+        """Validate the final token if provided."""
+        if final is not None and not isinstance(final, Token):
+            raise TypeError("Final must be a Token instance or None.")
+        return final if final is not None else self.final
 
     def __str__(self) -> str:
         """String representation of the Instruction."""

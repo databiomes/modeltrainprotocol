@@ -16,31 +16,32 @@ class Instruction(BaseInstruction):
     A minimum of 3 samples must be added to an Instruction.
     """
 
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, final: Token = NON_TOKEN, name: str = "instruction"):
+    def __init__(self, context: Sequence[TokenSet], response: TokenSet, name: str = "instruction"):
         f"""
         Initializes an Instruction instance.
 
         :param context: List of tuples containing Token instances that define the input structure. This precedes the model's response.
         :param response: A TokenSet instance that does not include any user tokens.
-        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken designated {NON_TOKEN.value}.
         :param name: Optional name for the Instruction. Defaults to 'instruction'.
         """
-        super().__init__(context=context, response=response, final=final, name=name)
+        super().__init__(context=context, response=response, name=name)
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: List[Snippet], response_snippet: Snippet,
-                   value: Union[int, float, List[Union[int, float]], None] = None):
-        """
+                   value: Union[int, float, List[Union[int, float]], None] = None, final: Token | None = None):
+        f"""
         Add a sample to the Instruction.
 
         :param context_snippets: List of context snippets that will be added to the Instruction.
         :param response_snippet: The model's response snippet.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
+        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken designated {self.final.value}.
         """
         self._assert_valid_value(value=value)
         self._assert_context_snippet_count(context_snippets=context_snippets)
         self._validate_snippets_match(context_snippets=context_snippets, output_snippet=response_snippet)
+        final: Token = self._assign_final_token(final=final)
 
         sample: Sample = self._create_sample(context_snippets=context_snippets, response_snippet=response_snippet,
-                                             value=value)
+                                             value=value, final=final)
         self.samples.append(sample)
