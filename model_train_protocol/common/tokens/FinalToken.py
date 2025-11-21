@@ -4,7 +4,8 @@ from .Token import Token
 
 
 class FinalToken(Token):
-    def __init__(self, value: str, key: str, desc: Optional[str] = None):
+
+    def __init__(self, value: str, key: Optional[str] = None, desc: Optional[str] = None, *args, **kwargs):
         """
         Initializes a FinalToken instance.
 
@@ -14,7 +15,6 @@ class FinalToken(Token):
 
         :param value: The string representing the token's value.
         :param key: The key associated with the token, a symbol, emoji, or short string.
-            Special Tokens should always have a key for readability.
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         super().__init__(value, key, desc)

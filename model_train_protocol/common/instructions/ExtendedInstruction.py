@@ -1,8 +1,7 @@
-from typing import List, Optional, Sequence, Union
+from typing import List, Sequence, Union
 
 from .BaseInstruction import BaseInstruction, Sample
-from ..constants import NON_TOKEN
-from ..tokens.Token import Token
+from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
 
 
@@ -27,7 +26,7 @@ class ExtendedInstruction(BaseInstruction):
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: List[Snippet], response_string: str,
-                   value: Union[int, float, List[Union[int, float]], None]= None, final: Token | None = None):
+                   value: Union[int, float, List[Union[int, float]], None]= None, final: FinalToken | None = None):
         f"""
         Add a sample to the Instruction.
 
@@ -39,13 +38,13 @@ class ExtendedInstruction(BaseInstruction):
         self._assert_valid_value(value=value)
         self._assert_context_snippet_count(context_snippets=context_snippets[:-1]) # exclude last snippet for special case
         self._validate_snippets_match(context_snippets=context_snippets[:-1], output_snippet=context_snippets[-1])
-        final: Token = self._assign_final_token(final=final)
+        final: FinalToken = self._assign_final_token(final=final)
 
         sample: Sample = self._create_sample(context_snippets=context_snippets,
                                              response_string=response_string, value=value, final=final)
         self.samples.append(sample)
 
-    def _create_sample(self, context_snippets: List[Snippet], response_string: str, final: Token,
+    def _create_sample(self, context_snippets: List[Snippet], response_string: str, final: FinalToken,
                        value: Union[int, float, List[Union[int, float]], None] = None) -> Sample:
         """Creates a sample ExtendedInstruction string for example usages."""
 
