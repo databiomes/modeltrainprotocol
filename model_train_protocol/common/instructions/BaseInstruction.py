@@ -210,8 +210,9 @@ class BaseInstruction(ABC):
         return f"Token Set(Tokens: {tokens_str}, Result: {self.final.key}, Samples:\n{samples_str})"
 
     def __hash__(self) -> int:
-        """Hash based on the attributes of the Instruction."""
-        return hash(str(sorted(self.to_dict().items())))
+        """Hash based on the token sets of the Instruction. Instructions with the same TokenSets in the same order
+        will have the same hash."""
+        return hash(str(self.get_token_sets()))
 
     def __eq__(self, other) -> bool:
         """
