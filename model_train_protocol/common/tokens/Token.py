@@ -19,6 +19,7 @@ class Token:
         self.desc: str = desc
         self.num: bool = False
         self.num_list: int = 0
+        self.input: bool = True
         self.template_representation: str = ""
         self.special: Optional[str] = None
         self.validate_value()

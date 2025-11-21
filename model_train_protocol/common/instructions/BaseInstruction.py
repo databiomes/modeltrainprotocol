@@ -3,6 +3,7 @@ from abc import ABC
 from typing import List, Optional, Sequence, Union
 
 from ..constants import NON_TOKEN
+from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
 from ... import NumToken, NumListToken
@@ -64,7 +65,7 @@ class BaseInstruction(ABC):
         final = Token("End")
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
-    final: Token = NON_TOKEN
+    final: FinalToken = NON_TOKEN
 
     def __init__(self, context: Sequence[TokenSet], response: TokenSet, name: str):
         """Initializes the common attributes to all Instructions."""
@@ -137,7 +138,7 @@ class BaseInstruction(ABC):
             memory_set.append(token_strings)
         return memory_set
 
-    def _create_sample(self, context_snippets: List[Snippet], response_snippet: Snippet, final: Token,
+    def _create_sample(self, context_snippets: List[Snippet], response_snippet: Snippet, final: FinalToken,
                        value: Union[int, float, List[Union[int, float]], None] = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
         all_snippets: List[Snippet] = context_snippets + [response_snippet]
@@ -196,10 +197,10 @@ class BaseInstruction(ABC):
             raise ValueError(
                 f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.context)}).")
 
-    def _assign_final_token(self, final: Optional[Token]) -> Token:
+    def _assign_final_token(self, final: Optional[FinalToken]) -> FinalToken:
         """Validate the final token if provided."""
-        if final is not None and not isinstance(final, Token):
-            raise TypeError("Final must be a Token instance or None.")
+        if final is not None and not isinstance(final, FinalToken):
+            raise TypeError("Final must be a FinalToken instance or None.")
         return final if final is not None else self.final
 
     def __str__(self) -> str:
