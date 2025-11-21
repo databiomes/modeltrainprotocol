@@ -37,10 +37,10 @@ token_talk: mtp.Token = mtp.Token("Talk")
 token_vanish: mtp.Token = mtp.Token("Vanish")
 
 # Game Functions
-token_continue: mtp.Token = mtp.Token("Continue")
-token_appear: mtp.Token = mtp.Token("Appear")
-token_answer: mtp.Token = mtp.Token("Answer")
-token_leave: mtp.Token = mtp.Token("Leave")
+token_continue: mtp.FinalToken = mtp.FinalToken("Continue")
+token_appear: mtp.FinalToken = mtp.FinalToken("Appear")
+token_answer: mtp.FinalToken = mtp.FinalToken("Answer")
+token_leave: mtp.FinalToken = mtp.FinalToken("Leave")
 
 # Create the token sets for the instructions
 tree_english_alice_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_english, token_alice, token_talk))
