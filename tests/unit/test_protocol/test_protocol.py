@@ -198,7 +198,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3
         )
 
         # Add samples
@@ -265,7 +264,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -329,7 +327,7 @@ class TestProtocol:
         instruction1 = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3,
+
             name="same_name"
         )
 
@@ -347,7 +345,7 @@ class TestProtocol:
         instruction2 = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3,
+
             name="same_name"  # Same name as instruction1
         )
 
@@ -385,7 +383,7 @@ class TestProtocol:
         instruction1 = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3,
+
             name="conflicting_name"
         )
 
@@ -408,7 +406,7 @@ class TestProtocol:
         instruction2 = Instruction(
             context=[context_set1, context_set3],
             response=response_set2,
-            final=token5,
+
             name="conflicting_name"  # Same name as instruction1
         )
 
@@ -453,7 +451,7 @@ class TestProtocol:
         instruction1 = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3,
+
             name="first_instruction"
         )
 
@@ -472,7 +470,7 @@ class TestProtocol:
         instruction2 = Instruction(
             context=[context_set1, context_set3],
             response=response_set,
-            final=token3,
+
             name="second_instruction"
         )
 
@@ -490,7 +488,7 @@ class TestProtocol:
         instruction3 = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3,
+
             name="third_instruction"
         )
 
@@ -509,7 +507,7 @@ class TestProtocol:
         instruction4 = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3,
+
             name="first_instruction"  # Conflicts with instruction1
         )
 
@@ -540,7 +538,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],  # Only 2 context sets, but protocol expects 3
             response=response_set,
-            final=token3
         )
 
         # Add sample with wrong context lines (2 instead of 3)
@@ -583,7 +580,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -630,7 +626,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -677,7 +672,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -727,7 +721,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -774,7 +767,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -885,7 +877,6 @@ class TestProtocol:
         # Create instruction
         instruction = ExtendedInstruction(
             context=[context_set1, context_set2, user_set],
-            final=token2
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -951,7 +942,6 @@ class TestProtocol:
         instruction = Instruction(
             context=[context_set1, context_set2],
             response=response_set,
-            final=token3
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
