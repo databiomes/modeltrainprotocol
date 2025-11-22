@@ -4,6 +4,7 @@ from model_train_protocol import Instruction, ExtendedInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
+from model_train_protocol.common.tokens import FinalToken
 
 
 class TemplateFile:
@@ -27,10 +28,11 @@ class TemplateFile:
 
             self.instructions_list = instructions
 
-        def to_json(self) -> dict[str, str]:
+        def to_json(self) -> dict[str, dict[str, str]]:
             """Extracts tokens from stored instructions and converts to JSON-serializable dictionary."""
 
-            token_mapping: dict[str, str] = {}
+            input_token_mapping: dict[str, str] = {}
+            output_token_mapping: dict[str, str] = {}
 
             for instruction in self.instructions_list:
                 for token_set in instruction.get_token_sets():
@@ -39,10 +41,23 @@ class TemplateFile:
                         t.key + t.template_representation for t in token_set
                     ])
 
-                    token_mapping[token_value] = token_key
-                token_mapping[instruction.final.value] = instruction.final.key
+                    # Check if any token in the token_set is a FinalToken
+                    has_final_token = any(isinstance(t, FinalToken) for t in token_set)
+                    
+                    if has_final_token:
+                        output_token_mapping[token_value] = token_key
+                    else:
+                        input_token_mapping[token_value] = token_key
+                
+                for sample in instruction.samples:
+                    output_token_mapping[sample.result.value] = sample.result.key
+            
+            output_token_mapping[EOS_TOKEN.value] = EOS_TOKEN.key
 
-            return dict(sorted(token_mapping.items()))
+            return {
+                "input": dict(sorted(input_token_mapping.items())),
+                "output": dict(sorted(output_token_mapping.items()))
+            }
 
     class Instructions:
         """Represents the instruction set of the template."""
@@ -109,7 +124,7 @@ class TemplateFile:
                 input_parts.append(RUN_TOKEN.key)
                 input_str = "\n".join(input_parts)
 
-                output_str = "<string>\n" + instruction.final.key + "\n" + EOS_TOKEN.key
+                output_str = "<string>\n" + instruction.default_final.key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
                     "type": isinstance(instruction, ExtendedInstruction) and "extended" or "basic",
@@ -170,7 +185,7 @@ class TemplateFile:
         """Creates a sample model output string for a given instruction using actual sample data."""
 
         sample_output = sample.response + "\n"
-        sample_output += instruction.final.key + "\n"
+        sample_output += instruction.default_final.key + "\n"
         sample_output += EOS_TOKEN.key
         return sample_output
 
