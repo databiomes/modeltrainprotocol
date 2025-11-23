@@ -65,7 +65,7 @@ class BaseInstruction(ABC):
         final = Token("End")
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
-    final: FinalToken = NON_TOKEN
+    default_final: FinalToken = NON_TOKEN
 
     def __init__(self, context: Sequence[TokenSet], response: TokenSet, name: str):
         """Initializes the common attributes to all Instructions."""
@@ -101,7 +101,8 @@ class BaseInstruction(ABC):
         all_tokens: List[Token] = []
         for token_set in self.get_token_sets():
             all_tokens.extend(token_set.tokens)
-        all_tokens.append(self.final)
+        for sample in self.samples:
+            all_tokens.append(sample.result)
         return all_tokens
 
     def serialize_samples(self) -> List[dict]:
@@ -167,11 +168,11 @@ class BaseInstruction(ABC):
         Assert value is provided if self.final is a number Token, else assert value is None
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number
         """
-        if isinstance(self.final, NumToken) and not isinstance(value, (int, float)):
+        if isinstance(self.default_final, NumToken) and not isinstance(value, (int, float)):
             raise ValueError("Value must be provided as an int or float when final token is a NumToken.")
-        elif isinstance(self.final, NumListToken) and not isinstance(value, list):
+        elif isinstance(self.default_final, NumListToken) and not isinstance(value, list):
             raise ValueError("Value must be provided as a list of int or float when final token is a NumListToken.")
-        elif not isinstance(self.final, (NumToken, NumListToken)) and value is not None:
+        elif not isinstance(self.default_final, (NumToken, NumListToken)) and value is not None:
             raise ValueError("Value must be None when final token is not a NumToken or NumListToken.")
 
     def _validate_snippets_match(self, context_snippets: List[Snippet], output_snippet: Snippet):
@@ -201,14 +202,14 @@ class BaseInstruction(ABC):
         """Validate the final token if provided."""
         if final is not None and not isinstance(final, FinalToken):
             raise TypeError("Final must be a FinalToken instance or None.")
-        return final if final is not None else self.final
+        return final if final is not None else self.default_final
 
     def __str__(self) -> str:
         """String representation of the Instruction."""
         tokens_str: str = ', '.join(
             [''.join([token.key for token in token_set.tokens]) for token_set in self.get_token_sets()])
         samples_str: str = ',\n'.join([str(sample) for sample in self.samples])
-        return f"Token Set(Tokens: {tokens_str}, Result: {self.final.key}, Samples:\n{samples_str})"
+        return f"Token Set(Tokens: {tokens_str}, Result: {self.default_final.key}, Samples:\n{samples_str})"
 
     def __hash__(self) -> int:
         """Hash based on the token sets of the Instruction. Instructions with the same TokenSets in the same order
@@ -245,6 +246,6 @@ class BaseInstruction(ABC):
         return {
             'name': self.name,
             'tokens': [[token.to_dict() for token in token_set.tokens] for token_set in self.get_token_sets()],
-            'result': self.final.to_dict() if self.final else None,
+            'result': self.default_final.to_dict() if self.default_final else None,
             'samples': self.samples
         }
