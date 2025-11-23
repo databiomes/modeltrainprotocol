@@ -33,7 +33,7 @@ class ExtendedInstruction(BaseInstruction):
         :param context_snippets: List of context snippets that will be added to the Instruction.
         :param response_string: The response provided by the model as a string.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
-        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action SpecialToken designated {self.final.value}.
+        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action Token designated {self.default_final.value}.
         """
         self._assert_valid_value(value=value)
         self._assert_context_snippet_count(context_snippets=context_snippets[:-1]) # exclude last snippet for special case
