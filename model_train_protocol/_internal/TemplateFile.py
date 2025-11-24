@@ -218,7 +218,7 @@ class TemplateFile:
             simple_input += self._format_token_set_with_sample(response_token_set, response_string)
             
             simple_input += RUN_TOKEN.key + "\n"
-            examples["instruction_input"] = simple_input + self._create_sample_model_output(simple_instruction, sample)
+            examples["instruction_input"] = simple_input
 
         if extended_instruction and extended_instruction.samples:
             # Use the first sample for the example
@@ -251,12 +251,11 @@ class TemplateFile:
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
 
-        examples: dict[str, str] = self._create_examples()
         json_dict: dict = {
             "version": "0.1",  # Version is hardcoded for now; update as needed
             "encrypt": self.encrypt,
             "tokens": self.tokens.to_json(),
             "instructions": self.instructions.to_json(),
-            "example_usage": examples
+            "example_usage": self._create_examples()
         }
         return json_dict
