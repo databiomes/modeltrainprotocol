@@ -6,6 +6,7 @@ MTP contains all the data that a model is trained on.
 """
 from .common.tokens import Token, NumToken, NumListToken, FinalToken, Snippet, TokenSet
 from .common.instructions import Instruction, ExtendedInstruction
+from .common.instructions.helpers import Response
 from .common.guardrails import Guardrail
 from .Protocol import Protocol
 
@@ -19,5 +20,6 @@ __all__ = [
     "Snippet",
     "Instruction",
     "ExtendedInstruction",
+    "Response",
     "Guardrail"
 ]
