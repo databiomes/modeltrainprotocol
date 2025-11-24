@@ -92,9 +92,9 @@ class ProtocolFile:
             for token_set in instruction.get_token_sets():
                 self._add_instruction_token_key(token_set.get_token_key_set())
 
-            # Add the result token as a special token
-            if instruction.final.key is not None:
-                self._add_instruction_token_key(instruction.final.key)
+            # Add the result token in each sample as a special token
+            for sample in instruction.samples:
+                self._add_instruction_token_key(sample.response)
 
     def _add_instruction_token_key(self, key: str):
         """Adds an instruction token key to the template."""
