@@ -15,6 +15,7 @@ class Instruction(BaseInstruction):
     Samples must be added to the Instruction to provide context for the model.
     A minimum of 3 samples must be added to an Instruction.
     """
+    response: Response
 
     def __init__(self, context: Sequence[TokenSet], response: Response, name: str = "instruction"):
         f"""
@@ -25,7 +26,6 @@ class Instruction(BaseInstruction):
         :param name: Optional name for the Instruction. Defaults to 'instruction'.
         """
         super().__init__(context=context, response=response, name=name)
-        self.response: Response = response # Declare for type checking
         if not isinstance(self.response, Response):
             raise TypeError(f"Response must be an instance of Response. Got: {type(self.response)}")
 

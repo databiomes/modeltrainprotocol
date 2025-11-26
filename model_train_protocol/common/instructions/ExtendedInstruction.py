@@ -15,6 +15,7 @@ class ExtendedInstruction(BaseInstruction):
     Note: The response TokenSet is not set in a ExtendedInstruction.
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
+    response: ExtendedResponse
 
     def __init__(self, context: Sequence[TokenSet], response: ExtendedResponse, name: str = "extended_instruction"):
         """
@@ -24,6 +25,7 @@ class ExtendedInstruction(BaseInstruction):
         :param name: Optional name for the Instruction. Defaults to 'extended_instruction'.
         """
         super().__init__(context=context, response=response, name=name)
+
         if not isinstance(response, ExtendedResponse):
             raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(response)}")
 
@@ -53,7 +55,7 @@ class ExtendedInstruction(BaseInstruction):
         :param final: Optional Token instance designating the final action by the model. Defaults to a non-action Token designated {self.response.default_final}.
         """
         final: FinalToken = self._assign_final_token(final=final)
-        self.response.validate_sample(snippet=context_snippets[-1], value=value, final=final)
+        self.response.validate_sample(string=response_string, value=value, final=final)
         self._assert_context_snippet_count(context_snippets=context_snippets) # exclude last snippet for special case
         self._validate_snippets_match(context_snippets=context_snippets)
 
