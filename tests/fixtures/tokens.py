@@ -3,7 +3,7 @@ Sample token data for testing.
 """
 import pytest
 from typing import Dict, List, Any, Union, Tuple
-from model_train_protocol import Token, NumToken, NumListToken, TokenSet
+from model_train_protocol import Token, NumToken, NumListToken, TokenSet, FinalToken
 
 
 # Basic token fixtures
@@ -63,27 +63,27 @@ def token_scores() -> NumListToken:
 
 # Additional token fixtures for comprehensive testing
 @pytest.fixture
-def token_result() -> Token:
+def token_result() -> FinalToken:
     """Result token fixture."""
-    return Token("Result")
+    return FinalToken("Result")
 
 
 @pytest.fixture
-def token_end() -> Token:
+def token_end() -> FinalToken:
     """End token fixture."""
-    return Token("End")
+    return FinalToken("End")
 
 
 @pytest.fixture
-def token_final() -> Token:
+def token_final() -> FinalToken:
     """Final token fixture."""
-    return Token("Final")
+    return FinalToken("Final")
 
 
 @pytest.fixture
-def token_disappear() -> Token:
+def token_disappear() -> FinalToken:
     """Disappear token fixture."""
-    return Token("Disappear")
+    return FinalToken("Disappear")
 
 
 @pytest.fixture
