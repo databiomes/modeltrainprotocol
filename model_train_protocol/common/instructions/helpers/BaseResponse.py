@@ -1,16 +1,17 @@
 import abc
 from abc import ABC
-from typing import List, Union
+from typing import Union, List
 
 from ...constants import NON_TOKEN
 from ...tokens.FinalToken import FinalToken
-from ...tokens.TokenSet import TokenSet, Snippet
+from ...tokens.TokenSet import Snippet
 
 
 class BaseResponse(ABC):
     """Defines the output of Instructions."""
 
     default_final: FinalToken = NON_TOKEN
+    final: List[FinalToken]
 
     @abc.abstractmethod
     def validate_sample(self, snippet: Snippet, value: Union[int, float, None], final: Union[FinalToken, None]):
