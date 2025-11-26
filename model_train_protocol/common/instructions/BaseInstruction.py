@@ -84,13 +84,10 @@ class BaseInstruction(ABC):
         """Add a sample to the Instruction."""
         raise NotImplementedError("Subclasses must implement add_sample method.")
 
+    @abc.abstractmethod
     def get_token_sets(self) -> List[TokenSet]:
         """Returns all tokens in the instruction as a list of tuples."""
-        all_tokens_sets: List = []
-        for token_set in self.context:
-            all_tokens_sets.append(token_set)
-        all_tokens_sets.append(self.response)
-        return all_tokens_sets
+        raise NotImplementedError("Subclasses must implement get_token_sets method.")
 
     def get_tokens(self) -> List[Token]:
         """Returns all tokens in the instruction as a flat list."""
