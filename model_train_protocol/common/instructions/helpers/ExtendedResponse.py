@@ -1,10 +1,10 @@
 from typing import List, Union
 
-from model_train_protocol import Snippet
 from ...constants import NON_TOKEN
 from ...tokens.FinalNumToken import FinalNumToken
 from ...tokens.FinalToken import FinalToken
 from .BaseResponse import BaseResponse
+
 
 class ExtendedResponse(BaseResponse):
     """Defines the output of Instructions."""
@@ -25,6 +25,7 @@ class ExtendedResponse(BaseResponse):
         """
         Validates the snippet against the response definition.
 
+        :param string: The text of the sample.
         :param value: The value of the Snippet to validate if Snippet has a NumToken.
         :param final: The FinalToken to validate.
         """
