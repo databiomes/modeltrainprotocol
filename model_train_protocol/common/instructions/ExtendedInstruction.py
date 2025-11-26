@@ -1,9 +1,9 @@
 from typing import List, Sequence, Union
 
-from . import ExtendedResponse
 from .BaseInstruction import BaseInstruction, Sample
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
+from . import ExtendedResponse
 
 
 class ExtendedInstruction(BaseInstruction):
@@ -26,6 +26,13 @@ class ExtendedInstruction(BaseInstruction):
         super().__init__(context=context, response=response, name=name)
         if not isinstance(response, ExtendedResponse):
             raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(response)}")
+
+    def get_token_sets(self) -> List[TokenSet]:
+        """Returns all tokens in the instruction as a list of tuples."""
+        all_tokens_sets: List = []
+        for token_set in self.context:
+            all_tokens_sets.append(token_set)
+        return all_tokens_sets
 
     def _validate_snippets_match(self, context_snippets: List[Snippet]):
         """Validates that all snippets in the samples match their expected token sets."""

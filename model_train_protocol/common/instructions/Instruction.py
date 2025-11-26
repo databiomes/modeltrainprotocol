@@ -25,6 +25,7 @@ class Instruction(BaseInstruction):
         :param name: Optional name for the Instruction. Defaults to 'instruction'.
         """
         super().__init__(context=context, response=response, name=name)
+        self.response: Response = response # Declare for type checking
         if not isinstance(self.response, Response):
             raise TypeError(f"Response must be an instance of Response. Got: {type(self.response)}")
 
@@ -41,6 +42,14 @@ class Instruction(BaseInstruction):
 
         # Validate output snippet set matches output token set
         self._validate_snippet_matches_set(snippet=response_snippet, expected_token_set=self.response.tokenset)
+
+    def get_token_sets(self) -> List[TokenSet]:
+        """Returns all tokens in the instruction as a list of tuples."""
+        all_tokens_sets: List = []
+        for token_set in self.context:
+            all_tokens_sets.append(token_set)
+        all_tokens_sets.append(self.response.tokenset)
+        return all_tokens_sets
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: List[Snippet], response_snippet: Snippet,
