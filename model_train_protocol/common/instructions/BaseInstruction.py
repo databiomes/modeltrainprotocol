@@ -2,11 +2,10 @@ import abc
 from abc import ABC
 from typing import List, Optional, Sequence, Union
 
-from ..constants import NON_TOKEN
+from .helpers.BaseResponse import BaseResponse
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
-from ... import NumToken, NumListToken
 
 
 class Sample:
@@ -65,12 +64,11 @@ class BaseInstruction(ABC):
         final = Token("End")
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
-    default_final: FinalToken = NON_TOKEN
 
-    def __init__(self, context: Sequence[TokenSet], response: TokenSet, name: str):
+    def __init__(self, context: Sequence[TokenSet], response: BaseResponse, name: str):
         """Initializes the common attributes to all Instructions."""
         self.context: Sequence[TokenSet] = context
-        self.response: TokenSet = response
+        self.response: BaseResponse = response
         self.samples: List[Sample] = []
         self.name: str = name
         self.samples: list[Sample] = []
@@ -78,8 +76,6 @@ class BaseInstruction(ABC):
             raise TypeError("Context must be a sequence of TokenSet instances.")
         if not all(isinstance(ts, TokenSet) for ts in context):
             raise TypeError("All items in context must be instances of TokenSet.")
-        if not isinstance(response, TokenSet):
-            raise TypeError("Response must be an instance of TokenSet.")
         if not name or not isinstance(name, str):
             raise ValueError("Name must be a non-empty string.")
 
@@ -163,29 +159,6 @@ class BaseInstruction(ABC):
             value=value
         )
 
-    def _assert_valid_value(self, value: Union[int, float, List, None]):
-        """
-        Assert value is provided if self.final is a number Token, else assert value is None
-        :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number
-        """
-        if isinstance(self.default_final, NumToken) and not isinstance(value, (int, float)):
-            raise ValueError("Value must be provided as an int or float when final token is a NumToken.")
-        elif isinstance(self.default_final, NumListToken) and not isinstance(value, list):
-            raise ValueError("Value must be provided as a list of int or float when final token is a NumListToken.")
-        elif not isinstance(self.default_final, (NumToken, NumListToken)) and value is not None:
-            raise ValueError("Value must be None when final token is not a NumToken or NumListToken.")
-
-    def _validate_snippets_match(self, context_snippets: List[Snippet], output_snippet: Snippet):
-        """Validates that all snippets in the samples match their expected token sets."""
-        all_snippets: List[Snippet] = context_snippets + [output_snippet]
-        all_token_sets: List[TokenSet] = self.get_token_sets()
-
-        for i in range(len(all_snippets)):
-            self._validate_snippet_matches_set(snippet=all_snippets[i], expected_token_set=all_token_sets[i])
-
-        # Validate output snippet set matches output token set
-        self._validate_snippet_matches_set(snippet=output_snippet, expected_token_set=self.response)
-
     @classmethod
     def _validate_snippet_matches_set(cls, snippet: Snippet, expected_token_set: TokenSet):
         """Validates that the snippet matches the expected token set."""
@@ -199,17 +172,40 @@ class BaseInstruction(ABC):
                 f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.context)}).")
 
     def _assign_final_token(self, final: Optional[FinalToken]) -> FinalToken:
-        """Validate the final token if provided."""
+        """
+        Validate the final token if provided.
+
+        The following behaviour is observed:
+
+        If a final token is provided directly, always use it.
+
+        If no final token is provided in the sample, and no final token is defined in the response, use the default <NON> final token.
+
+        If no final token is provided in the sample, and only one final token is defined in the response, use that final token.
+
+        If no final token is provided in the sample, and multiple final tokens are defined in the response, raise an error requiring clarification.
+        """
         if final is not None and not isinstance(final, FinalToken):
             raise TypeError("Final must be a FinalToken instance or None.")
-        return final if final is not None else self.default_final
+
+        if final is not None:  # Use the specified final token if provided
+            return final
+
+        if len(self.response.final) == 0:  # Return default final if no finals are defined
+            return self.response.default_final
+
+        if len(self.response.final) == 1:  # If we only have one final token, use it
+            return self.response.final[0]
+
+        raise ValueError(
+            "Multiple final tokens are allowed in the Response. Specify which final token to use for this sample.")
 
     def __str__(self) -> str:
         """String representation of the Instruction."""
         tokens_str: str = ', '.join(
             [''.join([token.key for token in token_set.tokens]) for token_set in self.get_token_sets()])
         samples_str: str = ',\n'.join([str(sample) for sample in self.samples])
-        return f"Token Set(Tokens: {tokens_str}, Result: {self.default_final.key}, Samples:\n{samples_str})"
+        return f"Token Set(Tokens: {tokens_str}, Result: {self.response.default_final.key}, Samples:\n{samples_str})"
 
     def __hash__(self) -> int:
         """Hash based on the token sets of the Instruction. Instructions with the same TokenSets in the same order
@@ -246,6 +242,6 @@ class BaseInstruction(ABC):
         return {
             'name': self.name,
             'tokens': [[token.to_dict() for token in token_set.tokens] for token_set in self.get_token_sets()],
-            'result': self.default_final.to_dict() if self.default_final else None,
+            'result': self.response.default_final.to_dict() if self.response.default_final else None,
             'samples': self.samples
         }

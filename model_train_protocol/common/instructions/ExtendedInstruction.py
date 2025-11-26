@@ -1,5 +1,6 @@
 from typing import List, Sequence, Union
 
+from . import ExtendedResponse
 from .BaseInstruction import BaseInstruction, Sample
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
@@ -15,14 +16,23 @@ class ExtendedInstruction(BaseInstruction):
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
 
-    def __init__(self, context: Sequence[TokenSet], name: str = "extended_instruction"):
+    def __init__(self, context: Sequence[TokenSet], response: ExtendedResponse, name: str = "extended_instruction"):
         """
         Initializes a ExtendedInstruction instance.
 
         :param context: List of tuples containing Token instances that define the input structure. This precedes the user input.
         :param name: Optional name for the Instruction. Defaults to 'extended_instruction'.
         """
-        super().__init__(context=context[:-1], response=context[-1], name=name)
+        super().__init__(context=context, response=response, name=name)
+        if not isinstance(response, ExtendedResponse):
+            raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(response)}")
+
+    def _validate_snippets_match(self, context_snippets: List[Snippet]):
+        """Validates that all snippets in the samples match their expected token sets."""
+        all_token_sets: List[TokenSet] = self.get_token_sets()
+
+        for i in range(len(context_snippets)):
+            self._validate_snippet_matches_set(snippet=context_snippets[i], expected_token_set=all_token_sets[i])
 
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: List[Snippet], response_string: str,
@@ -33,12 +43,12 @@ class ExtendedInstruction(BaseInstruction):
         :param context_snippets: List of context snippets that will be added to the Instruction.
         :param response_string: The response provided by the model as a string.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
-        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action Token designated {self.default_final.value}.
+        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action Token designated {self.response.default_final}.
         """
-        self._assert_valid_value(value=value)
-        self._assert_context_snippet_count(context_snippets=context_snippets[:-1]) # exclude last snippet for special case
-        self._validate_snippets_match(context_snippets=context_snippets[:-1], output_snippet=context_snippets[-1])
         final: FinalToken = self._assign_final_token(final=final)
+        self.response.validate_sample(snippet=context_snippets[-1], value=value, final=final)
+        self._assert_context_snippet_count(context_snippets=context_snippets) # exclude last snippet for special case
+        self._validate_snippets_match(context_snippets=context_snippets)
 
         sample: Sample = self._create_sample(context_snippets=context_snippets,
                                              response_string=response_string, value=value, final=final)
@@ -66,3 +76,4 @@ class ExtendedInstruction(BaseInstruction):
             result=final,
             value=value
         )
+
