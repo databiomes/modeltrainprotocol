@@ -17,7 +17,9 @@ class ExtendedResponse(BaseResponse):
 
         :param final: A FinalToken or list of FinalToken designating the allowed final action by the model.
         """
-        self.final: FinalToken | List[FinalToken] | None = final
+        if isinstance(final, FinalToken):
+            final = [final]
+        self.final: List[FinalToken] | None = final
 
     # noinspection PyMethodOverriding
     def validate_sample(self, string: str, value: Union[int, float, None],
