@@ -36,3 +36,14 @@ class NumToken(Token):
     def __hash__(self):
         """Hash based on the string representation of the NumToken."""
         return hash((self.value, self.key, self.desc, self.num, self.min_value, self.max_value, self.template_representation))
+
+    def validate_number(self, number: Union[int, float]):
+        """
+        Validates if the provided number is within the defined min and max values.
+
+        :param number: The number to validate.
+        :raises ValueError: If the number is out of bounds.
+        """
+        if not (self.min_value <= number <= self.max_value):
+            raise ValueError(
+                f"Number {number} is out of bounds for token {self}. Must be between {self.min_value} and {self.max_value} (inclusive).")

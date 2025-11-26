@@ -64,3 +64,5 @@ class Response(BaseResponse):
 
             if not isinstance(value, Union[int, float]):
                 raise TypeError(f"Value must be an int or float. Got: {type(value)}")
+
+            final.validate_number(number=value)
