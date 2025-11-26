@@ -160,7 +160,7 @@ class BaseInstruction(ABC):
     def _validate_snippet_matches_set(cls, snippet: Snippet, expected_token_set: TokenSet):
         """Validates that the snippet matches the expected token set."""
         if snippet.token_set_key != expected_token_set.key:
-            raise ValueError(f"Snippet f{snippet} does not match expected token set {expected_token_set}.")
+            raise ValueError(f"Snippet {snippet} does not match expected token set {expected_token_set}.")
 
     def _assert_context_snippet_count(self, context_snippets: List[Snippet]):
         """Assert the number of context snippets matches the number of context token sets."""
