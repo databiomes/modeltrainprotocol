@@ -4,10 +4,10 @@ from .FinalToken import FinalToken
 from .NumToken import NumToken
 
 
-class FinalNumToken(FinalToken, NumToken):
+class FinalNumToken(NumToken, FinalToken):
 
     def __init__(self, value: str, min_value: Union[int, float], max_value: Union[int, float], key: Optional[str] = None,
-                 desc: Optional[str] = None):
+                 desc: Optional[str] = None, *args, **kwargs):
         """
         Initializes a FinalToken instance.
 
@@ -19,5 +19,4 @@ class FinalNumToken(FinalToken, NumToken):
         :param key: The key associated with the token, a symbol, emoji, or short string.
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
-        FinalToken.__init__(self, value=value, key=key, desc=desc)
-        NumToken.__init__(self, value=value, key=key, desc=desc, min_value=min_value, max_value=max_value)
+        super().__init__(value=value, min_value=min_value, max_value=max_value, key=key, desc=desc, *args, **kwargs)
