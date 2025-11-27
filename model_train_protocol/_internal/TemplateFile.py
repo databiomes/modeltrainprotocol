@@ -6,7 +6,7 @@ from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
-
+import random
 
 class TemplateFile:
     """Manages the model.json file for model training protocols."""
@@ -162,9 +162,14 @@ class TemplateFile:
         # Add template representation for NumTokens and NumListTokens to the token key
         for token in token_set:
             if isinstance(token, NumToken):
-                token_keys += token.template_representation
+                example_number: str = str(random.randint(token.min_value, token.max_value))
+                token_keys += example_number
             elif isinstance(token, NumListToken):
-                token_keys += token.template_representation
+                example_list: list[str] = [
+                    str(random.randint(token.min_value, token.max_value))
+                    for _ in range(token.length)
+                ]
+                token_keys += example_list
         
         if is_extended_last:
             # For extended instruction's last token set: token_key<string>\n (no newline before string)
