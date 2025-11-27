@@ -77,14 +77,11 @@ class TemplateFile:
             instructions_dict: dict[str, dict] = {}
 
             for instruction in self.instructions_list:
-                input_dict: dict[str, str | dict] = {"<BOS>": BOS_TOKEN.key}
-
+                input_list: list[str] = [BOS_TOKEN.key + '\n']
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_key = "".join([
                         t.key + t.template_representation for t in token_set
                     ])
-
-                    token_value = "".join([t.value for t in token_set])
 
                     is_last_context = idx == len(instruction.get_token_sets()) - 1
                     is_extended_instruction_extra_string = isinstance(instruction,
@@ -98,9 +95,9 @@ class TemplateFile:
                     if not is_last_context:
                         token_key += "<string>"
 
-                    input_dict[str(idx)] = {token_value: token_key}
+                    input_list.append(token_key)
 
-                input_dict["<RUN>"] = RUN_TOKEN.key
+                input_list.append(RUN_TOKEN.key)
 
                 # Build input string from structure
                 input_parts = [BOS_TOKEN.key]
@@ -129,7 +126,7 @@ class TemplateFile:
 
                 instructions_dict[instruction.name] = {
                     "type": isinstance(instruction, ExtendedInstruction) and "extended" or "basic",
-                    "structure": input_dict,
+                    "structure": input_list,
                     "input": input_str,
                     "output": output_str
                 }
