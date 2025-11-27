@@ -25,7 +25,6 @@ class ProtocolFile:
         """Represents an instruction set in the template."""
 
         set: List[List[str]]
-        result: str
         samples: List
         ppo: List
 
@@ -81,22 +80,21 @@ class ProtocolFile:
         for instruction in instructions:
             instruction_set: ProtocolFile.ProtocolInstructionSet = ProtocolFile.ProtocolInstructionSet(
                 set=instruction.serialize_memory_set(),
-                result=instruction.final.value,
                 samples=instruction.serialize_samples(),
                 ppo=instruction.serialize_ppo(),
             )
             self._instruction.sets.append(instruction_set)
 
             # Add guardrails from the instruction's Response TokenSet
-            self._add_guardrail(instruction.response)
+            self._add_guardrail(instruction.last_tokenset)
 
             # Add instruction token keys
             for token_set in instruction.get_token_sets():
                 self._add_instruction_token_key(token_set.get_token_key_set())
 
-            # Add the result token as a special token
-            if instruction.final.key is not None:
-                self._add_instruction_token_key(instruction.final.key)
+            # Add the result token in each sample as a special token
+            for sample in instruction.samples:
+                self._add_instruction_token_key(sample.response)
 
     def _add_instruction_token_key(self, key: str):
         """Adds an instruction token key to the template."""
@@ -201,7 +199,6 @@ class ProtocolFile:
             # Create InstructionSet
             instruction_set_obj = InstructionSetModel(
                 set=instruction_set.set,
-                result=instruction_set.result,
                 samples=samples,
                 ppo=instruction_set.ppo
             )

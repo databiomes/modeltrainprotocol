@@ -135,6 +135,16 @@ class TokenSet:
             token_key_set += token.key
         return token_key_set
 
+    @property
+    def has_num_tokens(self) -> bool:
+        """Returns True if the TokenSet contains any NumTokens."""
+        return len(self._num_tokens) > 0
+
+    @property
+    def has_num_list_tokens(self) -> bool:
+        """Returns True if the TokenSet contains any NumListTokens."""
+        return len(self._num_list_tokens) > 0
+
     def __eq__(self, other):
         """Equality comparison for TokenSet."""
         if not isinstance(other, TokenSet):

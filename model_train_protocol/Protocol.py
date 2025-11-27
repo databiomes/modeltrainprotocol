@@ -60,6 +60,8 @@ class Protocol:
         if len(instruction.samples) < 3:
             raise ValueError(f"Instruction must have at least three samples. Found {len(instruction.samples)} samples.")
 
+        # TODO: validate that final token has at least 3 samples in the instruction
+
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
             if not len(sample.context) == self.instruction_context_snippets:
@@ -160,7 +162,8 @@ class Protocol:
             raise ValueError(f"Token value {token.value} already used. Duplicate tokens are not allowed.")
 
         if token.key in self.used_keys:
-            raise ValueError(f"Duplicate token key '{token.key}' is already used in another token. Duplicate keys are not allowed.")
+            raise ValueError(
+                f"Duplicate token key '{token.key}' is already used in another token. Duplicate keys are not allowed.")
 
         self.tokens.add(token)
         self.used_keys.add(token.key)
@@ -172,9 +175,10 @@ class Protocol:
         """Sets all guardrails from TokenSets into the protocol."""
         # Add all guardrails to the protocol
         for instruction in self.instructions:
-            if instruction.response.guardrail is not None:
-                # instruction.response is the user TokenSet
-                self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
+            # TODO: Modify guardrails to be instruction based, and add warnings if a response tokenset belongs to multiple instructions
+            if instruction.last_tokenset.guardrail is not None:
+                # instruction.response is the final TokenSet
+                self.guardrails[instruction.last_tokenset.key] = instruction.last_tokenset.guardrail.format_samples()
 
     def _add_default_special_tokens(self):
         """Adds all special tokens to the protocol."""
@@ -197,7 +201,8 @@ class Protocol:
         This includes setting guardrails from their TokenSets and creating default special tokens.
         """
         if len(self.instructions) == 0:
-            raise ValueError("No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
+            raise ValueError(
+                "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
 
         self._set_guardrails()
         self._add_default_special_tokens()
