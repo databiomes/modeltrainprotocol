@@ -198,35 +198,37 @@ class TemplateFile:
             # Use the first sample for the example
             sample = instruction.samples[0]
             
-            simple_input = BOS_TOKEN.key + "\n"
+            instruction_input = BOS_TOKEN.key + "\n"
             
             # Map context strings to context token sets
             for idx, token_set in enumerate(instruction.context):
                 if idx < len(sample.context):
                     sample_string = sample.context[idx]
-                    simple_input += self._format_token_set_with_sample(token_set, sample_string)
+                    instruction_input += self._format_token_set_with_sample(token_set, sample_string)
 
-            simple_input += RUN_TOKEN.key + "\n"
-            examples["instruction_input"] = simple_input
+            instruction_input += instruction.last_tokenset.key + "\n"
+
+            instruction_input += RUN_TOKEN.key + "\n"
+            examples["instruction_input"] = instruction_input
 
         if extended_instruction and extended_instruction.samples:
             # Use the first sample for the example
             sample = extended_instruction.samples[0]
             
-            user_input = BOS_TOKEN.key + "\n"
+            extended_instruction_input = BOS_TOKEN.key + "\n"
             
             # Map context strings to context token sets
             for idx, token_set in enumerate(extended_instruction.context):
                 if idx < len(sample.context):
                     sample_string = sample.context[idx]
-                    user_input += self._format_token_set_with_sample(token_set, sample_string)
+                    extended_instruction_input += self._format_token_set_with_sample(token_set, sample_string)
             
             last_tokenset = extended_instruction.last_tokenset  # This is the last TokenSet in the original context
             prompt_string = sample.prompt if sample.prompt else ""
-            user_input += self._format_token_set_with_sample(last_tokenset, prompt_string, is_extended_last=True)
+            extended_instruction_input += self._format_token_set_with_sample(last_tokenset, prompt_string, is_extended_last=True)
             
-            user_input += RUN_TOKEN.key + "\n"
-            examples["extended_instruction_input"] = user_input
+            extended_instruction_input += RUN_TOKEN.key + "\n"
+            examples["extended_instruction_input"] = extended_instruction_input
 
         first_instruction = instruction or extended_instruction
         if first_instruction and first_instruction.samples:
