@@ -172,9 +172,17 @@ class Protocol:
         """Sets all guardrails from TokenSets into the protocol."""
         # Add all guardrails to the protocol
         for instruction in self.instructions:
-            if instruction.response.guardrail is not None:
-                # instruction.response is the user TokenSet
-                self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
+            # TODO: Modify guardrails to be instruction based, and add warnings if a response tokenset belongs to multiple instructions
+            if isinstance(instruction, Instruction):
+                tokenset: TokenSet = instruction.response.tokenset
+            elif isinstance(instruction, ExtendedInstruction):
+                tokenset: TokenSet = instruction.get_token_sets()[-1]
+            else:
+                raise TypeError(f"Unsupported instruction type: {type(instruction)}")
+
+            if tokenset.guardrail is not None:
+                # instruction.response is the final TokenSet
+                self.guardrails[tokenset.key] = tokenset.guardrail.format_samples()
 
     def _add_default_special_tokens(self):
         """Adds all special tokens to the protocol."""
