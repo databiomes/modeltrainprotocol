@@ -28,6 +28,7 @@ class Instruction(BaseInstruction):
         super().__init__(context=context, response=response, name=name)
         if not isinstance(self.response, Response):
             raise TypeError(f"Response must be an instance of Response. Got: {type(self.response)}")
+        self.validate_context_snippets()
 
     def _validate_snippets_match(self, context_snippets: List[Snippet], response_snippet: Snippet):
         """Validates that all snippets in the samples match their expected token sets."""

@@ -29,6 +29,8 @@ class ExtendedInstruction(BaseInstruction):
         if not isinstance(response, ExtendedResponse):
             raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(response)}")
 
+        self.validate_context_snippets()
+
     def get_token_sets(self) -> List[TokenSet]:
         """Returns all tokens in the instruction as a list of tuples."""
         all_tokens_sets: List = []

@@ -89,6 +89,13 @@ class BaseInstruction(ABC):
         """Returns all tokens in the instruction as a list of tuples."""
         raise NotImplementedError("Subclasses must implement get_token_sets method.")
 
+    def validate_context_snippets(self):
+        """Validates that context snippets do not contain any final tokens."""
+        for token_set in self.context:
+            for token in token_set:
+                if isinstance(token, FinalToken):
+                    raise ValueError(f"Context TokenSet cannot contain FinalToken instances. Found: {token}")
+
     def get_tokens(self) -> List[Token]:
         """Returns all tokens in the instruction as a flat list."""
         all_tokens: List[Token] = []
