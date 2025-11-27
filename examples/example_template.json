@@ -1,76 +1,76 @@
 {
     "version": "0.1",
-    "encrypt": true,
+    "encrypt": false,
     "tokens": {
         "input": {
-            "Tree_English_Alice_Talk_": "852964847a70ac50a4b6ecfb",
-            "Tree_English_Alice_Talk_Emotion_": "852964847a70ac50a4b6ecfb2b98d5<num_0_10>",
-            "Tree_English_Cat_Talk_": "852964847a7050f7ddb6ecfb",
-            "Tree_English_Cat_Talk_Coordinates_": "852964847a7050f7ddb6ecfb57f68c<num_-1000_1000_3>",
-            "Tree_English_Dissipate_Cat_Talk_": "852964847a70e2b41450f7ddb6ecfb"
+            "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_",
+            "Tree_English_Alice_Talk_Emotion_": "Tree_English_Alice_Talk_Emotion_<num_0_10>",
+            "Tree_English_Cat_Talk_": "Tree_English_Cat_Talk_",
+            "Tree_English_Cat_Talk_Coordinates_": "Tree_English_Cat_Talk_Coordinates_<num_-1000_1000_3>",
+            "Tree_English_Dissipate_Cat_Talk_": "Tree_English_Dissipate_Cat_Talk_"
         },
         "output": {
             "<EOS>": "<EOS>",
-            "Appear_": "c4bf26",
-            "Continue_": "7a560c",
-            "Leave_": "0f915e",
-            "Madness_": "251cf5",
-            "Vanish_": "fecd85"
+            "Appear_": "Appear_",
+            "Continue_": "Continue_",
+            "Leave_": "Leave_",
+            "Madness_": "Madness_",
+            "Vanish_": "Vanish_"
         }
     },
     "instructions": {
-        "alice_cat_alice_instruction": {
+        "alice_cat_alice_instruction_numeric": {
             "type": "basic",
             "structure": [
                 "<BOS>\n",
-                "852964847a7050f7ddb6ecfb\n<string>",
-                "852964847a70ac50a4b6ecfb\n<string>",
-                "852964847a7050f7ddb6ecfb\n",
+                "Tree_English_Cat_Talk_Coordinates_<num_-1000_1000_3>\n<string>",
+                "Tree_English_Alice_Talk_Emotion_<num_0_10>\n<string>",
+                "Tree_English_Cat_Talk_\n",
                 "<RUN>"
             ],
-            "input": "<BOS>\n852964847a7050f7ddb6ecfb\n<string>\n852964847a70ac50a4b6ecfb\n<string>\n852964847a7050f7ddb6ecfb\n<RUN>",
-            "output": "<string>\n7a560c\n<EOS>"
-        },
-        "alice_disappear_cat_alice_instruction_leave": {
-            "type": "extended",
-            "structure": [
-                "<BOS>\n",
-                "852964847a70ac50a4b6ecfb\n<string>",
-                "852964847a70e2b41450f7ddb6ecfb\n<string>",
-                "852964847a70ac50a4b6ecfb<string>\n",
-                "<RUN>"
-            ],
-            "input": "<BOS>\n852964847a70ac50a4b6ecfb\n<string>\n852964847a70e2b41450f7ddb6ecfb\n<string>\n852964847a70ac50a4b6ecfb<string>\n<RUN>",
-            "output": "<string>\n0f915e\n<EOS>"
+            "input": "<BOS>\nTree_English_Cat_Talk_Coordinates_<num_-1000_1000_3>\n<string>\nTree_English_Alice_Talk_Emotion_<num_0_10>\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\nMadness_\n<EOS>"
         },
         "alice_cat_alice_instruction_appear_disappear": {
             "type": "basic",
             "structure": [
                 "<BOS>\n",
-                "852964847a70e2b41450f7ddb6ecfb\n<string>",
-                "852964847a70ac50a4b6ecfb\n<string>",
-                "852964847a7050f7ddb6ecfb\n",
+                "Tree_English_Dissipate_Cat_Talk_\n<string>",
+                "Tree_English_Alice_Talk_\n<string>",
+                "Tree_English_Cat_Talk_\n",
                 "<RUN>"
             ],
-            "input": "<BOS>\n852964847a70e2b41450f7ddb6ecfb\n<string>\n852964847a70ac50a4b6ecfb\n<string>\n852964847a7050f7ddb6ecfb\n<RUN>",
-            "output": "<string>\nc4bf26\n<EOS>"
+            "input": "<BOS>\nTree_English_Dissipate_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\nAppear_\n<EOS>"
         },
-        "alice_cat_alice_instruction_numeric": {
+        "alice_cat_alice_instruction": {
             "type": "basic",
             "structure": [
                 "<BOS>\n",
-                "852964847a7050f7ddb6ecfb57f68c<num_-1000_1000_3>\n<string>",
-                "852964847a70ac50a4b6ecfb2b98d5<num_0_10>\n<string>",
-                "852964847a7050f7ddb6ecfb\n",
+                "Tree_English_Cat_Talk_\n<string>",
+                "Tree_English_Alice_Talk_\n<string>",
+                "Tree_English_Cat_Talk_\n",
                 "<RUN>"
             ],
-            "input": "<BOS>\n852964847a7050f7ddb6ecfb57f68c<num_-1000_1000_3>\n<string>\n852964847a70ac50a4b6ecfb2b98d5<num_0_10>\n<string>\n852964847a7050f7ddb6ecfb\n<RUN>",
-            "output": "<string>\n251cf5\n<EOS>"
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\nContinue_\n<EOS>"
+        },
+        "alice_disappear_cat_alice_instruction_leave": {
+            "type": "extended",
+            "structure": [
+                "<BOS>\n",
+                "Tree_English_Alice_Talk_\n<string>",
+                "Tree_English_Dissipate_Cat_Talk_\n<string>",
+                "Tree_English_Alice_Talk_<string>\n",
+                "<RUN>"
+            ],
+            "input": "<BOS>\nTree_English_Alice_Talk_\n<string>\nTree_English_Dissipate_Cat_Talk_\n<string>\nTree_English_Alice_Talk_<string>\n<RUN>",
+            "output": "<string>\nLeave_\n<EOS>"
         }
     },
     "example_usage": {
-        "instruction_input": "<BOS>\n852964847a7050f7ddb6ecfb\nThen it doesnt matter which way you go.\n852964847a70ac50a4b6ecfb\nCan you tell me a way?\n<RUN>\n",
-        "extended_instruction_input": "<BOS>\n852964847a70ac50a4b6ecfb\nDo you ever stay in one place, or are you always drifting about?\n852964847a70e2b41450f7ddb6ecfb\nI stay wherever I please, which is nowhere for very long.\n852964847a70ac50a4b6ecfbBut I was hoping you might keep me company a bit longer.\n<RUN>\n",
-        "valid_model_output": "Oh sure, if you only walk long enough that is a way.\n7a560c\n<EOS>"
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[150, -710, -215]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_3\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
+        "extended_instruction_input": "<BOS>\nTree_English_Alice_Talk_\nDo you ever stay in one place, or are you always drifting about?\nTree_English_Dissipate_Cat_Talk_\nI stay wherever I please, which is nowhere for very long.\nTree_English_Alice_Talk_But I was hoping you might keep me company a bit longer.\n<RUN>\n",
+        "valid_model_output": "Then it doesnt matter which way you go.\nMadness_\n<EOS>"
     }
 }
