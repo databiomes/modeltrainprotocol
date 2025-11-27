@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Union
 
 from model_train_protocol import Instruction, ExtendedInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
@@ -162,14 +163,14 @@ class TemplateFile:
         # Add template representation for NumTokens and NumListTokens to the token key
         for token in token_set:
             if isinstance(token, NumToken):
-                example_number: str = str(random.randint(token.min_value, token.max_value))
-                token_keys += example_number
+                example_number: int = random.randint(token.min_value, token.max_value)
+                token_keys += str(example_number)
             elif isinstance(token, NumListToken):
-                example_list: list[str] = [
-                    str(random.randint(token.min_value, token.max_value))
+                example_list: list[Union[int, float]] = [
+                    random.randint(token.min_value, token.max_value)
                     for _ in range(token.length)
                 ]
-                token_keys += example_list
+                token_keys += str(example_list)
         
         if is_extended_last:
             # For extended instruction's last token set: token_key<string>\n (no newline before string)
@@ -190,14 +191,51 @@ class TemplateFile:
         sample_output += EOS_TOKEN.key
         return sample_output
 
+    def _select_example_instructions(self) -> tuple[BaseInstruction | None, BaseInstruction | None]:
+        """
+        Selects one basic instruction and one extended instruction with samples for example creation.
+
+        Puts a preference on instructions that include numeric tokens.
+        """
+
+        basic_instruction: BaseInstruction | None = None
+        extended_instruction: BaseInstruction | None = None
+
+        numeric_instruction_exists: bool = any(
+            any(isinstance(t, (NumToken, NumListToken)) for ts in instr.get_token_sets() for t in ts)
+            for instr in self.instructions.instructions_list if isinstance(instr, Instruction)
+        )
+        numeric_extended_instruction_exists: bool = any(
+            any(isinstance(t, (NumToken, NumListToken)) for ts in instr.get_token_sets() for t in ts)
+            for instr in self.instructions.instructions_list if isinstance(instr, ExtendedInstruction)
+        )
+
+        for instr in self.instructions.instructions_list:
+            if isinstance(instr, Instruction) and instr.samples:
+                if basic_instruction is None:
+                    if numeric_instruction_exists:
+                        if any(isinstance(t, (NumToken, NumListToken)) for ts in instr.get_token_sets() for t in ts):
+                            basic_instruction = instr
+                    else:
+                        basic_instruction = instr
+            elif isinstance(instr, ExtendedInstruction) and instr.samples:
+                if extended_instruction is None:
+                    if numeric_extended_instruction_exists:
+                        if any(isinstance(t, (NumToken, NumListToken)) for ts in instr.get_token_sets() for t in ts):
+                            extended_instruction = instr
+                    else:
+                        extended_instruction = instr
+
+            if basic_instruction and extended_instruction:
+                break
+
+        return basic_instruction, extended_instruction
+
     def _create_examples(self) -> dict[str, str]:
         """Creates example usages of the template using actual sample data from instructions."""
 
         examples: dict[str, str] = dict()
-        instruction: Instruction = next(
-            (i for i in self.instructions.instructions_list if isinstance(i, Instruction)), None)
-        extended_instruction: ExtendedInstruction = next(
-            (i for i in self.instructions.instructions_list if isinstance(i, ExtendedInstruction)), None)
+        instruction, extended_instruction = self._select_example_instructions()
 
         if instruction and instruction.samples:
             # Use the first sample for the example
