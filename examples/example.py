@@ -1,5 +1,5 @@
 import model_train_protocol as mtp
-from model_train_protocol.common.instructions import ExtendedResponse
+
 
 # Cheshire Cat NPC
 
@@ -215,7 +215,7 @@ protocol.add_instruction(alice_cat_alice_instruction_appear_disappear)
 
 # Create ExtendedResponse for Leave instruction - an ExtendedResponse does not have an associated tokenset.
 # In an ExtendedInstruction, the final tokenset is associated with the context, allowing for an extra line of context.
-extended_response: ExtendedResponse = ExtendedResponse(
+extended_response: mtp.ExtendedResponse = mtp.ExtendedResponse(
     final=token_leave
 )
 
