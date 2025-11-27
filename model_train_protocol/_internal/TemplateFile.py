@@ -5,6 +5,7 @@ from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKE
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
 from model_train_protocol.common.tokens import FinalToken
+from model_train_protocol.common.tokens import NumToken, NumListToken
 
 
 class TemplateFile:
@@ -124,7 +125,7 @@ class TemplateFile:
                 input_parts.append(RUN_TOKEN.key)
                 input_str = "\n".join(input_parts)
 
-                output_str = "<string>\n" + instruction.default_final.key + "\n" + EOS_TOKEN.key
+                output_str = "<string>\n" + instruction.response.final[0].key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
                     "type": isinstance(instruction, ExtendedInstruction) and "extended" or "basic",
@@ -159,8 +160,6 @@ class TemplateFile:
         :param sample_string: The actual sample string to use
         :param is_extended_last: If True, format for extended instruction's last token set (no newline before string)
         """
-        from model_train_protocol.common.tokens import NumToken, NumListToken
-        
         token_keys = "".join([token.key for token in token_set])
         
         # Add template representation for NumTokens and NumListTokens to the token key
@@ -185,7 +184,7 @@ class TemplateFile:
         """Creates a sample model output string for a given instruction using actual sample data."""
 
         sample_output = sample.response + "\n"
-        sample_output += instruction.default_final.key + "\n"
+        sample_output += instruction.example_final_token.key + "\n"
         sample_output += EOS_TOKEN.key
         return sample_output
 
@@ -193,27 +192,24 @@ class TemplateFile:
         """Creates example usages of the template using actual sample data from instructions."""
 
         examples: dict[str, str] = dict()
-        simple_instruction: Instruction = next(
+        instruction: Instruction = next(
             (i for i in self.instructions.instructions_list if isinstance(i, Instruction)), None)
         extended_instruction: ExtendedInstruction = next(
             (i for i in self.instructions.instructions_list if isinstance(i, ExtendedInstruction)), None)
 
-        if simple_instruction and simple_instruction.samples:
+        if instruction and instruction.samples:
             # Use the first sample for the example
-            sample = simple_instruction.samples[0]
+            sample = instruction.samples[0]
             
             simple_input = BOS_TOKEN.key + "\n"
             
-            # Include all token sets (context + response) in the input, matching the template structure
-
             # Map context strings to context token sets
-            for idx, token_set in enumerate(simple_instruction.context):
+            for idx, token_set in enumerate(instruction.context):
                 if idx < len(sample.context):
                     sample_string = sample.context[idx]
                     simple_input += self._format_token_set_with_sample(token_set, sample_string)
             
-            # Add response token set with response string (response is part of input structure)
-            response_token_set = simple_instruction.response
+            response_token_set = instruction.response.tokenset
             response_string = sample.response
             simple_input += self._format_token_set_with_sample(response_token_set, response_string)
             
@@ -232,16 +228,14 @@ class TemplateFile:
                     sample_string = sample.context[idx]
                     user_input += self._format_token_set_with_sample(token_set, sample_string)
             
-            # Add the last token set (user prompt) with prompt string
-            # For extended instructions, the last string is NOT preceded by a newline
-            prompt_token_set = extended_instruction.response  # This is the last TokenSet in the original context
+            last_tokenset = extended_instruction.last_tokenset  # This is the last TokenSet in the original context
             prompt_string = sample.prompt if sample.prompt else ""
-            user_input += self._format_token_set_with_sample(prompt_token_set, prompt_string, is_extended_last=True)
+            user_input += self._format_token_set_with_sample(last_tokenset, prompt_string, is_extended_last=True)
             
             user_input += RUN_TOKEN.key + "\n"
             examples["extended_instruction_input"] = user_input
 
-        first_instruction = simple_instruction or extended_instruction
+        first_instruction = instruction or extended_instruction
         if first_instruction and first_instruction.samples:
             sample = first_instruction.samples[0]
             examples["valid_model_output"] = self._create_sample_model_output(first_instruction, sample)
