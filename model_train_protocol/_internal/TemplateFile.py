@@ -208,11 +208,7 @@ class TemplateFile:
                 if idx < len(sample.context):
                     sample_string = sample.context[idx]
                     simple_input += self._format_token_set_with_sample(token_set, sample_string)
-            
-            response_token_set = instruction.response.tokenset
-            response_string = sample.response
-            simple_input += self._format_token_set_with_sample(response_token_set, response_string)
-            
+
             simple_input += RUN_TOKEN.key + "\n"
             examples["instruction_input"] = simple_input
 
