@@ -86,7 +86,7 @@ class ProtocolFile:
             self._instruction.sets.append(instruction_set)
 
             # Add guardrails from the instruction's Response TokenSet
-            self._add_guardrail(instruction.response)
+            self._add_guardrail(instruction.last_tokenset)
 
             # Add instruction token keys
             for token_set in instruction.get_token_sets():
