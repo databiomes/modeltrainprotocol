@@ -38,6 +38,11 @@ class ExtendedInstruction(BaseInstruction):
             all_tokens_sets.append(token_set)
         return all_tokens_sets
 
+    @property
+    def last_tokenset(self) -> TokenSet:
+        """Returns the last TokenSet in the Instruction, which is the response TokenSet."""
+        return self.context[-1]
+
     def _validate_snippets_match(self, context_snippets: List[Snippet]):
         """Validates that all snippets in the samples match their expected token sets."""
         all_token_sets: List[TokenSet] = self.get_token_sets()

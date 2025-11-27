@@ -52,6 +52,11 @@ class Instruction(BaseInstruction):
         all_tokens_sets.append(self.response.tokenset)
         return all_tokens_sets
 
+    @property
+    def last_tokenset(self) -> TokenSet:
+        """Returns the last TokenSet in the Instruction, which is the response TokenSet."""
+        return self.response.tokenset
+
     # noinspection PyMethodOverriding
     def add_sample(self, context_snippets: List[Snippet], response_snippet: Snippet,
                    value: Union[int, float, List[Union[int, float]], None] = None, final: FinalToken | None = None):

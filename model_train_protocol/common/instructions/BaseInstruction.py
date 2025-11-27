@@ -89,6 +89,12 @@ class BaseInstruction(ABC):
         """Returns all tokens in the instruction as a list of tuples."""
         raise NotImplementedError("Subclasses must implement get_token_sets method.")
 
+    @abc.abstractmethod
+    @property
+    def last_tokenset(self) -> TokenSet:
+        """Returns the response TokenSet of the instruction."""
+        raise NotImplementedError("Subclasses must implement last_tokenset method.")
+
     def validate_context_snippets(self):
         """Validates that context snippets do not contain any final tokens."""
         for token_set in self.context:
