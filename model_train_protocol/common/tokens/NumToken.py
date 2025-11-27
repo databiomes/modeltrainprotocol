@@ -5,7 +5,7 @@ from .Token import Token
 
 class NumToken(Token):
     def __init__(self, value: str, min_value: Union[int, float], max_value: Union[int, float], key: Optional[str] = None,
-                 desc: Optional[str] = None):
+                 desc: Optional[str] = None, *args, **kwargs):
         """
         Initializes a NumToken instance.
 
