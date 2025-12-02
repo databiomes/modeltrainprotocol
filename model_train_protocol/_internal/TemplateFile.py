@@ -243,10 +243,10 @@ class TemplateFile:
             
             instruction_input = BOS_TOKEN.key + "\n"
             
-            # Map context strings to context token sets
-            for idx, token_set in enumerate(instruction.context):
-                if idx < len(sample.context):
-                    sample_string = sample.context[idx]
+            # Map input strings to input token sets
+            for idx, token_set in enumerate(instruction.input.tokensets):
+                if idx < len(sample.input):
+                    sample_string = sample.input[idx]
                     instruction_input += self._format_token_set_with_sample(token_set, sample_string)
 
             instruction_input += instruction.last_tokenset.key + "\n"
@@ -257,19 +257,19 @@ class TemplateFile:
         if extended_instruction and extended_instruction.samples:
             # Use the first sample for the example
             sample = extended_instruction.samples[0]
-            
+
             extended_instruction_input = BOS_TOKEN.key + "\n"
-            
-            # Map context strings to context token sets
-            for idx, token_set in enumerate(extended_instruction.context):
-                if idx < len(sample.context):
-                    sample_string = sample.context[idx]
+
+            # Map input strings to input token sets
+            for idx, token_set in enumerate(extended_instruction.input.tokensets):
+                if idx < len(sample.input):
+                    sample_string = sample.input[idx]
                     extended_instruction_input += self._format_token_set_with_sample(token_set, sample_string)
-            
-            last_tokenset = extended_instruction.last_tokenset  # This is the last TokenSet in the original context
+
+            last_tokenset = extended_instruction.last_tokenset  # This is the last TokenSet in the original input
             prompt_string = sample.prompt if sample.prompt else ""
             extended_instruction_input += self._format_token_set_with_sample(last_tokenset, prompt_string, is_extended_last=True)
-            
+
             extended_instruction_input += RUN_TOKEN.key + "\n"
             examples["extended_instruction_input"] = extended_instruction_input
 
