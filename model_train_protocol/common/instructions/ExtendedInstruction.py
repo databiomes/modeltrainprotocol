@@ -1,6 +1,7 @@
 from typing import List, Sequence, Union
 
 from .BaseInstruction import BaseInstruction, Sample
+from .input.BaseInput import BaseInput
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
 from . import ExtendedResponse
@@ -15,13 +16,13 @@ class ExtendedInstruction(BaseInstruction):
     Note: The response TokenSet is not set in a ExtendedInstruction.
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
-    response: ExtendedResponse
+    output: ExtendedResponse
 
-    def __init__(self, input: Sequence[TokenSet], output: ExtendedResponse, name: str = "extended_instruction"):
+    def __init__(self, input: BaseInput, output: ExtendedResponse, name: str = "extended_instruction"):
         """
         Initializes a ExtendedInstruction instance.
 
-        :param input: List of tuples containing Token instances that define the input structure. This precedes the user input.
+        :param input: BaseInput instance containing the input structure. This precedes the user input.
         :param name: Optional name for the Instruction. Defaults to 'extended_instruction'.
         """
         super().__init__(input=input, output=output, name=name)
@@ -34,14 +35,14 @@ class ExtendedInstruction(BaseInstruction):
     def get_token_sets(self) -> List[TokenSet]:
         """Returns all tokens in the instruction as a list of tuples."""
         all_tokens_sets: List = []
-        for token_set in self.context:
+        for token_set in self.input.tokensets:
             all_tokens_sets.append(token_set)
         return all_tokens_sets
 
     @property
     def last_tokenset(self) -> TokenSet:
         """Returns the last TokenSet in the Instruction, which is the response TokenSet."""
-        return self.context[-1]
+        return self.input.tokensets[-1]
 
     def _validate_snippets_match(self, context_snippets: List[Snippet]):
         """Validates that all snippets in the samples match their expected token sets."""
@@ -59,10 +60,10 @@ class ExtendedInstruction(BaseInstruction):
         :param context_snippets: List of context snippets that will be added to the Instruction.
         :param response_string: The response provided by the model as a string.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
-        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action Token designated {self.response.default_final}.
+        :param final: Optional Token instance designating the final action by the model. Defaults to a non-action Token designated {self.output.default_final}.
         """
         final: FinalToken = self._assign_final_token(final=final)
-        self.response.validate_sample(string=response_string, value=value, final=final)
+        self.output.validate_sample(string=response_string, value=value, final=final)
         self._assert_context_snippet_count(context_snippets=context_snippets) # exclude last snippet for special case
         self._validate_snippets_match(context_snippets=context_snippets)
 
