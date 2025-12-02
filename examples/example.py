@@ -69,7 +69,7 @@ tree_english_dissipate_cat_talk: mtp.TokenSet = mtp.TokenSet(
 # Construct the Input format
 alice_cat_alice_input: mtp.InstructionInput = mtp.InstructionInput(
     tokensets=[tree_english_cat_talk, tree_english_alice_talk],
-    background=[
+    context=[
         "Alice was beginning to get very tired of sitting by her sister on the bank.",
         "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”",
     ]
@@ -116,7 +116,7 @@ protocol.add_instruction(alice_cat_alice_instruction)
 
 tree_english_cat_talk_appear_disappear_input: mtp.InstructionInput = mtp.InstructionInput(
     tokensets=[tree_english_dissipate_cat_talk, tree_english_alice_talk],
-    background=[
+    context=[
         "It was getting late, and Alice was beginning to feel a little anxious about the time.",
         "The Cheshire Cat had been appearing and disappearing at will, leaving Alice unsure of its presence.",
     ]
@@ -205,7 +205,7 @@ tree_english_alice_talk_emotion: mtp.TokenSet = mtp.TokenSet(
 
 numeric_input: mtp.InstructionInput = mtp.InstructionInput(
     tokensets=[tree_english_cat_talk_coordinates, tree_english_alice_talk_emotion],
-    background=[
+    context=[
         "Alice was feeling a mix of curiosity and apprehension as she conversed with the Cheshire Cat.",
         "The Cat's ability to appear and disappear at will added to the surreal nature of their interaction.",
     ]
