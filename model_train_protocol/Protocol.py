@@ -207,7 +207,7 @@ class Protocol:
         """Validates that the total context/background lines across all instructions is at least equal to MINIMUM_TOTAL_CONTEXT_LINES."""
         total_context_lines: int = len(self.context)
         for instruction in self.instructions:
-            total_context_lines += len(instruction.input.background)
+            total_context_lines += len(instruction.input.context)
 
         if total_context_lines < MINIMUM_TOTAL_CONTEXT_LINES:
             raise ValueError(
