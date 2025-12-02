@@ -69,7 +69,10 @@ class Protocol:
                     f"Sample input lines ({len(sample.input)}) does not match defined instruction_context_snippets count ({self.instruction_input_snippets})"
                     f"\n{sample}."
                 )
-            final_sample_table[sample.result] += 1 if sample.result in final_sample_table else 1
+            if sample.result not in final_sample_table:
+                final_sample_table[sample.result] = 1
+            else:
+                final_sample_table[sample.result] += 1
 
         # Ensure each FinalToken has at least 3 samples
         for final_token, count in final_sample_table.items():
