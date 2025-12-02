@@ -127,7 +127,7 @@ class TestWorkflow2ContextProtocolJSON:
         """Test the structure of an instruction set."""
         # Test instruction set keys
         assert "set" in instruction_set
-        assert "result" in instruction_set
+        assert "context" in instruction_set
         assert "samples" in instruction_set
         assert "ppo" in instruction_set
         
@@ -141,9 +141,8 @@ class TestWorkflow2ContextProtocolJSON:
         assert len(instruction_set["set"][1]) > 0  # Should have tokens
         assert len(instruction_set["set"][2]) > 0  # Should have tokens
         
-        # Test result
-        assert isinstance(instruction_set["result"], str)
-        assert instruction_set["result"] in ["Result__", "End__"]
+        # Test context
+        assert isinstance(instruction_set["context"], list)
         
         # Test samples
         assert isinstance(instruction_set["samples"], list)
@@ -239,11 +238,10 @@ class TestWorkflow2ContextProtocolJSON:
         # Should have 2 instruction sets
         assert len(instruction_sets) == 2
         
-        # First set should be user instruction (End_)
-        assert instruction_sets[0]["result"] == "End__"
-        
-        # Second set should be simple instruction (Result_)
-        assert instruction_sets[1]["result"] == "Result__"
+        # Check that all instruction sets have context
+        for instruction_set in instruction_sets:
+            assert "context" in instruction_set
+            assert isinstance(instruction_set["context"], list)
 
     def test_workflow_2context_protocol_instruction_context_snippets(self, workflow_2context_protocol):
         """Test that the protocol correctly handles 2 context lines."""
@@ -338,7 +336,7 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         
         instruction_set = instruction["sets"][0]
         assert len(instruction_set["set"]) == 3  # Three context lines (2 context + 1 response)
-        assert instruction_set["result"] == "Count__"
+        assert isinstance(instruction_set["context"], list)
         
         # Test samples
         for sample in instruction_set["samples"]:

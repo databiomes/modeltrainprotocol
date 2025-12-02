@@ -285,7 +285,7 @@ class TestMultiInstructionProtocolJSON:
         
         for i, instruction_set in enumerate(sets):
             # Check required keys for each instruction set
-            required_keys = {"set", "result", "samples", "ppo"}
+            required_keys = {"set", "context", "samples", "ppo"}
             actual_keys = set(instruction_set.keys())
             assert actual_keys == required_keys, f"instruction.sets[{i}] has keys {actual_keys}, expected {required_keys}"
 
@@ -309,18 +309,17 @@ class TestMultiInstructionProtocolJSON:
                 for k, token in enumerate(token_list):
                     assert isinstance(token, str), f"instruction.sets[{i}].set[{j}][{k}] should be a string, got {type(token)}"
 
-    def test_multi_instruction_protocol_instruction_sets_result_field(self, multi_instruction_protocol):
-        """Test the 'result' field in instruction sets."""
+    def test_multi_instruction_protocol_instruction_sets_context_field(self, multi_instruction_protocol):
+        """Test the 'context' field in instruction sets."""
         json_output = self._get_json_output(multi_instruction_protocol)
 
         sets = json_output["instruction"]["sets"]
         
         for i, instruction_set in enumerate(sets):
-            result = instruction_set["result"]
+            context = instruction_set["context"]
             
-            # Check that result is a string
-            assert isinstance(result, str), f"instruction.sets[{i}].result should be a string, got {type(result)}"
-            assert len(result) > 0, f"instruction.sets[{i}].result should not be empty"
+            # Check that context is a list
+            assert isinstance(context, list), f"instruction.sets[{i}].context should be a list, got {type(context)}"
 
     def test_multi_instruction_protocol_instruction_sets_samples_field(self, multi_instruction_protocol):
         """Test the 'samples' field in instruction sets."""
@@ -473,7 +472,7 @@ class TestMultiInstructionProtocolJSON:
         """Test the structure of an instruction set."""
         # Test instruction set keys
         assert "set" in instruction_set
-        assert "result" in instruction_set
+        assert "context" in instruction_set
         assert "samples" in instruction_set
         assert "ppo" in instruction_set
         
@@ -483,9 +482,8 @@ class TestMultiInstructionProtocolJSON:
         assert isinstance(instruction_set["set"][0], list)
         assert len(instruction_set["set"][0]) > 0  # Should have tokens
         
-        # Test result (should be one of the final tokens)
-        assert isinstance(instruction_set["result"], str)
-        assert instruction_set["result"] in ["Result__", "Count__", "End__"]
+        # Test context
+        assert isinstance(instruction_set["context"], list)
         
         # Test samples
         assert isinstance(instruction_set["samples"], list)
@@ -624,12 +622,8 @@ class TestMultiInstructionProtocolJSON:
         # Should have 3 instruction sets
         assert len(instruction_sets) == 3
         
-        # First set should be numtoken instruction (Count_)
-        assert instruction_sets[0]["result"] == "Count__"
-        
-        # Second set should be user instruction (End_) - alphabetically before Result_
-        assert instruction_sets[1]["result"] == "End__"
-        
-        # Third set should be simple instruction (Result_)
-        assert instruction_sets[2]["result"] == "Result__"
+        # Check that all instruction sets have context
+        for instruction_set in instruction_sets:
+            assert "context" in instruction_set
+            assert isinstance(instruction_set["context"], list)
 

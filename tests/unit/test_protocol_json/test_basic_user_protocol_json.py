@@ -138,7 +138,7 @@ class TestBasicUserProtocolJSON:
         """Test the structure of an instruction set."""
         # Test instruction set keys
         assert "set" in instruction_set
-        assert "result" in instruction_set
+        assert "context" in instruction_set
         assert "samples" in instruction_set
         assert "ppo" in instruction_set
         
@@ -148,9 +148,8 @@ class TestBasicUserProtocolJSON:
         assert isinstance(instruction_set["set"][0], list)
         assert len(instruction_set["set"][0]) > 0  # Should have tokens
         
-        # Test result
-        assert isinstance(instruction_set["result"], str)
-        assert instruction_set["result"] == "End__"
+        # Test context
+        assert isinstance(instruction_set["context"], list)
         
         # Test samples
         assert isinstance(instruction_set["samples"], list)
