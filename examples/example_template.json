@@ -13,12 +13,23 @@
             "<EOS>": "<EOS>",
             "Appear_": "Appear_",
             "Continue_": "Continue_",
-            "Leave_": "Leave_",
             "Madness_": "Madness_",
             "Vanish_": "Vanish_"
         }
     },
     "instructions": {
+        "alice_cat_alice_continue": {
+            "type": "basic",
+            "structure": [
+                "<BOS>\n",
+                "Tree_English_Cat_Talk_\n<string>",
+                "Tree_English_Alice_Talk_\n<string>",
+                "Tree_English_Cat_Talk_\n",
+                "<RUN>"
+            ],
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\nContinue_\n<EOS>"
+        },
         "alice_cat_alice_instruction_numeric": {
             "type": "basic",
             "structure": [
@@ -31,7 +42,7 @@
             "input": "<BOS>\nTree_English_Cat_Talk_Coordinates_<num_-1000_1000_3>\n<string>\nTree_English_Alice_Talk_Emotion_<num_0_10>\n<string>\nTree_English_Cat_Talk_\n<RUN>",
             "output": "<string>\nMadness_\n<EOS>"
         },
-        "alice_cat_alice_instruction_appear_disappear": {
+        "alice_cat_alice_appear_disappear": {
             "type": "basic",
             "structure": [
                 "<BOS>\n",
@@ -42,35 +53,10 @@
             ],
             "input": "<BOS>\nTree_English_Dissipate_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
             "output": "<string>\nAppear_\n<EOS>"
-        },
-        "alice_cat_alice_instruction": {
-            "type": "basic",
-            "structure": [
-                "<BOS>\n",
-                "Tree_English_Cat_Talk_\n<string>",
-                "Tree_English_Alice_Talk_\n<string>",
-                "Tree_English_Cat_Talk_\n",
-                "<RUN>"
-            ],
-            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
-            "output": "<string>\nContinue_\n<EOS>"
-        },
-        "alice_disappear_cat_alice_instruction_leave": {
-            "type": "extended",
-            "structure": [
-                "<BOS>\n",
-                "Tree_English_Alice_Talk_\n<string>",
-                "Tree_English_Dissipate_Cat_Talk_\n<string>",
-                "Tree_English_Alice_Talk_<string>\n",
-                "<RUN>"
-            ],
-            "input": "<BOS>\nTree_English_Alice_Talk_\n<string>\nTree_English_Dissipate_Cat_Talk_\n<string>\nTree_English_Alice_Talk_<string>\n<RUN>",
-            "output": "<string>\nLeave_\n<EOS>"
         }
     },
     "example_usage": {
-        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[150, -710, -215]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_3\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
-        "extended_instruction_input": "<BOS>\nTree_English_Alice_Talk_\nDo you ever stay in one place, or are you always drifting about?\nTree_English_Dissipate_Cat_Talk_\nI stay wherever I please, which is nowhere for very long.\nTree_English_Alice_Talk_But I was hoping you might keep me company a bit longer.\n<RUN>\n",
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[360, 176, 837]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_4\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
         "valid_model_output": "Then it doesnt matter which way you go.\nMadness_\n<EOS>"
     }
 }
