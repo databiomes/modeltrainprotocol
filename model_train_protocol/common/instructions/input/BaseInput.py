@@ -18,3 +18,6 @@ class BaseInput(ABC):
             background = []
         self.background: list[str] = background
         self.tokensets = tokensets
+
+    def __len__(self):
+        return len(self.background)
