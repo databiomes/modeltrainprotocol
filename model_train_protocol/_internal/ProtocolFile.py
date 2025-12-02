@@ -96,7 +96,7 @@ class ProtocolFile:
 
             # Add the result token in each sample as a special token
             for sample in instruction.samples:
-                self._add_instruction_token_key(sample.output)
+                self._add_instruction_token_key(sample.result.key)
 
     def _add_instruction_token_key(self, key: str):
         """Adds an instruction token key to the template."""
