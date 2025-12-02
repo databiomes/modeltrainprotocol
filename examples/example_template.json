@@ -18,18 +18,6 @@
         }
     },
     "instructions": {
-        "alice_cat_alice_continue": {
-            "type": "basic",
-            "structure": [
-                "<BOS>\n",
-                "Tree_English_Cat_Talk_\n<string>",
-                "Tree_English_Alice_Talk_\n<string>",
-                "Tree_English_Cat_Talk_\n",
-                "<RUN>"
-            ],
-            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
-            "output": "<string>\nContinue_\n<EOS>"
-        },
         "alice_cat_alice_instruction_numeric": {
             "type": "basic",
             "structure": [
@@ -53,10 +41,22 @@
             ],
             "input": "<BOS>\nTree_English_Dissipate_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
             "output": "<string>\nAppear_\n<EOS>"
+        },
+        "alice_cat_alice_continue": {
+            "type": "basic",
+            "structure": [
+                "<BOS>\n",
+                "Tree_English_Cat_Talk_\n<string>",
+                "Tree_English_Alice_Talk_\n<string>",
+                "Tree_English_Cat_Talk_\n",
+                "<RUN>"
+            ],
+            "input": "<BOS>\nTree_English_Cat_Talk_\n<string>\nTree_English_Alice_Talk_\n<string>\nTree_English_Cat_Talk_\n<RUN>",
+            "output": "<string>\nContinue_\n<EOS>"
         }
     },
     "example_usage": {
-        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[360, 176, 837]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_4\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[788, 639, 272]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_3\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
         "valid_model_output": "Then it doesnt matter which way you go.\nMadness_\n<EOS>"
     }
 }
