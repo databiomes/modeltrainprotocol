@@ -33,7 +33,7 @@ def hash_string(key: str, output_char: int = 6) -> str:
     return hashlib.sha256(key.encode()).hexdigest()[:output_char]
 
 
-def validate_string_set(string_set: set[str]):
+def validate_string_subset(string_set: set[str]):
     """
     Checks if any string in a set is a perfect substring of another.
 

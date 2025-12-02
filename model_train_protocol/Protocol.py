@@ -8,7 +8,7 @@ from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN
 from .common.instructions.BaseInstruction import BaseInstruction
 from .common.tokens.SpecialToken import SpecialToken
-from .common.util import get_possible_emojis, hash_string, validate_string_set
+from .common.util import get_possible_emojis, hash_string, validate_string_subset
 
 
 class Protocol:
@@ -216,5 +216,5 @@ class Protocol:
         self._set_guardrails()
         self._add_default_special_tokens()
         used_values: Set[str] = {token.value for token in self.tokens}
-        validate_string_set(used_values)
-        validate_string_set(self.used_keys)
+        validate_string_subset(used_values)
+        validate_string_subset(self.used_keys)
