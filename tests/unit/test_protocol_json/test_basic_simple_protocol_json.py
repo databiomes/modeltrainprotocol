@@ -15,7 +15,7 @@ class TestBasicSimpleProtocolJSON:
         from model_train_protocol._internal.ProtocolFile import ProtocolFile
         protocol_file = ProtocolFile(
             name=protocol.name,
-            context=protocol.context,
+            context=protocol.background,
             instruction_context_snippets=protocol.instruction_context_snippets,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,

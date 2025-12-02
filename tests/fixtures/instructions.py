@@ -36,22 +36,22 @@ def get_basic_instructions() -> Dict[str, Any]:
     
     return {
         'simple_instruction': Instruction(
-            context=[simple_tokenset],
-            response=simple_tokenset,
+            input=[simple_tokenset],
+            output=simple_tokenset,
             final=TOKEN_RESULT
         ),
         'user_instruction': ExtendedInstruction(
-            context=[simple_tokenset],
+            input=[simple_tokenset],
             user=user_tokenset,
             final=TOKEN_RESULT
         ),
         'result_instruction': Instruction(
-            context=[result_tokenset],
-            response=result_tokenset,
+            input=[result_tokenset],
+            output=result_tokenset,
             final=TOKEN_END
         ),
         'user_result_instruction': ExtendedInstruction(
-            context=[user_tokenset],
+            input=[user_tokenset],
             user=user_result_tokenset,
             final=TOKEN_END
         ),
@@ -67,22 +67,22 @@ def get_numtoken_instructions() -> Dict[str, Any]:
     
     return {
         'simple_numtoken_instruction': Instruction(
-            context=[simple_numtoken_tokenset],
-            response=simple_numtoken_tokenset,
+            input=[simple_numtoken_tokenset],
+            output=simple_numtoken_tokenset,
             final=TOKEN_COUNT
         ),
         'user_numtoken_instruction': ExtendedInstruction(
-            context=[simple_numtoken_tokenset],
+            input=[simple_numtoken_tokenset],
             user=user_numtoken_tokenset,
             final=TOKEN_COUNT
         ),
         'result_numtoken_instruction': Instruction(
-            context=[result_numtoken_tokenset],
-            response=result_numtoken_tokenset,
+            input=[result_numtoken_tokenset],
+            output=result_numtoken_tokenset,
             final=TOKEN_COUNT
         ),
         'user_result_numtoken_instruction': ExtendedInstruction(
-            context=[user_numtoken_tokenset],
+            input=[user_numtoken_tokenset],
             user=user_result_numtoken_tokenset,
             final=TOKEN_COUNT
         ),
@@ -99,28 +99,28 @@ def get_numlisttoken_instructions() -> Dict[str, Any]:
     
     return {
         'simple_numlisttoken_instruction': Instruction(
-            context=[simple_numlisttoken_tokenset],
-            response=simple_numlisttoken_tokenset,
+            input=[simple_numlisttoken_tokenset],
+            output=simple_numlisttoken_tokenset,
             final=TOKEN_SCORES
         ),
         'user_numlisttoken_instruction': ExtendedInstruction(
-            context=[simple_numlisttoken_tokenset],
+            input=[simple_numlisttoken_tokenset],
             user=user_numlisttoken_tokenset,
             final=TOKEN_SCORES
         ),
         'result_numlisttoken_instruction': Instruction(
-            context=[result_numlisttoken_tokenset],
-            response=result_numlisttoken_tokenset,
+            input=[result_numlisttoken_tokenset],
+            output=result_numlisttoken_tokenset,
             final=TOKEN_SCORES
         ),
         'user_result_numlisttoken_instruction': ExtendedInstruction(
-            context=[user_numlisttoken_tokenset],
+            input=[user_numlisttoken_tokenset],
             user=user_result_numlisttoken_tokenset,
             final=TOKEN_SCORES
         ),
         'scores_instruction': Instruction(
-            context=[scores_tokenset],
-            response=scores_tokenset,
+            input=[scores_tokenset],
+            output=scores_tokenset,
             final=TOKEN_SCORES
         ),
     }
@@ -135,22 +135,22 @@ def get_mixed_numeric_instructions() -> Dict[str, Any]:
     
     return {
         'simple_mixed_instruction': Instruction(
-            context=[simple_mixed_tokenset],
-            response=simple_mixed_tokenset,
+            input=[simple_mixed_tokenset],
+            output=simple_mixed_tokenset,
             final=TOKEN_COUNT
         ),
         'user_mixed_instruction': ExtendedInstruction(
-            context=[simple_mixed_tokenset],
+            input=[simple_mixed_tokenset],
             user=user_mixed_tokenset,
             final=TOKEN_COUNT
         ),
         'result_mixed_instruction': Instruction(
-            context=[result_mixed_tokenset],
-            response=result_mixed_tokenset,
+            input=[result_mixed_tokenset],
+            output=result_mixed_tokenset,
             final=TOKEN_COUNT
         ),
         'user_result_mixed_instruction': ExtendedInstruction(
-            context=[user_mixed_tokenset],
+            input=[user_mixed_tokenset],
             user=user_result_mixed_tokenset,
             final=TOKEN_COUNT
         ),
@@ -184,8 +184,8 @@ def get_instructions_by_type() -> Dict[str, Dict[str, Any]]:
 def simple_instruction(simple_tokenset) -> Instruction:
     """Basic simple instruction."""
     return Instruction(
-        context=[simple_tokenset],
-        response=simple_tokenset,
+        input=[simple_tokenset],
+        output=simple_tokenset,
         final=TOKEN_RESULT
     )
 
@@ -194,7 +194,7 @@ def simple_instruction(simple_tokenset) -> Instruction:
 def user_instruction(simple_tokenset, user_tokenset) -> ExtendedInstruction:
     """Basic user instruction."""
     return ExtendedInstruction(
-        context=[simple_tokenset, user_tokenset],
+        input=[simple_tokenset, user_tokenset],
         final=TOKEN_RESULT
     )
 
@@ -203,8 +203,8 @@ def user_instruction(simple_tokenset, user_tokenset) -> ExtendedInstruction:
 def result_instruction(result_tokenset) -> Instruction:
     """Result instruction."""
     return Instruction(
-        context=[result_tokenset],
-        response=result_tokenset,
+        input=[result_tokenset],
+        output=result_tokenset,
         final=TOKEN_END
     )
 
@@ -213,7 +213,7 @@ def result_instruction(result_tokenset) -> Instruction:
 def user_result_instruction(user_tokenset, user_result_tokenset) -> ExtendedInstruction:
     """User result instruction."""
     return ExtendedInstruction(
-        context=[user_tokenset],
+        input=[user_tokenset],
         user=user_result_tokenset,
         final=TOKEN_END
     )
@@ -224,8 +224,8 @@ def user_result_instruction(user_tokenset, user_result_tokenset) -> ExtendedInst
 def simple_numtoken_instruction(simple_numtoken_tokenset) -> Instruction:
     """Simple instruction with NumToken."""
     return Instruction(
-        context=[simple_numtoken_tokenset],
-        response=simple_numtoken_tokenset,
+        input=[simple_numtoken_tokenset],
+        output=simple_numtoken_tokenset,
         final=TOKEN_COUNT
     )
 
@@ -234,7 +234,7 @@ def simple_numtoken_instruction(simple_numtoken_tokenset) -> Instruction:
 def user_numtoken_instruction(simple_numtoken_tokenset, user_numtoken_tokenset) -> ExtendedInstruction:
     """User instruction with NumToken."""
     return ExtendedInstruction(
-        context=[simple_numtoken_tokenset],
+        input=[simple_numtoken_tokenset],
         user=user_numtoken_tokenset,
         final=TOKEN_COUNT
     )
@@ -244,8 +244,8 @@ def user_numtoken_instruction(simple_numtoken_tokenset, user_numtoken_tokenset) 
 def result_numtoken_instruction(result_numtoken_tokenset) -> Instruction:
     """Result instruction with NumToken."""
     return Instruction(
-        context=[result_numtoken_tokenset],
-        response=result_numtoken_tokenset,
+        input=[result_numtoken_tokenset],
+        output=result_numtoken_tokenset,
         final=TOKEN_COUNT
     )
 
@@ -254,7 +254,7 @@ def result_numtoken_instruction(result_numtoken_tokenset) -> Instruction:
 def user_result_numtoken_instruction(user_numtoken_tokenset, user_result_numtoken_tokenset) -> ExtendedInstruction:
     """User result instruction with NumToken."""
     return ExtendedInstruction(
-        context=[user_numtoken_tokenset],
+        input=[user_numtoken_tokenset],
         user=user_result_numtoken_tokenset,
         final=TOKEN_COUNT
     )
@@ -265,8 +265,8 @@ def user_result_numtoken_instruction(user_numtoken_tokenset, user_result_numtoke
 def simple_numlisttoken_instruction(simple_numlisttoken_tokenset) -> Instruction:
     """Simple instruction with NumListToken."""
     return Instruction(
-        context=[simple_numlisttoken_tokenset],
-        response=simple_numlisttoken_tokenset,
+        input=[simple_numlisttoken_tokenset],
+        output=simple_numlisttoken_tokenset,
         final=TOKEN_SCORES
     )
 
@@ -275,7 +275,7 @@ def simple_numlisttoken_instruction(simple_numlisttoken_tokenset) -> Instruction
 def user_numlisttoken_instruction(simple_numlisttoken_tokenset, user_numlisttoken_tokenset) -> ExtendedInstruction:
     """User instruction with NumListToken."""
     return ExtendedInstruction(
-        context=[simple_numlisttoken_tokenset],
+        input=[simple_numlisttoken_tokenset],
         user=user_numlisttoken_tokenset,
         final=TOKEN_SCORES
     )
@@ -285,8 +285,8 @@ def user_numlisttoken_instruction(simple_numlisttoken_tokenset, user_numlisttoke
 def result_numlisttoken_instruction(result_numlisttoken_tokenset) -> Instruction:
     """Result instruction with NumListToken."""
     return Instruction(
-        context=[result_numlisttoken_tokenset],
-        response=result_numlisttoken_tokenset,
+        input=[result_numlisttoken_tokenset],
+        output=result_numlisttoken_tokenset,
         final=TOKEN_SCORES
     )
 
@@ -295,7 +295,7 @@ def result_numlisttoken_instruction(result_numlisttoken_tokenset) -> Instruction
 def user_result_numlisttoken_instruction(user_numlisttoken_tokenset, user_result_numlisttoken_tokenset) -> ExtendedInstruction:
     """User result instruction with NumListToken."""
     return ExtendedInstruction(
-        context=[user_numlisttoken_tokenset],
+        input=[user_numlisttoken_tokenset],
         user=user_result_numlisttoken_tokenset,
         final=TOKEN_SCORES
     )
@@ -305,8 +305,8 @@ def user_result_numlisttoken_instruction(user_numlisttoken_tokenset, user_result
 def scores_instruction(scores_tokenset) -> Instruction:
     """Scores instruction."""
     return Instruction(
-        context=[scores_tokenset],
-        response=scores_tokenset,
+        input=[scores_tokenset],
+        output=scores_tokenset,
         final=TOKEN_SCORES
     )
 
@@ -316,8 +316,8 @@ def scores_instruction(scores_tokenset) -> Instruction:
 def simple_mixed_instruction(simple_mixed_tokenset) -> Instruction:
     """Simple instruction with mixed numeric tokens."""
     return Instruction(
-        context=[simple_mixed_tokenset],
-        response=simple_mixed_tokenset,
+        input=[simple_mixed_tokenset],
+        output=simple_mixed_tokenset,
         final=TOKEN_COUNT
     )
 
@@ -326,7 +326,7 @@ def simple_mixed_instruction(simple_mixed_tokenset) -> Instruction:
 def user_mixed_instruction(simple_mixed_tokenset, user_mixed_tokenset) -> ExtendedInstruction:
     """User instruction with mixed numeric tokens."""
     return ExtendedInstruction(
-        context=[simple_mixed_tokenset],
+        input=[simple_mixed_tokenset],
         user=user_mixed_tokenset,
         final=TOKEN_COUNT
     )
@@ -336,8 +336,8 @@ def user_mixed_instruction(simple_mixed_tokenset, user_mixed_tokenset) -> Extend
 def result_mixed_instruction(result_mixed_tokenset) -> Instruction:
     """Result instruction with mixed numeric tokens."""
     return Instruction(
-        context=[result_mixed_tokenset],
-        response=result_mixed_tokenset,
+        input=[result_mixed_tokenset],
+        output=result_mixed_tokenset,
         final=TOKEN_COUNT
     )
 
@@ -346,7 +346,7 @@ def result_mixed_instruction(result_mixed_tokenset) -> Instruction:
 def user_result_mixed_instruction(user_mixed_tokenset, user_result_mixed_tokenset) -> ExtendedInstruction:
     """User result instruction with mixed numeric tokens."""
     return ExtendedInstruction(
-        context=[user_mixed_tokenset],
+        input=[user_mixed_tokenset],
         user=user_result_mixed_tokenset,
         final=TOKEN_COUNT
     )
@@ -362,18 +362,18 @@ def simple_instruction_with_samples(
     """Simple instruction with samples added."""
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     simple_instruction.add_sample(
-        context_snippets=[simple_context_sample],
-        response_snippet=simple_response_sample,
+        input_snippets=[simple_context_sample],
+        output_snippet=simple_response_sample,
         value=None
     )
     simple_instruction.add_sample(
-        context_snippets=[simple_context_sample],
-        response_snippet=simple_response_sample,
+        input_snippets=[simple_context_sample],
+        output_snippet=simple_response_sample,
         value=None
     )
     simple_instruction.add_sample(
-        context_snippets=[simple_context_sample],
-        response_snippet=simple_response_sample,
+        input_snippets=[simple_context_sample],
+        output_snippet=simple_response_sample,
         value=None
     )
     return simple_instruction
@@ -415,18 +415,18 @@ def numtoken_instruction_with_samples(
     """NumToken instruction with samples added."""
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     simple_numtoken_instruction.add_sample(
-        context_snippets=[simple_numtoken_context_sample],
-        response_snippet=simple_numtoken_response_sample,
+        input_snippets=[simple_numtoken_context_sample],
+        output_snippet=simple_numtoken_response_sample,
         value=10
     )
     simple_numtoken_instruction.add_sample(
-        context_snippets=[simple_numtoken_context_sample],
-        response_snippet=simple_numtoken_response_sample,
+        input_snippets=[simple_numtoken_context_sample],
+        output_snippet=simple_numtoken_response_sample,
         value=15
     )
     simple_numtoken_instruction.add_sample(
-        context_snippets=[simple_numtoken_context_sample],
-        response_snippet=simple_numtoken_response_sample,
+        input_snippets=[simple_numtoken_context_sample],
+        output_snippet=simple_numtoken_response_sample,
         value=25
     )
     return simple_numtoken_instruction
@@ -442,18 +442,18 @@ def numlisttoken_instruction_with_samples(
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     # Note: The final token is a NumListToken, so value should be a list
     simple_numlisttoken_instruction.add_sample(
-        context_snippets=[simple_numlisttoken_context_sample],
-        response_snippet=simple_numlisttoken_response_sample,
+        input_snippets=[simple_numlisttoken_context_sample],
+        output_snippet=simple_numlisttoken_response_sample,
         value=[10, 20, 30]
     )
     simple_numlisttoken_instruction.add_sample(
-        context_snippets=[simple_numlisttoken_context_sample],
-        response_snippet=simple_numlisttoken_response_sample,
+        input_snippets=[simple_numlisttoken_context_sample],
+        output_snippet=simple_numlisttoken_response_sample,
         value=[15, 25, 35]
     )
     simple_numlisttoken_instruction.add_sample(
-        context_snippets=[simple_numlisttoken_context_sample],
-        response_snippet=simple_numlisttoken_response_sample,
+        input_snippets=[simple_numlisttoken_context_sample],
+        output_snippet=simple_numlisttoken_response_sample,
         value=[25, 35, 45]
     )
     return simple_numlisttoken_instruction
@@ -468,18 +468,18 @@ def mixed_instruction_with_samples(
     """Mixed numeric instruction with samples added."""
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     simple_mixed_instruction.add_sample(
-        context_snippets=[simple_mixed_context_sample],
-        response_snippet=simple_mixed_response_sample,
+        input_snippets=[simple_mixed_context_sample],
+        output_snippet=simple_mixed_response_sample,
         value=42.5
     )
     simple_mixed_instruction.add_sample(
-        context_snippets=[simple_mixed_context_sample],
-        response_snippet=simple_mixed_response_sample,
+        input_snippets=[simple_mixed_context_sample],
+        output_snippet=simple_mixed_response_sample,
         value=37.2
     )
     simple_mixed_instruction.add_sample(
-        context_snippets=[simple_mixed_context_sample],
-        response_snippet=simple_mixed_response_sample,
+        input_snippets=[simple_mixed_context_sample],
+        output_snippet=simple_mixed_response_sample,
         value=79.7
     )
     return simple_mixed_instruction

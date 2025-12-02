@@ -14,16 +14,16 @@ from .common.util import get_possible_emojis, hash_string, validate_string_set
 class Protocol:
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, instruction_context_snippets: int, encrypt: bool = True):
+    def __init__(self, name: str, context_snippets: int, encrypt: bool = True):
         """
         Initialize the Model Train Protocol (MTP)
 
         :param name: The name of the protocol.
-        :param instruction_context_snippets: The number of lines in each instruction sample. Must be at least 2.
+        :param context_snippets: The number of lines in each instruction sample. Must be at least 2.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
-        self.instruction_context_snippets: int = instruction_context_snippets  # Number of lines in instruction samples
+        self.instruction_context_snippets: int = context_snippets  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
         if self.instruction_context_snippets < 2:
             raise ValueError("A minimum of 2 context lines is required for all instructions.")

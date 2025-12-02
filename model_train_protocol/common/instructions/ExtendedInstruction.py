@@ -17,17 +17,17 @@ class ExtendedInstruction(BaseInstruction):
     """
     response: ExtendedResponse
 
-    def __init__(self, context: Sequence[TokenSet], response: ExtendedResponse, name: str = "extended_instruction"):
+    def __init__(self, input: Sequence[TokenSet], output: ExtendedResponse, name: str = "extended_instruction"):
         """
         Initializes a ExtendedInstruction instance.
 
-        :param context: List of tuples containing Token instances that define the input structure. This precedes the user input.
+        :param input: List of tuples containing Token instances that define the input structure. This precedes the user input.
         :param name: Optional name for the Instruction. Defaults to 'extended_instruction'.
         """
-        super().__init__(context=context, response=response, name=name)
+        super().__init__(input=input, output=output, name=name)
 
-        if not isinstance(response, ExtendedResponse):
-            raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(response)}")
+        if not isinstance(output, ExtendedResponse):
+            raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(output)}")
 
         self.validate_context_snippets()
 

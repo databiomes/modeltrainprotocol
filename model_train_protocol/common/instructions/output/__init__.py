@@ -1,9 +1,9 @@
 """Export all helper functions for instructions module."""
 
-from .Response import Response
+from .InstructionOutput import InstructionOutput
 from .ExtendedResponse import ExtendedResponse
 
 __all__ = [
-    "Response",
+    "InstructionOutput",
     "ExtendedResponse",
 ]

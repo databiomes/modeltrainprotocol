@@ -15,7 +15,7 @@ class TestProtocol:
 
     def test_protocol_initialization_basic(self):
         """Test basic protocol initialization."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
 
         assert protocol.name == "test_protocol"
         assert protocol.instruction_context_snippets == 3
@@ -32,7 +32,7 @@ class TestProtocol:
 
     def test_protocol_initialization_encrypted(self):
         """Test protocol initialization with encryption."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3, encrypt=True)
+        protocol = Protocol("test_protocol", context_snippets=3, encrypt=True)
 
         assert protocol.encrypt is True
 
@@ -46,7 +46,7 @@ class TestProtocol:
 
     def test_protocol_initialization_unencrypted(self):
         """Test protocol initialization without encryption."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3, encrypt=False)
+        protocol = Protocol("test_protocol", context_snippets=3, encrypt=False)
 
         assert protocol.encrypt is False
 
@@ -62,24 +62,24 @@ class TestProtocol:
     def test_protocol_initialization_invalid_instruction_context_snippets(self):
         """Test protocol initialization with invalid context lines."""
         with pytest.raises(ValueError, match="minimum of 2 context lines"):
-            Protocol("test_protocol", instruction_context_snippets=1)
+            Protocol("test_protocol", context_snippets=1)
 
         with pytest.raises(ValueError, match="minimum of 2 context lines"):
-            Protocol("test_protocol", instruction_context_snippets=0)
+            Protocol("test_protocol", context_snippets=0)
 
         with pytest.raises(ValueError, match="minimum of 2 context lines"):
-            Protocol("test_protocol", instruction_context_snippets=-1)
+            Protocol("test_protocol", context_snippets=-1)
 
     def test_protocol_initialization_valid_instruction_context_snippets(self):
         """Test protocol initialization with valid context lines."""
         # Should not raise any exception
-        Protocol("test_protocol", instruction_context_snippets=2)
-        Protocol("test_protocol", instruction_context_snippets=3)
-        Protocol("test_protocol", instruction_context_snippets=10)
+        Protocol("test_protocol", context_snippets=2)
+        Protocol("test_protocol", context_snippets=3)
+        Protocol("test_protocol", context_snippets=10)
 
     def test_protocol_add_context(self):
         """Test adding context to protocol."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
 
         protocol.add_context("Context line 1")
         assert len(protocol.context) == 1
@@ -91,7 +91,7 @@ class TestProtocol:
 
     def test_protocol_add_context_multiple(self):
         """Test adding multiple context lines."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
 
         contexts = ["Context 1", "Context 2", "Context 3", "Context 4"]
         for context in contexts:
@@ -102,7 +102,7 @@ class TestProtocol:
 
     def test_protocol_add_context_empty_string(self):
         """Test adding empty context string."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
 
         protocol.add_context("")
         assert len(protocol.context) == 1
@@ -110,14 +110,14 @@ class TestProtocol:
 
     def test_protocol_add_context_none(self):
         """Test adding None context."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
 
         with pytest.raises(TypeError, match="Context must be a string"):
             protocol.add_context(None)
 
     def test_protocol_add_token_basic(self):
         """Test adding basic token to protocol."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
         token = Token("Test", key="🔑")
 
         protocol._add_token(token)
@@ -127,7 +127,7 @@ class TestProtocol:
 
     def test_protocol_add_token_duplicate_value(self):
         """Test adding token with duplicate value."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
         token1 = Token("Test")
         token2 = Token("Test")
 
@@ -138,7 +138,7 @@ class TestProtocol:
 
     def test_protocol_add_token_duplicate_key(self):
         """Test adding token with duplicate key."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
         token1 = Token("Test1", key="🔑")
         token2 = Token("Test2", key="🔑")
 
@@ -149,7 +149,7 @@ class TestProtocol:
 
     def test_protocol_add_token_encrypted(self):
         """Test adding token to encrypted protocol."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3, encrypt=True)
+        protocol = Protocol("test_protocol", context_snippets=3, encrypt=True)
         token = Token("Test")  # No key provided
 
         protocol._add_token(token)
@@ -160,7 +160,7 @@ class TestProtocol:
 
     def test_protocol_add_token_unencrypted(self):
         """Test adding token to unencrypted protocol."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3, encrypt=False)
+        protocol = Protocol("test_protocol", context_snippets=3, encrypt=False)
         token = Token("Test")  # No key provided
 
         protocol._add_token(token)
@@ -171,7 +171,7 @@ class TestProtocol:
 
     def test_protocol_add_token_with_key(self):
         """Test adding token with existing key."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
         token = Token("Test", key="🔑")
 
         protocol._add_token(token)
@@ -182,7 +182,7 @@ class TestProtocol:
 
     def test_protocol_add_instruction_basic(self):
         """Test adding basic instruction to protocol."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Create tokens
         token1 = Token("Token1", key="🔑")
@@ -196,8 +196,8 @@ class TestProtocol:
 
         # Create instruction
         instruction = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
         )
 
         # Add samples
@@ -206,40 +206,40 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         # Add instruction to protocol
@@ -251,7 +251,7 @@ class TestProtocol:
 
     def test_protocol_add_instruction_duplicate(self):
         """Test adding duplicate instruction."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Create instruction
         token1 = Token("Token1", key="🔑")
@@ -262,8 +262,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -271,40 +271,40 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         protocol.add_instruction(instruction)
@@ -314,7 +314,7 @@ class TestProtocol:
 
     def test_protocol_add_multiple_instructions_non_conflicting_names(self):
         """Test that adding an instruction with the same name raises an error and stops."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Create first instruction
         token1 = Token("Token1", key="🔑")
@@ -325,8 +325,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction1 = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
 
             name="same_name"
         )
@@ -337,22 +337,22 @@ class TestProtocol:
 
         for _ in range(3):
             instruction1.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                response_snippet=output_snippet
+                input_snippets=[context_snippet1, context_snippet2],
+                output_snippet=output_snippet
             )
 
         # Create second instruction with the same name
         instruction2 = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
 
             name="same_name"  # Same name as instruction1
         )
 
         for _ in range(3):
             instruction2.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                response_snippet=output_snippet
+                input_snippets=[context_snippet1, context_snippet2],
+                output_snippet=output_snippet
             )
 
         # Add first instruction - should succeed
@@ -370,7 +370,7 @@ class TestProtocol:
 
     def test_protocol_add_multiple_instructions_conflicting_names(self):
         """Test adding multiple instructions with conflicting names raises error."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Create first instruction
         token1 = Token("Token1", key="🔑")
@@ -381,8 +381,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction1 = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
 
             name="conflicting_name"
         )
@@ -393,8 +393,8 @@ class TestProtocol:
 
         for _ in range(3):
             instruction1.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                response_snippet=output_snippet
+                input_snippets=[context_snippet1, context_snippet2],
+                output_snippet=output_snippet
             )
 
         # Create second instruction with the same name
@@ -404,8 +404,8 @@ class TestProtocol:
         response_set2 = TokenSet(tokens=(token5,))
 
         instruction2 = Instruction(
-            context=[context_set1, context_set3],
-            response=response_set2,
+            input=[context_set1, context_set3],
+            output=response_set2,
 
             name="conflicting_name"  # Same name as instruction1
         )
@@ -414,8 +414,8 @@ class TestProtocol:
 
         for _ in range(3):
             instruction2.add_sample(
-                context_snippets=[context_snippet1, context_snippet3],
-                response_snippet=response_set2.create_snippet("Output 2")
+                input_snippets=[context_snippet1, context_snippet3],
+                output_snippet=response_set2.create_snippet("Output 2")
             )
 
         # Add first instruction - should succeed
@@ -433,7 +433,7 @@ class TestProtocol:
 
     def test_protocol_add_instruction_conflicting_name_after_multiple(self):
         """Test adding instruction with conflicting name after multiple non-conflicting ones."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Create tokens
         token1 = Token("Token1", key="🔑")
@@ -449,16 +449,16 @@ class TestProtocol:
 
         # Add first instruction
         instruction1 = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
 
             name="first_instruction"
         )
 
         for _ in range(3):
             instruction1.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                response_snippet=output_snippet
+                input_snippets=[context_snippet1, context_snippet2],
+                output_snippet=output_snippet
             )
 
         protocol.add_instruction(instruction1)
@@ -468,8 +468,8 @@ class TestProtocol:
         context_set3 = TokenSet(tokens=(token4,))
 
         instruction2 = Instruction(
-            context=[context_set1, context_set3],
-            response=response_set,
+            input=[context_set1, context_set3],
+            output=response_set,
 
             name="second_instruction"
         )
@@ -478,24 +478,24 @@ class TestProtocol:
 
         for _ in range(3):
             instruction2.add_sample(
-                context_snippets=[context_snippet1, context_snippet3],
-                response_snippet=output_snippet
+                input_snippets=[context_snippet1, context_snippet3],
+                output_snippet=output_snippet
             )
 
         protocol.add_instruction(instruction2)
 
         # Add third instruction with different name
         instruction3 = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
 
             name="third_instruction"
         )
 
         for _ in range(3):
             instruction3.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                response_snippet=output_snippet
+                input_snippets=[context_snippet1, context_snippet2],
+                output_snippet=output_snippet
             )
 
         protocol.add_instruction(instruction3)
@@ -505,16 +505,16 @@ class TestProtocol:
 
         # Try to add fourth instruction with name that conflicts with first
         instruction4 = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
 
             name="first_instruction"  # Conflicts with instruction1
         )
 
         for _ in range(3):
             instruction4.add_sample(
-                context_snippets=[context_snippet1, context_snippet2],
-                response_snippet=output_snippet
+                input_snippets=[context_snippet1, context_snippet2],
+                output_snippet=output_snippet
             )
 
         with pytest.raises(ValueError, match="An instruction with name 'first_instruction' already exists"):
@@ -525,7 +525,7 @@ class TestProtocol:
 
     def test_protocol_add_instruction_invalid_instruction_context_snippets(self):
         """Test adding instruction with invalid context lines."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3)
+        protocol = Protocol("test_protocol", context_snippets=3)
 
         # Create instruction with wrong context lines (2 instead of 3)
         token1 = Token("Token1", key="🔑")
@@ -536,8 +536,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction = Instruction(
-            context=[context_set1, context_set2],  # Only 2 context sets, but protocol expects 3
-            response=response_set,
+            input=[context_set1, context_set2],  # Only 2 context sets, but protocol expects 3
+            output=response_set,
         )
 
         # Add sample with wrong context lines (2 instead of 3)
@@ -546,16 +546,16 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         with pytest.raises(ValueError, match="does not match defined instruction_context_snippets count"):
@@ -563,7 +563,7 @@ class TestProtocol:
 
     def test_protocol_save_basic(self, temp_directory):
         """Test basic protocol saving."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context
         protocol.add_context("Context line 1")
@@ -578,8 +578,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -587,16 +587,16 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         protocol.add_instruction(instruction)
@@ -610,7 +610,7 @@ class TestProtocol:
 
     def test_protocol_save_default_name(self, temp_directory):
         """Test protocol saving with default name."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context and instruction
         protocol.add_context("Context line 1")
@@ -624,8 +624,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -633,16 +633,16 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         protocol.add_instruction(instruction)
@@ -656,7 +656,7 @@ class TestProtocol:
 
     def test_protocol_save_default_path(self):
         """Test protocol saving with default path."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context and instruction
         protocol.add_context("Context line 1")
@@ -670,8 +670,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -679,16 +679,16 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         protocol.add_instruction(instruction)
@@ -705,7 +705,7 @@ class TestProtocol:
 
     def test_protocol_template_basic(self, temp_directory):
         """Test basic protocol templating."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context and instruction
         protocol.add_context("Context line 1")
@@ -719,8 +719,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -728,16 +728,16 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         protocol.add_instruction(instruction)
@@ -751,7 +751,7 @@ class TestProtocol:
 
     def test_protocol_template_default_path(self):
         """Test protocol templating with default path."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context and instruction
         protocol.add_context("Context line 1")
@@ -765,8 +765,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -774,16 +774,16 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         protocol.add_instruction(instruction)
@@ -800,7 +800,7 @@ class TestProtocol:
 
     def test_protocol_save_no_instructions(self):
         """Test saving protocol with no instructions."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context but no instructions
         protocol.add_context("Context line 1")
@@ -811,7 +811,7 @@ class TestProtocol:
 
     def test_protocol_template_no_instructions(self):
         """Test templating protocol with no instructions."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context but no instructions
         protocol.add_context("Context line 1")
@@ -822,7 +822,7 @@ class TestProtocol:
 
     def test_protocol_assign_key_encrypted(self):
         """Test key assignment for encrypted protocol."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3, encrypt=True)
+        protocol = Protocol("test_protocol", context_snippets=3, encrypt=True)
         token = Token("Test")  # No key provided
 
         protocol._assign_key(token)
@@ -832,7 +832,7 @@ class TestProtocol:
 
     def test_protocol_assign_key_unencrypted(self):
         """Test key assignment for unencrypted protocol."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3, encrypt=False)
+        protocol = Protocol("test_protocol", context_snippets=3, encrypt=False)
         token = Token("Test")  # No key provided
 
         protocol._assign_key(token)
@@ -841,7 +841,7 @@ class TestProtocol:
 
     def test_protocol_assign_key_existing_key(self):
         """Test key assignment for token with existing key."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3, encrypt=True)
+        protocol = Protocol("test_protocol", context_snippets=3, encrypt=True)
         token = Token("Test", key="🔑")  # Key already provided
 
         protocol._assign_key(token)
@@ -850,7 +850,7 @@ class TestProtocol:
 
     def test_protocol_set_guardrails(self):
         """Test setting guardrails in protocol."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Create tokens and token sets
         user_token = Token("User", key="👤")
@@ -876,7 +876,7 @@ class TestProtocol:
 
         # Create instruction
         instruction = ExtendedInstruction(
-            context=[context_set1, context_set2, user_set],
+            input=[context_set1, context_set2, user_set],
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -905,7 +905,7 @@ class TestProtocol:
 
     def test_protocol_add_default_special_tokens(self):
         """Test adding default special tokens."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add default special tokens
         protocol._add_default_special_tokens()
@@ -914,7 +914,7 @@ class TestProtocol:
 
     def test_protocol_add_default_special_tokens_with_guardrails(self):
         """Test adding default special tokens with guardrails."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add guardrails
         protocol.guardrails["test"] = ["bad_output", "bad_prompt", "good_prompt", ["sample1", "sample2", "sample3"]]
@@ -926,7 +926,7 @@ class TestProtocol:
 
     def test_protocol_prep_protocol(self):
         """Test protocol preparation."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context and instruction
         protocol.add_context("Context line 1")
@@ -940,8 +940,8 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         instruction = Instruction(
-            context=[context_set1, context_set2],
-            response=response_set,
+            input=[context_set1, context_set2],
+            output=response_set,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -949,16 +949,16 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
         instruction.add_sample(
-            context_snippets=[context_snippet1, context_snippet2],
-            response_snippet=output_snippet
+            input_snippets=[context_snippet1, context_snippet2],
+            output_snippet=output_snippet
         )
 
         protocol.add_instruction(instruction)
@@ -971,7 +971,7 @@ class TestProtocol:
 
     def test_protocol_prep_protocol_no_instructions(self):
         """Test protocol preparation with no instructions."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=2)
+        protocol = Protocol("test_protocol", context_snippets=2)
 
         # Add context but no instructions
         protocol.add_context("Context line 1")
@@ -983,14 +983,14 @@ class TestProtocol:
     @pytest.mark.parametrize("instruction_context_snippets", [2, 3, 5, 10])
     def test_protocol_various_instruction_context_snippets(self, instruction_context_snippets):
         """Test protocol with various context lines."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=instruction_context_snippets)
+        protocol = Protocol("test_protocol", context_snippets=instruction_context_snippets)
 
         assert protocol.instruction_context_snippets == instruction_context_snippets
 
     @pytest.mark.parametrize("encrypt", [True, False])
     def test_protocol_encryption_settings(self, encrypt):
         """Test protocol with different encryption settings."""
-        protocol = Protocol("test_protocol", instruction_context_snippets=3, encrypt=encrypt)
+        protocol = Protocol("test_protocol", context_snippets=3, encrypt=encrypt)
 
         assert protocol.encrypt == encrypt
 
@@ -999,5 +999,5 @@ class TestProtocol:
         names = ["test_protocol", "my_model", "weather_mage", "alice_cat"]
 
         for name in names:
-            protocol = Protocol(name, instruction_context_snippets=3)
+            protocol = Protocol(name, context_snippets=3)
             assert protocol.name == name

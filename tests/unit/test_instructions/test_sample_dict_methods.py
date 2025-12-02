@@ -154,8 +154,8 @@ class TestSampleDictMethods:
         """Test sample to_dict with scores tokenset using instruction fixtures."""
         # For this test, we need to add a sample to the scores instruction first
         scores_instruction.add_sample(
-            context_snippets=[scores_context_sample],
-            response_snippet=scores_response_sample,
+            input_snippets=[scores_context_sample],
+            output_snippet=scores_response_sample,
             value=[85, 90, 95]
         )
         

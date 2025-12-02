@@ -14,7 +14,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = 
     :param encrypt: Whether to encrypt the protocol file
     """
     protocol: Protocol = Protocol(name=name if name else prototype_mtp.model_name,
-                                  instruction_context_snippets=2, encrypt=encrypt)
+                                  context_snippets=2, encrypt=encrypt)
 
     for context_item in prototype_mtp.context:
         protocol.add_context(context_item.context)
@@ -38,7 +38,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = 
         # final: FinalToken = create_sanitized_token_from_model(prototype_mtp.final_token)
 
         simple_instruction: Instruction = Instruction(
-            context=[context_tokenset, prompt_tokenset], response=response_tokenset, final=final
+            input=[context_tokenset, prompt_tokenset], output=response_tokenset, final=final
         )
 
         for sample in instruction_set.samples:
@@ -50,8 +50,8 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = 
                 )
             ]
             simple_instruction.add_sample(
-                context_snippets=context_snippets,
-                response_snippet=response_tokenset.create_snippet(
+                input_snippets=context_snippets,
+                output_snippet=response_tokenset.create_snippet(
                     sample.response_sample
                 )
             )

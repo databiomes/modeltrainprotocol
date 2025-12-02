@@ -1,7 +1,8 @@
-from typing import List, Sequence, Union
+from typing import List, Union
 
 from .BaseInstruction import BaseInstruction, Sample
-from .helpers.Response import Response
+from .input.BaseInput import BaseInput
+from .output.InstructionOutput import InstructionOutput
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
 
@@ -15,19 +16,20 @@ class Instruction(BaseInstruction):
     Samples must be added to the Instruction to provide context for the model.
     A minimum of 3 samples must be added to an Instruction.
     """
-    response: Response
+    output: InstructionOutput
+    input: BaseInput
 
-    def __init__(self, context: Sequence[TokenSet], response: Response, name: str = "instruction"):
+    def __init__(self, input: BaseInput, output: InstructionOutput, name: str = "instruction"):
         f"""
         Initializes an Instruction instance.
 
-        :param context: List of tuples containing Token instances that define the input structure. This precedes the model's response.
-        :param response: A TokenSet instance that does not include any user tokens.
+        :param input: List of tuples containing Token instances that define the input structure. This precedes the model's response.
+        :param output: A TokenSet instance that does not include any user tokens.
         :param name: Optional name for the Instruction. Defaults to 'instruction'.
         """
-        super().__init__(context=context, response=response, name=name)
-        if not isinstance(self.response, Response):
-            raise TypeError(f"Response must be an instance of Response. Got: {type(self.response)}")
+        super().__init__(input=input, output=output, name=name)
+        if not isinstance(self.output, InstructionOutput):
+            raise TypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
         self.validate_context_snippets()
 
     def _validate_snippets_match(self, context_snippets: List[Snippet], response_snippet: Snippet):
@@ -38,41 +40,55 @@ class Instruction(BaseInstruction):
         for i in range(len(all_snippets)):
             self._validate_snippet_matches_set(snippet=all_snippets[i], expected_token_set=all_token_sets[i])
 
-        if not isinstance(self.response, Response):
-            raise TypeError(f"Response must be an instance of Response. Got: {type(self.response)}")
+        if not isinstance(self.output, InstructionOutput):
+            raise TypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
 
         # Validate output snippet set matches output token set
-        self._validate_snippet_matches_set(snippet=response_snippet, expected_token_set=self.response.tokenset)
+        self._validate_snippet_matches_set(snippet=response_snippet, expected_token_set=self.output.tokenset)
 
     def get_token_sets(self) -> List[TokenSet]:
         """Returns all tokens in the instruction as a list of tuples."""
         all_tokens_sets: List = []
-        for token_set in self.context:
+        for token_set in self.input.tokensets:
             all_tokens_sets.append(token_set)
-        all_tokens_sets.append(self.response.tokenset)
+        all_tokens_sets.append(self.output.tokenset)
         return all_tokens_sets
 
     @property
     def last_tokenset(self) -> TokenSet:
         """Returns the last TokenSet in the Instruction, which is the response TokenSet."""
-        return self.response.tokenset
+        return self.output.tokenset
+
+    def _enforce_response_snippet(self, snippet: Union[Snippet, str]) -> Snippet:
+        """Converts a regular string to a snippet if provided as a string."""
+        if isinstance(snippet, str):
+            associated_tokenset: TokenSet = self.output.tokenset
+            try:
+                snippet = associated_tokenset.create_snippet(string=snippet)
+            except Exception as e:
+                raise ValueError(
+                    f"Failed to create Snippet from string '{snippet}' for TokenSet {associated_tokenset}.\n"
+                    f"Create a Snippet from the tokenset and add associated information: {e}")
+        return snippet
 
     # noinspection PyMethodOverriding
-    def add_sample(self, context_snippets: List[Snippet], response_snippet: Snippet,
+    def add_sample(self, input_snippets: List[Union[str | Snippet]], output_snippet: Snippet | str,
                    value: Union[int, float, List[Union[int, float]], None] = None, final: FinalToken | None = None):
         f"""
         Add a sample to the Instruction.
 
-        :param context_snippets: List of context snippets that will be added to the Instruction.
-        :param response_snippet: The model's response snippet.
+        :param input_snippets: List of context snippets or strings that will be added to the Instruction.
+        :param output_snippet: The model's response snippet.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
-        :param final: Optional Token instance designating th e final action by the model. Defaults to a non-action Token designated {self.response.default_final}.
+        :param final: Optional Token instance designating th e final action by the model. Defaults to a non-action Token designated {self.output.default_final}.
         """
+        input_snippets: List[Snippet] = self._enforce_snippets(context_snippets=input_snippets)
+        output_snippet: Snippet = self._enforce_response_snippet(output_snippet)
         final: FinalToken = self._assign_final_token(final=final)
-        self.response.validate_sample(snippet=response_snippet, value=value, final=final)
-        self._assert_context_snippet_count(context_snippets=context_snippets)
-        self._validate_snippets_match(context_snippets=context_snippets, response_snippet=response_snippet)
+        self.output.validate_sample(snippet=output_snippet, value=value, final=final)
+        self._assert_context_snippet_count(context_snippets=input_snippets)
+        self._validate_snippets_match(context_snippets=input_snippets, response_snippet=output_snippet)
 
-        sample: Sample = self._create_sample(context_snippets=context_snippets, response_snippet=response_snippet,
+        sample: Sample = self._create_sample(context_snippets=input_snippets, response_snippet=output_snippet,
                                              value=value, final=final)
         self.samples.append(sample)

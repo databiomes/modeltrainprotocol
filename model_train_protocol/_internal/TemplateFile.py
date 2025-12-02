@@ -123,7 +123,7 @@ class TemplateFile:
                 input_parts.append(RUN_TOKEN.key)
                 input_str = "\n".join(input_parts)
 
-                output_str = "<string>\n" + instruction.response.final[0].key + "\n" + EOS_TOKEN.key
+                output_str = "<string>\n" + instruction.output.final[0].key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
                     "type": isinstance(instruction, ExtendedInstruction) and "extended" or "basic",

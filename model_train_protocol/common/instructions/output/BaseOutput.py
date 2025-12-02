@@ -7,7 +7,7 @@ from ...tokens.FinalToken import FinalToken
 from ...tokens.TokenSet import Snippet
 
 
-class BaseResponse(ABC):
+class BaseOutput(ABC):
     """Defines the output of Instructions."""
 
     default_final: FinalToken = NON_TOKEN

@@ -2,7 +2,8 @@ import abc
 from abc import ABC
 from typing import List, Optional, Sequence, Union
 
-from .helpers.BaseResponse import BaseResponse
+from .input.BaseInput import BaseInput
+from .output.BaseOutput import BaseOutput
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
@@ -15,7 +16,7 @@ class Sample:
                  number_lists: List[List[List[int]]],
                  result: Token,
                  value: Union[int, float, None]):
-        self.context: List[str] = context
+        self.input: List[str] = context
         self.response: str = response
         self.prompt: Optional[str] = prompt
         self.numbers: List[List[int]] = number
@@ -26,7 +27,7 @@ class Sample:
     @property
     def strings(self) -> List[str]:
         """Returns all strings in the sample as a list."""
-        return self.context + [self.response]
+        return self.input + [self.response]
 
     def to_dict(self) -> dict:
         return {
@@ -43,7 +44,7 @@ class Sample:
         result_str = self.result.value
         if self.value is not None:
             result_str += f"{self.value}"
-        return f"Sample(Context: {self.context}, Response: {self.response}, Result: {result_str})"
+        return f"Sample(Context: {self.input}, Response: {self.response}, Result: {result_str})"
 
 
 class BaseInstruction(ABC):
@@ -65,16 +66,16 @@ class BaseInstruction(ABC):
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
 
-    def __init__(self, context: Sequence[TokenSet], response: BaseResponse, name: str):
+    def __init__(self, input: BaseInput, output: BaseOutput, name: str):
         """Initializes the common attributes to all Instructions."""
-        self.context: Sequence[TokenSet] = context
-        self.response: BaseResponse = response
+        self.input: BaseInput = input
+        self.output: BaseOutput = output
         self.samples: List[Sample] = []
         self.name: str = name
         self.samples: list[Sample] = []
-        if not isinstance(context, Sequence):
+        if not isinstance(input, Sequence):
             raise TypeError("Context must be a sequence of TokenSet instances.")
-        if not all(isinstance(ts, TokenSet) for ts in context):
+        if not all(isinstance(ts, TokenSet) for ts in input):
             raise TypeError("All items in context must be instances of TokenSet.")
         if not name or not isinstance(name, str):
             raise ValueError("Name must be a non-empty string.")
@@ -92,9 +93,9 @@ class BaseInstruction(ABC):
     @property
     def example_final_token(self) -> FinalToken:
         """Returns an example final token from the response."""
-        if self.response.final:
-            return self.response.final[0]
-        return self.response.default_final
+        if self.output.final:
+            return self.output.final[0]
+        return self.output.default_final
 
     @property
     @abc.abstractmethod
@@ -104,7 +105,7 @@ class BaseInstruction(ABC):
 
     def validate_context_snippets(self):
         """Validates that context snippets do not contain any final tokens."""
-        for token_set in self.context:
+        for token_set in self.input.tokensets:
             for token in token_set:
                 if isinstance(token, FinalToken):
                     raise ValueError(f"Context TokenSet cannot contain FinalToken instances. Found: {token}")
@@ -198,9 +199,9 @@ class BaseInstruction(ABC):
 
     def _assert_context_snippet_count(self, context_snippets: List[Snippet]):
         """Assert the number of context snippets matches the number of context token sets."""
-        if len(context_snippets) != len(self.context):
+        if len(context_snippets) != len(self.input.tokensets):
             raise ValueError(
-                f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.context)}).")
+                f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.input.tokensets)}).")
 
     def _assign_final_token(self, final: Optional[FinalToken]) -> FinalToken:
         """
@@ -222,11 +223,11 @@ class BaseInstruction(ABC):
         if final is not None:  # Use the specified final token if provided
             return final
 
-        if len(self.response.final) == 0:  # Return default final if no finals are defined
-            return self.response.default_final
+        if len(self.output.final) == 0:  # Return default final if no finals are defined
+            return self.output.default_final
 
-        if len(self.response.final) == 1:  # If we only have one final token, use it
-            return self.response.final[0]
+        if len(self.output.final) == 1:  # If we only have one final token, use it
+            return self.output.final[0]
 
         raise ValueError(
             "Multiple final tokens are allowed in the Response. Specify which final token to use for this sample.")
@@ -236,7 +237,7 @@ class BaseInstruction(ABC):
         tokens_str: str = ', '.join(
             [''.join([token.key for token in token_set.tokens]) for token_set in self.get_token_sets()])
         samples_str: str = ',\n'.join([str(sample) for sample in self.samples])
-        return f"Token Set(Tokens: {tokens_str}, Result: {self.response.default_final.key}, Samples:\n{samples_str})"
+        return f"Token Set(Tokens: {tokens_str}, Result: {self.output.default_final.key}, Samples:\n{samples_str})"
 
     def __hash__(self) -> int:
         """Hash based on the token sets of the Instruction. Instructions with the same TokenSets in the same order
@@ -273,6 +274,6 @@ class BaseInstruction(ABC):
         return {
             'name': self.name,
             'tokens': [[token.to_dict() for token in token_set.tokens] for token_set in self.get_token_sets()],
-            'result': self.response.default_final.to_dict() if self.response.default_final else None,
+            'result': self.output.default_final.to_dict() if self.output.default_final else None,
             'samples': self.samples
         }
