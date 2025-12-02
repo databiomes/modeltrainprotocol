@@ -2,7 +2,7 @@ import json
 import os
 from typing import List, Optional, Set, Dict
 
-from . import Token
+from . import Token, FinalToken
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN
@@ -60,7 +60,7 @@ class Protocol:
         if len(instruction.samples) < 3:
             raise ValueError(f"Instruction must have at least three samples. Found {len(instruction.samples)} samples.")
 
-        # TODO: validate that final token has at least 3 samples in the instruction
+        final_sample_table: dict[FinalToken, int] = dict()
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
@@ -68,6 +68,15 @@ class Protocol:
                 raise ValueError(
                     f"Sample input lines ({len(sample.input)}) does not match defined instruction_context_snippets count ({self.instruction_input_snippets})"
                     f"\n{sample}."
+                )
+            final_sample_table[sample.result] += 1 if sample.result in final_sample_table else 1
+
+        # Ensure each FinalToken has at least 3 samples
+        for final_token, count in final_sample_table.items():
+            if count < 3:
+                raise ValueError(
+                    f"Missing minimum 3 samples for each FinalToken in the Output of Instruction {instruction.name}.\n"
+                    f"FinalToken '{final_token.value}' must have at least 3 samples in the instruction. Found {count} samples."
                 )
 
         # Add all tokens

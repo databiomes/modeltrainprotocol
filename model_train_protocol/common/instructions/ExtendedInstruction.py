@@ -85,7 +85,7 @@ class ExtendedInstruction(BaseInstruction):
 
         return Sample(
             context=[snippet.string for snippet in context_snippets[:-1]],
-            response=response_string,
+            output=response_string,
             prompt=context_snippets[-1].string,
             number=numbers,
             number_lists=number_lists,

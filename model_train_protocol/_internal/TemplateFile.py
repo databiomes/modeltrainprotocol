@@ -205,7 +205,7 @@ class TemplateFile:
     def _create_sample_model_output(cls, instruction: BaseInstruction, sample: 'Sample') -> str:
         """Creates a sample model output string for a given instruction using actual sample data."""
 
-        sample_output = sample.response + "\n"
+        sample_output = sample.output + "\n"
         sample_output += instruction.example_final_token.key + "\n"
         sample_output += EOS_TOKEN.key
         return sample_output

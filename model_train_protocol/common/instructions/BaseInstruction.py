@@ -12,22 +12,22 @@ from ..tokens.TokenSet import TokenSet, Snippet
 class Sample:
     """A Sample is a single example of input and output for an Instruction."""
 
-    def __init__(self, context: List[str], response: str, prompt: Optional[str], number: List[List[int]],
+    def __init__(self, context: List[str], output: str, prompt: Optional[str], number: List[List[int]],
                  number_lists: List[List[List[int]]],
-                 result: Token,
+                 result: FinalToken,
                  value: Union[int, float, None]):
         self.input: List[str] = context
-        self.response: str = response
+        self.output: str = output
         self.prompt: Optional[str] = prompt
         self.numbers: List[List[int]] = number
         self.number_lists: List[List[List[int]]] = number_lists
-        self.result: Token = result
+        self.result: FinalToken = result
         self.value: Union[int, float, None] = value
 
     @property
     def strings(self) -> List[str]:
         """Returns all strings in the sample as a list."""
-        return self.input + [self.response]
+        return self.input + [self.output]
 
     def to_dict(self) -> dict:
         return {
@@ -44,7 +44,7 @@ class Sample:
         result_str = self.result.value
         if self.value is not None:
             result_str += f"{self.value}"
-        return f"Sample(Context: {self.input}, Response: {self.response}, Result: {result_str})"
+        return f"Sample(Context: {self.input}, Response: {self.output}, Result: {result_str})"
 
 
 class BaseInstruction(ABC):
@@ -169,7 +169,7 @@ class BaseInstruction(ABC):
 
         return Sample(
             context=[snippet.string for snippet in context_snippets],
-            response=response_snippet.string,
+            output=response_snippet.string,
             prompt=None,
             number=numbers,
             number_lists=number_lists,
