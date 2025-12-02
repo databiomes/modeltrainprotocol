@@ -1,6 +1,5 @@
 import model_train_protocol as mtp
 
-
 # Cheshire Cat NPC
 
 # This example protocol demonstrates a conversation between Alice and the Cheshire Cat from "Alice's Adventures in Wonderland".
@@ -9,7 +8,7 @@ import model_train_protocol as mtp
 # The context is set with excerpts from the book to provide a rich background for the interactions.
 # The model is set from the perspective of the Cat, responding to Alice's prompts.
 
-protocol = mtp.Protocol(name="example", instruction_context_snippets=2, encrypt=False)
+protocol = mtp.Protocol(name="example", context_snippets=2, encrypt=False)
 
 protocol.add_context(
     "ALICE was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, “and what is the use of a book,” thought Alice, “ without pictures or conversations?”")
@@ -62,218 +61,126 @@ tree_english_cat_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_eng
 tree_english_dissipate_cat_talk: mtp.TokenSet = mtp.TokenSet(
     tokens=(token_tree, token_english, token_dissipate, token_cat, token_talk))
 
-# Create response templates for the Instruction responses
-tree_english_cat_talk_continue_response: mtp.Response = mtp.Response(
-    tokenset=tree_english_cat_talk, final=token_continue
-)
-tree_english_cat_talk_appear_disappear_response: mtp.Response = mtp.Response(
-    tokenset=tree_english_cat_talk, final=[token_appear, token_vanish]
+
+
+# -------------------- Basic Instruction --------------------
+
+
+# Construct the Input format
+alice_cat_alice_input: mtp.InstructionInput = mtp.InstructionInput(
+    tokensets=[tree_english_cat_talk, tree_english_alice_talk],
+    background=[
+        "Alice was beginning to get very tired of sitting by her sister on the bank.",
+        "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”",
+    ]
 )
 
-# -------------------- Instruction Set: Continue --------------------
+# Construct the Output format
+tree_english_cat_talk_continue_output: mtp.InstructionOutput = mtp.InstructionOutput(
+    tokenset=tree_english_cat_talk,
+    final=token_continue
+)
+
+# Create the Instruction
 alice_cat_alice_instruction: mtp.Instruction = mtp.Instruction(
-    context=[tree_english_cat_talk, tree_english_alice_talk],
-    response=tree_english_cat_talk_continue_response,
-    name="alice_cat_alice_instruction",
+    input=alice_cat_alice_input,
+    output=tree_english_cat_talk_continue_output,
+    name="alice_cat_alice_continue",
 )
 
+# Add a minimum of 3 samples
 # 1st Sample
-sample_1_context_1: mtp.Snippet = tree_english_cat_talk.create_snippet(string="Then it doesnt matter which way you go.")
-sample_1_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Can you tell me a way?")
-sample_1_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Oh sure, if you only walk long enough that is a way.")
-
 alice_cat_alice_instruction.add_sample(
-    context_snippets=[sample_1_context_1, sample_1_context_2],
-    response_snippet=sample_1_response,
+    input_snippets=["Then it doesnt matter which way you go.", "Can you tell me a way?"],
+    output_snippet="Oh sure, if you only walk long enough that is a way.",
 )
 
 # 2nd Sample
-sample_2_context_1: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Oh, you cant help that, were all mad here. Im mad. You are mad.")
-sample_2_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="How do you know I am mad?")
-sample_2_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="You must be, or you would not have come here.")
-
 alice_cat_alice_instruction.add_sample(
-    context_snippets=[sample_2_context_1, sample_2_context_2],
-    response_snippet=sample_2_response
+    input_snippets=["Oh, you cant help that, were all mad here. Im mad. You are mad.", "How do you know I am mad?"],
+    output_snippet="You must be, or you would not have come here."
 )
 
 # 3rd Sample
-sample_3_context_1: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="To begin with, a dogs not mad. You grant that?")
-sample_3_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="I suppose so")
-sample_3_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased.")
-
 alice_cat_alice_instruction.add_sample(
-    context_snippets=[sample_3_context_1, sample_3_context_2],
-    response_snippet=sample_3_response
+    input_snippets=["To begin with, a dogs not mad. You grant that?", "I suppose so"],
+    output_snippet="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
 )
 
+# Add the Instruction to the Protocol
 protocol.add_instruction(alice_cat_alice_instruction)
 
-# -------------------- Instruction Set: Appear | Disappear --------------------
+
+
+# -------------------- Instruction Set: Appear | Disappear (multiple output options) --------------------
+
+tree_english_cat_talk_appear_disappear_input: mtp.InstructionInput = mtp.InstructionInput(
+    tokensets=[tree_english_dissipate_cat_talk, tree_english_alice_talk],
+    background=[
+        "It was getting late, and Alice was beginning to feel a little anxious about the time.",
+        "The Cheshire Cat had been appearing and disappearing at will, leaving Alice unsure of its presence.",
+    ]
+)
+
+tree_english_cat_talk_appear_disappear_output: mtp.InstructionOutput = mtp.InstructionOutput(
+    tokenset=tree_english_cat_talk, final=[token_appear, token_vanish]
+)
+
 alice_cat_alice_instruction_appear_disappear: mtp.Instruction = mtp.Instruction(
-    context=[tree_english_dissipate_cat_talk, tree_english_alice_talk],
-    response=tree_english_cat_talk_appear_disappear_response, name="alice_cat_alice_instruction_appear_disappear"
+    input=tree_english_cat_talk_appear_disappear_input,
+    output=tree_english_cat_talk_appear_disappear_output,
+    name="alice_cat_alice_appear_disappear"
 )
 
 # 1st Sample
-sample_4_context_1: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="Then it doesnt matter which way you go.")
-sample_4_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Can you tell me a way?")
-sample_4_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Oh sure, if you only walk long enough that is a way.")
-
 alice_cat_alice_instruction_appear_disappear.add_sample(
-    context_snippets=[sample_4_context_1, sample_4_context_2],
-    response_snippet=sample_4_response,
+    input_snippets=["Then it doesnt matter which way you go.", "Can you tell me a way?"],
+    output_snippet="Oh sure, if you only walk long enough that is a way.",
     final=token_appear,  # Must specify final token, as multiple options are permitted in the Response
 )
 
 # 2nd Sample
-sample_5_context_1: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="Oh, you cant help that, were all mad here. Im mad. You are mad.")
-sample_5_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="How do you know I am mad?")
-sample_5_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="You must be, or you would not have come here.")
-
 alice_cat_alice_instruction_appear_disappear.add_sample(
-    context_snippets=[sample_5_context_1, sample_5_context_2],
-    response_snippet=sample_5_response,
+    input_snippets=["Oh, you cant help that, were all mad here. Im mad. You are mad.", "How do you know I am mad?"],
+    output_snippet="You must be, or you would not have come here.",
     final=token_appear,
 )
 
 # 3rd Sample
-sample_6_context_1: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="To begin with, a dogs not mad. You grant that?")
-sample_6_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="I suppose so")
-sample_6_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased.")
-
 alice_cat_alice_instruction_appear_disappear.add_sample(
-    context_snippets=[sample_6_context_1, sample_6_context_2],
-    response_snippet=sample_6_response,
+    input_snippets=["To begin with, a dogs not mad. You grant that?", "I suppose so"],
+    output_snippet="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased.",
     final=token_appear,
 )
 
 # A minimum of 3 samples are required for each Response final token
 
 # 4th Sample
-sample_7_context_1: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="Because it amuses me, and it keeps you wondering whether I'm truly here at all.")
-sample_7_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="It makes me nervous, please stop.")
-sample_7_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Then I'll do it twice as much, since nervousness is such a curious flavor.")
-
 alice_cat_alice_instruction_appear_disappear.add_sample(
-    context_snippets=[sample_7_context_1, sample_7_context_2],
-    response_snippet=sample_7_response,
+    input_snippets=["Because it amuses me, and it keeps you wondering whether I'm truly here at all.",
+                    "It makes me nervous, please stop."],
+    output_snippet="Then I'll do it twice as much, since nervousness is such a curious flavor.",
     final=token_vanish,
 )
 
 # 5th Sample
-sample_8_context_1: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="Of course I am, or else I wouldn't be here among them.")
-sample_8_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="But how do you know that you're mad?")
-sample_8_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Because I purr when I'm pleased and grin when I'm angry, surely that's not quite sane.")
-
 alice_cat_alice_instruction_appear_disappear.add_sample(
-    context_snippets=[sample_8_context_1, sample_8_context_2],
-    response_snippet=sample_8_response,
+    input_snippets=["Of course I am, or else I wouldn't be here among them.", "But how do you know that you're mad?"],
+    output_snippet="Because I purr when I'm pleased and grin when I'm angry, surely that's not quite sane.",
     final=token_vanish,
 )
 
 # 6th Sample
-sample_9_context_1: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="But riddles are straighter than answers, if you know how to look at them.")
-sample_9_context_2: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="That does not make sense at all.")
-sample_9_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="All the better, then—nonsense is safer than truth.")
-
 alice_cat_alice_instruction_appear_disappear.add_sample(
-    context_snippets=[sample_9_context_1, sample_9_context_2],
-    response_snippet=sample_9_response,
+    input_snippets=["But riddles are straighter than answers, if you know how to look at them.",
+                    "That does not make sense at all."],
+    output_snippet="All the better, then—nonsense is safer than truth.",
     final=token_vanish,
 )
 
 protocol.add_instruction(alice_cat_alice_instruction_appear_disappear)
 
-# -------------------- ExtendedInstruction Set (Optional): Leave (With an additional line of context) --------------------
-
-# Create ExtendedResponse for Leave instruction - an ExtendedResponse does not have an associated tokenset.
-# In an ExtendedInstruction, the final tokenset is associated with the context, allowing for an extra line of context.
-extended_response: mtp.ExtendedResponse = mtp.ExtendedResponse(
-    final=token_leave
-)
-
-extended_instruction_leave: mtp.ExtendedInstruction = mtp.ExtendedInstruction(
-    context=[tree_english_alice_talk, tree_english_dissipate_cat_talk, tree_english_alice_talk],
-    response=extended_response,
-    name="alice_disappear_cat_alice_instruction_leave"
-)
-
-# 1st Sample
-sample_13_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Do you ever stay in one place, or are you always drifting about?", )
-sample_13_context_2: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="I stay wherever I please, which is nowhere for very long.")
-sample_13_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="But I was hoping you might keep me company a bit longer.")
-
-# Because there is no tokenset associated with the ExtendedResponse, the response is a simple string.
-sample_13_response: str = "Companionship is a heavy coat, and I prefer to travel light."
-
-extended_instruction_leave.add_sample(
-    context_snippets=[sample_13_context_1, sample_13_context_2, sample_13_context_3],
-    response_string=sample_13_response,
-    final=token_leave,
-)
-
-# 2nd Sample
-sample_14_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Why do you grin so when there's nothing funny at all?")
-sample_14_context_2: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="Because grinning is my way of keeping secrets from slipping out.")
-sample_14_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="That seems rather suspicious")
-sample_14_response: str = "Then I shall go before you ask too much."
-
-extended_instruction_leave.add_sample(
-    context_snippets=[sample_14_context_1, sample_14_context_2, sample_14_context_3],
-    response_string=sample_14_response,
-    final=token_leave,
-)
-
-# 3rd Sample
-sample_15_context_1: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="Could you tell me if I'm going the right way?")
-sample_15_context_2: mtp.Snippet = tree_english_dissipate_cat_talk.create_snippet(
-    string="Every way is right if you don't know your destination.")
-sample_15_context_3: mtp.Snippet = tree_english_alice_talk.create_snippet(
-    string="But that doesn't help me at all!")
-sample_15_response: str = "Then I've said enough."
-
-extended_instruction_leave.add_sample(
-    context_snippets=[sample_15_context_1, sample_15_context_2, sample_15_context_3],
-    response_string=sample_15_response,
-    final=token_leave,
-)
-protocol.add_instruction(extended_instruction_leave)
-
-# -------------------- Numeric Instruction Set (with usage of NumToken, NumListToken, and FinalNumToken) --------------------
+# -------------------- Numeric Instruction Set (uses NumToken, NumListToken, and/or FinalNumToken) --------------------
 
 # We define tokens representing a number and a list of numbers to be used in the instruction input.
 emotion: mtp.NumToken = mtp.NumToken(
@@ -291,6 +198,19 @@ coordinates: mtp.NumListToken = mtp.NumListToken(
     desc="A list of three numerical values representing the X, Y, and Z coordinates of the character's location in a 3D space."
 )
 
+tree_english_cat_talk_coordinates: mtp.TokenSet = mtp.TokenSet(
+    tokens=(token_tree, token_english, token_cat, token_talk, coordinates))
+tree_english_alice_talk_emotion: mtp.TokenSet = mtp.TokenSet(
+    tokens=(token_tree, token_english, token_alice, token_talk, emotion))
+
+numeric_input: mtp.InstructionInput = mtp.InstructionInput(
+    tokensets=[tree_english_cat_talk_coordinates, tree_english_alice_talk_emotion],
+    background=[
+        "Alice was feeling a mix of curiosity and apprehension as she conversed with the Cheshire Cat.",
+        "The Cat's ability to appear and disappear at will added to the surreal nature of their interaction.",
+    ]
+)
+
 # We define a FinalNumToken to indicate that the model should include a numerical value in the response.
 final_emotion: mtp.FinalNumToken = mtp.FinalNumToken(
     value="Madness",
@@ -300,65 +220,58 @@ final_emotion: mtp.FinalNumToken = mtp.FinalNumToken(
 )
 
 # Define a response using the FinalNumToken
-numeric_response: mtp.Response = mtp.Response(
+numeric_response: mtp.InstructionOutput = mtp.InstructionOutput(
     tokenset=tree_english_cat_talk,
     final=final_emotion
 )
 
-tree_english_cat_talk_coordinates: mtp.TokenSet = mtp.TokenSet(
-    tokens=(token_tree, token_english, token_cat, token_talk, coordinates))
-tree_english_alice_talk_emotion: mtp.TokenSet = mtp.TokenSet(
-    tokens=(token_tree, token_english, token_alice, token_talk, emotion))
-
 alice_cat_alice_instruction_numbers_continue: mtp.Instruction = mtp.Instruction(
-    context=[tree_english_cat_talk_coordinates, tree_english_alice_talk_emotion],
-    response=numeric_response,
+    input=numeric_input,
+    output=numeric_response,
     name="alice_cat_alice_instruction_numeric"
 )
 
 # 1st Sample
-sample_16_context_1: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
+
+# When an input or output snippet contains numbers or number lists, we must create the associated snippet using the TokenSet's create_snippet method.
+
+sample_1_input_1: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
     string="Then it doesnt matter which way you go.", number_lists=[100, 200, -50])
-sample_16_context_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
+sample_1_input_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
     string="Can you tell me a way?", numbers=5)
-sample_16_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="Then it doesnt matter which way you go.")
 
 alice_cat_alice_instruction_numbers_continue.add_sample(
-    context_snippets=[sample_16_context_1, sample_16_context_2],
-    response_snippet=sample_16_response,
+    input_snippets=[sample_1_input_1, sample_1_input_2],
+    output_snippet="Then it doesnt matter which way you go.",
     value=5
 )
 
 # 2nd Sample
-sample_17_context_1: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
+sample_2_input_1: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
     string="Oh, you cant help that, were all mad here. Im mad. You are mad.", number_lists=[100, 200, -50])
-sample_17_context_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
+sample_2_input_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
     string="How do you know I am mad?", numbers=7)
-sample_17_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="You must be, or you would not have come here.")
 
 alice_cat_alice_instruction_numbers_continue.add_sample(
-    context_snippets=[sample_17_context_1, sample_17_context_2],
-    response_snippet=sample_17_response,
+    input_snippets=[sample_2_input_1, sample_2_input_2],
+    output_snippet="You must be, or you would not have come here.",
     value=3
 )
 
 # 3rd Sample
-sample_18_context_1: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
+sample_3_input_1: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet(
     string="To begin with, a dogs not mad. You grant that?", number_lists=[100, 200, -50])
-sample_18_context_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
+sample_3_input_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
     string="How do you know I am mad?", numbers=7)
-sample_18_response: mtp.Snippet = tree_english_cat_talk.create_snippet(
-    string="You must be, or you would not have come here.")
 
 alice_cat_alice_instruction_numbers_continue.add_sample(
-    context_snippets=[sample_18_context_1, sample_18_context_2],
-    response_snippet=sample_18_response,
+    input_snippets=[sample_3_input_1, sample_3_input_2],
+    output_snippet="You must be, or you would not have come here.",
     value=8
 )
 
 protocol.add_instruction(alice_cat_alice_instruction_numbers_continue)
+
 
 # -------------------- Guardrail --------------------
 guardrail_english = mtp.Guardrail(
