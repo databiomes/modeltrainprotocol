@@ -1,7 +1,8 @@
 from typing import List
 
-from model_train_protocol import TokenSet
+
 from model_train_protocol.common.instructions.input.BaseInput import BaseInput
+from model_train_protocol.common.tokens import TokenSet
 
 
 class InstructionInput(BaseInput):
