@@ -14,7 +14,7 @@ class TestBasicUserProtocolJSON:
         from model_train_protocol._internal.ProtocolFile import ProtocolFile
         protocol_file = ProtocolFile(
             name=protocol.name,
-            context=protocol.background,
+            context=protocol.context,
             instruction_context_snippets=protocol.instruction_input_snippets,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
@@ -54,7 +54,7 @@ class TestBasicUserProtocolJSON:
         
         assert "context" in json_output
         assert isinstance(json_output["context"], list)
-        assert len(json_output["context"]) == 2
+        assert len(json_output["context"]) == 10
         assert json_output["context"][0] == "This is a user context line."
 
     def test_basic_user_protocol_tokens(self, basic_user_protocol):
@@ -150,7 +150,7 @@ class TestBasicUserProtocolJSON:
         
         # Test result
         assert isinstance(instruction_set["result"], str)
-        assert instruction_set["result"] == "End_"
+        assert instruction_set["result"] == "End__"
         
         # Test samples
         assert isinstance(instruction_set["samples"], list)
@@ -182,7 +182,7 @@ class TestBasicUserProtocolJSON:
         
         # Test sample content
         assert len(sample["strings"]) == 3  # Three context snippets (2 context + 1 response)
-        assert sample["result"] == "End_"
+        assert sample["result"] == "End__"
         assert sample["value"] is None  # No value for user instruction
         
         # User instruction should have prompts

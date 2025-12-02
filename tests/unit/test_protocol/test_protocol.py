@@ -6,7 +6,10 @@ from pathlib import Path
 import pytest
 
 from model_train_protocol import Protocol, Token, TokenSet, Instruction, ExtendedInstruction, \
-    Guardrail
+    Guardrail, FinalToken
+from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+from model_train_protocol.common.instructions.output.ExtendedResponse import ExtendedResponse
 from tests.fixtures.tokens import get_valid_keyless_tokens
 
 
@@ -61,13 +64,13 @@ class TestProtocol:
 
     def test_protocol_initialization_invalid_instruction_context_snippets(self):
         """Test protocol initialization with invalid context lines."""
-        with pytest.raises(ValueError, match="minimum of 2 context lines"):
+        with pytest.raises(ValueError, match="minimum of 2 input snippets"):
             Protocol("test_protocol", context_snippets=1)
 
-        with pytest.raises(ValueError, match="minimum of 2 context lines"):
+        with pytest.raises(ValueError, match="minimum of 2 input snippets"):
             Protocol("test_protocol", context_snippets=0)
 
-        with pytest.raises(ValueError, match="minimum of 2 context lines"):
+        with pytest.raises(ValueError, match="minimum of 2 input snippets"):
             Protocol("test_protocol", context_snippets=-1)
 
     def test_protocol_initialization_valid_instruction_context_snippets(self):
@@ -195,9 +198,12 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         # Create instruction
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         # Add samples
@@ -261,9 +267,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -324,10 +333,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction1 = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
-
+            input=instruction_input1,
+            output=instruction_output1,
             name="same_name"
         )
 
@@ -342,10 +353,11 @@ class TestProtocol:
             )
 
         # Create second instruction with the same name
+        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output2 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction2 = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
-
+            input=instruction_input2,
+            output=instruction_output2,
             name="same_name"  # Same name as instruction1
         )
 
@@ -380,10 +392,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction1 = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
-
+            input=instruction_input1,
+            output=instruction_output1,
             name="conflicting_name"
         )
 
@@ -403,10 +417,11 @@ class TestProtocol:
         context_set3 = TokenSet(tokens=(token4,))
         response_set2 = TokenSet(tokens=(token5,))
 
+        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set3], context=None)
+        instruction_output2 = InstructionOutput(tokenset=response_set2, final=final_token)
         instruction2 = Instruction(
-            input=[context_set1, context_set3],
-            output=response_set2,
-
+            input=instruction_input2,
+            output=instruction_output2,
             name="conflicting_name"  # Same name as instruction1
         )
 
@@ -448,10 +463,12 @@ class TestProtocol:
         output_snippet = response_set.create_snippet("Output")
 
         # Add first instruction
+        final_token = FinalToken("Result")
+        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction1 = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
-
+            input=instruction_input1,
+            output=instruction_output1,
             name="first_instruction"
         )
 
@@ -467,10 +484,11 @@ class TestProtocol:
         token4 = Token("Token4", key="🔩")
         context_set3 = TokenSet(tokens=(token4,))
 
+        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set3], context=None)
+        instruction_output2 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction2 = Instruction(
-            input=[context_set1, context_set3],
-            output=response_set,
-
+            input=instruction_input2,
+            output=instruction_output2,
             name="second_instruction"
         )
 
@@ -485,10 +503,11 @@ class TestProtocol:
         protocol.add_instruction(instruction2)
 
         # Add third instruction with different name
+        instruction_input3 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output3 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction3 = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
-
+            input=instruction_input3,
+            output=instruction_output3,
             name="third_instruction"
         )
 
@@ -504,10 +523,11 @@ class TestProtocol:
         assert len(protocol.instructions) == 3
 
         # Try to add fourth instruction with name that conflicts with first
+        instruction_input4 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output4 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction4 = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
-
+            input=instruction_input4,
+            output=instruction_output4,
             name="first_instruction"  # Conflicts with instruction1
         )
 
@@ -535,9 +555,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)  # Only 2 context sets, but protocol expects 3
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],  # Only 2 context sets, but protocol expects 3
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         # Add sample with wrong context lines (2 instead of 3)
@@ -577,9 +600,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -600,6 +626,10 @@ class TestProtocol:
         )
 
         protocol.add_instruction(instruction)
+        
+        # Add more context to meet minimum requirement (already has 2, need 8 more for total of 10)
+        for i in range(3, 11):
+            protocol.add_context(f"Context line {i}")
 
         # Save protocol
         protocol.save(name="test_save", path=str(temp_directory))
@@ -623,9 +653,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -646,6 +679,10 @@ class TestProtocol:
         )
 
         protocol.add_instruction(instruction)
+        
+        # Add more context to meet minimum requirement
+        for i in range(3, 11):
+            protocol.add_context(f"Context line {i}")
 
         # Save protocol with default name
         protocol.save(path=str(temp_directory))
@@ -669,9 +706,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -692,6 +732,10 @@ class TestProtocol:
         )
 
         protocol.add_instruction(instruction)
+        
+        # Add more context to meet minimum requirement
+        for i in range(3, 11):
+            protocol.add_context(f"Context line {i}")
 
         # Save protocol with default path
         protocol.save(name="test_save")
@@ -718,9 +762,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -741,6 +788,10 @@ class TestProtocol:
         )
 
         protocol.add_instruction(instruction)
+        
+        # Add more context to meet minimum requirement
+        for i in range(3, 11):
+            protocol.add_context(f"Context line {i}")
 
         # Create template
         protocol.template(path=str(temp_directory))
@@ -764,9 +815,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -787,6 +841,10 @@ class TestProtocol:
         )
 
         protocol.add_instruction(instruction)
+        
+        # Add more context to meet minimum requirement
+        for i in range(3, 11):
+            protocol.add_context(f"Context line {i}")
 
         # Create template with default path
         protocol.template()
@@ -875,8 +933,12 @@ class TestProtocol:
         user_set.set_guardrail(guardrail)
 
         # Create instruction
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2, user_set], context=None)
+        extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(
-            input=[context_set1, context_set2, user_set],
+            input=instruction_input,
+            output=extended_response,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -939,9 +1001,12 @@ class TestProtocol:
         context_set2 = TokenSet(tokens=(token2,))
         response_set = TokenSet(tokens=(token3,))
 
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
-            input=[context_set1, context_set2],
-            output=response_set,
+            input=instruction_input,
+            output=instruction_output,
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -962,6 +1027,10 @@ class TestProtocol:
         )
 
         protocol.add_instruction(instruction)
+        
+        # Add more context to meet minimum requirement
+        for i in range(3, 11):
+            protocol.add_context(f"Context line {i}")
 
         # Prepare protocol
         protocol._prep_protocol()

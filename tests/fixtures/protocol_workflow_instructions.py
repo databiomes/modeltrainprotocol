@@ -3,7 +3,11 @@ Protocol workflow instruction fixtures with 2 context lines.
 """
 import pytest
 
-from model_train_protocol import Instruction, ExtendedInstruction
+from model_train_protocol import Instruction, ExtendedInstruction, FinalToken, FinalNumToken
+from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+from model_train_protocol.common.instructions.output.ExtendedResponse import ExtendedResponse
+from model_train_protocol.common.tokens.NumToken import NumToken
 
 
 @pytest.fixture
@@ -11,10 +15,12 @@ def simple_workflow_instruction_with_samples(simple_tokenset, user_tokenset, sim
                                              simple_response_sample, token_workflow_result,
                                              content_guardrail) -> Instruction:
     """Simple instruction with 2 context lines for workflow tests."""
+    final_token = FinalToken(token_workflow_result.value) if not isinstance(token_workflow_result, FinalToken) else token_workflow_result
+    instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+    instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
     instruction = Instruction(
-        input=[simple_tokenset, user_tokenset],
-        output=simple_tokenset,
-        final=token_workflow_result,
+        input=instruction_input,
+        output=instruction_output,
         name="simple_workflow_instruction"
     )
 
@@ -45,7 +51,7 @@ def simple_workflow_instruction_with_samples_with_guardrail(simple_workflow_inst
     instruction = simple_workflow_instruction_with_samples
     # Set guardrail on the user tokenset
     # Set guardrail on the user tokenset
-    instruction.context[1].set_guardrail(content_guardrail)
+    instruction.input.tokensets[1].set_guardrail(content_guardrail)
     return instruction
 
 
@@ -54,9 +60,12 @@ def user_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simpl
                                            user_response_sample, token_workflow_end,
                                            safety_guardrail) -> ExtendedInstruction:
     """User instruction with 2 context lines for workflow tests."""
+    final_token = FinalToken(token_workflow_end.value) if not isinstance(token_workflow_end, FinalToken) else token_workflow_end
+    instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset, user_tokenset], context=None)
+    extended_response = ExtendedResponse(final=final_token)
     instruction = ExtendedInstruction(
-        input=[simple_tokenset, user_tokenset, user_tokenset],
-        final=token_workflow_end,
+        input=instruction_input,
+        output=extended_response,
         name="user_workflow_instruction"
     )
 
@@ -86,41 +95,47 @@ def user_workflow_instruction_with_samples_and_guardrail(user_workflow_instructi
     """User instruction with guardrail for workflow tests."""
     instruction = user_workflow_instruction_with_samples
     # Set guardrail on the user tokenset
-    instruction.context[1].set_guardrail(safety_guardrail)
+    instruction.input.tokensets[1].set_guardrail(safety_guardrail)
     return instruction
 
 
 @pytest.fixture
-def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, user_tokenset,
+def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, simple_tokenset, user_tokenset,
                                                       simple_numtoken_context_sample, user_context_sample,
-                                                      simple_numtoken_response_sample, token_workflow_count,
+                                                      simple_response_sample, token_workflow_count,
                                                       content_guardrail) -> Instruction:
     """Simple instruction with NumToken and 2 context lines for workflow tests."""
     # Set guardrail on the user tokenset
     user_tokenset.set_guardrail(content_guardrail)
 
+    if isinstance(token_workflow_count, NumToken):
+        final_token = FinalNumToken(token_workflow_count.value, token_workflow_count.min_value, token_workflow_count.max_value)
+    else:
+        final_token = FinalToken(token_workflow_count.value) if not isinstance(token_workflow_count, FinalToken) else token_workflow_count
+    instruction_input = InstructionInput(tokensets=[simple_numtoken_tokenset, user_tokenset], context=None)
+    # Use simple_tokenset (without NumToken) for output, as InstructionOutput doesn't allow NumTokens in response tokenset
+    instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
     instruction = Instruction(
-        input=[simple_numtoken_tokenset, user_tokenset],
-        output=simple_numtoken_tokenset,
-        final=token_workflow_count,
+        input=instruction_input,
+        output=instruction_output,
         name="simple_numtoken_workflow_instruction"
     )
 
     # Add samples with 2 context snippets - one from each tokenset
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
+        output_snippet=simple_response_sample,
+        value=5
+    )
+    instruction.add_sample(
+        input_snippets=[simple_numtoken_context_sample, user_context_sample],
+        output_snippet=simple_response_sample,
+        value=7
+    )
+    instruction.add_sample(
+        input_snippets=[simple_numtoken_context_sample, user_context_sample],
+        output_snippet=simple_response_sample,
         value=10
-    )
-    instruction.add_sample(
-        input_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
-        value=15
-    )
-    instruction.add_sample(
-        input_snippets=[simple_numtoken_context_sample, user_context_sample],
-        output_snippet=simple_numtoken_response_sample,
-        value=20
     )
 
     return instruction
@@ -128,30 +143,34 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
 
 @pytest.fixture
 def simple_numlisttoken_workflow_instruction_with_samples(
-        simple_numlisttoken_tokenset, user_tokenset, simple_numlisttoken_context_sample, user_context_sample,
-        simple_numlisttoken_response_sample, token_workflow_coordinates, safety_guardrail
+        simple_numlisttoken_tokenset, simple_tokenset, user_tokenset, simple_numlisttoken_context_sample, user_context_sample,
+        simple_response_sample, token_workflow_coordinates, safety_guardrail
 ) -> Instruction:
     """Simple NumListToken instruction with 2 context lines for workflow tests."""
+    # Note: NumListToken cannot be used as final token, using FinalToken instead
+    final_token = FinalToken(token_workflow_coordinates.value) if not isinstance(token_workflow_coordinates, FinalToken) else token_workflow_coordinates
+    instruction_input = InstructionInput(tokensets=[simple_numlisttoken_tokenset, user_tokenset], context=None)
+    # Use simple_tokenset (without NumListToken) for output, as InstructionOutput doesn't allow NumListTokens in response tokenset
+    instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
     instruction = Instruction(
-        input=[simple_numlisttoken_tokenset, user_tokenset],
-        output=simple_numlisttoken_tokenset,
-        final=token_workflow_coordinates
+        input=instruction_input,
+        output=instruction_output
     )
 
     # Add samples with 2 context snippets - one from each tokenset
     instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        output_snippet=simple_response_sample,
         value=[1, 2, 3]
     )
     instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        output_snippet=simple_response_sample,
         value=[4.2, .45, 6.8]
     )
     instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample, user_context_sample],
-        output_snippet=simple_numlisttoken_response_sample,
+        output_snippet=simple_response_sample,
         value=[7, 8, 9]
     )
 
