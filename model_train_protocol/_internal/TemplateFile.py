@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import Union
 
 from model_train_protocol import Instruction, ExtendedInstruction
@@ -8,6 +9,24 @@ from model_train_protocol.common.instructions.BaseInstruction import Sample
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
 import random
+
+
+class InstructionTypeEnum(Enum):
+    """Enumeration for instruction types in the template."""
+
+    BASIC = "basic"
+    EXTENDED = "extended"
+
+    @classmethod
+    def get_instruction_type_by_class(cls, instruction: BaseInstruction) -> 'InstructionTypeEnum':
+        """Returns the InstructionTypeEnum corresponding to the given instruction class."""
+        if isinstance(instruction, Instruction):
+            return cls.BASIC
+        elif isinstance(instruction, ExtendedInstruction):
+            return cls.EXTENDED
+        else:
+            raise ValueError("Unknown instruction type.")
+
 
 class TemplateFile:
     """Manages the model.json file for model training protocols."""
@@ -45,15 +64,15 @@ class TemplateFile:
 
                     # Check if any token in the token_set is a FinalToken
                     has_final_token = any(isinstance(t, FinalToken) for t in token_set)
-                    
+
                     if has_final_token:
                         output_token_mapping[token_value] = token_key
                     else:
                         input_token_mapping[token_value] = token_key
-                
+
                 for sample in instruction.samples:
                     output_token_mapping[sample.result.value] = sample.result.key
-            
+
             output_token_mapping[EOS_TOKEN.value] = EOS_TOKEN.key
 
             return {
@@ -113,7 +132,7 @@ class TemplateFile:
                     ])
 
                     if is_extended_instruction_extra_string:
-                        token_key += "<string>" # Extra <string> for extended instruction embedded in key
+                        token_key += "<string>"  # Extra <string> for extended instruction embedded in key
 
                     input_parts.append(token_key)
 
@@ -126,7 +145,7 @@ class TemplateFile:
                 output_str = "<string>\n" + instruction.output.final[0].key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
-                    "type": isinstance(instruction, ExtendedInstruction) and "extended" or "basic",
+                    "type": InstructionTypeEnum.get_instruction_type_by_class(instruction).value,
                     "structure": input_list,
                     "input": input_str,
                     "output": output_str
@@ -159,7 +178,7 @@ class TemplateFile:
         :param is_extended_last: If True, format for extended instruction's last token set (no newline before string)
         """
         token_keys = "".join([token.key for token in token_set])
-        
+
         # Add template representation for NumTokens and NumListTokens to the token key
         for token in token_set:
             if isinstance(token, NumToken):
@@ -171,7 +190,7 @@ class TemplateFile:
                     for _ in range(token.length)
                 ]
                 token_keys += str(example_list)
-        
+
         if is_extended_last:
             # For extended instruction's last token set: token_key<string>\n (no newline before string)
             formatted_string = token_keys + sample_string + "\n"
@@ -179,7 +198,7 @@ class TemplateFile:
             # For regular format: token_key\n<string>\n
             formatted_string = token_keys + "\n"
             formatted_string += sample_string + "\n"
-        
+
         return formatted_string
 
     @classmethod
@@ -240,9 +259,9 @@ class TemplateFile:
         if instruction and instruction.samples:
             # Use the first sample for the example
             sample = instruction.samples[0]
-            
+
             instruction_input = BOS_TOKEN.key + "\n"
-            
+
             # Map input strings to input token sets
             for idx, token_set in enumerate(instruction.input.tokensets):
                 if idx < len(sample.input):
