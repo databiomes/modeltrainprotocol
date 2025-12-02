@@ -1,6 +1,6 @@
 import abc
 from abc import ABC
-from typing import List, Optional, Sequence, Union
+from typing import List, Optional, Union
 
 from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
@@ -73,9 +73,9 @@ class BaseInstruction(ABC):
         self.samples: List[Sample] = []
         self.name: str = name
         self.samples: list[Sample] = []
-        if not isinstance(input, Sequence):
+        if not isinstance(input, BaseInput):
             raise TypeError("Context must be a sequence of TokenSet instances.")
-        if not all(isinstance(ts, TokenSet) for ts in input):
+        if not all(isinstance(ts, TokenSet) for ts in input.tokensets):
             raise TypeError("All items in context must be instances of TokenSet.")
         if not name or not isinstance(name, str):
             raise ValueError("Name must be a non-empty string.")
