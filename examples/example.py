@@ -240,6 +240,12 @@ sample_1_input_1: mtp.Snippet = tree_english_cat_talk_coordinates.create_snippet
 sample_1_input_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
     string="Can you tell me a way?", numbers=5)
 
+# You may also create snippets by indexing the Instruction's input TokenSets
+# sample_1_input_1: mtp.Snippet = alice_cat_alice_instruction_numbers_continue.input.tokensets[0].create_snippet(
+#     string="Then it doesnt matter which way you go.", number_lists=[100, 200, -50])
+# sample_1_input_2: mtp.Snippet = alice_cat_alice_instruction_numbers_continue.input.tokensets[1].create_snippet(
+#     string="Can you tell me a way?", numbers=5)
+
 alice_cat_alice_instruction_numbers_continue.add_sample(
     input_snippets=[sample_1_input_1, sample_1_input_2],
     output_snippet="Then it doesnt matter which way you go.",
