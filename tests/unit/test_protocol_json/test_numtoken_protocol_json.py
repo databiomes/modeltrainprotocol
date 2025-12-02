@@ -15,7 +15,7 @@ class TestNumTokenProtocolJSON:
         protocol_file = ProtocolFile(
             name=protocol.name,
             context=protocol.background,
-            instruction_context_snippets=protocol.instruction_context_snippets,
+            instruction_context_snippets=protocol.instruction_input_snippets,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
             instructions=protocol.instructions

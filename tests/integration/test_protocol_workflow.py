@@ -26,7 +26,7 @@ class TestProtocolWorkflow:
         assert len(protocol.tokens) >= 6  # Should include all tokens
         assert len(protocol.context) == 2
         assert protocol.name == "integration_test"
-        assert protocol.instruction_context_snippets == 2
+        assert protocol.instruction_input_snippets == 2
 
     def test_protocol_with_numeric_tokens(self, simple_numtoken_workflow_instruction_with_samples):
         """Test creating a protocol with numeric tokens using fixtures."""
@@ -144,7 +144,7 @@ class TestProtocolWorkflow:
         assert len(protocol.tokens) >= 8
         assert len(protocol.context) == 2
         assert protocol.name == "complex_test"
-        assert protocol.instruction_context_snippets == 2
+        assert protocol.instruction_input_snippets == 2
 
     def test_protocol_error_handling_workflow(self):
         """Test protocol workflow with error handling."""
@@ -189,5 +189,5 @@ class TestProtocolWorkflow:
         assert len(protocol.instructions) == 1
         assert len(protocol.tokens) >= 3
         assert protocol.name == "validation_test"
-        assert protocol.instruction_context_snippets == 2
+        assert protocol.instruction_input_snippets == 2
 

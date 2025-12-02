@@ -18,7 +18,7 @@ class TestProtocol:
         protocol = Protocol("test_protocol", context_snippets=3)
 
         assert protocol.name == "test_protocol"
-        assert protocol.instruction_context_snippets == 3
+        assert protocol.instruction_input_snippets == 3
         assert protocol.encrypt is True
         assert protocol.context == []
         assert len(protocol.tokens) == 0
@@ -985,7 +985,7 @@ class TestProtocol:
         """Test protocol with various context lines."""
         protocol = Protocol("test_protocol", context_snippets=instruction_context_snippets)
 
-        assert protocol.instruction_context_snippets == instruction_context_snippets
+        assert protocol.instruction_input_snippets == instruction_context_snippets
 
     @pytest.mark.parametrize("encrypt", [True, False])
     def test_protocol_encryption_settings(self, encrypt):

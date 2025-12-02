@@ -23,10 +23,10 @@ class Protocol:
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
-        self.instruction_context_snippets: int = context_snippets  # Number of lines in instruction samples
+        self.instruction_input_snippets: int = context_snippets  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
-        if self.instruction_context_snippets < 2:
-            raise ValueError("A minimum of 2 context lines is required for all instructions.")
+        if self.instruction_input_snippets < 2:
+            raise ValueError("A minimum of 2 input snippets is required for all instructions.")
         self.context: List[str] = []
         self.tokens: Set[Token] = set()
         self.instructions: Set[BaseInstruction] = set()
@@ -64,9 +64,9 @@ class Protocol:
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            if not len(sample.context) == self.instruction_context_snippets:
+            if not len(sample.input) == self.instruction_input_snippets:
                 raise ValueError(
-                    f"Sample context lines ({len(sample.context)}) does not match defined instruction_context_snippets count ({self.instruction_context_snippets})"
+                    f"Sample input lines ({len(sample.input)}) does not match defined instruction_context_snippets count ({self.instruction_input_snippets})"
                     f"\n{sample}."
                 )
 
@@ -86,7 +86,7 @@ class Protocol:
         """
         self._prep_protocol()
         return ProtocolFile(
-            name=self.name, context=self.context, instruction_context_snippets=self.instruction_context_snippets,
+            name=self.name, context=self.context, instruction_context_snippets=self.instruction_input_snippets,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
@@ -124,7 +124,7 @@ class Protocol:
         self._prep_protocol()
         template_file: TemplateFile = TemplateFile(
             instructions=list(self.instructions),
-            instruction_context_snippets=self.instruction_context_snippets,
+            instruction_context_snippets=self.instruction_input_snippets,
             encrypt=self.encrypt,
         )
 
