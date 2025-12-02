@@ -176,6 +176,20 @@ class BaseInstruction(ABC):
             value=value
         )
 
+    def _enforce_snippets(self, context_snippets: List[Union[Snippet, str]]) -> List[Snippet]:
+        """Converts regular strings to snippets if provided as a list of strings."""
+        for i, snippet in enumerate(context_snippets):
+            if isinstance(snippet, str):
+                associated_tokenset: TokenSet = self.input.tokensets[i]
+                try:
+                    context_snippets[i] = associated_tokenset.create_snippet(string=snippet)
+                except Exception as e:
+                    raise ValueError(
+                        f"Failed to create Snippet from string '{snippet}' for TokenSet {associated_tokenset}.\n"
+                        f"Create a Snippet from the tokenset and add associated information: {e}")
+
+        return context_snippets
+
     @classmethod
     def _validate_snippet_matches_set(cls, snippet: Snippet, expected_token_set: TokenSet):
         """Validates that the snippet matches the expected token set."""
