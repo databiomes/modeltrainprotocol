@@ -51,7 +51,7 @@ class Protocol:
         Asserts that all samples in the instruction match the defined sample line size.
         """
         if instruction in self.instructions:
-            raise ValueError("Instruction already added to the protocol.")
+            raise ValueError("Instruction (or instruction with identical tokensets in the same order) already added to the protocol.")
 
         for existing_instruction in self.instructions:
             if existing_instruction.name == instruction.name:
