@@ -7,3 +7,5 @@ EOS_TOKEN: SpecialFinalToken = SpecialFinalToken(value="<EOS>", key="<EOS>", spe
 RUN_TOKEN: SpecialToken = SpecialToken(value="<RUN>", key="<RUN>", special="infer")
 PAD_TOKEN: SpecialToken = SpecialToken(value="<PAD>", key="<PAD>", special="pad")
 UNK_TOKEN: SpecialToken = SpecialToken(value="<UNK>", key="<UNK>", special="unknown")
+
+MINIMUM_TOTAL_CONTEXT_LINES = 10

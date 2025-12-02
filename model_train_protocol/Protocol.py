@@ -5,7 +5,8 @@ from typing import List, Optional, Set, Dict
 from . import Token, FinalToken
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
-from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN
+from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
+    MINIMUM_TOTAL_CONTEXT_LINES
 from .common.instructions.BaseInstruction import BaseInstruction
 from .common.tokens.SpecialToken import SpecialToken
 from .common.util import get_possible_emojis, hash_string, validate_string_subset
@@ -202,6 +203,19 @@ class Protocol:
         if len(self.guardrails) > 0:
             self.special_tokens.add(UNK_TOKEN)
 
+    def _validate_context_count(self):
+        """Validates that the total context/background lines across all instructions is at least equal to MINIMUM_TOTAL_CONTEXT_LINES."""
+        total_context_lines: int = len(self.context)
+        for instruction in self.instructions:
+            total_context_lines += len(instruction.input.background)
+
+        if total_context_lines < MINIMUM_TOTAL_CONTEXT_LINES:
+            raise ValueError(
+                f"The total number of context lines across all instructions is {total_context_lines}, "
+                f"which is less than the minimum required of {MINIMUM_TOTAL_CONTEXT_LINES}. Please add more context lines using protocol.add_context() "
+                f"or by adding background lines to instructions."
+            )
+
     def _prep_protocol(self):
         """
         Sets all elements in the protocol before serialization.
@@ -218,6 +232,7 @@ class Protocol:
 
         self._set_guardrails()
         self._add_default_special_tokens()
+        self._validate_context_count()
         used_values: Set[str] = {token.value for token in self.tokens}
         validate_string_subset(used_values)
         validate_string_subset(self.used_keys)
