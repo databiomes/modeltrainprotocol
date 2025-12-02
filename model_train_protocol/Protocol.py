@@ -6,7 +6,7 @@ from . import Token, FinalToken
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
-    MINIMUM_TOTAL_CONTEXT_LINES
+    MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM
 from .common.instructions.BaseInstruction import BaseInstruction
 from .common.tokens.SpecialToken import SpecialToken
 from .common.util import get_possible_emojis, hash_string, validate_string_subset
@@ -77,9 +77,9 @@ class Protocol:
 
         # Ensure each FinalToken has at least 3 samples
         for final_token, count in final_sample_table.items():
-            if count < 3:
+            if count < PER_FINAL_TOKEN_SAMPLE_MINIMUM:
                 raise ValueError(
-                    f"Missing minimum 3 samples for each FinalToken in the Output of Instruction {instruction.name}.\n"
+                    f"Missing minimum {PER_FINAL_TOKEN_SAMPLE_MINIMUM} samples for each FinalToken in the Output of Instruction {instruction.name}.\n"
                     f"FinalToken '{final_token.value}' must have at least 3 samples in the instruction. Found {count} samples."
                 )
 

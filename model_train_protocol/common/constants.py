@@ -9,3 +9,4 @@ PAD_TOKEN: SpecialToken = SpecialToken(value="<PAD>", key="<PAD>", special="pad"
 UNK_TOKEN: SpecialToken = SpecialToken(value="<UNK>", key="<UNK>", special="unknown")
 
 MINIMUM_TOTAL_CONTEXT_LINES = 10
+PER_FINAL_TOKEN_SAMPLE_MINIMUM = 3
