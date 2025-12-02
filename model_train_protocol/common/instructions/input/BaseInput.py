@@ -16,8 +16,8 @@ class BaseInput(ABC):
         """
         if context is None:
             context = []
-        self.background: list[str] = context
+        self.context: List[str] = context
         self.tokensets = tokensets
 
     def __len__(self):
-        return len(self.background)
+        return len(self.context)
