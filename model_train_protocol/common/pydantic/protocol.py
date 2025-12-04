@@ -26,8 +26,18 @@ class SampleModel(BaseModel):
     value: Optional[Union[str, int, float, List[int], List[float]]]  # Can be string, int, float, or list
 
 
+class GuardrailModel(BaseModel):
+    """Model for guardrails configuration."""
+    index: int
+    good_prompt: str
+    bad_prompt: str
+    bad_output: str
+    bad_examples: list[str]
+
+
 class InstructionSetModel(BaseModel):
     """Model for instruction sets."""
+    guardrail: List[GuardrailModel]
     context: List[str]
     set: List[List[str]]
     samples: List[SampleModel]
@@ -42,6 +52,7 @@ class InstructionModel(BaseModel):
 
 class NumberModel(BaseModel):
     """Model for numbers configuration."""
+
     class ConfigDict:
         extra = "allow"  # Allow extra fields for dynamic attributes
 
@@ -116,6 +127,8 @@ class ProtocolModel(BaseModel):
                 "instruction": {
                     "memory": 3,
                     "sets": []
+                },
+                "guardrails": {
                 },
                 "numbers": {
                 },
