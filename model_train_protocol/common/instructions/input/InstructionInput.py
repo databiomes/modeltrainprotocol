@@ -16,7 +16,6 @@ class InstructionInput(BaseInput):
         :param tokensets: A list of TokenSet in the order that they appear in the instruction.
         """
         super().__init__(context=context, tokensets=tokensets)
-        self.guardrails: dict[int, Guardrail] = {}
 
     def add_guardrail(self, guardrail: Guardrail, tokenset_index: int):
         """
