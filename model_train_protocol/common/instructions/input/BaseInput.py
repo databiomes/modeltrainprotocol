@@ -1,6 +1,7 @@
 from abc import ABC
 from typing import List
 
+from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.tokens import TokenSet
 
 

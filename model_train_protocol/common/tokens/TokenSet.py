@@ -1,10 +1,9 @@
 from dataclasses import dataclass
-from typing import List, Optional, Sequence, Collection, Union
+from typing import List, Sequence, Collection, Union
 
 from . import NumListToken
 from .NumToken import NumToken
 from .Token import Token
-from ..guardrails.Guardrail import Guardrail
 
 
 @dataclass
@@ -27,20 +26,6 @@ class TokenSet:
                                 tokens)  # Note this key is based on the value of the tokens and not the keys of the tokens
         self._num_tokens: List[NumToken] = [token for token in tokens if isinstance(token, NumToken)]
         self._num_list_tokens: List[NumListToken] = [token for token in tokens if isinstance(token, NumListToken)]
-        self._guardrail: Optional[Guardrail] = None
-
-    @property
-    def guardrail(self) -> Optional[Guardrail]:
-        """Returns the guardrails for the TokenSet, if any."""
-        return self._guardrail
-
-    def set_guardrail(self, guardrail: Guardrail):
-        """Sets a guardrails for the TokenSet."""
-        if self.guardrail is not None:
-            raise ValueError("Only one guardrail can be set per TokenSet.")
-        if not isinstance(guardrail, Guardrail):
-            raise TypeError("Guardrail must be an instance of the Guardrail class.")
-        self._guardrail = guardrail
 
     def _validate_num_tokens(self, numbers: Collection[Union[int, float]]):
         """Validates the numbers against the TokenSet requirements."""

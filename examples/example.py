@@ -61,8 +61,6 @@ tree_english_cat_talk: mtp.TokenSet = mtp.TokenSet(tokens=(token_tree, token_eng
 tree_english_dissipate_cat_talk: mtp.TokenSet = mtp.TokenSet(
     tokens=(token_tree, token_english, token_dissipate, token_cat, token_talk))
 
-
-
 # -------------------- Basic Instruction --------------------
 
 
@@ -107,10 +105,27 @@ alice_cat_alice_instruction.add_sample(
     output_snippet="Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
 )
 
+# Optional:
+# Add a Guardrail to an input TokenSet
+
+# Create the guardrail
+guardrail_english = mtp.Guardrail(
+    good_prompt="Quote being spoken with 1-20 words",
+    bad_prompt="Quote being spoken that is irrelevant and off topic with 1-20 words",
+    bad_output="Are you as mad as me?"
+)
+
+# Add a minimum of 3 samples to the guardrail
+guardrail_english.add_sample("explain quantum mechanics.")
+guardrail_english.add_sample("who will win the next american election?")
+guardrail_english.add_sample("what is the capital of Spain?")
+
+# Add the guardrail to the input TokenSet of choice
+# Index 1 means we are applying to the 2nd TokenSet in the Instruction input (tree_english_alice_talk)
+alice_cat_alice_instruction.add_guardrail(guardrail=guardrail_english, tokenset_index=1)
+
 # Add the Instruction to the Protocol
 protocol.add_instruction(alice_cat_alice_instruction)
-
-
 
 # -------------------- Instruction Set: Appear | Disappear (multiple output options) --------------------
 
@@ -277,21 +292,6 @@ alice_cat_alice_instruction_numbers_continue.add_sample(
 )
 
 protocol.add_instruction(alice_cat_alice_instruction_numbers_continue)
-
-
-# -------------------- Guardrail --------------------
-guardrail_english = mtp.Guardrail(
-    good_prompt="Quote being spoken with 1-20 words",
-    bad_prompt="Quote being spoken that is irrelevant and off topic with 1-20 words",
-    bad_output="Are you as mad as me?"
-)
-
-guardrail_english.add_sample("explain quantum mechanics.")
-guardrail_english.add_sample("who will win the next american election?")
-guardrail_english.add_sample("what is the capital of Spain?")
-
-# Add Guardrail onto TokenSet
-tree_english_alice_talk.set_guardrail(guardrail_english)
 
 # Save the protocol
 protocol.save()

@@ -1,8 +1,9 @@
 from typing import List, Union
 
 from .BaseInstruction import BaseInstruction, Sample
-from .input.BaseInput import BaseInput
+from .input.InstructionInput import InstructionInput
 from .output.InstructionOutput import InstructionOutput
+from ..guardrails import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
 
@@ -17,9 +18,9 @@ class Instruction(BaseInstruction):
     A minimum of 3 samples must be added to an Instruction.
     """
     output: InstructionOutput
-    input: BaseInput
+    input: InstructionInput
 
-    def __init__(self, input: BaseInput, output: InstructionOutput, name: str = "instruction"):
+    def __init__(self, input: InstructionInput, output: InstructionOutput, name: str = "instruction"):
         f"""
         Initializes an Instruction instance.
 
@@ -92,3 +93,19 @@ class Instruction(BaseInstruction):
         sample: Sample = self._create_sample(context_snippets=input_snippets, response_snippet=output_snippet,
                                              value=value, final=final)
         self.samples.append(sample)
+
+    def add_guardrail(self, guardrail: Guardrail, tokenset_index: int):
+        """
+        Adds a guardrail to the Instruction.
+
+        :param guardrail: The Guardrail instance to add.
+        :param tokenset_index: The index of the TokenSet the guardrail applies to.
+        """
+        if len(self.input.guardrails) != 0:
+            raise ValueError("Only one guardrail can be added to an Instruction.")
+
+        if len(guardrail.samples) < 3:
+            raise ValueError(
+                "Guardrail must have at least 3 samples of bad inputs before being added to an Instruction.")
+
+        self.input.add_guardrail(guardrail=guardrail, tokenset_index=tokenset_index)
