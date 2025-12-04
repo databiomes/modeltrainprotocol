@@ -195,14 +195,7 @@ class ProtocolFile:
             # Create Sample objects
             samples = []
             for sample_data in instruction_set.samples:
-                sample = SampleModel(
-                    strings=sample_data['strings'],
-                    prompt=sample_data['prompt'],
-                    numbers=sample_data['numbers'],
-                    number_lists=sample_data['number_lists'],
-                    result=sample_data['result'],
-                    value=sample_data['value']
-                )
+                sample = SampleModel(**sample_data)
                 samples.append(sample)
 
             # Create InstructionSet
