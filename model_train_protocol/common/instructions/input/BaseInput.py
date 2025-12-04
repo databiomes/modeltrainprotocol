@@ -19,6 +19,7 @@ class BaseInput(ABC):
             context = []
         self.context: List[str] = context
         self.tokensets = tokensets
+        self.guardrails: dict[int, Guardrail] = {}
 
     def __len__(self):
         return len(self.context)

@@ -52,3 +52,12 @@ class Guardrail:
         if len(self.samples) < 3:
             raise ValueError("At least 3 sample prompts are required. Call add_sample() to add more.")
         return [self.bad_output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.samples]
+
+    def to_dict(self) -> dict:
+        """Return the guardrails as a dictionary for JSON formatting."""
+        return {
+            "bad_output": self.bad_output,
+            "bad_prompt": self.bad_prompt,
+            "good_prompt": self.good_prompt,
+            "bad_examples": self.samples
+        }

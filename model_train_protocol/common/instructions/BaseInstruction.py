@@ -127,6 +127,13 @@ class BaseInstruction(ABC):
 
         return serialized_samples
 
+    def serialize_guardrails(self) -> List[dict]:
+        """Serialize the Instruction guardrails."""
+        guardrails = []
+        for guardrail in self.input.guardrails.values():
+            guardrails.append(guardrail.to_dict())
+        return guardrails
+
     def serialize_ppo(self) -> List[dict]:
         """Serialize the Instruction for PPO training."""
         # To be implemented when ppo introduced
