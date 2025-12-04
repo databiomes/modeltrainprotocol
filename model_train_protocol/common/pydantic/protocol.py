@@ -37,7 +37,7 @@ class GuardrailModel(BaseModel):
 
 class InstructionSetModel(BaseModel):
     """Model for instruction sets."""
-    guardrail: List[GuardrailModel]
+    guardrails: List[GuardrailModel]
     context: List[str]
     set: List[List[str]]
     samples: List[SampleModel]

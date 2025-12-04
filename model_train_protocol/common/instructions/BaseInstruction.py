@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 
 from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
+from ..pydantic.protocol import GuardrailModel
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
@@ -127,11 +128,13 @@ class BaseInstruction(ABC):
 
         return serialized_samples
 
-    def serialize_guardrails(self) -> List[dict]:
+    def serialize_guardrails(self) -> List[GuardrailModel]:
         """Serialize the Instruction guardrails."""
         guardrails = []
-        for guardrail in self.input.guardrails.values():
-            guardrails.append(guardrail.to_dict())
+        for index, guardrail in self.input.guardrails.items():
+            guardrail_dict: dict = guardrail.to_dict()
+            guardrail_dict['index'] = index
+            guardrails.append(guardrail_dict)
         return guardrails
 
     def serialize_ppo(self) -> List[dict]:

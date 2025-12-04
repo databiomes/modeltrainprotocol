@@ -184,15 +184,6 @@ class Protocol:
         if isinstance(token, SpecialToken):
             self.special_tokens.add(token)
 
-    def _set_guardrails(self):
-        """Sets all guardrails from TokenSets into the protocol."""
-        # Add all guardrails to the protocol
-        for instruction in self.instructions:
-            # TODO: Modify guardrails to be instruction based, and add warnings if a response tokenset belongs to multiple instructions
-            if instruction.last_tokenset.guardrail is not None:
-                # instruction.response is the final TokenSet
-                self.guardrails[instruction.last_tokenset.key] = instruction.last_tokenset.guardrail.format_samples()
-
     def _add_default_special_tokens(self):
         """Adds all special tokens to the protocol."""
         self.special_tokens.add(BOS_TOKEN)
@@ -230,7 +221,6 @@ class Protocol:
             raise ValueError(
                 "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
 
-        self._set_guardrails()
         self._add_default_special_tokens()
         self._validate_context_count()
         used_values: Set[str] = {token.value for token in self.tokens}
