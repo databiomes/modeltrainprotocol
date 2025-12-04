@@ -49,9 +49,8 @@ def simple_workflow_instruction_with_samples_with_guardrail(simple_workflow_inst
                                                             content_guardrail) -> Instruction:
     """Simple instruction with 2 context lines for workflow tests."""
     instruction = simple_workflow_instruction_with_samples
-    # Set guardrail on the user tokenset
-    # Set guardrail on the user tokenset
-    instruction.input.tokensets[1].set_guardrail(content_guardrail)
+    # Add guardrail to the instruction at tokenset index 1 (user_tokenset)
+    instruction.add_guardrail(content_guardrail, tokenset_index=1)
     return instruction
 
 
@@ -94,8 +93,8 @@ def user_workflow_instruction_with_samples_and_guardrail(user_workflow_instructi
                                                         safety_guardrail) -> ExtendedInstruction:
     """User instruction with guardrail for workflow tests."""
     instruction = user_workflow_instruction_with_samples
-    # Set guardrail on the user tokenset
-    instruction.input.tokensets[1].set_guardrail(safety_guardrail)
+    # Add guardrail to the instruction at tokenset index 1 (user_tokenset)
+    instruction.add_guardrail(safety_guardrail, tokenset_index=1)
     return instruction
 
 
@@ -105,9 +104,6 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
                                                       simple_response_sample, token_workflow_count,
                                                       content_guardrail) -> Instruction:
     """Simple instruction with NumToken and 2 context lines for workflow tests."""
-    # Set guardrail on the user tokenset
-    user_tokenset.set_guardrail(content_guardrail)
-
     if isinstance(token_workflow_count, NumToken):
         final_token = FinalNumToken(token_workflow_count.value, token_workflow_count.min_value, token_workflow_count.max_value)
     else:
@@ -137,6 +133,9 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
         output_snippet=simple_response_sample,
         value=10
     )
+
+    # Add guardrail to the instruction at tokenset index 1 (user_tokenset)
+    instruction.add_guardrail(content_guardrail, tokenset_index=1)
 
     return instruction
 

@@ -33,12 +33,11 @@ class TestWorkflow2ContextProtocolJSON:
         assert "tokens" in json_output
         assert "special_tokens" in json_output
         assert "instruction" in json_output
-        assert "guardrails" in json_output
         assert "numbers" in json_output
         assert "batches" in json_output
         
         # Test that no unexpected keys are present
-        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers", "batches"}
+        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers", "batches"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
@@ -186,13 +185,15 @@ class TestWorkflow2ContextProtocolJSON:
             assert len(sample["prompt"]) > 0
 
     def test_workflow_2context_protocol_guardrails(self, workflow_2context_protocol):
-        """Test that guardrails are correctly included."""
+        """Test that guardrails are correctly included in instruction sets."""
         json_output = self._get_json_output(workflow_2context_protocol)
         
-        assert "guardrails" in json_output
-        assert isinstance(json_output["guardrails"], dict)
         # Workflow protocol should have no guardrails
-        assert len(json_output["guardrails"]) == 0
+        sets = json_output["instruction"]["sets"]
+        for instruction_set in sets:
+            assert "guardrails" in instruction_set
+            assert isinstance(instruction_set["guardrails"], list)
+            assert len(instruction_set["guardrails"]) == 0
 
     def test_workflow_2context_protocol_numbers(self, workflow_2context_protocol):
         """Test that numbers are correctly included."""
@@ -287,7 +288,6 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
         assert "tokens" in json_output
         assert "special_tokens" in json_output
         assert "instruction" in json_output
-        assert "guardrails" in json_output
         assert "numbers" in json_output
         assert "batches" in json_output
 

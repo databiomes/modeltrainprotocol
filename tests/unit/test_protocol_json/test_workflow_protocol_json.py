@@ -34,12 +34,11 @@ class TestWorkflowProtocolJSON:
         assert "tokens" in json_output
         assert "special_tokens" in json_output
         assert "instruction" in json_output
-        assert "guardrails" in json_output
         assert "numbers" in json_output
         assert "batches" in json_output
 
         # Test that no unexpected keys are present
-        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers",
+        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers",
                          "batches"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
@@ -287,7 +286,7 @@ class TestWorkflowProtocolJSON:
         
         for i, instruction_set in enumerate(sets):
             # Check required keys for each instruction set
-            required_keys = {"set", "context", "samples", "ppo"}
+            required_keys = {"set", "context", "samples", "ppo", "guardrails"}
             actual_keys = set(instruction_set.keys())
             assert actual_keys == required_keys, f"instruction.sets[{i}] has keys {actual_keys}, expected {required_keys}"
 
@@ -533,18 +532,16 @@ class TestWorkflowProtocolJSON:
             assert len(sample["prompt"]) > 0
 
     def test_workflow_protocol_guardrails(self, workflow_protocol):
-        """Test that guardrails are correctly included."""
+        """Test that guardrails are correctly included in instruction sets."""
         json_output = self._get_json_output(workflow_protocol)
 
-        assert "guardrails" in json_output
-        # Guardrails can be a list or a dict (when empty)
-        assert isinstance(json_output["guardrails"], (list, dict))
-        # Workflow protocol should have no guardrails
-        if isinstance(json_output["guardrails"], dict):
-            # Check if the dict is effectively empty
-            assert len(json_output["guardrails"]) == 0
-        else:
-            assert len(json_output["guardrails"]) == 0
+        # Guardrails are stored in instruction sets, not at top level
+        sets = json_output["instruction"]["sets"]
+        for instruction_set in sets:
+            assert "guardrails" in instruction_set
+            assert isinstance(instruction_set["guardrails"], list)
+            # Workflow protocol should have no guardrails
+            assert len(instruction_set["guardrails"]) == 0
 
     def test_workflow_protocol_numbers(self, workflow_protocol):
         """Test that numbers are correctly included."""

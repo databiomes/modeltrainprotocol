@@ -24,6 +24,8 @@ class InstructionInput(BaseInput):
         :param guardrail: The Guardrail instance to add.
         :param tokenset_index: The index of the TokenSet the guardrail applies to.
         """
+        if tokenset_index < 0:
+            raise ValueError(f"tokenset_index {tokenset_index} is out of range for the Instruction input tokensets.")
         if tokenset_index > len(self.tokensets) - 1:
             raise ValueError(f"tokenset_index {tokenset_index} is out of range for the Instruction input tokensets.")
 

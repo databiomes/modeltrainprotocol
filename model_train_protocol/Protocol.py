@@ -191,7 +191,9 @@ class Protocol:
         self.special_tokens.add(RUN_TOKEN)
         self.special_tokens.add(PAD_TOKEN)
         self.special_tokens.add(NON_TOKEN)
-        if len(self.guardrails) > 0:
+        # Check if any instruction has guardrails
+        has_guardrails = any(len(instruction.input.guardrails) > 0 for instruction in self.instructions)
+        if has_guardrails:
             self.special_tokens.add(UNK_TOKEN)
 
     def _validate_context_count(self):

@@ -929,9 +929,6 @@ class TestProtocol:
         guardrail.add_sample("Bad sample two")
         guardrail.add_sample("Bad sample three")
 
-        # Set guardrail on token set
-        user_set.set_guardrail(guardrail)
-
         # Create instruction
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2, user_set], context=None)
@@ -958,12 +955,14 @@ class TestProtocol:
             response_string="User prompt 3"
         )
 
+        # Add guardrail to instruction at tokenset index 2 (user_set)
+        instruction.add_guardrail(guardrail, tokenset_index=2)
+
         protocol.add_instruction(instruction)
 
-        # Set guardrails
-        protocol._set_guardrails()
-
-        assert len(protocol.guardrails) > 0
+        # Verify guardrail was added to instruction
+        assert len(instruction.input.guardrails) > 0
+        assert 2 in instruction.input.guardrails
 
     def test_protocol_add_default_special_tokens(self):
         """Test adding default special tokens."""

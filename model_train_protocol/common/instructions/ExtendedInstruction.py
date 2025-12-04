@@ -5,6 +5,7 @@ from .input.BaseInput import BaseInput
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
 from . import ExtendedResponse
+from ..guardrails import Guardrail
 
 
 class ExtendedInstruction(BaseInstruction):
@@ -93,4 +94,20 @@ class ExtendedInstruction(BaseInstruction):
             result=final,
             value=value
         )
+
+    def add_guardrail(self, guardrail: Guardrail, tokenset_index: int):
+        """
+        Adds a guardrail to the ExtendedInstruction.
+
+        :param guardrail: The Guardrail instance to add.
+        :param tokenset_index: The index of the TokenSet the guardrail applies to.
+        """
+        if len(self.input.guardrails) != 0:
+            raise ValueError("Only one guardrail can be added to an Instruction.")
+
+        if len(guardrail.samples) < 3:
+            raise ValueError(
+                "Guardrail must have at least 3 samples of bad inputs before being added to an Instruction.")
+
+        self.input.add_guardrail(guardrail=guardrail, tokenset_index=tokenset_index)
 

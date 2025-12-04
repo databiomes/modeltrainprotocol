@@ -33,12 +33,11 @@ class TestBasicUserProtocolJSON:
         assert "tokens" in json_output
         assert "special_tokens" in json_output
         assert "instruction" in json_output
-        assert "guardrails" in json_output
         assert "numbers" in json_output
         assert "batches" in json_output
         
         # Test that no unexpected keys are present
-        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers", "batches"}
+        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers", "batches"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
@@ -188,25 +187,38 @@ class TestBasicUserProtocolJSON:
         assert len(sample["prompt"]) > 0
 
     def test_basic_user_protocol_empty_guardrails(self, basic_user_protocol):
-        """Test that guardrails are correctly included."""
+        """Test that guardrails are correctly included in instruction sets."""
         json_output = self._get_json_output(basic_user_protocol)
         
-        assert "guardrails" in json_output
-        assert isinstance(json_output["guardrails"], dict)
         # Basic user protocol should have no guardrails
-        assert len(json_output["guardrails"]) == 0
+        sets = json_output["instruction"]["sets"]
+        for instruction_set in sets:
+            assert "guardrails" in instruction_set
+            assert isinstance(instruction_set["guardrails"], list)
+            assert len(instruction_set["guardrails"]) == 0
 
     def test_basic_user_protocol_one_guardrail(self, basic_user_protocol_with_guardrail):
-        """Test that guardrails are correctly included."""
+        """Test that guardrails are correctly included in instruction sets."""
         json_output = self._get_json_output(basic_user_protocol_with_guardrail)
 
-        assert "guardrails" in json_output
-        assert isinstance(json_output["guardrails"], dict)
         # Basic user protocol should have guardrails
-        assert len(json_output["guardrails"]) >= 1
-        assert "Tree_English_Alice_Talk_" in json_output["guardrails"]
-        assert isinstance(json_output["guardrails"]["Tree_English_Alice_Talk_"], list)
-        assert len(json_output["guardrails"]["Tree_English_Alice_Talk_"]) == 4
+        sets = json_output["instruction"]["sets"]
+        guardrails_found = False
+        for instruction_set in sets:
+            assert "guardrails" in instruction_set
+            assert isinstance(instruction_set["guardrails"], list)
+            if len(instruction_set["guardrails"]) > 0:
+                guardrails_found = True
+                # Check guardrail structure
+                guardrail = instruction_set["guardrails"][0]
+                assert "index" in guardrail
+                assert "bad_output" in guardrail
+                assert "bad_prompt" in guardrail
+                assert "good_prompt" in guardrail
+                assert "bad_examples" in guardrail
+                assert isinstance(guardrail["bad_examples"], list)
+                assert len(guardrail["bad_examples"]) >= 3
+        assert guardrails_found, "Expected to find at least one guardrail in instruction sets"
 
     def test_basic_user_protocol_numbers(self, basic_user_protocol):
         """Test that numbers are correctly included."""

@@ -34,12 +34,11 @@ class TestBasicSimpleProtocolJSON:
         assert "tokens" in json_output
         assert "special_tokens" in json_output
         assert "instruction" in json_output
-        assert "guardrails" in json_output
         assert "numbers" in json_output
         assert "batches" in json_output
 
         # Test that no unexpected keys are present
-        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "guardrails", "numbers",
+        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers",
                          "batches"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
@@ -272,7 +271,7 @@ class TestBasicSimpleProtocolJSON:
 
         for i, instruction_set in enumerate(sets):
             # Check required keys for each instruction set
-            required_keys = {"set", "context", "samples", "ppo"}
+            required_keys = {"set", "context", "samples", "ppo", "guardrails"}
             actual_keys = set(instruction_set.keys())
             assert actual_keys == required_keys, f"instruction.sets[{i}] has keys {actual_keys}, expected {required_keys}"
 
@@ -521,22 +520,39 @@ class TestBasicSimpleProtocolJSON:
         assert sample["value"] is None  # No value for simple instruction
 
     def test_basic_simple_protocol_empty_guardrails(self, basic_simple_protocol):
-        """Test that guardrails are correctly included."""
+        """Test that guardrails are correctly included in instruction sets."""
         json_output = self._get_json_output(basic_simple_protocol)
 
-        # Basic simple protocol should have no guardrails     
-        assert "guardrails" in json_output
-        assert isinstance(json_output["guardrails"], dict)
-        assert len(json_output["guardrails"]) == 0
+        # Basic simple protocol should have no guardrails
+        sets = json_output["instruction"]["sets"]
+        for instruction_set in sets:
+            assert "guardrails" in instruction_set
+            assert isinstance(instruction_set["guardrails"], list)
+            assert len(instruction_set["guardrails"]) == 0
 
     def test_basic_simple_protocol_one_guardrail(self, basic_simple_protocol_with_guardrail):
-        """Test that guardrails are correctly included."""
+        """Test that guardrails are correctly included in instruction sets."""
         json_output = self._get_json_output(basic_simple_protocol_with_guardrail)
 
-        # Simple protocols should never have a guardrail as the response is from a non-user TokenSet                                          
-        assert "guardrails" in json_output
-        assert isinstance(json_output["guardrails"], dict)
-        assert len(json_output["guardrails"]) == 0
+        # Check that guardrails are present in instruction sets
+        sets = json_output["instruction"]["sets"]
+        guardrails_found = False
+        for instruction_set in sets:
+            assert "guardrails" in instruction_set
+            assert isinstance(instruction_set["guardrails"], list)
+            if len(instruction_set["guardrails"]) > 0:
+                guardrails_found = True
+                # Check guardrail structure
+                guardrail = instruction_set["guardrails"][0]
+                assert "index" in guardrail
+                assert "bad_output" in guardrail
+                assert "bad_prompt" in guardrail
+                assert "good_prompt" in guardrail
+                assert "bad_examples" in guardrail
+                assert isinstance(guardrail["bad_examples"], list)
+                assert len(guardrail["bad_examples"]) >= 3
+        # The fixture adds a guardrail, so we should find at least one
+        assert guardrails_found, "Expected to find at least one guardrail in instruction sets"
 
     def test_basic_simple_protocol_numbers(self, basic_simple_protocol):
         """Test that numbers are correctly included."""
