@@ -21,7 +21,6 @@ class TestTokenSet:
         assert len(token_set.tokens) == 2
         assert token1 in token_set.tokens
         assert token2 in token_set.tokens
-        assert token_set.guardrail is None
 
     def test_token_set_creation_single_token(self):
         """Test token set creation with single token."""
@@ -287,24 +286,11 @@ class TestTokenSet:
             assert token in token_set.tokens
 
     def test_token_set_equality_with_guardrail(self):
-        """Test token set equality with guardrail."""
-        from model_train_protocol.common.guardrails import Guardrail
-        
+        """Test token set equality (guardrails are now stored on instructions, not tokensets)."""
         token = Token("Test")
         token_set1 = TokenSet(tokens=(token,))
         token_set2 = TokenSet(tokens=(token,))
-        
-        # Initially equal
-        assert token_set1 == token_set2
-        
-        # Add guardrail to one
-        guardrail = Guardrail(
-            good_prompt="Good prompt",
-            bad_prompt="Bad prompt",
-            bad_output="Bad output"
-        )
-        token_set1.set_guardrail(guardrail)
-        
-        # Should still be equal (guardrail doesn't affect equality)
+
+        # Should be equal
         assert token_set1 == token_set2
 

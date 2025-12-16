@@ -28,4 +28,5 @@ class NumListToken(Token):
         self.num_list: int = length
         self.min_value = min_value
         self.max_value = max_value
+        self.length = length
         self.template_representation: str = f"<num_{min_value}_{max_value}_{length}>"

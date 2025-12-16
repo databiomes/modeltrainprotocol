@@ -2,31 +2,32 @@ import json
 import os
 from typing import List, Optional, Set, Dict
 
-from . import Token
+from . import Token, FinalToken
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
-from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN
+from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
+    MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM
 from .common.instructions.BaseInstruction import BaseInstruction
 from .common.tokens.SpecialToken import SpecialToken
-from .common.util import get_possible_emojis, hash_string, validate_string_set
+from .common.util import get_possible_emojis, hash_string, validate_string_subset
 
 
 class Protocol:
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, instruction_context_snippets: int, encrypt: bool = True):
+    def __init__(self, name: str, context_snippets: int, encrypt: bool = True):
         """
         Initialize the Model Train Protocol (MTP)
 
         :param name: The name of the protocol.
-        :param instruction_context_snippets: The number of lines in each instruction sample. Must be at least 2.
+        :param context_snippets: The number of lines in each instruction sample. Must be at least 2.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
-        self.instruction_context_snippets: int = instruction_context_snippets  # Number of lines in instruction samples
+        self.instruction_input_snippets: int = context_snippets  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
-        if self.instruction_context_snippets < 2:
-            raise ValueError("A minimum of 2 context lines is required for all instructions.")
+        if self.instruction_input_snippets < 2:
+            raise ValueError("A minimum of 2 input snippets is required for all instructions.")
         self.context: List[str] = []
         self.tokens: Set[Token] = set()
         self.instructions: Set[BaseInstruction] = set()
@@ -51,7 +52,7 @@ class Protocol:
         Asserts that all samples in the instruction match the defined sample line size.
         """
         if instruction in self.instructions:
-            raise ValueError("Instruction already added to the protocol.")
+            raise ValueError("Instruction (or instruction with identical tokensets in the same order) already added to the protocol.")
 
         for existing_instruction in self.instructions:
             if existing_instruction.name == instruction.name:
@@ -60,12 +61,26 @@ class Protocol:
         if len(instruction.samples) < 3:
             raise ValueError(f"Instruction must have at least three samples. Found {len(instruction.samples)} samples.")
 
+        final_sample_table: dict[FinalToken, int] = dict()
+
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            if not len(sample.context) == self.instruction_context_snippets:
+            if not len(sample.input) == self.instruction_input_snippets:
                 raise ValueError(
-                    f"Sample context lines ({len(sample.context)}) does not match defined instruction_context_snippets count ({self.instruction_context_snippets})"
+                    f"Sample input lines ({len(sample.input)}) does not match defined instruction_context_snippets count ({self.instruction_input_snippets})"
                     f"\n{sample}."
+                )
+            if sample.result not in final_sample_table:
+                final_sample_table[sample.result] = 1
+            else:
+                final_sample_table[sample.result] += 1
+
+        # Ensure each FinalToken has at least 3 samples
+        for final_token, count in final_sample_table.items():
+            if count < PER_FINAL_TOKEN_SAMPLE_MINIMUM:
+                raise ValueError(
+                    f"Missing minimum {PER_FINAL_TOKEN_SAMPLE_MINIMUM} samples for each FinalToken in the Output of Instruction {instruction.name}.\n"
+                    f"FinalToken '{final_token.value}' must have at least 3 samples in the instruction. Found {count} samples."
                 )
 
         # Add all tokens
@@ -84,7 +99,7 @@ class Protocol:
         """
         self._prep_protocol()
         return ProtocolFile(
-            name=self.name, context=self.context, instruction_context_snippets=self.instruction_context_snippets,
+            name=self.name, context=self.context, instruction_context_snippets=self.instruction_input_snippets,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
@@ -122,7 +137,7 @@ class Protocol:
         self._prep_protocol()
         template_file: TemplateFile = TemplateFile(
             instructions=list(self.instructions),
-            instruction_context_snippets=self.instruction_context_snippets,
+            instruction_context_snippets=self.instruction_input_snippets,
             encrypt=self.encrypt,
         )
 
@@ -160,21 +175,14 @@ class Protocol:
             raise ValueError(f"Token value {token.value} already used. Duplicate tokens are not allowed.")
 
         if token.key in self.used_keys:
-            raise ValueError(f"Duplicate token key '{token.key}' is already used in another token. Duplicate keys are not allowed.")
+            raise ValueError(
+                f"Duplicate token key '{token.key}' is already used in another token. Duplicate keys are not allowed.")
 
         self.tokens.add(token)
         self.used_keys.add(token.key)
 
         if isinstance(token, SpecialToken):
             self.special_tokens.add(token)
-
-    def _set_guardrails(self):
-        """Sets all guardrails from TokenSets into the protocol."""
-        # Add all guardrails to the protocol
-        for instruction in self.instructions:
-            if instruction.response.guardrail is not None:
-                # instruction.response is the user TokenSet
-                self.guardrails[instruction.response.key] = instruction.response.guardrail.format_samples()
 
     def _add_default_special_tokens(self):
         """Adds all special tokens to the protocol."""
@@ -183,8 +191,23 @@ class Protocol:
         self.special_tokens.add(RUN_TOKEN)
         self.special_tokens.add(PAD_TOKEN)
         self.special_tokens.add(NON_TOKEN)
-        if len(self.guardrails) > 0:
+        # Check if any instruction has guardrails
+        has_guardrails = any(len(instruction.input.guardrails) > 0 for instruction in self.instructions)
+        if has_guardrails:
             self.special_tokens.add(UNK_TOKEN)
+
+    def _validate_context_count(self):
+        """Validates that the total context/background lines across all instructions is at least equal to MINIMUM_TOTAL_CONTEXT_LINES."""
+        total_context_lines: int = len(self.context)
+        for instruction in self.instructions:
+            total_context_lines += len(instruction.input.context)
+
+        if total_context_lines < MINIMUM_TOTAL_CONTEXT_LINES:
+            raise ValueError(
+                f"The total number of context lines across all instructions is {total_context_lines}, "
+                f"which is less than the minimum required of {MINIMUM_TOTAL_CONTEXT_LINES}. Please add more context lines using protocol.add_context() "
+                f"or by adding background lines to instructions."
+            )
 
     def _prep_protocol(self):
         """
@@ -197,10 +220,11 @@ class Protocol:
         This includes setting guardrails from their TokenSets and creating default special tokens.
         """
         if len(self.instructions) == 0:
-            raise ValueError("No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
+            raise ValueError(
+                "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
 
-        self._set_guardrails()
         self._add_default_special_tokens()
+        self._validate_context_count()
         used_values: Set[str] = {token.value for token in self.tokens}
-        validate_string_set(used_values)
-        validate_string_set(self.used_keys)
+        validate_string_subset(used_values)
+        validate_string_subset(self.used_keys)

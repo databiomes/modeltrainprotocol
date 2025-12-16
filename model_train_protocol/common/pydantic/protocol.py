@@ -4,7 +4,7 @@ Pydantic models for Protocol JSON structure.
 
 from typing import List, Dict, Any, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class TokenInfoModel(BaseModel):
@@ -26,10 +26,20 @@ class SampleModel(BaseModel):
     value: Optional[Union[str, int, float, List[int], List[float]]]  # Can be string, int, float, or list
 
 
+class GuardrailModel(BaseModel):
+    """Model for guardrails configuration."""
+    index: int
+    good_prompt: str
+    bad_prompt: str
+    bad_output: str
+    bad_examples: list[str]
+
+
 class InstructionSetModel(BaseModel):
     """Model for instruction sets."""
+    guardrails: List[GuardrailModel]
+    context: List[str]
     set: List[List[str]]
-    result: str
     samples: List[SampleModel]
     ppo: List[Any]
 
@@ -40,31 +50,9 @@ class InstructionModel(BaseModel):
     sets: List[InstructionSetModel]
 
 
-class GuardrailModel(BaseModel):
-    """Model for guardrails configuration."""
-    model_config = {"extra": "allow"}
-
-    def __getitem__(self, key: str) -> Any:
-        """Get a guardrail rule by key."""
-        return getattr(self, key, None)
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        """Set a guardrail rule by key."""
-        setattr(self, key, value)
-
-    def get_guardrail_rules(self) -> Dict[str, Any]:
-        """Get all guardrail rules as a dictionary."""
-        return {k: v for k, v in self.__dict__.items()}
-
-    def set_guardrail_rule(self, key: str, value: Union[str, List[Union[str, List[str]]]]) -> None:
-        """Set a guardrail rule with proper validation."""
-        if not isinstance(value, (str, list)):
-            raise ValueError(f"Guardrail value must be string or list, got {type(value)}")
-        setattr(self, key, value)
-
-
 class NumberModel(BaseModel):
     """Model for numbers configuration."""
+
     class ConfigDict:
         extra = "allow"  # Allow extra fields for dynamic attributes
 
@@ -102,7 +90,6 @@ class ProtocolModel(BaseModel):
     tokens: Dict[str, TokenInfoModel]
     special_tokens: List[str]
     instruction: InstructionModel
-    guardrails: GuardrailModel
     numbers: NumberModel
     batches: BatchModel
 

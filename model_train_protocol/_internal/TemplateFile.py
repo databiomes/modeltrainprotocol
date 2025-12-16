@@ -1,8 +1,31 @@
 from dataclasses import dataclass
+from enum import Enum
+from typing import Union
 
 from model_train_protocol import Instruction, ExtendedInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
+from model_train_protocol.common.instructions.BaseInstruction import Sample
+from model_train_protocol.common.tokens import FinalToken
+from model_train_protocol.common.tokens import NumToken, NumListToken
+import random
+
+
+class InstructionTypeEnum(Enum):
+    """Enumeration for instruction types in the template."""
+
+    BASIC = "basic"
+    EXTENDED = "extended"
+
+    @classmethod
+    def get_instruction_type_by_class(cls, instruction: BaseInstruction) -> 'InstructionTypeEnum':
+        """Returns the InstructionTypeEnum corresponding to the given instruction class."""
+        if isinstance(instruction, Instruction):
+            return cls.BASIC
+        elif isinstance(instruction, ExtendedInstruction):
+            return cls.EXTENDED
+        else:
+            raise ValueError("Unknown instruction type.")
 
 
 class TemplateFile:
@@ -26,10 +49,11 @@ class TemplateFile:
 
             self.instructions_list = instructions
 
-        def to_json(self) -> dict[str, str]:
+        def to_json(self) -> dict[str, dict[str, str]]:
             """Extracts tokens from stored instructions and converts to JSON-serializable dictionary."""
 
-            token_mapping: dict[str, str] = {}
+            input_token_mapping: dict[str, str] = {}
+            output_token_mapping: dict[str, str] = {}
 
             for instruction in self.instructions_list:
                 for token_set in instruction.get_token_sets():
@@ -38,10 +62,23 @@ class TemplateFile:
                         t.key + t.template_representation for t in token_set
                     ])
 
-                    token_mapping[token_value] = token_key
-                token_mapping[instruction.final.value] = instruction.final.key
+                    # Check if any token in the token_set is a FinalToken
+                    has_final_token = any(isinstance(t, FinalToken) for t in token_set)
 
-            return dict(sorted(token_mapping.items()))
+                    if has_final_token:
+                        output_token_mapping[token_value] = token_key
+                    else:
+                        input_token_mapping[token_value] = token_key
+
+                for sample in instruction.samples:
+                    output_token_mapping[sample.result.value] = sample.result.key
+
+            output_token_mapping[EOS_TOKEN.value] = EOS_TOKEN.key
+
+            return {
+                "input": dict(sorted(input_token_mapping.items())),
+                "output": dict(sorted(output_token_mapping.items()))
+            }
 
     class Instructions:
         """Represents the instruction set of the template."""
@@ -60,14 +97,11 @@ class TemplateFile:
             instructions_dict: dict[str, dict] = {}
 
             for instruction in self.instructions_list:
-                input_dict: dict[str, str | dict] = {"<BOS>": BOS_TOKEN.key}
-
+                input_list: list[str] = [BOS_TOKEN.key + '\n']
                 for idx, token_set in enumerate(instruction.get_token_sets()):
                     token_key = "".join([
                         t.key + t.template_representation for t in token_set
                     ])
-
-                    token_value = "".join([t.value for t in token_set])
 
                     is_last_context = idx == len(instruction.get_token_sets()) - 1
                     is_extended_instruction_extra_string = isinstance(instruction,
@@ -81,9 +115,9 @@ class TemplateFile:
                     if not is_last_context:
                         token_key += "<string>"
 
-                    input_dict[str(idx)] = {token_value: token_key}
+                    input_list.append(token_key)
 
-                input_dict["<RUN>"] = RUN_TOKEN.key
+                input_list.append(RUN_TOKEN.key)
 
                 # Build input string from structure
                 input_parts = [BOS_TOKEN.key]
@@ -98,7 +132,7 @@ class TemplateFile:
                     ])
 
                     if is_extended_instruction_extra_string:
-                        token_key += "<string>" # Extra <string> for extended instruction embedded in key
+                        token_key += "<string>"  # Extra <string> for extended instruction embedded in key
 
                     input_parts.append(token_key)
 
@@ -108,11 +142,11 @@ class TemplateFile:
                 input_parts.append(RUN_TOKEN.key)
                 input_str = "\n".join(input_parts)
 
-                output_str = "<string>\n" + instruction.final.key + "\n" + EOS_TOKEN.key
+                output_str = "<string>\n" + instruction.output.final[0].key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
-                    "type": isinstance(instruction, ExtendedInstruction) and "extended" or "basic",
-                    "structure": input_dict,
+                    "type": InstructionTypeEnum.get_instruction_type_by_class(instruction).value,
+                    "structure": input_list,
                     "input": input_str,
                     "output": output_str
                 }
@@ -136,58 +170,143 @@ class TemplateFile:
         self.instructions.add_inputs_from_instructions(self.instructions_list)
 
     @classmethod
-    def _create_sample_model_output(cls, instruction: BaseInstruction) -> str:
-        """Creates a sample model output string for a given instruction."""
+    def _format_token_set_with_sample(cls, token_set, sample_string: str, is_extended_last: bool = False) -> str:
+        """Formats a token set with actual sample data, including numbers and number lists.
+        
+        :param token_set: The TokenSet to format
+        :param sample_string: The actual sample string to use
+        :param is_extended_last: If True, format for extended instruction's last token set (no newline before string)
+        """
+        token_keys = "".join([token.key for token in token_set])
 
-        sample_output = "<string>\n"
-        sample_output += instruction.final.key + "\n"
+        # Add template representation for NumTokens and NumListTokens to the token key
+        for token in token_set:
+            if isinstance(token, NumToken):
+                example_number: int = random.randint(token.min_value, token.max_value)
+                token_keys += str(example_number)
+            elif isinstance(token, NumListToken):
+                example_list: list[Union[int, float]] = [
+                    random.randint(token.min_value, token.max_value)
+                    for _ in range(token.length)
+                ]
+                token_keys += str(example_list)
+
+        if is_extended_last:
+            # For extended instruction's last token set: token_key<string>\n (no newline before string)
+            formatted_string = token_keys + sample_string + "\n"
+        else:
+            # For regular format: token_key\n<string>\n
+            formatted_string = token_keys + "\n"
+            formatted_string += sample_string + "\n"
+
+        return formatted_string
+
+    @classmethod
+    def _create_sample_model_output(cls, instruction: BaseInstruction, sample: 'Sample') -> str:
+        """Creates a sample model output string for a given instruction using actual sample data."""
+
+        sample_output = sample.output + "\n"
+        sample_output += instruction.example_final_token.key + "\n"
         sample_output += EOS_TOKEN.key
         return sample_output
 
+    def _select_example_instructions(self) -> tuple[BaseInstruction | None, BaseInstruction | None]:
+        """
+        Selects one basic instruction and one extended instruction with samples for example creation.
+
+        Puts a preference on instructions that include numeric tokens.
+        """
+
+        basic_instruction: BaseInstruction | None = None
+        extended_instruction: BaseInstruction | None = None
+
+        numeric_instruction_exists: bool = any(
+            any(isinstance(t, (NumToken, NumListToken)) for ts in instr.get_token_sets() for t in ts)
+            for instr in self.instructions.instructions_list if isinstance(instr, Instruction)
+        )
+        numeric_extended_instruction_exists: bool = any(
+            any(isinstance(t, (NumToken, NumListToken)) for ts in instr.get_token_sets() for t in ts)
+            for instr in self.instructions.instructions_list if isinstance(instr, ExtendedInstruction)
+        )
+
+        for instr in self.instructions.instructions_list:
+            if isinstance(instr, Instruction) and instr.samples:
+                if basic_instruction is None:
+                    if numeric_instruction_exists:
+                        if any(isinstance(t, (NumToken, NumListToken)) for ts in instr.get_token_sets() for t in ts):
+                            basic_instruction = instr
+                    else:
+                        basic_instruction = instr
+            elif isinstance(instr, ExtendedInstruction) and instr.samples:
+                if extended_instruction is None:
+                    if numeric_extended_instruction_exists:
+                        if any(isinstance(t, (NumToken, NumListToken)) for ts in instr.get_token_sets() for t in ts):
+                            extended_instruction = instr
+                    else:
+                        extended_instruction = instr
+
+            if basic_instruction and extended_instruction:
+                break
+
+        return basic_instruction, extended_instruction
+
     def _create_examples(self) -> dict[str, str]:
-        """Creates example usages of the template."""
+        """Creates example usages of the template using actual sample data from instructions."""
 
         examples: dict[str, str] = dict()
-        simple_instruction: Instruction = next(
-            (i for i in self.instructions.instructions_list if isinstance(i, Instruction)), None)
-        extended_instruction: ExtendedInstruction = next(
-            (i for i in self.instructions.instructions_list if isinstance(i, ExtendedInstruction)), None)
+        instruction, extended_instruction = self._select_example_instructions()
 
-        if simple_instruction:
-            simple_input = BOS_TOKEN.key + "\n"
-            for token_set in simple_instruction.get_token_sets():
-                token_keys = "".join([token.key for token in token_set])
-                simple_input += token_keys + "\n"
-                simple_input += "<string>\n"
-            simple_input += RUN_TOKEN.key + "\n"
-            examples["instruction_input"] = simple_input + self._create_sample_model_output(simple_instruction)
+        if instruction and instruction.samples:
+            # Use the first sample for the example
+            sample = instruction.samples[0]
 
-        if extended_instruction:
-            user_input = BOS_TOKEN.key + "\n"
-            token_sets = extended_instruction.get_token_sets()
-            for idx, token_set in enumerate(token_sets):
-                token_keys = "".join([token.key for token in token_set])
-                user_input += token_keys + "\n"
-                user_input += "<string>\n"
+            instruction_input = BOS_TOKEN.key + "\n"
 
-            user_input += RUN_TOKEN.key + "\n"
-            examples["extended_instruction_input"] = user_input
+            # Map input strings to input token sets
+            for idx, token_set in enumerate(instruction.input.tokensets):
+                if idx < len(sample.input):
+                    sample_string = sample.input[idx]
+                    instruction_input += self._format_token_set_with_sample(token_set, sample_string)
 
-        first_instruction = simple_instruction or extended_instruction
-        if first_instruction:
-            examples["valid_model_output"] = self._create_sample_model_output(first_instruction)
+            instruction_input += instruction.last_tokenset.key + "\n"
+
+            instruction_input += RUN_TOKEN.key + "\n"
+            examples["instruction_input"] = instruction_input
+
+        # if extended_instruction and extended_instruction.samples:
+        #     # Use the first sample for the example
+        #     sample = extended_instruction.samples[0]
+        #
+        #     extended_instruction_input = BOS_TOKEN.key + "\n"
+        #
+        #     # Map input strings to input token sets
+        #     for idx, token_set in enumerate(extended_instruction.input.tokensets):
+        #         if idx < len(sample.input):
+        #             sample_string = sample.input[idx]
+        #             extended_instruction_input += self._format_token_set_with_sample(token_set, sample_string)
+        #
+        #     last_tokenset = extended_instruction.last_tokenset  # This is the last TokenSet in the original input
+        #     prompt_string = sample.prompt if sample.prompt else ""
+        #     extended_instruction_input += self._format_token_set_with_sample(last_tokenset, prompt_string, is_extended_last=True)
+        #
+        #     extended_instruction_input += RUN_TOKEN.key + "\n"
+        #     examples["extended_instruction_input"] = extended_instruction_input
+
+        first_instruction = instruction or extended_instruction
+        if first_instruction and first_instruction.samples:
+            sample = first_instruction.samples[0]
+            examples["valid_model_output"] = self._create_sample_model_output(first_instruction, sample)
 
         return examples
 
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
 
-        examples: dict[str, str] = self._create_examples()
         json_dict: dict = {
             "version": "0.1",  # Version is hardcoded for now; update as needed
             "encrypt": self.encrypt,
             "tokens": self.tokens.to_json(),
             "instructions": self.instructions.to_json(),
-            "example_usage": examples
+            "example_usage": self._create_examples()
         }
         return json_dict

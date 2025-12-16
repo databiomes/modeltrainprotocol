@@ -1,13 +1,12 @@
 from dataclasses import dataclass, field
-from typing import Collection, List, Dict, Set, Union
+from typing import Collection, List, Dict, Set
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.instructions import BaseInstruction
-from model_train_protocol.common.guardrails import Guardrail
-from model_train_protocol.common.tokens import TokenSet, SpecialToken
 from model_train_protocol.common.pydantic.protocol import InstructionModel, TokenInfoModel, SampleModel, \
     InstructionSetModel, NumberModel, \
     BatchModel, ProtocolModel, GuardrailModel
+from model_train_protocol.common.tokens import SpecialToken
 
 
 class ProtocolFile:
@@ -24,8 +23,9 @@ class ProtocolFile:
     class ProtocolInstructionSet:
         """Represents an instruction set in the template."""
 
+        guardrails: List[GuardrailModel]
+        context: List[str]
         set: List[List[str]]
-        result: str
         samples: List
         ppo: List
 
@@ -48,7 +48,6 @@ class ProtocolFile:
         self._instruction_token_keys: Set[str] = set()
         self._instruction: ProtocolFile.ProtocolInstruction = ProtocolFile.ProtocolInstruction(
             instruction_context_snippets=instruction_context_snippets)
-        self._guardrails: Dict[str, Union[List[str], str]] = {}
         self._numbers: Dict[str, str] = {}
         self._batches: ProtocolFile.Batches = ProtocolFile.Batches()
 
@@ -80,34 +79,32 @@ class ProtocolFile:
         """Adds instructions to the template."""
         for instruction in instructions:
             instruction_set: ProtocolFile.ProtocolInstructionSet = ProtocolFile.ProtocolInstructionSet(
+                guardrails=instruction.serialize_guardrails(),
+                context=instruction.input.context,
                 set=instruction.serialize_memory_set(),
-                result=instruction.final.value,
                 samples=instruction.serialize_samples(),
                 ppo=instruction.serialize_ppo(),
             )
             self._instruction.sets.append(instruction_set)
 
-            # Add guardrails from the instruction's Response TokenSet
-            self._add_guardrail(instruction.response)
-
             # Add instruction token keys
             for token_set in instruction.get_token_sets():
                 self._add_instruction_token_key(token_set.get_token_key_set())
 
-            # Add the result token as a special token
-            if instruction.final.key is not None:
-                self._add_instruction_token_key(instruction.final.key)
+            # Add the result token in each sample as a special token and to tokens dictionary
+            for sample in instruction.samples:
+                result_token = sample.result
+                # Add to instruction token keys
+                self._add_instruction_token_key(result_token.key)
+                # Add to tokens dictionary if not already present
+                if result_token.value not in self._tokens:
+                    token_dict = result_token.to_dict()
+                    token_dict.pop("value")
+                    self._tokens[result_token.value] = token_dict
 
     def _add_instruction_token_key(self, key: str):
         """Adds an instruction token key to the template."""
         self._instruction_token_keys.add(key)
-
-    def _add_guardrail(self, token_set: TokenSet):
-        """Adds guardrail from TokenSet to the template."""
-        if token_set.guardrail is None:
-            return
-        guardrail: Guardrail = token_set.guardrail
-        self._guardrails[token_set.key] = guardrail.format_samples()
 
     def _get_special_token_keys(self):
         """
@@ -188,20 +185,14 @@ class ProtocolFile:
             # Create Sample objects
             samples = []
             for sample_data in instruction_set.samples:
-                sample = SampleModel(
-                    strings=sample_data['strings'],
-                    prompt=sample_data['prompt'],
-                    numbers=sample_data['numbers'],
-                    number_lists=sample_data['number_lists'],
-                    result=sample_data['result'],
-                    value=sample_data['value']
-                )
+                sample = SampleModel(**sample_data)
                 samples.append(sample)
 
             # Create InstructionSet
             instruction_set_obj = InstructionSetModel(
+                guardrails=instruction_set.guardrails,
+                context=instruction_set.context,
                 set=instruction_set.set,
-                result=instruction_set.result,
                 samples=samples,
                 ppo=instruction_set.ppo
             )
@@ -221,10 +212,6 @@ class ProtocolFile:
             **self._batches.__dict__
         )
 
-        guardrails = GuardrailModel(
-            **self._guardrails
-        )
-
         # Create ProtocolModel
         protocol = ProtocolModel(
             name=self._name,
@@ -232,7 +219,6 @@ class ProtocolFile:
             tokens=token_info_dict,
             special_tokens=self._get_special_token_keys(),
             instruction=instruction,
-            guardrails=guardrails,
             numbers=numbers,
             batches=batches
         )
