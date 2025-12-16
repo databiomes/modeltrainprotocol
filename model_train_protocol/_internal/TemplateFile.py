@@ -108,46 +108,22 @@ class TemplateFile:
                                                                       ExtendedInstruction) and is_last_context
 
                     if is_extended_instruction_extra_string:
-                        token_key += "<string>"
+                        token_key += "<string>\n"
 
                     token_key += "\n"
 
                     if not is_last_context:
-                        token_key += "<string>"
+                        token_key += "<string>\n"
 
                     input_list.append(token_key)
 
                 input_list.append(RUN_TOKEN.key)
 
-                # Build input string from structure
-                input_parts = [BOS_TOKEN.key]
-                for idx, token_set in enumerate(instruction.get_token_sets()):
-
-                    is_last_context = idx == len(instruction.get_token_sets()) - 1
-                    is_extended_instruction_extra_string = isinstance(instruction,
-                                                                      ExtendedInstruction) and is_last_context
-
-                    token_key = "".join([
-                        t.key + t.template_representation for t in token_set
-                    ])
-
-                    if is_extended_instruction_extra_string:
-                        token_key += "<string>"  # Extra <string> for extended instruction embedded in key
-
-                    input_parts.append(token_key)
-
-                    if not is_last_context:
-                        input_parts.append("<string>\n")
-
-                input_parts.append(RUN_TOKEN.key)
-                input_str = "\n".join(input_parts)
-
                 output_str = "<string>\n" + instruction.output.final[0].key + "\n" + EOS_TOKEN.key
 
                 instructions_dict[instruction.name] = {
                     "type": InstructionTypeEnum.get_instruction_type_by_class(instruction).value,
-                    "structure": input_list,
-                    "input": input_str,
+                    "input": input_list,
                     "output": output_str
                 }
 
