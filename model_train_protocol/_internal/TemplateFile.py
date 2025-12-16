@@ -137,7 +137,7 @@ class TemplateFile:
                     input_parts.append(token_key)
 
                     if not is_last_context:
-                        input_parts.append("<string>")
+                        input_parts.append("<string>\n")
 
                 input_parts.append(RUN_TOKEN.key)
                 input_str = "\n".join(input_parts)
