@@ -1,8 +1,10 @@
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Collection, List, Dict, Set
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.instructions import BaseInstruction
+from model_train_protocol.common.prototyping.utils import get_version
 from model_train_protocol.common.pydantic.protocol import InstructionModel, TokenInfoModel, SampleModel, \
     InstructionSetModel, NumberModel, \
     BatchModel, ProtocolModel, GuardrailModel
@@ -213,14 +215,9 @@ class ProtocolFile:
             **self._batches.__dict__
         )
 
-        # Version
-        with open("pyproject.toml", "rb") as f:
-            pyproject = tomllib.load(f)
-        version: str = str(pyproject["project"]["version"])
-
         # Create ProtocolModel
         protocol = ProtocolModel(
-            version=version,
+            version=get_version(),
             name=self._name,
             context=self._context,
             tokens=token_info_dict,

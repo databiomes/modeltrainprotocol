@@ -37,7 +37,7 @@ class Protocol:
         self.special_tokens: Set[Token] = set()
         self.possible_emoji_keys: Set[str] = get_possible_emojis()
         self.used_keys: Set[str] = set()
-        self.has_guardrails: bool = any(instruction.has_guardrails for instruction in self.instructions)
+        self.has_guardrails: bool = False
 
     def add_context(self, context: str):
         """Adds a line of context to the model."""
@@ -53,7 +53,8 @@ class Protocol:
         Asserts that all samples in the instruction match the defined sample line size.
         """
         if instruction in self.instructions:
-            raise ValueError("Instruction (or instruction with identical tokensets in the same order) already added to the protocol.")
+            raise ValueError(
+                "Instruction (or instruction with identical tokensets in the same order) already added to the protocol.")
 
         for existing_instruction in self.instructions:
             if existing_instruction.name == instruction.name:
@@ -91,6 +92,10 @@ class Protocol:
 
         # Add the instruction to the protocol
         self.instructions.add(instruction)
+
+        # Update guardrails flag
+        if instruction.has_guardrails:
+            self.has_guardrails = True
 
     def get_protocol_file(self) -> ProtocolFile:
         """

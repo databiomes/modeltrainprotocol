@@ -1,3 +1,6 @@
+import tomllib
+from pathlib import Path
+
 from model_train_protocol import Token, TokenSet
 from model_train_protocol.common.pydantic.prototyping import TokenInfoPrototypeModel
 
@@ -16,6 +19,27 @@ def convert_str_to_camel_case(snake_str: str) -> str:
     """
     components = snake_str.split('_')
     return components[0] + ''.join(x.title() for x in components[1:])
+
+
+def get_version():
+    # Start from this file: .../model_train_protocol/common/prototyping/utils.py
+    current_path = Path(__file__).resolve()
+
+    # Search upwards until we find pyproject.toml
+    pyproject_path = None
+    for parent in current_path.parents:
+        check_path = parent / "pyproject.toml"
+        if check_path.exists():
+            pyproject_path = check_path
+            break
+
+    if pyproject_path is None:
+        raise FileNotFoundError("Could not find pyproject.toml in any parent directories.")
+
+    with open(pyproject_path, "rb") as f:
+        pyproject = tomllib.load(f)
+
+    return str(pyproject["project"]["version"])
 
 
 def token_class_map(token_info_model: TokenInfoPrototypeModel) -> type[Token]:
