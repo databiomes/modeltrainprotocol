@@ -1,11 +1,11 @@
-from typing import List, Sequence, Union
+from typing import List, Union
 
+from . import ExtendedResponse
 from .BaseInstruction import BaseInstruction, Sample
 from .input.BaseInput import BaseInput
+from ..guardrails import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
-from . import ExtendedResponse
-from ..guardrails import Guardrail
 
 
 class ExtendedInstruction(BaseInstruction):
@@ -17,6 +17,7 @@ class ExtendedInstruction(BaseInstruction):
     Note: The response TokenSet is not set in a ExtendedInstruction.
     The user TokenSet sets the context for the user's prompt. The model's response is not predefined in this scenario.
     """
+
     output: ExtendedResponse
 
     def __init__(self, input: BaseInput, output: ExtendedResponse, name: str = "extended_instruction"):
@@ -32,6 +33,11 @@ class ExtendedInstruction(BaseInstruction):
             raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(output)}")
 
         self.validate_context_snippets()
+
+    @property
+    def has_guardrails(self) -> bool:
+        """Indicates whether the Instruction has any guardrails defined."""
+        return len(self.input.guardrails) > 0
 
     def get_token_sets(self) -> List[TokenSet]:
         """Returns all tokens in the instruction as a list of tuples."""
