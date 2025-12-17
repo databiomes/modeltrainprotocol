@@ -347,17 +347,17 @@ def simple_instruction_with_samples(
     simple_instruction.add_sample(
         input_snippets=[simple_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     simple_instruction.add_sample(
         input_snippets=[simple_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     simple_instruction.add_sample(
         input_snippets=[simple_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     return simple_instruction
 
@@ -401,17 +401,17 @@ def numtoken_instruction_with_samples(
     simple_numtoken_instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample],
         output_snippet=simple_response_sample,
-        value=10
+        output_value=10
     )
     simple_numtoken_instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample],
         output_snippet=simple_response_sample,
-        value=15
+        output_value=15
     )
     simple_numtoken_instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample],
         output_snippet=simple_response_sample,
-        value=25
+        output_value=25
     )
     return simple_numtoken_instruction
 
@@ -429,17 +429,17 @@ def numlisttoken_instruction_with_samples(
     simple_numlisttoken_instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample],
         output_snippet=simple_response_sample,
-        value=[10, 20, 30]
+        output_value=[10, 20, 30]
     )
     simple_numlisttoken_instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample],
         output_snippet=simple_response_sample,
-        value=[15, 25, 35]
+        output_value=[15, 25, 35]
     )
     simple_numlisttoken_instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample],
         output_snippet=simple_response_sample,
-        value=[25, 35, 45]
+        output_value=[25, 35, 45]
     )
     return simple_numlisttoken_instruction
 
@@ -456,17 +456,17 @@ def mixed_instruction_with_samples(
     simple_mixed_instruction.add_sample(
         input_snippets=[simple_mixed_context_sample],
         output_snippet=simple_response_sample,
-        value=42.5
+        output_value=42.5
     )
     simple_mixed_instruction.add_sample(
         input_snippets=[simple_mixed_context_sample],
         output_snippet=simple_response_sample,
-        value=37.2
+        output_value=37.2
     )
     simple_mixed_instruction.add_sample(
         input_snippets=[simple_mixed_context_sample],
         output_snippet=simple_response_sample,
-        value=79.7
+        output_value=79.7
     )
     return simple_mixed_instruction
 

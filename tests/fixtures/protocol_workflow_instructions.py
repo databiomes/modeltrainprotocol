@@ -28,17 +28,17 @@ def simple_workflow_instruction_with_samples(simple_tokenset, user_tokenset, sim
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
 
     return instruction
@@ -121,17 +121,17 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=5
+        output_value=5
     )
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=7
+        output_value=7
     )
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=10
+        output_value=10
     )
 
     # Add guardrail to the instruction at tokenset index 1 (user_tokenset)
@@ -160,17 +160,17 @@ def simple_numlisttoken_workflow_instruction_with_samples(
     instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=[1, 2, 3]
+        output_value=[1, 2, 3]
     )
     instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=[4.2, .45, 6.8]
+        output_value=[4.2, .45, 6.8]
     )
     instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=[7, 8, 9]
+        output_value=[7, 8, 9]
     )
 
     return instruction

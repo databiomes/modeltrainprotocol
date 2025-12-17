@@ -60,7 +60,7 @@ def simple_basic_instruction_with_samples(simple_basic_instruction, simple_conte
     simple_basic_instruction.add_sample(
         input_snippets=[simple_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     return simple_basic_instruction
 
@@ -83,7 +83,7 @@ def simple_numtoken_instruction_with_samples(simple_numtoken_instruction, simple
     simple_numtoken_instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample],
         output_snippet=simple_response_sample,
-        value=10
+        output_value=10
     )
     return simple_numtoken_instruction
 
@@ -106,7 +106,7 @@ def simple_numlisttoken_instruction_with_samples(simple_numlisttoken_instruction
     simple_numlisttoken_instruction.add_sample(
         input_snippets=[simple_numlisttoken_context_sample],
         output_snippet=simple_response_sample,
-        value=[10, 20, 30]
+        output_value=[10, 20, 30]
     )
     return simple_numlisttoken_instruction
 
@@ -130,7 +130,7 @@ def simple_mixed_instruction_with_samples(simple_mixed_instruction, simple_mixed
     simple_mixed_instruction.add_sample(
         input_snippets=[simple_mixed_context_sample],
         output_snippet=simple_response_sample,
-        value=25.5
+        output_value=25.5
     )
     return simple_mixed_instruction
 
@@ -154,7 +154,7 @@ def simple_scores_instruction_with_samples(simple_scores_instruction, scores_con
     simple_scores_instruction.add_sample(
         input_snippets=[scores_context_sample],
         output_snippet=simple_response_sample,
-        value=[8, 9, 7, 10, 6]
+        output_value=[8, 9, 7, 10, 6]
     )
     return simple_scores_instruction
 
@@ -319,7 +319,7 @@ def simple_instruction_with_multiple_samples(simple_tokenset, simple_context_sam
         instruction.add_sample(
             input_snippets=[simple_context_sample],
             output_snippet=simple_response_sample,
-            value=None
+            output_value=None
         )
     
     return instruction

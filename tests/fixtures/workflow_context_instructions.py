@@ -27,17 +27,17 @@ def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_toke
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     
     return instruction
@@ -95,17 +95,17 @@ def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_t
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=5
+        output_value=5
     )
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=7
+        output_value=7
     )
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample],
         output_snippet=simple_response_sample,
-        value=10
+        output_value=10
     )
     
     return instruction
@@ -130,17 +130,17 @@ def simple_workflow_5context_instruction_with_samples(
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     instruction.add_sample(
         input_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample],
         output_snippet=simple_response_sample,
-        value=None
+        output_value=None
     )
     
     return instruction
@@ -202,17 +202,17 @@ def simple_numtoken_workflow_5context_instruction_with_samples(
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
         output_snippet=simple_response_sample,
-        value=5
+        output_value=5
     )
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
         output_snippet=simple_response_sample,
-        value=7
+        output_value=7
     )
     instruction.add_sample(
         input_snippets=[simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample, user_context_sample, simple_numtoken_context_sample],
         output_snippet=simple_response_sample,
-        value=10
+        output_value=10
     )
     
     return instruction

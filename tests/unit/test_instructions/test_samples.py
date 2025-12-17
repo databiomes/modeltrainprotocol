@@ -48,7 +48,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value="invalid_string"  # Wrong type
+                output_value="invalid_string"  # Wrong type
             )
 
     def test_numtoken_result_none_value_raises_error(self, simple_tokenset, user_tokenset):
@@ -66,7 +66,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=None  # None value
+                output_value=None  # None value
             )
 
     def test_numtoken_result_valid_numeric_value_succeeds(self, simple_tokenset, user_tokenset):
@@ -84,7 +84,7 @@ class TestSampleValueValidation:
         instruction.add_sample(
             input_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet,
-            value=5  # Pass a numeric value
+            output_value=5  # Pass a numeric value
         )
 
     def test_numlisttoken_result_missing_value_raises_error(self, simple_tokenset, user_tokenset):
@@ -125,7 +125,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value="invalid_string"  # Wrong type
+                output_value="invalid_string"  # Wrong type
             )
 
     def test_numlisttoken_result_none_value_raises_error(self, simple_tokenset, user_tokenset):
@@ -144,7 +144,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=None  # None value
+                output_value=None  # None value
             )
 
     def test_numlisttoken_result_valid_list_value_succeeds(self, simple_tokenset, user_tokenset):
@@ -163,7 +163,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=[1, 2, 3]  # Valid list value
+                output_value=[1, 2, 3]  # Valid list value
             )
 
     def test_regular_token_result_none_value_allowed(self, simple_tokenset, user_tokenset):
@@ -181,7 +181,7 @@ class TestSampleValueValidation:
         instruction.add_sample(
             input_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet,
-            value=None  # None value allowed for regular tokens
+            output_value=None  # None value allowed for regular tokens
         )
 
     def test_user_token_result_none_value_allowed(self, simple_tokenset, user_tokenset):
@@ -219,7 +219,7 @@ class TestSampleValueValidation:
         instruction.add_sample(
             input_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet,
-            value="some_value"  # Non-None value - currently not validated
+            output_value="some_value"  # Non-None value - currently not validated
         )
 
     def test_user_token_result_non_none_value_raises_error(self, simple_tokenset, user_tokenset):
@@ -257,7 +257,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=[1, 2, 3]  # List value not allowed for NumToken
+                output_value=[1, 2, 3]  # List value not allowed for NumToken
             )
 
     def test_numlisttoken_result_numtoken_value_raises_error(self, simple_tokenset, user_tokenset):
@@ -277,7 +277,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=None  # None value
+                output_value=None  # None value
             )
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
@@ -303,7 +303,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=None  # None value
+                output_value=None  # None value
             )
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
@@ -329,7 +329,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=None  # None value
+                output_value=None  # None value
             )
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
@@ -355,7 +355,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=[]  # Empty list
+                output_value=[]  # Empty list
             )
 
     def test_numlisttoken_result_single_element_list_succeeds(self, simple_tokenset, user_tokenset):
@@ -374,7 +374,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=[50]  # Single element list
+                output_value=[50]  # Single element list
             )
 
     def test_numlisttoken_result_multi_element_list_succeeds(self, simple_tokenset, user_tokenset):
@@ -393,7 +393,7 @@ class TestSampleValueValidation:
             instruction.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value=[10, 20, 30, 40, 50]  # Multi-element list
+                output_value=[10, 20, 30, 40, 50]  # Multi-element list
             )
 
     def test_mixed_token_types_value_validation(self, simple_tokenset, user_tokenset):
@@ -415,7 +415,7 @@ class TestSampleValueValidation:
             instruction1.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value="invalid"
+                output_value="invalid"
             )
         
         # Test with NumListToken - cannot be used as final token
@@ -429,7 +429,7 @@ class TestSampleValueValidation:
             instruction2.add_sample(
                 input_snippets=[context_snippet1, context_snippet2],
                 output_snippet=output_snippet,
-                value="invalid"
+                output_value="invalid"
             )
         
         # Test with regular Token
@@ -441,7 +441,7 @@ class TestSampleValueValidation:
         instruction3.add_sample(
             input_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet,
-            value=None
+            output_value=None
         )
         
         # Note: Current implementation doesn't validate that value must be None for non-FinalNumToken
@@ -449,7 +449,7 @@ class TestSampleValueValidation:
         instruction3.add_sample(
             input_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet,
-            value="any_value"  # Currently not validated
+            output_value="any_value"  # Currently not validated
         )
 
 
@@ -750,5 +750,5 @@ class TestInstructionValidation:
         instruction.add_sample(
             input_snippets=[context_snippet1, context_snippet2],
             output_snippet=output_snippet,
-            value=None  # Valid None value
+            output_value=None  # Valid None value
         )

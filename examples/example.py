@@ -263,7 +263,7 @@ sample_1_input_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
 alice_cat_alice_instruction_numbers_continue.add_sample(
     input_snippets=[sample_1_input_1, sample_1_input_2],
     output_snippet="Then it doesnt matter which way you go.",
-    value=5
+    output_value=5
 )
 
 # 2nd Sample
@@ -275,7 +275,7 @@ sample_2_input_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
 alice_cat_alice_instruction_numbers_continue.add_sample(
     input_snippets=[sample_2_input_1, sample_2_input_2],
     output_snippet="You must be, or you would not have come here.",
-    value=3
+    output_value=3
 )
 
 # 3rd Sample
@@ -287,7 +287,7 @@ sample_3_input_2: mtp.Snippet = tree_english_alice_talk_emotion.create_snippet(
 alice_cat_alice_instruction_numbers_continue.add_sample(
     input_snippets=[sample_3_input_1, sample_3_input_2],
     output_snippet="You must be, or you would not have come here.",
-    value=8
+    output_value=8
 )
 
 protocol.add_instruction(alice_cat_alice_instruction_numbers_continue)
