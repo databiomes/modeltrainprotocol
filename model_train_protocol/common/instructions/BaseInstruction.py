@@ -104,6 +104,12 @@ class BaseInstruction(ABC):
         """Returns the response TokenSet of the instruction."""
         raise NotImplementedError("Subclasses must implement last_tokenset method.")
 
+    @property
+    @abc.abstractmethod
+    def has_guardrails(self) -> bool:
+        """Returns True if the Instruction has any guardrails added."""
+        raise NotImplementedError("Subclasses must implement has_guardrails method.")
+
     def validate_context_snippets(self):
         """Validates that context snippets do not contain any final tokens."""
         for token_set in self.input.tokensets:

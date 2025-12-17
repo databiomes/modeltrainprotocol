@@ -37,6 +37,7 @@ class Protocol:
         self.special_tokens: Set[Token] = set()
         self.possible_emoji_keys: Set[str] = get_possible_emojis()
         self.used_keys: Set[str] = set()
+        self.has_guardrails: bool = any(instruction.has_guardrails for instruction in self.instructions)
 
     def add_context(self, context: str):
         """Adds a line of context to the model."""
@@ -139,6 +140,7 @@ class Protocol:
             instructions=list(self.instructions),
             instruction_context_snippets=self.instruction_input_snippets,
             encrypt=self.encrypt,
+            has_guardrails=self.has_guardrails,
         )
 
         print(f"Saving Model Train Protocol Template to {filename}...")
@@ -192,8 +194,7 @@ class Protocol:
         self.special_tokens.add(PAD_TOKEN)
         self.special_tokens.add(NON_TOKEN)
         # Check if any instruction has guardrails
-        has_guardrails = any(len(instruction.input.guardrails) > 0 for instruction in self.instructions)
-        if has_guardrails:
+        if self.has_guardrails:
             self.special_tokens.add(UNK_TOKEN)
 
     def _validate_context_count(self):

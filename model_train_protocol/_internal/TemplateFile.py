@@ -3,7 +3,7 @@ from enum import Enum
 from typing import Union
 
 from model_train_protocol import Instruction, ExtendedInstruction
-from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
+from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN, UNK_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
 from model_train_protocol.common.tokens import FinalToken
@@ -129,7 +129,7 @@ class TemplateFile:
 
             return instructions_dict
 
-    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool):
+    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool, has_guardrails: bool):
         """Initializes the template"""
 
         self.tokens: TemplateFile.Tokens = TemplateFile.Tokens()
@@ -137,6 +137,7 @@ class TemplateFile:
         self.instruction_context_snippets: int = instruction_context_snippets
         self.instructions_list: list[BaseInstruction] = instructions
         self.encrypt: bool = encrypt
+        self.has_guardrails: bool = has_guardrails
         self._add_io_from_instructions()
 
     def _add_io_from_instructions(self):
@@ -272,6 +273,10 @@ class TemplateFile:
         if first_instruction and first_instruction.samples:
             sample = first_instruction.samples[0]
             examples["valid_model_output"] = self._create_sample_model_output(first_instruction, sample)
+
+        if self.has_guardrails:
+            guardrailed_instruction: BaseInstruction = next(instruction for instruction in self.instructions_list if instruction.has_guardrails)
+            examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\nf{UNK_TOKEN.key}\n{EOS_TOKEN.key}"
 
         return examples
 

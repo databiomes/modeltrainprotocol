@@ -60,6 +60,11 @@ class Instruction(BaseInstruction):
         """Returns the last TokenSet in the Instruction, which is the response TokenSet."""
         return self.output.tokenset
 
+    @property
+    def has_guardrails(self) -> bool:
+        """Indicates whether the Instruction has any guardrails defined."""
+        return len(self.input.guardrails) > 0
+
     def _enforce_response_snippet(self, snippet: Union[Snippet, str]) -> Snippet:
         """Converts a regular string to a snippet if provided as a string."""
         if isinstance(snippet, str):
