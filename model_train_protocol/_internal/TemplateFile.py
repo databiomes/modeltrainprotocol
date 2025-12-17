@@ -1,3 +1,5 @@
+import random
+import tomllib
 from dataclasses import dataclass
 from enum import Enum
 from typing import Union
@@ -8,8 +10,6 @@ from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
-import random
-import toml
 
 
 class InstructionTypeEnum(Enum):
@@ -284,7 +284,8 @@ class TemplateFile:
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
 
-        pyproject = toml.load("pyproject.toml")
+        with open("pyproject.toml", "rb") as f:
+            pyproject = tomllib.load(f)
         version: str = str(pyproject["project"]["version"])
 
         json_dict: dict = {
