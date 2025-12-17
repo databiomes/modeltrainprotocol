@@ -47,6 +47,9 @@ class TokenSet:
         if len(number_lists) != len(required_numlists):
             raise ValueError(
                 f"{self} requires {len(required_numlists)} number lists but {len(number_lists or [])} lists were provided.")
+        if len(self._num_list_tokens) != len(required_numlists):
+            raise ValueError(
+                f"Number of NumListToken instances ({len(self._num_list_tokens)}) does not match required number lists ({len(required_numlists)}).")
         for (i, required_length) in enumerate(required_numlists):
             if len(number_lists[i]) != required_length:
                 raise ValueError(

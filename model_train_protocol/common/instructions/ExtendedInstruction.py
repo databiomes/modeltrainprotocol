@@ -108,9 +108,6 @@ class ExtendedInstruction(BaseInstruction):
         :param guardrail: The Guardrail instance to add.
         :param tokenset_index: The index of the TokenSet the guardrail applies to.
         """
-        if len(self.input.guardrails) != 0:
-            raise ValueError("Only one guardrail can be added to an Instruction.")
-
         if len(guardrail.samples) < 3:
             raise ValueError(
                 "Guardrail must have at least 3 samples of bad inputs before being added to an Instruction.")
