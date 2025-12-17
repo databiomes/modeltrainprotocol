@@ -74,7 +74,9 @@ class TemplateFile:
                 for sample in instruction.samples:
                     output_token_mapping[sample.result.value] = sample.result.key
 
-            output_token_mapping[EOS_TOKEN.value] = EOS_TOKEN.key
+            # Add UNK token if Guardrails:
+                if instruction.has_guardrails:
+                    output_token_mapping[UNK_TOKEN.value] = UNK_TOKEN.key
 
             return {
                 "input": dict(sorted(input_token_mapping.items())),
