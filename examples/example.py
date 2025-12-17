@@ -5,7 +5,6 @@ import model_train_protocol as mtp
 # This example protocol demonstrates a conversation between Alice and the Cheshire Cat from "Alice's Adventures in Wonderland".
 # The protocol includes multiple instructions for different interactions, such as continuing a conversation, making the cat
 # appear or vanish, answering questions, and leaving the conversation.
-# The context is set with excerpts from the book to provide a rich background for the interactions.
 # The model is set from the perspective of the Cat, responding to Alice's prompts.
 
 protocol = mtp.Protocol(name="example", context_snippets=2, encrypt=False)
