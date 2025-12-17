@@ -277,7 +277,7 @@ class TemplateFile:
 
         if self.has_guardrails:
             guardrailed_instruction: BaseInstruction = next(instruction for instruction in self.instructions_list if instruction.has_guardrails)
-            examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\nf{UNK_TOKEN.key}\n{EOS_TOKEN.key}"
+            examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{UNK_TOKEN.key}\n{EOS_TOKEN.key}"
 
         return examples
 
