@@ -85,6 +85,7 @@ class BatchModel(BaseModel):
 
 class ProtocolModel(BaseModel):
     """Main model for MTP Protocol JSON structure."""
+    version: str
     name: str
     context: List[str]
     tokens: Dict[str, TokenInfoModel]

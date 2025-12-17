@@ -7,6 +7,7 @@ from model_train_protocol.common.pydantic.protocol import InstructionModel, Toke
     InstructionSetModel, NumberModel, \
     BatchModel, ProtocolModel, GuardrailModel
 from model_train_protocol.common.tokens import SpecialToken
+import toml
 
 
 class ProtocolFile:
@@ -212,8 +213,13 @@ class ProtocolFile:
             **self._batches.__dict__
         )
 
+        # Version
+        pyproject = toml.load("pyproject.toml")
+        version: str = str(pyproject["project"]["version"])
+
         # Create ProtocolModel
         protocol = ProtocolModel(
+            version=version,
             name=self._name,
             context=self._context,
             tokens=token_info_dict,
