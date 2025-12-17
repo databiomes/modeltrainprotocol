@@ -1,5 +1,4 @@
 from dataclasses import dataclass, field
-from pathlib import Path
 from typing import Collection, List, Dict, Set
 
 from model_train_protocol import Token, NumToken
@@ -9,7 +8,6 @@ from model_train_protocol.common.pydantic.protocol import InstructionModel, Toke
     InstructionSetModel, NumberModel, \
     BatchModel, ProtocolModel, GuardrailModel
 from model_train_protocol.common.tokens import SpecialToken
-import tomllib
 
 
 class ProtocolFile:
