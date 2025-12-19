@@ -4,7 +4,7 @@ Pydantic models for Protocol JSON structure.
 
 from typing import List, Dict, Any, Optional, Union
 
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
 class TokenInfoModel(BaseModel):
@@ -49,11 +49,21 @@ class InstructionModel(BaseModel):
     sets: List[InstructionSetModel]
 
 
+def _number_model_json_schema_extra(schema: dict, model_class) -> None:
+    """Customize JSON schema to specify that additionalProperties must be strings."""
+    schema["additionalProperties"] = {
+        "type": "string",
+        "description": "Number rule value (must be a string)"
+    }
+
+
 class NumberModel(BaseModel):
     """Model for numbers configuration."""
 
-    class ConfigDict:
-        extra = "allow"  # Allow extra fields for dynamic attributes
+    model_config = ConfigDict(
+        extra="allow",  # Allow extra fields for dynamic attributes
+        json_schema_extra=_number_model_json_schema_extra
+    )
 
     def __getitem__(self, key: str) -> Any:
         """Get a number rule by key."""

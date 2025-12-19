@@ -1,4 +1,7 @@
 {
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProtocolModel",
+  "description": "Main model for MTP Protocol JSON structure.",
   "$defs": {
     "BatchModel": {
       "description": "Model for batches configuration.",
@@ -158,6 +161,10 @@
       "type": "object"
     },
     "NumberModel": {
+      "additionalProperties": {
+        "description": "Number rule value (must be a string)",
+        "type": "string"
+      },
       "description": "Model for numbers configuration.",
       "properties": {},
       "title": "NumberModel",
@@ -336,7 +343,6 @@
       "type": "object"
     }
   },
-  "description": "JSON Schema for Model Train Protocol (MTP) model files",
   "properties": {
     "version": {
       "title": "Version",
@@ -387,7 +393,5 @@
     "numbers",
     "batches"
   ],
-  "title": "Model Train Protocol Schema",
-  "type": "object",
-  "$schema": "https://json-schema.org/draft/2020-12/schema"
+  "type": "object"
 }
