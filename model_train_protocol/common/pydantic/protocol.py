@@ -41,8 +41,7 @@ class InstructionSetModel(BaseModel):
     context: List[str]
     set: List[List[str]]
     samples: List[SampleModel]
-    ppo: List[Any]
-
+    ppo: List[Dict[str, Any]]
 
 class InstructionModel(BaseModel):
     """Model for instruction configuration."""
@@ -77,10 +76,10 @@ class NumberModel(BaseModel):
 
 class BatchModel(BaseModel):
     """Model for batches configuration."""
-    pretrain: List[Any]
-    instruct: List[Any]
-    judge: List[Any]
-    ppo: List[Any]
+    pretrain: List[Dict[str, Any]]
+    instruct: List[Dict[str, Any]]
+    judge: List[Dict[str, Any]]
+    ppo: List[Dict[str, Any]]
 
 
 class ProtocolModel(BaseModel):
