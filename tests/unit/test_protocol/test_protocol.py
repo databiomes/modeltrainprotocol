@@ -637,6 +637,9 @@ class TestProtocol:
         # Check file was created
         expected_file = temp_directory / "test_save_model.json"
         assert expected_file.exists()
+        
+        # Clean up
+        expected_file.unlink()
 
     def test_protocol_save_default_name(self, temp_directory):
         """Test protocol saving with default name."""
@@ -690,6 +693,9 @@ class TestProtocol:
         # Check file was created with protocol name
         expected_file = temp_directory / "test_protocol_model.json"
         assert expected_file.exists()
+        
+        # Clean up
+        expected_file.unlink()
 
     def test_protocol_save_default_path(self):
         """Test protocol saving with default path."""
@@ -799,6 +805,9 @@ class TestProtocol:
         # Check file was created
         expected_file = temp_directory / "test_protocol_template.json"
         assert expected_file.exists()
+        
+        # Clean up
+        expected_file.unlink()
 
     def test_protocol_template_default_path(self):
         """Test protocol templating with default path."""

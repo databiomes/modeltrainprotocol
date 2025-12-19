@@ -89,6 +89,10 @@ class TestProtocolWorkflow:
         
         assert model_file.exists()
         assert template_file.exists()
+        
+        # Clean up
+        model_file.unlink()
+        template_file.unlink()
 
     def test_protocol_with_guardrails_workflow(self, user_workflow_instruction_with_samples):
         """Test protocol workflow with guardrails using fixtures."""
