@@ -292,11 +292,8 @@ This is a reference file that shows:
 
 Use this file to understand how your model expects to receive and format data.
 
-### File Structure Example
+### Schema Files
 
-```
-my_model_model.json     # Main training protocol
-my_model_template.json  # Reference and examples
-```
+JSON Schema files are available in `schemas/{version}/` directories for protocol and template validation.
 
 The template file helps you understand the expected format when using your trained model, while the model file contains all the training data needed to create your specialized language model.
