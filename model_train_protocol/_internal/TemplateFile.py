@@ -122,12 +122,19 @@ class TemplateFile:
 
                 input_list.append(RUN_TOKEN.key)
 
-                output_str = "<string>\n" + instruction.output.final[0].key + "\n" + EOS_TOKEN.key
+                output_strs: list[str] = [
+                    "<string>\n" + sample.result.key + "\n" + EOS_TOKEN.key
+                    for sample in instruction.samples
+                    ]
+
+                # add guardrail output if guardrail exists
+                if instruction.has_guardrails:
+                    output_strs.append(f"<string>\n{UNK_TOKEN.key}\n{EOS_TOKEN.key}")
 
                 instructions_dict[instruction.name] = {
                     "type": InstructionTypeEnum.get_instruction_type_by_class(instruction).value,
                     "input": input_list,
-                    "output": output_str
+                    "output": list(set(output_strs))
                 }
 
             return instructions_dict
