@@ -69,8 +69,11 @@
           "type": "array"
         },
         "output": {
+          "items": {
+            "type": "string"
+          },
           "title": "Output",
-          "type": "string"
+          "type": "array"
         }
       },
       "required": [
