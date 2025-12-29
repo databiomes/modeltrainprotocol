@@ -60,6 +60,11 @@ class Instruction(BaseInstruction):
         """Returns the last TokenSet in the Instruction, which is the response TokenSet."""
         return self.output.tokenset
 
+    @property
+    def has_guardrails(self) -> bool:
+        """Indicates whether the Instruction has any guardrails defined."""
+        return len(self.input.guardrails) > 0
+
     def _enforce_response_snippet(self, snippet: Union[Snippet, str]) -> Snippet:
         """Converts a regular string to a snippet if provided as a string."""
         if isinstance(snippet, str):
@@ -74,24 +79,24 @@ class Instruction(BaseInstruction):
 
     # noinspection PyMethodOverriding
     def add_sample(self, input_snippets: List[Union[str | Snippet]], output_snippet: Snippet | str,
-                   value: Union[int, float, List[Union[int, float]], None] = None, final: FinalToken | None = None):
+                   output_value: Union[int, float, List[Union[int, float]], None] = None, final: FinalToken | None = None):
         f"""
         Add a sample to the Instruction.
 
         :param input_snippets: List of context snippets or strings that will be added to the Instruction.
         :param output_snippet: The model's response snippet.
-        :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
+        :param output_value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         :param final: Optional Token instance designating th e final action by the model. Defaults to a non-action Token designated {self.output.default_final}.
         """
         input_snippets: List[Snippet] = self._enforce_snippets(context_snippets=input_snippets)
         output_snippet: Snippet = self._enforce_response_snippet(output_snippet)
         final: FinalToken = self._assign_final_token(final=final)
-        self.output.validate_sample(snippet=output_snippet, value=value, final=final)
+        self.output.validate_sample(snippet=output_snippet, value=output_value, final=final)
         self._assert_context_snippet_count(context_snippets=input_snippets)
         self._validate_snippets_match(context_snippets=input_snippets, response_snippet=output_snippet)
 
         sample: Sample = self._create_sample(context_snippets=input_snippets, response_snippet=output_snippet,
-                                             value=value, final=final)
+                                             value=output_value, final=final)
         self.samples.append(sample)
 
     def add_guardrail(self, guardrail: Guardrail, tokenset_index: int):
@@ -101,9 +106,6 @@ class Instruction(BaseInstruction):
         :param guardrail: The Guardrail instance to add.
         :param tokenset_index: The index of the TokenSet the guardrail applies to.
         """
-        if len(self.input.guardrails) != 0:
-            raise ValueError("Only one guardrail can be added to an Instruction.")
-
         if len(guardrail.samples) < 3:
             raise ValueError(
                 "Guardrail must have at least 3 samples of bad inputs before being added to an Instruction.")

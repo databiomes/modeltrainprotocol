@@ -32,6 +32,9 @@ class TestFileOperations:
             data = json.load(f)
 
         assert data["name"] == "file_test"
+        
+        # Clean up
+        model_file.unlink()
 
     def test_protocol_template_basic(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test basic protocol templating."""
@@ -56,6 +59,9 @@ class TestFileOperations:
         assert "example_usage" in data
         assert "tokens" in data
         assert "instructions" in data
+        
+        # Clean up
+        template_file.unlink()
 
     def test_protocol_template(self, temp_directory, user_workflow_instruction_with_samples):
         """Test protocol template with guardrails."""
@@ -80,6 +86,9 @@ class TestFileOperations:
         assert "example_usage" in data
         assert "tokens" in data
         assert "instructions" in data
+        
+        # Clean up
+        template_file.unlink()
 
     def test_protocol_save_with_numeric_tokens(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving with numeric tokens."""
@@ -102,6 +111,9 @@ class TestFileOperations:
 
         assert data["name"] == "numeric_test"
         assert len(data["numbers"]) >= 0
+        
+        # Clean up
+        model_file.unlink()
 
     def test_protocol_save_encrypted(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving with encryption."""
@@ -124,6 +136,9 @@ class TestFileOperations:
 
         assert data["name"] == "encrypted_test"
         assert len(data["tokens"]) >= 2
+        
+        # Clean up
+        model_file.unlink()
 
     def test_protocol_save_unencrypted(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving without encryption."""
@@ -146,6 +161,9 @@ class TestFileOperations:
 
         assert data["name"] == "unencrypted_test"
         assert len(data["tokens"]) >= 2
+        
+        # Clean up
+        model_file.unlink()
 
     def test_protocol_save_multiple_instructions(self, temp_directory, user_workflow_instruction_with_samples, simple_workflow_instruction_with_samples):
         """Test protocol saving with multiple instructions."""
@@ -169,6 +187,9 @@ class TestFileOperations:
 
         assert data["name"] == "multi_instruction_test"
         assert len(data["instruction"]) == 2
+        
+        # Clean up
+        model_file.unlink()
 
     def test_protocol_save_default_path(self, simple_workflow_instruction_with_samples):
         """Test protocol saving with default path."""

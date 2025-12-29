@@ -157,7 +157,7 @@ class TestSampleDictMethods:
         scores_instruction.add_sample(
             input_snippets=[scores_context_sample],
             output_snippet=simple_response_sample,
-            value=[85, 90, 95]
+            output_value=[85, 90, 95]
         )
         
         # Get the sample from the instruction

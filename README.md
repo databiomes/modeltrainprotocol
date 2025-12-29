@@ -28,10 +28,10 @@ The first step in creating a model training protocol is to initialize the Protoc
 import model_train_protocol as mtp
 
 # Initialize the protocol
-protocol = mtp.Protocol(name="my_model", context_snippets=3)
+protocol = mtp.Protocol(name="my_model", context_snippets=2)
 ```
 
-The parameter `instruction_context_snippets` is the number of lines in each instruction sample. This is required and must be at least 3.
+The parameter `context_snippets` is the number of input lines in each instruction sample. This is required and must be at least 2.
 
 ## System Architecture
 
@@ -292,11 +292,8 @@ This is a reference file that shows:
 
 Use this file to understand how your model expects to receive and format data.
 
-### File Structure Example
+### Schema Files
 
-```
-my_model_model.json     # Main training protocol
-my_model_template.json  # Reference and examples
-```
+JSON Schema files are available in `schemas/{version}/` directories for protocol and template validation.
 
 The template file helps you understand the expected format when using your trained model, while the model file contains all the training data needed to create your specialized language model.

@@ -3,6 +3,7 @@ from typing import Collection, List, Dict, Set
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.instructions import BaseInstruction
+from model_train_protocol.common.prototyping.utils import get_version
 from model_train_protocol.common.pydantic.protocol import InstructionModel, TokenInfoModel, SampleModel, \
     InstructionSetModel, NumberModel, \
     BatchModel, ProtocolModel, GuardrailModel
@@ -214,6 +215,7 @@ class ProtocolFile:
 
         # Create ProtocolModel
         protocol = ProtocolModel(
+            version=get_version(),
             name=self._name,
             context=self._context,
             tokens=token_info_dict,

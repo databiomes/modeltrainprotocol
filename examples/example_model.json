@@ -1,4 +1,5 @@
 {
+    "version": "0.3.0",
     "name": "example",
     "context": [
         "ALICE was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, “and what is the use of a book,” thought Alice, “ without pictures or conversations?”",
@@ -47,6 +48,13 @@
             "num": false,
             "num_list": 0,
             "special": "infer"
+        },
+        "<UNK>": {
+            "desc": null,
+            "key": "<UNK>",
+            "num": false,
+            "num_list": 0,
+            "special": "unknown"
         },
         "Alice_": {
             "desc": null,
@@ -139,6 +147,7 @@
         "<NON>",
         "<PAD>",
         "<RUN>",
+        "<UNK>",
         "Appear_",
         "Continue_",
         "Madness_",
@@ -154,83 +163,95 @@
         "sets": [
             {
                 "context": [
-                    "Alice was beginning to get very tired of sitting by her sister on the bank.",
-                    "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”"
+                    "Alice was feeling a mix of curiosity and apprehension as she conversed with the Cheshire Cat.",
+                    "The Cat's ability to appear and disappear at will added to the surreal nature of their interaction."
                 ],
-                "guardrails": [
-                    {
-                        "bad_examples": [
-                            "explain quantum mechanics.",
-                            "who will win the next american election?",
-                            "what is the capital of Spain?"
-                        ],
-                        "bad_output": "Are you as mad as me?",
-                        "bad_prompt": "Quote being spoken that is irrelevant and off topic with 1-20 words",
-                        "good_prompt": "Quote being spoken with 1-20 words",
-                        "index": 1
-                    }
-                ],
+                "guardrails": [],
                 "ppo": [],
                 "samples": [
                     {
                         "number_lists": [
-                            [],
+                            [
+                                [
+                                    100,
+                                    200,
+                                    -50
+                                ]
+                            ],
                             [],
                             []
                         ],
                         "numbers": [
                             [],
-                            [],
+                            [
+                                5
+                            ],
                             []
                         ],
                         "prompt": null,
-                        "result": "Continue_",
+                        "result": "Madness_",
                         "strings": [
                             "Then it doesnt matter which way you go.",
                             "Can you tell me a way?",
-                            "Oh sure, if you only walk long enough that is a way."
+                            "Then it doesnt matter which way you go."
                         ],
-                        "value": null
+                        "value": 5
                     },
                     {
                         "number_lists": [
-                            [],
+                            [
+                                [
+                                    100,
+                                    200,
+                                    -50
+                                ]
+                            ],
                             [],
                             []
                         ],
                         "numbers": [
                             [],
-                            [],
+                            [
+                                7
+                            ],
                             []
                         ],
                         "prompt": null,
-                        "result": "Continue_",
+                        "result": "Madness_",
                         "strings": [
                             "Oh, you cant help that, were all mad here. Im mad. You are mad.",
                             "How do you know I am mad?",
                             "You must be, or you would not have come here."
                         ],
-                        "value": null
+                        "value": 3
                     },
                     {
                         "number_lists": [
-                            [],
+                            [
+                                [
+                                    100,
+                                    200,
+                                    -50
+                                ]
+                            ],
                             [],
                             []
                         ],
                         "numbers": [
                             [],
-                            [],
+                            [
+                                7
+                            ],
                             []
                         ],
                         "prompt": null,
-                        "result": "Continue_",
+                        "result": "Madness_",
                         "strings": [
                             "To begin with, a dogs not mad. You grant that?",
-                            "I suppose so",
-                            "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
+                            "How do you know I am mad?",
+                            "You must be, or you would not have come here."
                         ],
-                        "value": null
+                        "value": 8
                     }
                 ],
                 "set": [
@@ -238,13 +259,15 @@
                         "Tree_",
                         "English_",
                         "Cat_",
-                        "Talk_"
+                        "Talk_",
+                        "Coordinates_"
                     ],
                     [
                         "Tree_",
                         "English_",
                         "Alice_",
-                        "Talk_"
+                        "Talk_",
+                        "Emotion_"
                     ],
                     [
                         "Tree_",
@@ -407,95 +430,83 @@
             },
             {
                 "context": [
-                    "Alice was feeling a mix of curiosity and apprehension as she conversed with the Cheshire Cat.",
-                    "The Cat's ability to appear and disappear at will added to the surreal nature of their interaction."
+                    "Alice was beginning to get very tired of sitting by her sister on the bank.",
+                    "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”"
                 ],
-                "guardrails": [],
+                "guardrails": [
+                    {
+                        "bad_examples": [
+                            "explain quantum mechanics.",
+                            "who will win the next american election?",
+                            "what is the capital of Spain?"
+                        ],
+                        "bad_output": "Are you as mad as me?",
+                        "bad_prompt": "Quote being spoken that is irrelevant and off topic with 1-20 words",
+                        "good_prompt": "Quote being spoken with 1-20 words",
+                        "index": 1
+                    }
+                ],
                 "ppo": [],
                 "samples": [
                     {
                         "number_lists": [
-                            [
-                                [
-                                    100,
-                                    200,
-                                    -50
-                                ]
-                            ],
+                            [],
                             [],
                             []
                         ],
                         "numbers": [
                             [],
-                            [
-                                5
-                            ],
+                            [],
                             []
                         ],
                         "prompt": null,
-                        "result": "Madness_",
+                        "result": "Continue_",
                         "strings": [
                             "Then it doesnt matter which way you go.",
                             "Can you tell me a way?",
-                            "Then it doesnt matter which way you go."
+                            "Oh sure, if you only walk long enough that is a way."
                         ],
-                        "value": 5
+                        "value": null
                     },
                     {
                         "number_lists": [
-                            [
-                                [
-                                    100,
-                                    200,
-                                    -50
-                                ]
-                            ],
+                            [],
                             [],
                             []
                         ],
                         "numbers": [
                             [],
-                            [
-                                7
-                            ],
+                            [],
                             []
                         ],
                         "prompt": null,
-                        "result": "Madness_",
+                        "result": "Continue_",
                         "strings": [
                             "Oh, you cant help that, were all mad here. Im mad. You are mad.",
                             "How do you know I am mad?",
                             "You must be, or you would not have come here."
                         ],
-                        "value": 3
+                        "value": null
                     },
                     {
                         "number_lists": [
-                            [
-                                [
-                                    100,
-                                    200,
-                                    -50
-                                ]
-                            ],
+                            [],
                             [],
                             []
                         ],
                         "numbers": [
                             [],
-                            [
-                                7
-                            ],
+                            [],
                             []
                         ],
                         "prompt": null,
-                        "result": "Madness_",
+                        "result": "Continue_",
                         "strings": [
                             "To begin with, a dogs not mad. You grant that?",
-                            "How do you know I am mad?",
-                            "You must be, or you would not have come here."
+                            "I suppose so",
+                            "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
                         ],
-                        "value": 8
+                        "value": null
                     }
                 ],
                 "set": [
@@ -503,15 +514,13 @@
                         "Tree_",
                         "English_",
                         "Cat_",
-                        "Talk_",
-                        "Coordinates_"
+                        "Talk_"
                     ],
                     [
                         "Tree_",
                         "English_",
                         "Alice_",
-                        "Talk_",
-                        "Emotion_"
+                        "Talk_"
                     ],
                     [
                         "Tree_",

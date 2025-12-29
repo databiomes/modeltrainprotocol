@@ -39,7 +39,7 @@ class TestWorkflowProtocolJSON:
 
         # Test that no unexpected keys are present
         expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers",
-                         "batches"}
+                         "batches", "version"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 

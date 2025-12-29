@@ -104,6 +104,12 @@ class BaseInstruction(ABC):
         """Returns the response TokenSet of the instruction."""
         raise NotImplementedError("Subclasses must implement last_tokenset method.")
 
+    @property
+    @abc.abstractmethod
+    def has_guardrails(self) -> bool:
+        """Returns True if the Instruction has any guardrails added."""
+        raise NotImplementedError("Subclasses must implement has_guardrails method.")
+
     def validate_context_snippets(self):
         """Validates that context snippets do not contain any final tokens."""
         for token_set in self.input.tokensets:
@@ -189,6 +195,10 @@ class BaseInstruction(ABC):
 
     def _enforce_snippets(self, context_snippets: List[Union[Snippet, str]]) -> List[Snippet]:
         """Converts regular strings to snippets if provided as a list of strings."""
+        if len(context_snippets) != len(self.input.tokensets):
+            raise ValueError(
+                f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.input.tokensets)}).")
+
         for i, snippet in enumerate(context_snippets):
             if isinstance(snippet, str):
                 associated_tokenset: TokenSet = self.input.tokensets[i]

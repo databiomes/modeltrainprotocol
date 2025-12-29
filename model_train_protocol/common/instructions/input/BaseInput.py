@@ -23,3 +23,19 @@ class BaseInput(ABC):
 
     def __len__(self):
         return len(self.context)
+
+    def add_guardrail(self, guardrail: Guardrail, tokenset_index: int):
+        """
+        Adds a guardrail to the InstructionInput.
+
+        :param guardrail: The Guardrail instance to add.
+        :param tokenset_index: The index of the TokenSet the guardrail applies to.
+        """
+        if tokenset_index < 0:
+            raise ValueError(f"tokenset_index {tokenset_index} is out of range for the Instruction input tokensets.")
+        if tokenset_index > len(self.tokensets) - 1:
+            raise ValueError(f"tokenset_index {tokenset_index} is out of range of the Instruction input tokensets.")
+        if tokenset_index in self.guardrails:
+            raise ValueError(f"A guardrail is already defined for tokenset_index {tokenset_index}.")
+
+        self.guardrails[tokenset_index] = guardrail

@@ -1,14 +1,15 @@
+import random
 from dataclasses import dataclass
 from enum import Enum
 from typing import Union
 
 from model_train_protocol import Instruction, ExtendedInstruction
-from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN
+from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN, UNK_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
+from model_train_protocol.common.prototyping.utils import get_version
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
-import random
 
 
 class InstructionTypeEnum(Enum):
@@ -73,7 +74,9 @@ class TemplateFile:
                 for sample in instruction.samples:
                     output_token_mapping[sample.result.value] = sample.result.key
 
-            output_token_mapping[EOS_TOKEN.value] = EOS_TOKEN.key
+            # Add UNK token if Guardrails:
+                if instruction.has_guardrails:
+                    output_token_mapping[UNK_TOKEN.value] = UNK_TOKEN.key
 
             return {
                 "input": dict(sorted(input_token_mapping.items())),
@@ -108,52 +111,35 @@ class TemplateFile:
                                                                       ExtendedInstruction) and is_last_context
 
                     if is_extended_instruction_extra_string:
-                        token_key += "<string>"
+                        token_key += "<string>\n"
 
                     token_key += "\n"
 
                     if not is_last_context:
-                        token_key += "<string>"
+                        token_key += "<string>\n"
 
                     input_list.append(token_key)
 
                 input_list.append(RUN_TOKEN.key)
 
-                # Build input string from structure
-                input_parts = [BOS_TOKEN.key]
-                for idx, token_set in enumerate(instruction.get_token_sets()):
+                output_strs: list[str] = [
+                    "<string>\n" + sample.result.key + "\n" + EOS_TOKEN.key
+                    for sample in instruction.samples
+                    ]
 
-                    is_last_context = idx == len(instruction.get_token_sets()) - 1
-                    is_extended_instruction_extra_string = isinstance(instruction,
-                                                                      ExtendedInstruction) and is_last_context
-
-                    token_key = "".join([
-                        t.key + t.template_representation for t in token_set
-                    ])
-
-                    if is_extended_instruction_extra_string:
-                        token_key += "<string>"  # Extra <string> for extended instruction embedded in key
-
-                    input_parts.append(token_key)
-
-                    if not is_last_context:
-                        input_parts.append("<string>")
-
-                input_parts.append(RUN_TOKEN.key)
-                input_str = "\n".join(input_parts)
-
-                output_str = "<string>\n" + instruction.output.final[0].key + "\n" + EOS_TOKEN.key
+                # add guardrail output if guardrail exists
+                if instruction.has_guardrails:
+                    output_strs.append(f"<string>\n{UNK_TOKEN.key}\n{EOS_TOKEN.key}")
 
                 instructions_dict[instruction.name] = {
                     "type": InstructionTypeEnum.get_instruction_type_by_class(instruction).value,
-                    "structure": input_list,
-                    "input": input_str,
-                    "output": output_str
+                    "input": input_list,
+                    "output": list(set(output_strs))
                 }
 
             return instructions_dict
 
-    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool):
+    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool, has_guardrails: bool):
         """Initializes the template"""
 
         self.tokens: TemplateFile.Tokens = TemplateFile.Tokens()
@@ -161,6 +147,7 @@ class TemplateFile:
         self.instruction_context_snippets: int = instruction_context_snippets
         self.instructions_list: list[BaseInstruction] = instructions
         self.encrypt: bool = encrypt
+        self.has_guardrails: bool = has_guardrails
         self._add_io_from_instructions()
 
     def _add_io_from_instructions(self):
@@ -297,13 +284,16 @@ class TemplateFile:
             sample = first_instruction.samples[0]
             examples["valid_model_output"] = self._create_sample_model_output(first_instruction, sample)
 
+        if self.has_guardrails:
+            guardrailed_instruction: BaseInstruction = next(instruction for instruction in self.instructions_list if instruction.has_guardrails)
+            examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{UNK_TOKEN.key}\n{EOS_TOKEN.key}"
+
         return examples
 
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
-
         json_dict: dict = {
-            "version": "0.1",  # Version is hardcoded for now; update as needed
+            "version": get_version(),
             "encrypt": self.encrypt,
             "tokens": self.tokens.to_json(),
             "instructions": self.instructions.to_json(),

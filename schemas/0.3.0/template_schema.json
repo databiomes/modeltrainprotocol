@@ -1,0 +1,144 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TemplateModel",
+  "description": "Main model for MTP Template JSON structure.",
+  "$defs": {
+    "ExampleUsageModel": {
+      "additionalProperties": {
+        "description": "Example usage string (e.g., instruction_input, valid_model_output, guardrail_model_output)",
+        "type": "string"
+      },
+      "description": "Model for example usage in template.",
+      "properties": {
+        "instruction_input": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Instruction Input"
+        },
+        "valid_model_output": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Valid Model Output"
+        },
+        "guardrail_model_output": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Guardrail Model Output"
+        }
+      },
+      "title": "ExampleUsageModel",
+      "type": "object"
+    },
+    "InstructionDefinitionModel": {
+      "description": "Model for a single instruction definition in the template.",
+      "properties": {
+        "type": {
+          "enum": [
+            "basic",
+            "extended"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "input": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input",
+          "type": "array"
+        },
+        "output": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Output",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "input",
+        "output"
+      ],
+      "title": "InstructionDefinitionModel",
+      "type": "object"
+    },
+    "TokensModel": {
+      "description": "Model for tokens in template (input and output mappings).",
+      "properties": {
+        "input": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Input",
+          "type": "object"
+        },
+        "output": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Output",
+          "type": "object"
+        }
+      },
+      "required": [
+        "input",
+        "output"
+      ],
+      "title": "TokensModel",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "version": {
+      "title": "Version",
+      "type": "string"
+    },
+    "encrypt": {
+      "title": "Encrypt",
+      "type": "boolean"
+    },
+    "tokens": {
+      "$ref": "#/$defs/TokensModel"
+    },
+    "instructions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/InstructionDefinitionModel"
+      },
+      "title": "Instructions",
+      "type": "object"
+    },
+    "example_usage": {
+      "$ref": "#/$defs/ExampleUsageModel"
+    }
+  },
+  "required": [
+    "version",
+    "encrypt",
+    "tokens",
+    "instructions",
+    "example_usage"
+  ],
+  "type": "object"
+}
