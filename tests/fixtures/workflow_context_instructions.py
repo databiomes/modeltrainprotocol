@@ -57,17 +57,17 @@ def user_workflow_2context_instruction_with_samples(simple_tokenset, user_tokens
     
     # Add samples with 2 context snippets plus output snippet
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 0",
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 1",
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_context_sample, user_response_sample],
         response_string="User prompt 2",
         value=None
     )
@@ -162,17 +162,17 @@ def user_workflow_5context_instruction_with_samples(
     
     # Add samples with 5 context snippets plus output snippet
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
         response_string="User prompt 0",
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
         response_string="User prompt 1",
         value=None
     )
     instruction.add_sample(
-        context_snippets=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_context_sample, simple_context_sample, user_context_sample, simple_context_sample, user_response_sample],
         response_string="User prompt 2",
         value=None
     )

@@ -15,19 +15,19 @@ from .common.util import get_possible_emojis, hash_string, validate_string_subse
 class Protocol:
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, context_snippets: int, encrypt: bool = True):
+    def __init__(self, name: str, inputs: int, encrypt: bool = True):
         """
         Initialize the Model Train Protocol (MTP)
 
         :param name: The name of the protocol.
-        :param context_snippets: The number of lines in each instruction sample. Must be at least 2.
+        :param inputs: The number of lines in each Instruction input. Must be at least 2.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
-        self.instruction_input_snippets: int = context_snippets  # Number of lines in instruction samples
+        self.instruction_input_snippets: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
         if self.instruction_input_snippets < 2:
-            raise ValueError("A minimum of 2 input snippets is required for all instructions.")
+            raise ValueError("A minimum of 2 inputs is required for all instructions.")
         self.context: List[str] = []
         self.tokens: Set[Token] = set()
         self.instructions: Set[BaseInstruction] = set()
@@ -54,7 +54,7 @@ class Protocol:
         """
         if instruction in self.instructions:
             raise ValueError(
-                "Instruction (or instruction with identical tokensets in the same order) already added to the protocol.")
+                "Instruction already added to the protocol (or instruction with identical tokensets in the same order).")
 
         for existing_instruction in self.instructions:
             if existing_instruction.name == instruction.name:
@@ -69,7 +69,7 @@ class Protocol:
         for sample in instruction.samples:
             if not len(sample.input) == self.instruction_input_snippets:
                 raise ValueError(
-                    f"Sample input lines ({len(sample.input)}) does not match defined instruction_context_snippets count ({self.instruction_input_snippets})"
+                    f"Sample input lines ({len(sample.input)}) does not match defined inputs count ({self.instruction_input_snippets})"
                     f"\n{sample}."
                 )
             if sample.result not in final_sample_table:

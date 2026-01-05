@@ -14,7 +14,7 @@ class TestFileOperations:
 
     def test_protocol_save_basic(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test basic protocol saving."""
-        protocol: Protocol = Protocol(name="file_test", context_snippets=2, encrypt=False)
+        protocol: Protocol = Protocol(name="file_test", inputs=2, encrypt=False)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -38,7 +38,7 @@ class TestFileOperations:
 
     def test_protocol_template_basic(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test basic protocol templating."""
-        protocol: Protocol = Protocol(name="file_test", context_snippets=2, encrypt=False)
+        protocol: Protocol = Protocol(name="file_test", inputs=2, encrypt=False)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -65,7 +65,7 @@ class TestFileOperations:
 
     def test_protocol_template(self, temp_directory, user_workflow_instruction_with_samples):
         """Test protocol template with guardrails."""
-        protocol = Protocol("guardrail_test", context_snippets=2)
+        protocol = Protocol("guardrail_test", inputs=2)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -92,7 +92,7 @@ class TestFileOperations:
 
     def test_protocol_save_with_numeric_tokens(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving with numeric tokens."""
-        protocol = Protocol("numeric_test", context_snippets=2)
+        protocol = Protocol("numeric_test", inputs=2)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -117,7 +117,7 @@ class TestFileOperations:
 
     def test_protocol_save_encrypted(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving with encryption."""
-        protocol = Protocol("encrypted_test", context_snippets=2, encrypt=True)
+        protocol = Protocol("encrypted_test", inputs=2, encrypt=True)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -142,7 +142,7 @@ class TestFileOperations:
 
     def test_protocol_save_unencrypted(self, temp_directory, simple_workflow_instruction_with_samples):
         """Test protocol saving without encryption."""
-        protocol = Protocol("unencrypted_test", context_snippets=2, encrypt=False)
+        protocol = Protocol("unencrypted_test", inputs=2, encrypt=False)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -167,7 +167,7 @@ class TestFileOperations:
 
     def test_protocol_save_multiple_instructions(self, temp_directory, user_workflow_instruction_with_samples, simple_workflow_instruction_with_samples):
         """Test protocol saving with multiple instructions."""
-        protocol = Protocol("multi_instruction_test", context_snippets=2)
+        protocol = Protocol("multi_instruction_test", inputs=2)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -193,7 +193,7 @@ class TestFileOperations:
 
     def test_protocol_save_default_path(self, simple_workflow_instruction_with_samples):
         """Test protocol saving with default path."""
-        protocol = Protocol("default_path_test", context_snippets=2)
+        protocol = Protocol("default_path_test", inputs=2)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -211,7 +211,7 @@ class TestFileOperations:
 
     def test_protocol_template_default_path(self, simple_workflow_instruction_with_samples):
         """Test protocol templating with default path."""
-        protocol = Protocol("default_template_test", context_snippets=2)
+        protocol = Protocol("default_template_test", inputs=2)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
@@ -229,7 +229,7 @@ class TestFileOperations:
 
     def test_protocol_save_error_handling(self, temp_directory):
         """Test protocol saving error handling."""
-        protocol = Protocol("error_test", context_snippets=2)
+        protocol = Protocol("error_test", inputs=2)
 
         # Add context but no instructions
         protocol.add_context("Context line 1")
@@ -241,7 +241,7 @@ class TestFileOperations:
 
     def test_protocol_template_error_handling(self, temp_directory):
         """Test protocol templating error handling."""
-        protocol = Protocol("template_error_test", context_snippets=2)
+        protocol = Protocol("template_error_test", inputs=2)
 
         # Add context but no instructions
         protocol.add_context("Context line 1")

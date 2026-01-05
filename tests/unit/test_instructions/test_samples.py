@@ -197,7 +197,7 @@ class TestSampleValueValidation:
 
         # Should not raise error
         instruction.add_sample(
-            context_snippets=[context_snippet1, output_snippet],
+            inputs=[context_snippet1, output_snippet],
             response_string="User prompt",
             value=None  # None value allowed for user tokens
         )
@@ -235,9 +235,9 @@ class TestSampleValueValidation:
 
         # Note: Current implementation doesn't validate that value must be None for non-FinalNumToken
         # This test may need to be updated if validation is added
-        # ExtendedInstruction: context_snippets should match input tokensets, with last one being user prompt
+        # ExtendedInstruction: inputs should match input tokensets, with last one being user prompt
         instruction.add_sample(
-            context_snippets=[context_snippet1, output_snippet],  # 2 snippets for 2 tokensets
+            inputs=[context_snippet1, output_snippet],  # 2 snippets for 2 tokensets
             response_string="User prompt",
             value="some_value"  # Non-None value - currently not validated
         )
@@ -522,7 +522,7 @@ class TestInstructionValidation:
 
         with pytest.raises(ValueError, match="Number of context snippets \\(0\\) must match number of context token sets \\(2\\)"):
             instruction.add_sample(
-                context_snippets=[],  # No context snippets, but need 2
+                inputs=[],  # No context snippets, but need 2
                 response_string="User prompt"
             )
 
@@ -541,7 +541,7 @@ class TestInstructionValidation:
 
         with pytest.raises(ValueError, match="does not match expected token set"):
             instruction.add_sample(
-                context_snippets=[wrong_snippet, output_snippet],  # First snippet has wrong token set
+                inputs=[wrong_snippet, output_snippet],  # First snippet has wrong token set
                 response_string="User prompt"
             )
 
@@ -559,7 +559,7 @@ class TestInstructionValidation:
 
         with pytest.raises(ValueError, match="does not match expected token set"):
             instruction.add_sample(
-                context_snippets=[context_snippet1, wrong_output_snippet],  # Wrong token set for output
+                inputs=[context_snippet1, wrong_output_snippet],  # Wrong token set for output
                 response_string="User prompt"
             )
 
@@ -576,7 +576,7 @@ class TestInstructionValidation:
 
         with pytest.raises(TypeError, match="missing 1 required positional argument: 'response_string'"):
             instruction.add_sample(
-                context_snippets=[context_snippet1, output_snippet]
+                inputs=[context_snippet1, output_snippet]
                 # Missing response_string parameter
             )
 
@@ -594,7 +594,7 @@ class TestInstructionValidation:
         # Note: Current implementation doesn't validate that value must be None for non-FinalNumToken
         # This test may need to be updated if validation is added
         instruction.add_sample(
-            context_snippets=[context_snippet1, output_snippet],
+            inputs=[context_snippet1, output_snippet],
             response_string="User prompt",
             value="invalid_string"  # Wrong type - currently not validated
         )
@@ -613,7 +613,7 @@ class TestInstructionValidation:
         # Note: Current implementation doesn't validate that value must be None for non-FinalNumToken
         # This test may need to be updated if validation is added
         instruction.add_sample(
-            context_snippets=[context_snippet1, output_snippet],
+            inputs=[context_snippet1, output_snippet],
             response_string="User prompt",
             value=[1, 2, 3]  # List - currently not validated
         )
@@ -713,7 +713,7 @@ class TestInstructionValidation:
 
         # Should not raise error
         instruction.add_sample(
-            context_snippets=[context_snippet1, output_snippet],
+            inputs=[context_snippet1, output_snippet],
             response_string="User prompt"
         )
 
@@ -730,7 +730,7 @@ class TestInstructionValidation:
 
         # Should not raise error
         instruction.add_sample(
-            context_snippets=[context_snippet1, output_snippet],
+            inputs=[context_snippet1, output_snippet],
             response_string="User prompt",
             value=None  # Valid None value for non-numeric final token
         )

@@ -28,10 +28,10 @@ The first step in creating a model training protocol is to initialize the Protoc
 import model_train_protocol as mtp
 
 # Initialize the protocol
-protocol = mtp.Protocol(name="my_model", context_snippets=2)
+protocol = mtp.Protocol(name="my_model", inputs=2)
 ```
 
-The parameter `context_snippets` is the number of input lines in each instruction sample. This is required and must be at least 2.
+The parameter `inputs` is the number of lines in each Instruction's Input. Must be at least 2.
 
 ## System Architecture
 
@@ -152,7 +152,7 @@ cat_pondering_instruction_disappear = mtp.Instruction(
 #### Adding Samples
 
 - **add_sample() parameters**:
-  - **context_snippets**: List of context snippets that will be added to the Instruction
+  - **inputs**: List of context snippets that will be added to the Instruction
   - **response_snippet**: The model's output snippet
   - **value**: Optional numerical value (required if final Token is a NumToken)
 
@@ -199,7 +199,7 @@ alice_cat_instruction_leave = mtp.ExtendedInstruction(
 #### Adding Samples
 
 - **add_sample() parameters**:
-  - **context_snippets**: List of context snippets that will be added to the Instruction (must match the context TokenSets)
+  - **inputs**: List of context snippets that will be added to the Instruction (must match the context TokenSets)
   - **response_string**: The response provided by the model as a string
   - **value**: Optional numerical value (required if final Token is a NumToken)
 

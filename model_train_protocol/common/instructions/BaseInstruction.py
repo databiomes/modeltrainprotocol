@@ -169,10 +169,10 @@ class BaseInstruction(ABC):
             memory_set.append(token_strings)
         return memory_set
 
-    def _create_sample(self, context_snippets: List[Snippet], response_snippet: Snippet, final: FinalToken,
+    def _create_sample(self, inputs: List[Snippet], response_snippet: Snippet, final: FinalToken,
                        value: Union[int, float, List[Union[int, float]], None] = None) -> Sample:
         """Create a base sample dictionary without a prompt."""
-        all_snippets: List[Snippet] = context_snippets + [response_snippet]
+        all_snippets: List[Snippet] = inputs + [response_snippet]
 
         # format sample
         numbers: List[List[int]] = []
@@ -184,7 +184,7 @@ class BaseInstruction(ABC):
             number_lists.append(snippet.number_lists)
 
         return Sample(
-            context=[snippet.string for snippet in context_snippets],
+            context=[snippet.string for snippet in inputs],
             output=response_snippet.string,
             prompt=None,
             number=numbers,
@@ -193,23 +193,23 @@ class BaseInstruction(ABC):
             value=value
         )
 
-    def _enforce_snippets(self, context_snippets: List[Union[Snippet, str]]) -> List[Snippet]:
+    def _enforce_snippets(self, inputs: List[Union[Snippet, str]]) -> List[Snippet]:
         """Converts regular strings to snippets if provided as a list of strings."""
-        if len(context_snippets) != len(self.input.tokensets):
+        if len(inputs) != len(self.input.tokensets):
             raise ValueError(
-                f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.input.tokensets)}).")
+                f"Number of context snippets ({len(inputs)}) must match number of context token sets ({len(self.input.tokensets)}).")
 
-        for i, snippet in enumerate(context_snippets):
+        for i, snippet in enumerate(inputs):
             if isinstance(snippet, str):
                 associated_tokenset: TokenSet = self.input.tokensets[i]
                 try:
-                    context_snippets[i] = associated_tokenset.create_snippet(string=snippet)
+                    inputs[i] = associated_tokenset.create_snippet(string=snippet)
                 except Exception as e:
                     raise ValueError(
                         f"Failed to create Snippet from string '{snippet}' for TokenSet {associated_tokenset}.\n"
                         f"Create a Snippet from the tokenset and add associated information: {e}")
 
-        return context_snippets
+        return inputs
 
     @classmethod
     def _validate_snippet_matches_set(cls, snippet: Snippet, expected_token_set: TokenSet):
@@ -217,11 +217,11 @@ class BaseInstruction(ABC):
         if snippet.token_set_key != expected_token_set.key:
             raise ValueError(f"Snippet {snippet} does not match expected token set {expected_token_set}.")
 
-    def _assert_context_snippet_count(self, context_snippets: List[Snippet]):
+    def _assert_context_snippet_count(self, inputs: List[Snippet]):
         """Assert the number of context snippets matches the number of context token sets."""
-        if len(context_snippets) != len(self.input.tokensets):
+        if len(inputs) != len(self.input.tokensets):
             raise ValueError(
-                f"Number of context snippets ({len(context_snippets)}) must match number of context token sets ({len(self.input.tokensets)}).")
+                f"Number of context snippets ({len(inputs)}) must match number of context token sets ({len(self.input.tokensets)}).")
 
     def _assign_final_token(self, final: Optional[FinalToken]) -> FinalToken:
         """

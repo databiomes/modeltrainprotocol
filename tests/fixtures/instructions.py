@@ -372,17 +372,17 @@ def user_instruction_with_samples(
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     # For ExtendedInstruction, the output snippet should match the user TokenSet
     user_instruction.add_sample(
-        context_snippets=[simple_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_response_sample],
         response_string="What should I do?",
         value=None
     )
     user_instruction.add_sample(
-        context_snippets=[simple_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_response_sample],
         response_string="How can I help?",
         value=None
     )
     user_instruction.add_sample(
-        context_snippets=[simple_context_sample, user_response_sample],
+        inputs=[simple_context_sample, user_response_sample],
         response_string="What's the next step?",
         value=None
     )
@@ -481,17 +481,17 @@ def user_mixed_instruction_with_samples(
     # Add samples to the instruction - only use samples that match the instruction's TokenSet
     # For ExtendedInstruction, the output snippet should match the user TokenSet
     user_mixed_instruction.add_sample(
-        context_snippets=[simple_mixed_context_sample, user_mixed_response_sample],
+        inputs=[simple_mixed_context_sample, user_mixed_response_sample],
         response_string="Generate mixed data",
         value=42.5
     )
     user_mixed_instruction.add_sample(
-        context_snippets=[simple_mixed_context_sample, user_mixed_response_sample],
+        inputs=[simple_mixed_context_sample, user_mixed_response_sample],
         response_string="What are the coordinates?",
         value=37.2
     )
     user_mixed_instruction.add_sample(
-        context_snippets=[simple_mixed_context_sample, user_mixed_response_sample],
+        inputs=[simple_mixed_context_sample, user_mixed_response_sample],
         response_string="Calculate the result",
         value=79.7
     )

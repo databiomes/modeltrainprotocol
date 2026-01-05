@@ -51,50 +51,50 @@ class ExtendedInstruction(BaseInstruction):
         """Returns the last TokenSet in the Instruction, which is the response TokenSet."""
         return self.input.tokensets[-1]
 
-    def _validate_snippets_match(self, context_snippets: List[Snippet]):
+    def _validate_snippets_match(self, inputs: List[Snippet]):
         """Validates that all snippets in the samples match their expected token sets."""
         all_token_sets: List[TokenSet] = self.get_token_sets()
 
-        for i in range(len(context_snippets)):
-            self._validate_snippet_matches_set(snippet=context_snippets[i], expected_token_set=all_token_sets[i])
+        for i in range(len(inputs)):
+            self._validate_snippet_matches_set(snippet=inputs[i], expected_token_set=all_token_sets[i])
 
     # noinspection PyMethodOverriding
-    def add_sample(self, context_snippets: List[Snippet], response_string: str,
+    def add_sample(self, inputs: List[Snippet], response_string: str,
                    value: Union[int, float, List[Union[int, float]], None]= None, final: FinalToken | None = None):
         f"""
         Add a sample to the Instruction.
 
-        :param context_snippets: List of context snippets that will be added to the Instruction.
+        :param inputs: List of context snippets that will be added to the Instruction.
         :param response_string: The response provided by the model as a string.
         :param value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         :param final: Optional Token instance designating the final action by the model. Defaults to a non-action Token designated {self.output.default_final}.
         """
         final: FinalToken = self._assign_final_token(final=final)
         self.output.validate_sample(string=response_string, value=value, final=final)
-        self._assert_context_snippet_count(context_snippets=context_snippets) # exclude last snippet for special case
-        self._validate_snippets_match(context_snippets=context_snippets)
+        self._assert_context_snippet_count(inputs=inputs) # exclude last snippet for special case
+        self._validate_snippets_match(inputs=inputs)
 
-        sample: Sample = self._create_sample(context_snippets=context_snippets,
+        sample: Sample = self._create_sample(inputs=inputs,
                                              response_string=response_string, value=value, final=final)
         self.samples.append(sample)
 
-    def _create_sample(self, context_snippets: List[Snippet], response_string: str, final: FinalToken,
+    def _create_sample(self, inputs: List[Snippet], response_string: str, final: FinalToken,
                        value: Union[int, float, List[Union[int, float]], None] = None) -> Sample:
         """Creates a sample ExtendedInstruction string for example usages."""
 
         # format sample
         numbers: List[List[int]] = []
-        for snippet in context_snippets:
+        for snippet in inputs:
             numbers.append(snippet.numbers)
 
         number_lists: List[List[List[int]]] = []
-        for snippet in context_snippets:
+        for snippet in inputs:
             number_lists.append(snippet.number_lists)
 
         return Sample(
-            context=[snippet.string for snippet in context_snippets[:-1]],
+            context=[snippet.string for snippet in inputs[:-1]],
             output=response_string,
-            prompt=context_snippets[-1].string,
+            prompt=inputs[-1].string,
             number=numbers,
             number_lists=number_lists,
             result=final,

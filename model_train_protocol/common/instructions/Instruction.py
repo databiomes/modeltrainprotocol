@@ -33,9 +33,9 @@ class Instruction(BaseInstruction):
             raise TypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
         self.validate_context_snippets()
 
-    def _validate_snippets_match(self, context_snippets: List[Snippet], response_snippet: Snippet):
+    def _validate_snippets_match(self, inputs: List[Snippet], response_snippet: Snippet):
         """Validates that all snippets in the samples match their expected token sets."""
-        all_snippets: List[Snippet] = context_snippets + [response_snippet]
+        all_snippets: List[Snippet] = inputs + [response_snippet]
         all_token_sets: List[TokenSet] = self.get_token_sets()
 
         for i in range(len(all_snippets)):
@@ -88,14 +88,14 @@ class Instruction(BaseInstruction):
         :param output_value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         :param final: Optional Token instance designating th e final action by the model. Defaults to a non-action Token designated {self.output.default_final}.
         """
-        input_snippets: List[Snippet] = self._enforce_snippets(context_snippets=input_snippets)
+        input_snippets: List[Snippet] = self._enforce_snippets(inputs=input_snippets)
         output_snippet: Snippet = self._enforce_response_snippet(output_snippet)
         final: FinalToken = self._assign_final_token(final=final)
         self.output.validate_sample(snippet=output_snippet, value=output_value, final=final)
-        self._assert_context_snippet_count(context_snippets=input_snippets)
-        self._validate_snippets_match(context_snippets=input_snippets, response_snippet=output_snippet)
+        self._assert_context_snippet_count(inputs=input_snippets)
+        self._validate_snippets_match(inputs=input_snippets, response_snippet=output_snippet)
 
-        sample: Sample = self._create_sample(context_snippets=input_snippets, response_snippet=output_snippet,
+        sample: Sample = self._create_sample(inputs=input_snippets, response_snippet=output_snippet,
                                              value=output_value, final=final)
         self.samples.append(sample)
 

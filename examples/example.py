@@ -7,7 +7,7 @@ import model_train_protocol as mtp
 # appear or vanish, answering questions, and leaving the conversation.
 # The model is set from the perspective of the Cat, responding to Alice's prompts.
 
-protocol = mtp.Protocol(name="example", context_snippets=2, encrypt=False)
+protocol = mtp.Protocol(name="example", inputs=2, encrypt=False)
 
 protocol.add_context(
     "ALICE was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, “and what is the use of a book,” thought Alice, “ without pictures or conversations?”")
