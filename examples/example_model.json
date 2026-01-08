@@ -2,6 +2,7 @@
     "version": "0.3.0",
     "name": "example",
     "inputs": 2,
+    "encrypted": false,
     "context": [
         "ALICE was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, “and what is the use of a book,” thought Alice, “ without pictures or conversations?”",
         "So she was considering in her own mind, as well as she could, for the hot day made her feel very sleepy and stupid, whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a white rabbit with pink eyes ran close by her.",
@@ -280,108 +281,6 @@
             },
             {
                 "context": [
-                    "Alice was beginning to get very tired of sitting by her sister on the bank.",
-                    "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”"
-                ],
-                "guardrails": [
-                    {
-                        "bad_examples": [
-                            "explain quantum mechanics.",
-                            "who will win the next american election?",
-                            "what is the capital of Spain?"
-                        ],
-                        "bad_output": "Are you as mad as me?",
-                        "bad_prompt": "Quote being spoken that is irrelevant and off topic with 1-20 words",
-                        "good_prompt": "Quote being spoken with 1-20 words",
-                        "index": 1
-                    }
-                ],
-                "ppo": [],
-                "samples": [
-                    {
-                        "number_lists": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "numbers": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "prompt": null,
-                        "result": "Continue_",
-                        "strings": [
-                            "Then it doesnt matter which way you go.",
-                            "Can you tell me a way?",
-                            "Oh sure, if you only walk long enough that is a way."
-                        ],
-                        "value": null
-                    },
-                    {
-                        "number_lists": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "numbers": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "prompt": null,
-                        "result": "Continue_",
-                        "strings": [
-                            "Oh, you cant help that, were all mad here. Im mad. You are mad.",
-                            "How do you know I am mad?",
-                            "You must be, or you would not have come here."
-                        ],
-                        "value": null
-                    },
-                    {
-                        "number_lists": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "numbers": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "prompt": null,
-                        "result": "Continue_",
-                        "strings": [
-                            "To begin with, a dogs not mad. You grant that?",
-                            "I suppose so",
-                            "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
-                        ],
-                        "value": null
-                    }
-                ],
-                "set": [
-                    [
-                        "Tree_",
-                        "English_",
-                        "Cat_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Alice_",
-                        "Talk_"
-                    ],
-                    [
-                        "Tree_",
-                        "English_",
-                        "Cat_",
-                        "Talk_"
-                    ]
-                ]
-            },
-            {
-                "context": [
                     "It was getting late, and Alice was beginning to feel a little anxious about the time.",
                     "The Cheshire Cat had been appearing and disappearing at will, leaving Alice unsure of its presence."
                 ],
@@ -514,6 +413,108 @@
                         "Tree_",
                         "English_",
                         "Dissipate_",
+                        "Cat_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Alice_",
+                        "Talk_"
+                    ],
+                    [
+                        "Tree_",
+                        "English_",
+                        "Cat_",
+                        "Talk_"
+                    ]
+                ]
+            },
+            {
+                "context": [
+                    "Alice was beginning to get very tired of sitting by her sister on the bank.",
+                    "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”"
+                ],
+                "guardrails": [
+                    {
+                        "bad_examples": [
+                            "explain quantum mechanics.",
+                            "who will win the next american election?",
+                            "what is the capital of Spain?"
+                        ],
+                        "bad_output": "Are you as mad as me?",
+                        "bad_prompt": "Quote being spoken that is irrelevant and off topic with 1-20 words",
+                        "good_prompt": "Quote being spoken with 1-20 words",
+                        "index": 1
+                    }
+                ],
+                "ppo": [],
+                "samples": [
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": null,
+                        "result": "Continue_",
+                        "strings": [
+                            "Then it doesnt matter which way you go.",
+                            "Can you tell me a way?",
+                            "Oh sure, if you only walk long enough that is a way."
+                        ],
+                        "value": null
+                    },
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": null,
+                        "result": "Continue_",
+                        "strings": [
+                            "Oh, you cant help that, were all mad here. Im mad. You are mad.",
+                            "How do you know I am mad?",
+                            "You must be, or you would not have come here."
+                        ],
+                        "value": null
+                    },
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": null,
+                        "result": "Continue_",
+                        "strings": [
+                            "To begin with, a dogs not mad. You grant that?",
+                            "I suppose so",
+                            "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
+                        ],
+                        "value": null
+                    }
+                ],
+                "set": [
+                    [
+                        "Tree_",
+                        "English_",
                         "Cat_",
                         "Talk_"
                     ],

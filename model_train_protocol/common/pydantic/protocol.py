@@ -97,6 +97,7 @@ class ProtocolModel(BaseModel):
     version: str
     name: str
     inputs: int
+    encrypted: bool
     context: List[str]
     tokens: Dict[str, TokenInfoModel]
     special_tokens: List[str]
