@@ -31,20 +31,6 @@
                 "<string>\nMadness_\n<EOS>"
             ]
         },
-        "alice_cat_alice_appear_disappear": {
-            "type": "basic",
-            "input": [
-                "<BOS>\n",
-                "Tree_English_Dissipate_Cat_Talk_\n<string>\n",
-                "Tree_English_Alice_Talk_\n<string>\n",
-                "Tree_English_Cat_Talk_\n",
-                "<RUN>"
-            ],
-            "output": [
-                "<string>\nAppear_\n<EOS>",
-                "<string>\nVanish_\n<EOS>"
-            ]
-        },
         "alice_cat_alice_continue": {
             "type": "basic",
             "input": [
@@ -58,10 +44,24 @@
                 "<string>\nContinue_\n<EOS>",
                 "<string>\n<UNK>\n<EOS>"
             ]
+        },
+        "alice_cat_alice_appear_disappear": {
+            "type": "basic",
+            "input": [
+                "<BOS>\n",
+                "Tree_English_Dissipate_Cat_Talk_\n<string>\n",
+                "Tree_English_Alice_Talk_\n<string>\n",
+                "Tree_English_Cat_Talk_\n",
+                "<RUN>"
+            ],
+            "output": [
+                "<string>\nAppear_\n<EOS>",
+                "<string>\nVanish_\n<EOS>"
+            ]
         }
     },
     "example_usage": {
-        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[-71, 142, 579]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_1\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[-34, -518, -11]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_4\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
         "valid_model_output": "Then it doesnt matter which way you go.\nMadness_\n<EOS>",
         "guardrail_model_output": "Are you as mad as me?\n<UNK>\n<EOS>"
     }
