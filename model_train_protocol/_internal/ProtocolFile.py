@@ -17,7 +17,7 @@ class ProtocolFile:
     class ProtocolInstruction:
         """Represents an instruction in the template."""
 
-        instruction_context_snippets: int
+        inputs: int
         sets: List = field(default_factory=list)
 
     @dataclass
@@ -39,16 +39,17 @@ class ProtocolFile:
         judge: List = field(default_factory=list)
         ppo: List = field(default_factory=list)
 
-    def __init__(self, name: str, context: List[str], instruction_context_snippets: int, tokens: Collection[Token],
+    def __init__(self, name: str, context: List[str], inputs: int, tokens: Collection[Token],
                  special_tokens: Collection[Token], instructions: Collection[BaseInstruction]):
         """Initializes the Template with a name and context."""
         self._name: str = name
+        self._inputs: int = inputs
         self._context: List[str] = context
         self._tokens: Dict[str, dict] = {}
         self._special_token_keys: Set[str] = set()
         self._instruction_token_keys: Set[str] = set()
         self._instruction: ProtocolFile.ProtocolInstruction = ProtocolFile.ProtocolInstruction(
-            instruction_context_snippets=instruction_context_snippets)
+            inputs=inputs)
         self._numbers: Dict[str, str] = {}
         self._batches: ProtocolFile.Batches = ProtocolFile.Batches()
 
@@ -201,7 +202,7 @@ class ProtocolFile:
 
         # Create Instruction object
         instruction = InstructionModel(
-            memory=self._instruction.instruction_context_snippets + 1,  # +1 for the response line
+            memory=self._instruction.inputs + 1,  # +1 for the response line
             sets=instruction_sets
         )
 
@@ -218,6 +219,7 @@ class ProtocolFile:
             version=get_version(),
             name=self._name,
             context=self._context,
+            inputs=self._inputs,
             tokens=token_info_dict,
             special_tokens=self._get_special_token_keys(),
             instruction=instruction,
