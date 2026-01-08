@@ -35,7 +35,6 @@ class Protocol:
         self.numbers: Dict[str, str] = dict()
         self.none = None
         self.special_tokens: Set[Token] = set()
-        self.possible_emoji_keys: Set[str] = get_possible_emojis()
         self.used_keys: Set[str] = set()
         self.has_guardrails: bool = False
 
