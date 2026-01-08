@@ -33,7 +33,6 @@ class Protocol:
         self.instructions: Set[BaseInstruction] = set()
         self.guardrails: Dict[str, List[str]] = dict()
         self.numbers: Dict[str, str] = dict()
-        self.none = None
         self.special_tokens: Set[Token] = set()
         self.used_keys: Set[str] = set()
         self.has_guardrails: bool = False
