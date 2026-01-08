@@ -96,6 +96,7 @@ class ProtocolModel(BaseModel):
     """Main model for MTP Protocol JSON structure."""
     version: str
     name: str
+    inputs: int
     context: List[str]
     tokens: Dict[str, TokenInfoModel]
     special_tokens: List[str]
