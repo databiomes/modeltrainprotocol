@@ -14,6 +14,7 @@ class TokenInfoModel(BaseModel):
     num_list: int
     desc: Optional[str]
     special: Optional[str]
+    type: str
 
 
 class SampleModel(BaseModel):

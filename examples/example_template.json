@@ -61,7 +61,7 @@
         }
     },
     "example_usage": {
-        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[486, -44, -309]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_3\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[728, -572, -499]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_9\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
         "valid_model_output": "Then it doesnt matter which way you go.\nMadness_\n<EOS>",
         "guardrail_model_output": "Are you as mad as me?\n<UNK>\n<EOS>"
     }

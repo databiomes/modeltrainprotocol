@@ -179,6 +179,7 @@ class ProtocolFile:
                 num_list=token_dict['num_list'],
                 desc=token_dict['desc'],
                 special=token_dict['special'],
+                type=token_dict['type']
             )
             token_info_dict[token_value] = token_info
 

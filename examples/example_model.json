@@ -21,126 +21,144 @@
             "key": "<BOS>",
             "num": false,
             "num_list": 0,
-            "special": "start"
+            "special": "start",
+            "type": "SpecialToken"
         },
         "<EOS>": {
             "desc": null,
             "key": "<EOS>",
             "num": false,
             "num_list": 0,
-            "special": "end"
+            "special": "end",
+            "type": "SpecialFinalToken"
         },
         "<NON>": {
             "desc": null,
             "key": "<NON>",
             "num": false,
             "num_list": 0,
-            "special": "none"
+            "special": "none",
+            "type": "SpecialFinalToken"
         },
         "<PAD>": {
             "desc": null,
             "key": "<PAD>",
             "num": false,
             "num_list": 0,
-            "special": "pad"
+            "special": "pad",
+            "type": "SpecialToken"
         },
         "<RUN>": {
             "desc": null,
             "key": "<RUN>",
             "num": false,
             "num_list": 0,
-            "special": "infer"
+            "special": "infer",
+            "type": "SpecialToken"
         },
         "<UNK>": {
             "desc": null,
             "key": "<UNK>",
             "num": false,
             "num_list": 0,
-            "special": "unknown"
+            "special": "unknown",
+            "type": "SpecialToken"
         },
         "Alice_": {
             "desc": null,
             "key": "Alice_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "Token"
         },
         "Appear_": {
             "desc": null,
             "key": "Appear_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "FinalToken"
         },
         "Cat_": {
             "desc": null,
             "key": "Cat_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "Token"
         },
         "Continue_": {
             "desc": null,
             "key": "Continue_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "FinalToken"
         },
         "Coordinates_": {
             "desc": "A list of three numerical values representing the X, Y, and Z coordinates of the character's location in a 3D space.",
             "key": "Coordinates_",
             "num": false,
             "num_list": 3,
-            "special": null
+            "special": null,
+            "type": "NumListToken"
         },
         "Dissipate_": {
             "desc": null,
             "key": "Dissipate_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "Token"
         },
         "Emotion_": {
             "desc": "A numerical representation of Alice's emotional state, ranging from 0 (calm) to 10 (extremely agitated).",
             "key": "Emotion_",
             "num": true,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "NumToken"
         },
         "English_": {
             "desc": null,
             "key": "English_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "Token"
         },
         "Madness_": {
             "desc": "Indicates the level of madness expressed in the response, ranging from 0 (sane) to 10 (mad).",
             "key": "Madness_",
             "num": true,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "FinalNumToken"
         },
         "Talk_": {
             "desc": null,
             "key": "Talk_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "Token"
         },
         "Tree_": {
             "desc": "Perched in a tree, surrounded by a dense fog where nothing can be seen past a few feet, the Cheshire Cat sits smiling on a branch.",
             "key": "Tree_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "Token"
         },
         "Vanish_": {
             "desc": null,
             "key": "Vanish_",
             "num": false,
             "num_list": 0,
-            "special": null
+            "special": null,
+            "type": "FinalToken"
         }
     },
     "special_tokens": [
