@@ -103,12 +103,23 @@ class Protocol:
 
         :return: The ProtocolFile instance representing the protocol.
         """
-        self._prep_protocol()
         return ProtocolFile(
             name=self.name, context=self.context, instruction_context_snippets=self.instruction_input_snippets,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
+    def get_template_file(self) -> TemplateFile:
+        """
+        Prepares and returns the TemplateFile representation of the protocol.
+
+        :return: The TemplateFile instance representing the protocol template.
+        """
+        return TemplateFile(
+            instructions=list(self.instructions),
+            instruction_context_snippets=self.instruction_input_snippets,
+            encrypt=self.encrypt,
+            has_guardrails=self.has_guardrails,
+        )
     def save(self, name: Optional[str] = None, path: Optional[str] = None):
         """
         Saves the protocol to a JSON file. This file can be submitted to Databiomes for model training.
@@ -124,6 +135,8 @@ class Protocol:
         filename = os.path.join(path, f"{name}_model.json")
 
         print(f"Saving Model Train Protocol to {filename}...")
+        self._prep_protocol()
+
         with open(filename, 'w', encoding="utf-8") as file:
             json.dump(self.get_protocol_file().to_json(), file, indent=4, ensure_ascii=False)
 
@@ -140,17 +153,11 @@ class Protocol:
             path = os.getcwd()
         filename = os.path.join(path, f"{self.name}_template.json")
 
-        self._prep_protocol()
-        template_file: TemplateFile = TemplateFile(
-            instructions=list(self.instructions),
-            instruction_context_snippets=self.instruction_input_snippets,
-            encrypt=self.encrypt,
-            has_guardrails=self.has_guardrails,
-        )
-
         print(f"Saving Model Train Protocol Template to {filename}...")
+        self._prep_protocol()
+
         with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(template_file.to_json(), file, indent=4, ensure_ascii=False)
+            json.dump(self.get_template_file().to_json(), file, indent=4, ensure_ascii=False)
 
     def _assign_key(self, token: Token):
         """
