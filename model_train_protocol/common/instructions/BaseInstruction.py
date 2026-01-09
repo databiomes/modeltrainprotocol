@@ -67,19 +67,19 @@ class BaseInstruction(ABC):
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
 
-    def __init__(self, input: BaseInput, output: BaseOutput, name: str):
+    def __init__(self, input: BaseInput, output: BaseOutput, name: str | None = None):
         """Initializes the common attributes to all Instructions."""
         self.input: BaseInput = input
         self.output: BaseOutput = output
         self.samples: List[Sample] = []
-        self.name: str = name
         self.samples: list[Sample] = []
         if not isinstance(input, BaseInput):
             raise TypeError("Context must be a sequence of TokenSet instances.")
         if not all(isinstance(ts, TokenSet) for ts in input.tokensets):
             raise TypeError("All items in context must be instances of TokenSet.")
-        if not name or not isinstance(name, str):
-            raise ValueError("Name must be a non-empty string.")
+        if name is None:
+            name = str(self.input) + str(self.output)
+        self.name: str = name
 
     @abc.abstractmethod
     def add_sample(self):

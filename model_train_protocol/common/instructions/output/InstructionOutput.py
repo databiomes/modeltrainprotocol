@@ -16,25 +16,7 @@ class InstructionOutput(BaseOutput):
         :param tokenset: The TokenSet associated with the model's response. Not used in
         :param final: A FinalToken or list of FinalToken designating the allowed final action by the model.
         """
-        self.tokenset: TokenSet = tokenset
-        self.validate_tokenset(tokenset=tokenset)
-        if isinstance(final, FinalToken):
-            final = [final]
-        self.final: List[FinalToken] | None = final
-
-    @classmethod
-    def validate_tokenset(cls, tokenset: TokenSet):
-        """
-        Validates the TokenSet associated with the response.
-
-        :param tokenset: The TokenSet to validate.
-        """
-        if not isinstance(tokenset, TokenSet):
-            raise TypeError(f"tokenset must be an instance of TokenSet. Got: {type(tokenset)}")
-
-        if tokenset.has_num_list_tokens or tokenset.has_num_tokens:
-            raise ValueError(
-                "Response TokenSet cannot contain NumTokens or NumListTokens. To achieve a single numeric output alongside text, use a FinalNumToken as the Response final token.")
+        super().__init__(tokenset=tokenset, final=final)
 
     def validate_sample(self, snippet: Snippet, value: Union[int, float, None],
                         final: FinalToken | None):

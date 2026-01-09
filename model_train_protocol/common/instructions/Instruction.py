@@ -20,7 +20,7 @@ class Instruction(BaseInstruction):
     output: InstructionOutput
     input: InstructionInput
 
-    def __init__(self, input: InstructionInput, output: InstructionOutput, name: str = "instruction"):
+    def __init__(self, input: InstructionInput, output: InstructionOutput, name: str | None = None):
         f"""
         Initializes an Instruction instance.
 

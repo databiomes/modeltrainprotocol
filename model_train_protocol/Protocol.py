@@ -2,7 +2,7 @@ import json
 import os
 from typing import List, Optional, Set, Dict
 
-from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput
+from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
@@ -76,7 +76,7 @@ class Protocol:
             for sample in instruction["samples"]:
                 input_lines: List[str] = sample["strings"][:-1]
                 output_line: str = sample["strings"][-1]
-                result_token: FinalToken = tokens[sample["result"]] # type: ignore
+                result_token: FinalToken = tokens[sample["result"]]  # type: ignore
                 final_tokens.append(result_token)
                 samples.append(Sample(input=input_lines, output=output_line, prompt=None, numbers=sample["numbers"],
                                       number_lists=sample["number_lists"], result=result_token, value=sample["value"]))
@@ -97,11 +97,25 @@ class Protocol:
             )
 
             for sample in samples:
+                inputs_snippets: List[Snippet] = []
+                for i, sample_input in enumerate(sample.input):
+                    inputs_snippets.append(
+                        tokensets[i].create_snippet(string=sample_input, number_lists=sample.number_lists[i] if len(
+                            sample.number_lists[i]) > 0 else None,
+                                                    numbers=sample.numbers[i] if len(sample.numbers[i]) > 0 else None))
+
+                outputs_snippet: Snippet = tokensets[-1].create_snippet(
+                    string=sample.output, number_lists=sample.number_lists[-1] if len(sample.number_lists[-1]) > 0 else None
+                    , numbers=sample.numbers[-1] if len(sample.numbers[-1]) > 0 else None
+                )
+
+                final_token: FinalToken = sample.result
+
                 protocol_instruction.add_sample(
-                    input_snippets=sample.input,
-                    output_snippet=sample.output,
+                    input_snippets=inputs_snippets,
+                    output_snippet=outputs_snippet,
                     output_value=sample.value,
-                    final=sample.result
+                    final=final_token,
                 )
 
             # Add guardrails
@@ -186,7 +200,8 @@ class Protocol:
         :return: The ProtocolFile instance representing the protocol.
         """
         return ProtocolFile(
-            name=self.name, context=self.context, inputs=self.instruction_input_snippets, encrypted=self.encrypt, valid=valid,
+            name=self.name, context=self.context, inputs=self.instruction_input_snippets, encrypted=self.encrypt,
+            valid=valid,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
@@ -226,7 +241,7 @@ class Protocol:
         self._prep_protocol()
 
         with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(self.get_protocol_file(valid=valid    ).to_json(), file, indent=4, ensure_ascii=False)
+            json.dump(self.get_protocol_file(valid=valid).to_json(), file, indent=4, ensure_ascii=False)
 
     def template(self, path: Optional[str] = None):
         """

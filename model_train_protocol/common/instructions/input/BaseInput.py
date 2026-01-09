@@ -39,3 +39,7 @@ class BaseInput(ABC):
             raise ValueError(f"A guardrail is already defined for tokenset_index {tokenset_index}.")
 
         self.guardrails[tokenset_index] = guardrail
+
+    def __str__(self):
+        """Combines all TokenSets to form a string representation of the Input."""
+        return f"Input(TokenSets={self.tokensets}, Context={self.context})"
