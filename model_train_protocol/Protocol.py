@@ -58,7 +58,7 @@ class Protocol:
         # Add tokens
         for token_value, token_info in protocol_file["tokens"].items():
             token_class: type[Token] = TokenTypeEnum[token_info["type"]]
-            token: Token = token_class(**token_info)
+            token: Token = token_class(value=token_value, **token_info)
             protocol._add_token(token)
             tokens[token.value] = token
 
