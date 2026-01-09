@@ -2,14 +2,15 @@ import json
 import os
 from typing import List, Optional, Set, Dict
 
-from . import Token, FinalToken
+from . import Token, FinalToken, Guardrail
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
-    MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM
-from .common.instructions.BaseInstruction import BaseInstruction
+    MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM, TokenTypeEnum
+from .common.instructions.BaseInstruction import BaseInstruction, Sample
+from .common.tokens import TokenSet
 from .common.tokens.SpecialToken import SpecialToken
-from .common.util import get_possible_emojis, hash_string, validate_string_subset
+from .common.util import hash_string, validate_string_subset
 
 
 class Protocol:
@@ -36,6 +37,48 @@ class Protocol:
         self.special_tokens: Set[Token] = set()
         self.used_keys: Set[str] = set()
         self.has_guardrails: bool = False
+
+    def from_json(self, protocol_file: dict) -> 'Protocol':
+        """
+        Loads a Protocol from a JSON representation.
+
+        Does NOT require a protocol to be valid.
+        :param protocol_file: The JSON representation of the Protocol.
+        :return: A Protocol instance.
+        """
+        name: str = protocol_file["name"]
+        inputs: int = protocol_file["inputs"]
+        encrypt: bool = protocol_file["encrypt"]
+        protocol = Protocol(name=name, inputs=inputs, encrypt=encrypt)
+        protocol.context = protocol_file["context"]
+
+        tokens: dict[str, Token] = {}
+
+        # Add tokens
+        for token_value, token_info in protocol_file["tokens"].items():
+            token_class: type[Token] = TokenTypeEnum[token_info["type"]]
+            token: Token = token_class(**token_info)
+            protocol._add_token(token)
+            tokens[token.value] = token
+
+        # Add instructions
+        for instruction_info in protocol_file["instructions"]:
+            for instruction in instruction_info["sets"]:
+                context: List[str] = instruction["context"]
+                tokensets: List[TokenSet] = []
+                for token_set in instruction["set"]:
+                    tokensets.append(TokenSet([tokens[token_value] for token_value in token_set]))
+
+                samples: List[Sample] = []
+                for sample in instruction["samples"]:
+                    input_lines: List[str] = sample["strings"][:-1]
+                    output_line: str = sample["strings"][-1]
+                    result_token: FinalToken = tokens[sample["result"]] # type: ignore
+                    samples.append(Sample(input=input_lines, output=output_line, prompt=None, numbers=sample["numbers"],
+                                          number_lists=sample["number_lists"], result=result_token, value=sample["value"]))
+
+                guardrail: Optional[Guardrail] = None
+
 
     def add_context(self, context: str):
         """Adds a line of context to the model."""
@@ -95,14 +138,14 @@ class Protocol:
         if instruction.has_guardrails:
             self.has_guardrails = True
 
-    def get_protocol_file(self) -> ProtocolFile:
+    def get_protocol_file(self, valid: bool) -> ProtocolFile:
         """
         Prepares and returns the ProtocolFile representation of the protocol.
 
         :return: The ProtocolFile instance representing the protocol.
         """
         return ProtocolFile(
-            name=self.name, context=self.context, instruction_context_snippets=self.instruction_input_snippets,
+            name=self.name, context=self.context, inputs=self.instruction_input_snippets, encrypted=self.encrypt, valid=valid,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
@@ -118,6 +161,7 @@ class Protocol:
             encrypt=self.encrypt,
             has_guardrails=self.has_guardrails,
         )
+
     def save(self, name: Optional[str] = None, path: Optional[str] = None):
         """
         Saves the protocol to a JSON file. This file can be submitted to Databiomes for model training.
@@ -133,10 +177,11 @@ class Protocol:
         filename = os.path.join(path, f"{name}_model.json")
 
         print(f"Saving Model Train Protocol to {filename}...")
+        valid: bool = self.validate_protocol()
         self._prep_protocol()
 
         with open(filename, 'w', encoding="utf-8") as file:
-            json.dump(self.get_protocol_file().to_json(), file, indent=4, ensure_ascii=False)
+            json.dump(self.get_protocol_file(valid=valid    ).to_json(), file, indent=4, ensure_ascii=False)
 
     def template(self, path: Optional[str] = None):
         """
@@ -152,6 +197,7 @@ class Protocol:
         filename = os.path.join(path, f"{self.name}_template.json")
 
         print(f"Saving Model Train Protocol Template to {filename}...")
+        self.validate_protocol()
         self._prep_protocol()
 
         with open(filename, 'w', encoding="utf-8") as file:
@@ -230,12 +276,27 @@ class Protocol:
 
         This includes setting guardrails from their TokenSets and creating default special tokens.
         """
-        if len(self.instructions) == 0:
-            raise ValueError(
-                "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
-
         self._add_default_special_tokens()
-        self._validate_context_count()
-        used_values: Set[str] = {token.value for token in self.tokens}
-        validate_string_subset(used_values)
-        validate_string_subset(self.used_keys)
+
+    def validate_protocol(self) -> bool:
+        """
+        Validates that the protocol meets all requirements for training.
+        :return: True if the protocol is valid, False otherwise.
+        """
+        try:
+            if len(self.instructions) == 0:
+                raise ValueError(
+                    "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
+
+            self._validate_context_count()
+            used_values: Set[str] = {token.value for token in self.tokens}
+            validate_string_subset(used_values)
+            validate_string_subset(self.used_keys)
+
+            for instruction in self.instructions:
+                instruction.validate_instruction()
+        except Exception as e:
+            print(f"Protocol invalid: {e}")
+            return False
+
+        return True
