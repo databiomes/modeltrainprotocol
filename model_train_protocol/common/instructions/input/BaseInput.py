@@ -42,4 +42,4 @@ class BaseInput(ABC):
 
     def __str__(self):
         """Combines all TokenSets to form a string representation of the Input."""
-        return f"Input(TokenSets={self.tokensets}, Context={self.context})"
+        return f"Input(TokenSets={self.tokensets})"

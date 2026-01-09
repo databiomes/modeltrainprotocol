@@ -54,5 +54,4 @@ class BaseOutput(ABC):
 
     def __str__(self):
         """Combines the output's TokenSet and final Tokens into a string representation."""
-        final_str: str = ", ".join([str(final) for final in self.final]) if self.final else "None"
-        return f"Output(TokenSet={self.tokenset}, FinalTokens=[{final_str}])"
+        return f"Output(TokenSet={self.tokenset}, FinalTokens=[{self.final}])"
