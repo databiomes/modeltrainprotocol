@@ -96,4 +96,4 @@ class Token:
     def to_dict(self):
         """Convert the token to a dictionary representation."""
         return {'value': self.value, 'key': self.key, 'num': self.num, 'num_list': self.num_list, 'desc': self.desc,
-                'special': self.special}
+                'special': self.special, "type": self.__class__.__name__}
