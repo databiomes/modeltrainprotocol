@@ -49,7 +49,7 @@ class Protocol:
         """
         name: str = protocol_file["name"]
         inputs: int = protocol_file["inputs"]
-        encrypt: bool = protocol_file["encrypt"]
+        encrypt: bool = protocol_file["encrypted"]
         protocol = Protocol(name=name, inputs=inputs, encrypt=encrypt)
         protocol.context = protocol_file["context"]
 
