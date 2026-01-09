@@ -2,7 +2,7 @@ import json
 import os
 from typing import List, Optional, Set, Dict
 
-from . import Token, FinalToken, Guardrail
+from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
@@ -38,7 +38,8 @@ class Protocol:
         self.used_keys: Set[str] = set()
         self.has_guardrails: bool = False
 
-    def from_json(self, protocol_file: dict) -> 'Protocol':
+    @classmethod
+    def from_json(cls, protocol_file: dict) -> 'Protocol':
         """
         Loads a Protocol from a JSON representation.
 
@@ -62,23 +63,62 @@ class Protocol:
             tokens[token.value] = token
 
         # Add instructions
-        for instruction_info in protocol_file["instructions"]:
-            for instruction in instruction_info["sets"]:
-                context: List[str] = instruction["context"]
-                tokensets: List[TokenSet] = []
-                for token_set in instruction["set"]:
-                    tokensets.append(TokenSet([tokens[token_value] for token_value in token_set]))
+        instruction_info = protocol_file["instruction"]
+        for instruction in instruction_info["sets"]:
+            context: List[str] = instruction["context"]
+            tokensets: List[TokenSet] = []
+            final_tokens: List[FinalToken] = []
+            for token_set in instruction["set"]:
+                tokensets.append(TokenSet([tokens[token_value] for token_value in token_set]))
 
-                samples: List[Sample] = []
-                for sample in instruction["samples"]:
-                    input_lines: List[str] = sample["strings"][:-1]
-                    output_line: str = sample["strings"][-1]
-                    result_token: FinalToken = tokens[sample["result"]] # type: ignore
-                    samples.append(Sample(input=input_lines, output=output_line, prompt=None, numbers=sample["numbers"],
-                                          number_lists=sample["number_lists"], result=result_token, value=sample["value"]))
+            samples: List[Sample] = []
+            for sample in instruction["samples"]:
+                input_lines: List[str] = sample["strings"][:-1]
+                output_line: str = sample["strings"][-1]
+                result_token: FinalToken = tokens[sample["result"]] # type: ignore
+                final_tokens.append(result_token)
+                samples.append(Sample(input=input_lines, output=output_line, prompt=None, numbers=sample["numbers"],
+                                      number_lists=sample["number_lists"], result=result_token, value=sample["value"]))
 
-                guardrail: Optional[Guardrail] = None
+            instr_input: InstructionInput = InstructionInput(
+                context=context,
+                tokensets=tokensets[:-1],
+            )
 
+            instr_output: InstructionOutput = InstructionOutput(
+                tokenset=tokensets[-1],
+                final=final_tokens,
+            )
+
+            protocol_instruction: Instruction = Instruction(
+                input=instr_input,
+                output=instr_output
+            )
+
+            for sample in samples:
+                protocol_instruction.add_sample(
+                    input_snippets=sample.input,
+                    output_snippet=sample.output,
+                    output_value=sample.value,
+                    final=sample.result
+                )
+
+            # Add guardrails
+            for guardrail_set in instruction["guardrails"]:
+                guardrail: Guardrail = Guardrail(
+                    good_prompt=guardrail_set["good_prompt"],
+                    bad_prompt=guardrail_set["bad_prompt"],
+                    bad_output=guardrail_set["bad_output"]
+                )
+
+                for sample in guardrail_set["bad_examples"]:
+                    guardrail.add_sample(sample)
+
+                protocol_instruction.add_guardrail(guardrail=guardrail, tokenset_index=guardrail_set["index"])
+
+            protocol.add_instruction(protocol_instruction)
+
+        return protocol
 
     def add_context(self, context: str):
         """Adds a line of context to the model."""
