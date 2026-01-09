@@ -16,7 +16,7 @@ class TestMultiInstructionProtocolJSON:
         protocol_file = ProtocolFile(
             name=protocol.name,
             context=protocol.context,
-            inputs=protocol.instruction_input_snippets,
+            inputs=protocol.input_count,
             encrypted=protocol.encrypt,
             valid=True,
             tokens=protocol.tokens,

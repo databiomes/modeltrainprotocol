@@ -25,9 +25,9 @@ class Protocol:
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         """
         self.name: str = name
-        self.instruction_input_snippets: int = inputs  # Number of lines in instruction samples
+        self.input_count: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
-        if self.instruction_input_snippets < 2:
+        if self.input_count < 2:
             raise ValueError("A minimum of 2 inputs is required for all instructions.")
         self.context: List[str] = []
         self.tokens: Set[Token] = set()
@@ -163,9 +163,9 @@ class Protocol:
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
-            if not len(sample.input) == self.instruction_input_snippets:
+            if not len(sample.input) == self.input_count:
                 raise ValueError(
-                    f"Sample input lines ({len(sample.input)}) does not match defined inputs count ({self.instruction_input_snippets})"
+                    f"Sample input lines ({len(sample.input)}) does not match defined inputs count ({self.input_count})"
                     f"\n{sample}."
                 )
             if sample.result not in final_sample_table:
@@ -200,7 +200,7 @@ class Protocol:
         :return: The ProtocolFile instance representing the protocol.
         """
         return ProtocolFile(
-            name=self.name, context=self.context, inputs=self.instruction_input_snippets, encrypted=self.encrypt,
+            name=self.name, context=self.context, inputs=self.input_count, encrypted=self.encrypt,
             valid=valid,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
@@ -213,7 +213,7 @@ class Protocol:
         """
         return TemplateFile(
             instructions=list(self.instructions),
-            instruction_context_snippets=self.instruction_input_snippets,
+            instruction_context_snippets=self.input_count,
             encrypt=self.encrypt,
             has_guardrails=self.has_guardrails,
         )
