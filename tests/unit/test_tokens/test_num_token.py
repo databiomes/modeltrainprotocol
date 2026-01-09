@@ -102,7 +102,8 @@ class TestNumToken:
             'num': 1,  # Should be 1 for NumToken
             'num_list': 0,
             'desc': 'A numeric token',
-            'special': None
+            'special': None,
+            'type': 'NumToken'
         }
         assert token_dict == expected_dict
 
@@ -117,7 +118,8 @@ class TestNumToken:
             'num': 1,  # Should be 1 for NumToken
             'num_list': 0,
             'desc': 'A numeric token',
-            'special': None
+            'special': None,
+            'type': 'NumToken'
         }
         assert token_dict == expected_dict
 

@@ -17,6 +17,8 @@ class TestWorkflowProtocolJSON:
             name=protocol.name,
             context=protocol.context,
             inputs=protocol.instruction_input_snippets,
+            encrypted=protocol.encrypt,
+            valid=True,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
             instructions=protocol.instructions
@@ -39,7 +41,7 @@ class TestWorkflowProtocolJSON:
 
         # Test that no unexpected keys are present
         expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers",
-                         "batches", "version"}
+                         "batches", "version", "encrypted", "valid", "inputs"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
@@ -213,7 +215,7 @@ class TestWorkflowProtocolJSON:
             
             # Token value should have the required fields
             # required_fields = {"emoji", "num", "num_list", "desc", "special"}
-            required_fields = {"key", "num", "num_list", "desc", "special"}
+            required_fields = {"key", "num", "num_list", "desc", "special", "type"}
             actual_fields = set(token_value.keys())
             assert actual_fields == required_fields, f"Token '{token_key}' has fields {actual_fields}, expected {required_fields}"
             

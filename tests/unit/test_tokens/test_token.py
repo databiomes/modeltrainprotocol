@@ -143,7 +143,8 @@ class TestToken:
             'num': 0,
             'num_list': 0,
             'desc': 'A test token',
-            'special': None
+            'special': None,
+            'type': 'Token'
         }
         assert token_dict == expected_dict
 
@@ -158,7 +159,8 @@ class TestToken:
             'num': 0,
             'num_list': 0,
             'desc': 'A test token',
-            'special': None
+            'special': None,
+            'type': 'Token'
         }
         assert token_dict == expected_dict
 

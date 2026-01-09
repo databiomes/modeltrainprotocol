@@ -16,6 +16,8 @@ class TestNumTokenProtocolJSON:
             name=protocol.name,
             context=protocol.context,
             inputs=protocol.instruction_input_snippets,
+            encrypted=protocol.encrypt,
+            valid=True,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
             instructions=protocol.instructions
@@ -38,7 +40,7 @@ class TestNumTokenProtocolJSON:
 
         # Test that no unexpected keys are present
         expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers",
-                         "batches", "version"}
+                         "batches", "version", "encrypted", "valid", "inputs"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 

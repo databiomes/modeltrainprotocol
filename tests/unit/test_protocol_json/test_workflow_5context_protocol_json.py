@@ -16,6 +16,8 @@ class TestWorkflow5ContextProtocolJSON:
             name=protocol.name,
             context=protocol.context,
             inputs=protocol.instruction_input_snippets,
+            encrypted=protocol.encrypt,
+            valid=True,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
             instructions=protocol.instructions
@@ -37,7 +39,7 @@ class TestWorkflow5ContextProtocolJSON:
         assert "batches" in json_output
         
         # Test that no unexpected keys are present
-        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers", "batches", "version"}
+        expected_keys = {"name", "context", "tokens", "special_tokens", "instruction", "numbers", "batches", "version", "encrypted", "valid", "inputs"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
@@ -258,6 +260,8 @@ class TestNumTokenWorkflow5ContextProtocolJSON:
             name=protocol.name,
             context=protocol.context,
             inputs=protocol.instruction_input_snippets,
+            encrypted=protocol.encrypt,
+            valid=True,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
             instructions=protocol.instructions

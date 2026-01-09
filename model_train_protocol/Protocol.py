@@ -217,7 +217,11 @@ class Protocol:
         filename = os.path.join(path, f"{name}_model.json")
 
         print(f"Saving Model Train Protocol to {filename}...")
-        valid: bool = self.validate_protocol()
+        valid: bool
+        error_msg: Optional[str]
+        valid, error_msg = self.validate_protocol()
+        if not valid:
+            raise ValueError(error_msg)
         self._prep_protocol()
 
         with open(filename, 'w', encoding="utf-8") as file:
@@ -237,7 +241,11 @@ class Protocol:
         filename = os.path.join(path, f"{self.name}_template.json")
 
         print(f"Saving Model Train Protocol Template to {filename}...")
-        self.validate_protocol()
+        valid: bool
+        error_msg: Optional[str]
+        valid, error_msg = self.validate_protocol()
+        if not valid:
+            raise ValueError(error_msg)
         self._prep_protocol()
 
         with open(filename, 'w', encoding="utf-8") as file:
@@ -318,10 +326,10 @@ class Protocol:
         """
         self._add_default_special_tokens()
 
-    def validate_protocol(self) -> bool:
+    def validate_protocol(self) -> tuple[bool, Optional[str]]:
         """
         Validates that the protocol meets all requirements for training.
-        :return: True if the protocol is valid, False otherwise.
+        :return: Tuple of (True if valid, error message if invalid)
         """
         try:
             if len(self.instructions) == 0:
@@ -336,7 +344,8 @@ class Protocol:
             for instruction in self.instructions:
                 instruction.validate_instruction()
         except Exception as e:
-            print(f"Protocol invalid: {e}")
-            return False
+            error_msg = str(e)
+            print(f"Protocol invalid: {error_msg}")
+            return False, error_msg
 
-        return True
+        return True, None

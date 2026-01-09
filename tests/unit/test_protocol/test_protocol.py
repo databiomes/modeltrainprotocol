@@ -28,9 +28,7 @@ class TestProtocol:
         assert len(protocol.instructions) == 0
         assert protocol.guardrails == {}
         assert protocol.numbers == {}
-        assert protocol.none is None
         assert len(protocol.special_tokens) == 0
-        assert len(protocol.possible_emoji_keys) > 0
         assert len(protocol.used_keys) == 0
 
     def test_protocol_initialization_encrypted(self):
@@ -64,13 +62,13 @@ class TestProtocol:
 
     def test_protocol_initialization_invalid_instruction_context_snippets(self):
         """Test protocol initialization with invalid context lines."""
-        with pytest.raises(ValueError, match="minimum of 2 input snippets"):
+        with pytest.raises(ValueError, match="minimum of 2 inputs"):
             Protocol("test_protocol", inputs=1)
 
-        with pytest.raises(ValueError, match="minimum of 2 input snippets"):
+        with pytest.raises(ValueError, match="minimum of 2 inputs"):
             Protocol("test_protocol", inputs=0)
 
-        with pytest.raises(ValueError, match="minimum of 2 input snippets"):
+        with pytest.raises(ValueError, match="minimum of 2 inputs"):
             Protocol("test_protocol", inputs=-1)
 
     def test_protocol_initialization_valid_instruction_context_snippets(self):
@@ -581,7 +579,7 @@ class TestProtocol:
             output_snippet=output_snippet
         )
 
-        with pytest.raises(ValueError, match="does not match defined instruction_context_snippets count"):
+        with pytest.raises(ValueError, match="does not match defined inputs count"):
             protocol.add_instruction(instruction)
 
     def test_protocol_save_basic(self, temp_directory):
@@ -1054,8 +1052,14 @@ class TestProtocol:
         protocol.add_context("Context line 1")
         protocol.add_context("Context line 2")
 
-        with pytest.raises(ValueError, match="No instructions have been added"):
-            protocol._prep_protocol()
+        # _prep_protocol() doesn't validate, so it should succeed
+        # Validation happens in save() and template()
+        protocol._prep_protocol()
+        
+        # But validate_protocol() should return False
+        valid, error_msg = protocol.validate_protocol()
+        assert not valid
+        assert "No instructions have been added" in error_msg
 
     @pytest.mark.parametrize("instruction_context_snippets", [2, 3, 5, 10])
     def test_protocol_various_instruction_context_snippets(self, instruction_context_snippets):
