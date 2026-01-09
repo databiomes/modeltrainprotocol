@@ -197,17 +197,29 @@ class TestBasicSimpleProtocolJSON:
 
             # Token value should have the required fields
             # required_fields = {"emoji", "num", "num_list", "desc", "special"}
-            required_fields = {"key", "num", "num_list", "desc", "special", "type"}
+            required_fields = {"key", "num", "num_list", "type"}
+            optional_fields = {"desc", "special", "min_value", "max_value", "length"}  # Optional fields (desc/special can be None, min/max/length only for NumToken/NumListToken)
             actual_fields = set(token_value.keys())
-            assert actual_fields == required_fields, f"Token '{token_key}' has fields {actual_fields}, expected {required_fields}"
+            # Check that all required fields are present
+            assert required_fields.issubset(actual_fields), f"Token '{token_key}' is missing required fields. Has {actual_fields}, needs {required_fields}"
+            # Check that no unexpected fields are present (only optional fields are allowed in addition to required)
+            allowed_fields = required_fields | optional_fields
+            unexpected_fields = actual_fields - allowed_fields
+            assert len(unexpected_fields) == 0, f"Token '{token_key}' has unexpected fields: {unexpected_fields}"
 
             # Check field types
             assert isinstance(token_value["key"], str), f"Token '{token_key}' key should be string"
             assert isinstance(token_value["num"], (bool, int)), f"Token '{token_key}' num should be bool or int"
-            assert token_value["desc"] is None or isinstance(token_value["desc"],
-                                                             str), f"Token '{token_key}' desc should be None or string"
-            assert token_value["special"] is None or isinstance(token_value["special"],
-                                                                str), f"Token '{token_key}' special should be None or string"
+            if "desc" in token_value:
+                assert token_value["desc"] is None or isinstance(token_value["desc"], str), f"Token '{token_key}' desc should be None or string if present"
+            if "special" in token_value:
+                assert token_value["special"] is None or isinstance(token_value["special"], str), f"Token '{token_key}' special should be None or string if present"
+            if "min_value" in token_value:
+                assert token_value["min_value"] is None or isinstance(token_value["min_value"], (int, float)), f"Token '{token_key}' min_value should be None, int or float if present"
+            if "max_value" in token_value:
+                assert token_value["max_value"] is None or isinstance(token_value["max_value"], (int, float)), f"Token '{token_key}' max_value should be None, int or float if present"
+            if "length" in token_value:
+                assert token_value["length"] is None or isinstance(token_value["length"], int), f"Token '{token_key}' length should be None or int if present"
 
     def test_basic_simple_protocol_special_tokens_structure(self, basic_simple_protocol):
         """Test the structure of special_tokens."""

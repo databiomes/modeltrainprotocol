@@ -144,7 +144,10 @@ class TestToken:
             'num_list': 0,
             'desc': 'A test token',
             'special': None,
-            'type': 'Token'
+            'type': 'Token',
+            'min_value': None,
+            'max_value': None,
+            'length': None
         }
         assert token_dict == expected_dict
 
@@ -160,7 +163,10 @@ class TestToken:
             'num_list': 0,
             'desc': 'A test token',
             'special': None,
-            'type': 'Token'
+            'type': 'Token',
+            'min_value': None,
+            'max_value': None,
+            'length': None
         }
         assert token_dict == expected_dict
 

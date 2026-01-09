@@ -22,7 +22,10 @@ class TestTokenDictMethods:
             'num_list': 0,
             'desc': None,
             'special': None,
-            'type': 'Token'
+            'type': 'Token',
+            'min_value': None,
+            'max_value': None,
+            'length': None
         }
         assert token_dict == expected_dict
 
@@ -38,7 +41,10 @@ class TestTokenDictMethods:
             'num_list': 0,
             'desc': 'A test token',
             'special': None,
-            'type': 'Token'
+            'type': 'Token',
+            'min_value': None,
+            'max_value': None,
+            'length': None
         }
         assert token_dict == expected_dict
 
@@ -53,7 +59,10 @@ class TestTokenDictMethods:
             'num_list': 0,
             'desc': None,
             'special': 'start',
-            'type': 'SpecialToken'
+            'type': 'SpecialToken',
+            'min_value': None,
+            'max_value': None,
+            'length': None
         }
         assert token_dict == expected_dict
 
@@ -87,7 +96,10 @@ class TestTokenDictMethods:
             'num_list': 0,
             'desc': None,
             'special': None,
-            'type': 'Token'
+            'type': 'Token',
+            'min_value': None,
+            'max_value': None,
+            'length': None
         }
         assert token_dict == expected_dict
 
@@ -103,7 +115,10 @@ class TestTokenDictMethods:
             'num_list': 0,
             'desc': '',
             'special': None,
-            'type': 'Token'
+            'type': 'Token',
+            'min_value': None,
+            'max_value': None,
+            'length': None
         }
         assert token_dict == expected_dict
 
@@ -119,7 +134,10 @@ class TestTokenDictMethods:
             'num_list': 0,
             'desc': 'Unicode description with émojis',
             'special': None,
-            'type': 'Token'
+            'type': 'Token',
+            'min_value': None,
+            'max_value': None,
+            'length': None
         }
         assert token_dict == expected_dict
 
@@ -249,7 +267,7 @@ class TestTokenDictMethods:
             assert token_dict['desc'] is None
             
             # Check that all expected keys are present
-            expected_keys = {'value', 'key', 'num', 'num_list', 'desc', 'special', 'type'}
+            expected_keys = {'value', 'key', 'num', 'num_list', 'desc', 'special', 'type', 'min_value', 'max_value', 'length'}
             assert set(token_dict.keys()) == expected_keys
 
     def test_constant_special_tokens_json_serializable(self):
@@ -305,7 +323,7 @@ class TestTokenDictMethods:
         token_dict = token.to_dict()
         
         # Check all expected keys are present
-        expected_keys = {'value', 'key', 'num', 'num_list', 'desc', 'special', 'type'}
+        expected_keys = {'value', 'key', 'num', 'num_list', 'desc', 'special', 'type', 'min_value', 'max_value', 'length'}
         assert set(token_dict.keys()) == expected_keys
         
         # Check values match token attributes
