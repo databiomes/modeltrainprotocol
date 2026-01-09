@@ -32,7 +32,7 @@ class ExtendedInstruction(BaseInstruction):
         if not isinstance(output, ExtendedResponse):
             raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(output)}")
 
-        self.validate_context_snippets()
+        self._validate_context_snippets()
 
     @property
     def has_guardrails(self) -> bool:
@@ -92,10 +92,10 @@ class ExtendedInstruction(BaseInstruction):
             number_lists.append(snippet.number_lists)
 
         return Sample(
-            context=[snippet.string for snippet in inputs[:-1]],
+            input=[snippet.string for snippet in inputs[:-1]],
             output=response_string,
             prompt=inputs[-1].string,
-            number=numbers,
+            numbers=numbers,
             number_lists=number_lists,
             result=final,
             value=value

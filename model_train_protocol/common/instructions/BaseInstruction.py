@@ -13,14 +13,14 @@ from ..tokens.TokenSet import TokenSet, Snippet
 class Sample:
     """A Sample is a single example of input and output for an Instruction."""
 
-    def __init__(self, context: List[str], output: str, prompt: Optional[str], number: List[List[int]],
+    def __init__(self, input: List[str], output: str, prompt: Optional[str], numbers: List[List[int]],
                  number_lists: List[List[List[int]]],
                  result: FinalToken,
                  value: Union[int, float, None]):
-        self.input: List[str] = context
+        self.input: List[str] = input
         self.output: str = output
         self.prompt: Optional[str] = prompt
-        self.numbers: List[List[int]] = number
+        self.numbers: List[List[int]] = numbers
         self.number_lists: List[List[List[int]]] = number_lists
         self.result: FinalToken = result
         self.value: Union[int, float, None] = value
@@ -110,12 +110,10 @@ class BaseInstruction(ABC):
         """Returns True if the Instruction has any guardrails added."""
         raise NotImplementedError("Subclasses must implement has_guardrails method.")
 
-    def validate_context_snippets(self):
-        """Validates that context snippets do not contain any final tokens."""
-        for token_set in self.input.tokensets:
-            for token in token_set:
-                if isinstance(token, FinalToken):
-                    raise ValueError(f"Context TokenSet cannot contain FinalToken instances. Found: {token}")
+    def validate_instruction(self):
+        """Validates the Instruction meets required Protocol standards."""
+        self._validate_context_snippets()
+        self._validate_minimum_samples()
 
     def get_tokens(self) -> List[Token]:
         """Returns all tokens in the instruction as a flat list."""
@@ -184,14 +182,41 @@ class BaseInstruction(ABC):
             number_lists.append(snippet.number_lists)
 
         return Sample(
-            context=[snippet.string for snippet in inputs],
+            input=[snippet.string for snippet in inputs],
             output=response_snippet.string,
             prompt=None,
-            number=numbers,
+            numbers=numbers,
             number_lists=number_lists,
             result=final,
             value=value
         )
+
+    def _validate_context_snippets(self):
+        """Validates that context snippets do not contain any final tokens."""
+        for token_set in self.input.tokensets:
+            for token in token_set:
+                if isinstance(token, FinalToken):
+                    raise ValueError(f"Context TokenSet cannot contain FinalToken instances. Found: {token}")
+
+    def _validate_minimum_samples(self):
+        """Validates that each instruction has at least 3 samples for each FinalToken"""
+        if len(self.samples) < 3:
+                raise ValueError(
+                    f"Instruction '{self.name}' has only {len(self.samples)} samples. "
+                    f"Each instruction must have at least 3 samples."
+                )
+
+        # Enforce there are 3 samples for each FinalToken in the response
+        final_token_counts: dict[FinalToken, int] = {final_token: 0 for final_token in self.output.final}
+        for sample in self.samples:
+            final_token_counts[sample.result] += 1
+
+        for final_token, count in final_token_counts.items():
+            if count < 3:
+                raise ValueError(
+                    f"Instruction '{self.name}' has only {count} samples for final token '{final_token.value}'. "
+                    f"Each final token must have at least 3 samples."
+                )
 
     def _enforce_snippets(self, inputs: List[Union[Snippet, str]]) -> List[Snippet]:
         """Converts regular strings to snippets if provided as a list of strings."""
