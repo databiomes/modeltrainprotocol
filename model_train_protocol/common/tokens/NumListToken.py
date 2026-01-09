@@ -26,7 +26,7 @@ class NumListToken(Token):
             raise ValueError("Num value must be greater than or equal to max_value.")
 
         self.num_list: int = length
-        self.min_value = min_value
-        self.max_value = max_value
-        self.length = length
+        self.min_value: float | int = min_value
+        self.max_value: float | int = max_value
+        self.length: int = length
         self.template_representation: str = f"<num_{min_value}_{max_value}_{length}>"
