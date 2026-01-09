@@ -12,6 +12,9 @@ class TokenInfoModel(BaseModel):
     key: str
     num: bool
     num_list: int
+    min_value: Optional[Union[int, float]]
+    max_value: Optional[Union[int, float]]
+    length: Optional[int]
     desc: Optional[str]
     special: Optional[str]
     type: str

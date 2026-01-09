@@ -178,6 +178,9 @@ class ProtocolFile:
                 key=token_dict['key'],
                 num=token_dict['num'],
                 num_list=token_dict['num_list'],
+                min_value=token_dict['min_value'],
+                max_value=token_dict['max_value'],
+                length=token_dict['length'],
                 desc=token_dict['desc'],
                 special=token_dict['special'],
                 type=token_dict['type']
