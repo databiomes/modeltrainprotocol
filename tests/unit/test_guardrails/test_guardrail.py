@@ -400,7 +400,7 @@ class TestGuardrail:
         guardrail.add_sample("Bad sample three")
 
         # Create instruction with the tokenset
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -427,7 +427,7 @@ class TestGuardrail:
         guardrail.add_sample("Bad sample three")
 
         # Create instruction with the tokenset
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -463,7 +463,7 @@ class TestGuardrail:
         guardrail_two.add_sample("Another bad sample three")
 
         # Create instruction with the tokenset
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -497,7 +497,7 @@ class TestInstructionAddGuardrailValidation:
 
         # Create instruction
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -525,7 +525,7 @@ class TestInstructionAddGuardrailValidation:
 
         # Create instruction
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -556,7 +556,7 @@ class TestInstructionAddGuardrailValidation:
 
         # Create instruction
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -585,7 +585,7 @@ class TestInstructionAddGuardrailValidation:
 
         # Create instruction with 1 tokenset (index 0)
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -614,7 +614,7 @@ class TestInstructionAddGuardrailValidation:
         # Create instruction with 2 tokensets (indices 0 and 1)
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
-        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -644,7 +644,7 @@ class TestInstructionAddGuardrailValidation:
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
         third_token_set: TokenSet = TokenSet(tokens=(TOKEN_TALK,))
-        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set, third_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set, third_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -683,7 +683,7 @@ class TestInstructionAddGuardrailValidation:
         # Create instruction with 2 tokensets
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
-        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -729,7 +729,7 @@ class TestInstructionAddGuardrailValidation:
         guardrail_two.add_sample("Another bad sample three")
 
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -758,7 +758,7 @@ class TestInstructionAddGuardrailValidation:
         guardrail.add_sample("Bad sample three")
 
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -785,7 +785,7 @@ class TestInstructionAddGuardrailValidation:
         guardrail.add_sample("Bad sample three")
 
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -823,7 +823,7 @@ class TestInstructionAddGuardrailValidation:
         # Create ExtendedInstruction with 2 tokensets
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
-        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set])
         extended_response = ExtendedResponse(final=FinalToken("Result"))
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -867,7 +867,7 @@ class TestInstructionAddGuardrailValidation:
         guardrail_two.add_sample("Another bad sample three")
 
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
-        instruction_input = InstructionInput(tokensets=[user_token_set], context=None)
+        instruction_input = InstructionInput(tokensets=[user_token_set])
         extended_response = ExtendedResponse(final=FinalToken("Result"))
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 

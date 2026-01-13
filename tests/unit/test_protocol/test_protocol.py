@@ -197,7 +197,7 @@ class TestProtocol:
 
         # Create instruction
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -266,7 +266,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -332,7 +332,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction1 = Instruction(
             input=instruction_input1,
@@ -351,7 +351,7 @@ class TestProtocol:
             )
 
         # Create second instruction with the same name
-        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output2 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction2 = Instruction(
             input=instruction_input2,
@@ -391,7 +391,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction1 = Instruction(
             input=instruction_input1,
@@ -415,7 +415,7 @@ class TestProtocol:
         context_set3 = TokenSet(tokens=(token4,))
         response_set2 = TokenSet(tokens=(token5,))
 
-        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set3], context=None)
+        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set3])
         instruction_output2 = InstructionOutput(tokenset=response_set2, final=final_token)
         instruction2 = Instruction(
             input=instruction_input2,
@@ -462,7 +462,7 @@ class TestProtocol:
 
         # Add first instruction
         final_token = FinalToken("Result")
-        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction1 = Instruction(
             input=instruction_input1,
@@ -482,7 +482,7 @@ class TestProtocol:
         token4 = Token("Token4", key="🔩")
         context_set3 = TokenSet(tokens=(token4,))
 
-        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set3], context=None)
+        instruction_input2 = InstructionInput(tokensets=[context_set1, context_set3])
         instruction_output2 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction2 = Instruction(
             input=instruction_input2,
@@ -501,7 +501,7 @@ class TestProtocol:
         protocol.add_instruction(instruction2)
 
         # Add third instruction with different name
-        instruction_input3 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input3 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output3 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction3 = Instruction(
             input=instruction_input3,
@@ -521,7 +521,7 @@ class TestProtocol:
         assert len(protocol.instructions) == 3
 
         # Try to add fourth instruction with name that conflicts with first
-        instruction_input4 = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input4 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output4 = InstructionOutput(tokenset=response_set, final=final_token)
         instruction4 = Instruction(
             input=instruction_input4,
@@ -554,7 +554,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)  # Only 2 context sets, but protocol expects 3
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])  # Only 2 context sets, but protocol expects 3
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -599,7 +599,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -655,7 +655,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -711,7 +711,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -767,7 +767,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -823,7 +823,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -938,7 +938,7 @@ class TestProtocol:
 
         # Create instruction
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2, user_set], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2, user_set])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(
             input=instruction_input,
@@ -1008,7 +1008,7 @@ class TestProtocol:
         response_set = TokenSet(tokens=(token3,))
 
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[context_set1, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
         instruction = Instruction(
             input=instruction_input,

@@ -18,18 +18,18 @@
         }
     },
     "instructions": {
-        "alice_cat_alice_continue": {
+        "alice_cat_alice_appear_disappear": {
             "type": "basic",
             "input": [
                 "<BOS>\n",
-                "Tree_English_Cat_Talk_\n<string>\n",
+                "Tree_English_Dissipate_Cat_Talk_\n<string>\n",
                 "Tree_English_Alice_Talk_\n<string>\n",
                 "Tree_English_Cat_Talk_\n",
                 "<RUN>"
             ],
             "output": [
-                "<string>\n<UNK>\n<EOS>",
-                "<string>\nContinue_\n<EOS>"
+                "<string>\nAppear_\n<EOS>",
+                "<string>\nVanish_\n<EOS>"
             ]
         },
         "alice_cat_alice_instruction_numeric": {
@@ -45,23 +45,23 @@
                 "<string>\nMadness_\n<EOS>"
             ]
         },
-        "alice_cat_alice_appear_disappear": {
+        "alice_cat_alice_continue": {
             "type": "basic",
             "input": [
                 "<BOS>\n",
-                "Tree_English_Dissipate_Cat_Talk_\n<string>\n",
+                "Tree_English_Cat_Talk_\n<string>\n",
                 "Tree_English_Alice_Talk_\n<string>\n",
                 "Tree_English_Cat_Talk_\n",
                 "<RUN>"
             ],
             "output": [
-                "<string>\nAppear_\n<EOS>",
-                "<string>\nVanish_\n<EOS>"
+                "<string>\nContinue_\n<EOS>",
+                "<string>\n<UNK>\n<EOS>"
             ]
         }
     },
     "example_usage": {
-        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[-843, 150, -392]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_5\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[-381, 45, 860]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_1\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
         "valid_model_output": "Then it doesnt matter which way you go.\nMadness_\n<EOS>",
         "guardrail_model_output": "Are you as mad as me?\n<UNK>\n<EOS>"
     }

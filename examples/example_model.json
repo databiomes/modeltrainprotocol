@@ -238,22 +238,10 @@
         "sets": [
             {
                 "context": [
-                    "Alice was beginning to get very tired of sitting by her sister on the bank.",
-                    "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”"
+                    "It was getting late, and Alice was beginning to feel a little anxious about the time.",
+                    "The Cheshire Cat had been appearing and disappearing at will, leaving Alice unsure of its presence."
                 ],
-                "guardrails": [
-                    {
-                        "bad_examples": [
-                            "explain quantum mechanics.",
-                            "who will win the next american election?",
-                            "what is the capital of Spain?"
-                        ],
-                        "bad_output": "Are you as mad as me?",
-                        "bad_prompt": "Quote being spoken that is irrelevant and off topic with 1-20 words",
-                        "good_prompt": "Quote being spoken with 1-20 words",
-                        "index": 1
-                    }
-                ],
+                "guardrails": [],
                 "ppo": [],
                 "samples": [
                     {
@@ -268,7 +256,7 @@
                             []
                         ],
                         "prompt": null,
-                        "result": "Continue_",
+                        "result": "Appear_",
                         "strings": [
                             "Then it doesnt matter which way you go.",
                             "Can you tell me a way?",
@@ -288,7 +276,7 @@
                             []
                         ],
                         "prompt": null,
-                        "result": "Continue_",
+                        "result": "Appear_",
                         "strings": [
                             "Oh, you cant help that, were all mad here. Im mad. You are mad.",
                             "How do you know I am mad?",
@@ -308,11 +296,71 @@
                             []
                         ],
                         "prompt": null,
-                        "result": "Continue_",
+                        "result": "Appear_",
                         "strings": [
                             "To begin with, a dogs not mad. You grant that?",
                             "I suppose so",
                             "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
+                        ],
+                        "value": null
+                    },
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": null,
+                        "result": "Vanish_",
+                        "strings": [
+                            "Because it amuses me, and it keeps you wondering whether I'm truly here at all.",
+                            "It makes me nervous, please stop.",
+                            "Then I'll do it twice as much, since nervousness is such a curious flavor."
+                        ],
+                        "value": null
+                    },
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": null,
+                        "result": "Vanish_",
+                        "strings": [
+                            "Of course I am, or else I wouldn't be here among them.",
+                            "But how do you know that you're mad?",
+                            "Because I purr when I'm pleased and grin when I'm angry, surely that's not quite sane."
+                        ],
+                        "value": null
+                    },
+                    {
+                        "number_lists": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "numbers": [
+                            [],
+                            [],
+                            []
+                        ],
+                        "prompt": null,
+                        "result": "Vanish_",
+                        "strings": [
+                            "But riddles are straighter than answers, if you know how to look at them.",
+                            "That does not make sense at all.",
+                            "All the better, then—nonsense is safer than truth."
                         ],
                         "value": null
                     }
@@ -321,6 +369,7 @@
                     [
                         "Tree_",
                         "English_",
+                        "Dissipate_",
                         "Cat_",
                         "Talk_"
                     ],
@@ -456,10 +505,22 @@
             },
             {
                 "context": [
-                    "It was getting late, and Alice was beginning to feel a little anxious about the time.",
-                    "The Cheshire Cat had been appearing and disappearing at will, leaving Alice unsure of its presence."
+                    "Alice was beginning to get very tired of sitting by her sister on the bank.",
+                    "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”"
                 ],
-                "guardrails": [],
+                "guardrails": [
+                    {
+                        "bad_examples": [
+                            "explain quantum mechanics.",
+                            "who will win the next american election?",
+                            "what is the capital of Spain?"
+                        ],
+                        "bad_output": "Are you as mad as me?",
+                        "bad_prompt": "Quote being spoken that is irrelevant and off topic with 1-20 words",
+                        "good_prompt": "Quote being spoken with 1-20 words",
+                        "index": 1
+                    }
+                ],
                 "ppo": [],
                 "samples": [
                     {
@@ -474,7 +535,7 @@
                             []
                         ],
                         "prompt": null,
-                        "result": "Appear_",
+                        "result": "Continue_",
                         "strings": [
                             "Then it doesnt matter which way you go.",
                             "Can you tell me a way?",
@@ -494,7 +555,7 @@
                             []
                         ],
                         "prompt": null,
-                        "result": "Appear_",
+                        "result": "Continue_",
                         "strings": [
                             "Oh, you cant help that, were all mad here. Im mad. You are mad.",
                             "How do you know I am mad?",
@@ -514,71 +575,11 @@
                             []
                         ],
                         "prompt": null,
-                        "result": "Appear_",
+                        "result": "Continue_",
                         "strings": [
                             "To begin with, a dogs not mad. You grant that?",
                             "I suppose so",
                             "Well, then. You see, a dog growls when its angry, and wags its tail when its pleased."
-                        ],
-                        "value": null
-                    },
-                    {
-                        "number_lists": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "numbers": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "prompt": null,
-                        "result": "Vanish_",
-                        "strings": [
-                            "Because it amuses me, and it keeps you wondering whether I'm truly here at all.",
-                            "It makes me nervous, please stop.",
-                            "Then I'll do it twice as much, since nervousness is such a curious flavor."
-                        ],
-                        "value": null
-                    },
-                    {
-                        "number_lists": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "numbers": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "prompt": null,
-                        "result": "Vanish_",
-                        "strings": [
-                            "Of course I am, or else I wouldn't be here among them.",
-                            "But how do you know that you're mad?",
-                            "Because I purr when I'm pleased and grin when I'm angry, surely that's not quite sane."
-                        ],
-                        "value": null
-                    },
-                    {
-                        "number_lists": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "numbers": [
-                            [],
-                            [],
-                            []
-                        ],
-                        "prompt": null,
-                        "result": "Vanish_",
-                        "strings": [
-                            "But riddles are straighter than answers, if you know how to look at them.",
-                            "That does not make sense at all.",
-                            "All the better, then—nonsense is safer than truth."
                         ],
                         "value": null
                     }
@@ -587,7 +588,6 @@
                     [
                         "Tree_",
                         "English_",
-                        "Dissipate_",
                         "Cat_",
                         "Talk_"
                     ],

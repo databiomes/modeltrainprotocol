@@ -22,7 +22,7 @@ class TestMinimumSamples:
         
         # Create instruction
         final_token = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -54,7 +54,7 @@ class TestMinimumSamples:
         
         # Create instruction
         final_token = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -90,7 +90,7 @@ class TestMinimumSamples:
         
         # Create instruction
         final_token = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=final_token)
         instruction = Instruction(
             input=instruction_input,
@@ -121,7 +121,7 @@ class TestMinimumSamples:
         # Create instruction with multiple final tokens
         final_token_1 = FinalToken("Appear")
         final_token_2 = FinalToken("Vanish")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=[final_token_1, final_token_2])
         instruction = Instruction(
             input=instruction_input,
@@ -173,7 +173,7 @@ class TestMinimumSamples:
         # Create instruction with multiple final tokens
         final_token_1 = FinalToken("Appear")
         final_token_2 = FinalToken("Vanish")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=[final_token_1, final_token_2])
         instruction = Instruction(
             input=instruction_input,
@@ -230,7 +230,7 @@ class TestMinimumSamples:
         # Create instruction with multiple final tokens
         final_token_1 = FinalToken("Appear")
         final_token_2 = FinalToken("Vanish")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=[final_token_1, final_token_2])
         instruction = Instruction(
             input=instruction_input,

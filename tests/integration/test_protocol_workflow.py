@@ -244,7 +244,7 @@ class TestProtocolWorkflow:
         context_set2 = TokenSet(tokens=(token2,))
         
         final_token = FinalToken(token2.value)
-        instruction_input = InstructionInput(tokensets=[context_set, context_set2], context=None)
+        instruction_input = InstructionInput(tokensets=[context_set, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
 
         instruction: Instruction = Instruction(

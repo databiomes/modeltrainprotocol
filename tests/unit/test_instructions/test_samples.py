@@ -18,7 +18,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_missing_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token raises error when value is not provided."""
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -36,7 +36,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_wrong_type_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token raises error when value is wrong type."""
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -54,7 +54,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_none_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token raises error when value is None."""
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -72,7 +72,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_valid_numeric_value_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token accepts valid numeric value."""
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -90,7 +90,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_missing_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken cannot be used as a final token."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         # NumListToken is not a FinalToken, but InstructionOutput doesn't validate at init
         # It will fail when trying to use it in add_sample
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
@@ -110,7 +110,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_wrong_type_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken cannot be used as a final token."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         # NumListToken is not a FinalToken, but InstructionOutput doesn't validate at init
         # It will fail when trying to use it in add_sample
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
@@ -131,7 +131,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_none_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken cannot be used as a final token."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -150,7 +150,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_valid_list_value_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken cannot be used as a final token."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -169,7 +169,7 @@ class TestSampleValueValidation:
     def test_regular_token_result_none_value_allowed(self, simple_tokenset, user_tokenset):
         """Test that regular Token result token allows None value."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -187,7 +187,7 @@ class TestSampleValueValidation:
     def test_user_token_result_none_value_allowed(self, simple_tokenset, user_tokenset):
         """Test that Token result token allows None value."""
         final_token = FinalToken("User")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -205,7 +205,7 @@ class TestSampleValueValidation:
     def test_regular_token_result_non_none_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that regular Token result token raises error when value is not None."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -225,7 +225,7 @@ class TestSampleValueValidation:
     def test_user_token_result_non_none_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that Token result token allows non-None value (validation not implemented)."""
         final_token = FinalToken("User")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -245,7 +245,7 @@ class TestSampleValueValidation:
     def test_numtoken_result_list_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumToken result token raises error when value is a list."""
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -264,7 +264,7 @@ class TestSampleValueValidation:
         """Test that NumListToken result token raises error when value is a NumToken."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
         num_token = NumToken("Count", min_value=1, max_value=10)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -290,7 +290,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_dict_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token raises error when value is a dict."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -316,7 +316,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_boolean_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that NumListToken result token raises error when value is a boolean."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -342,7 +342,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_empty_list_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken cannot be used as a final token."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=1)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -361,7 +361,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_single_element_list_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken cannot be used as a final token."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=1)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -380,7 +380,7 @@ class TestSampleValueValidation:
     def test_numlisttoken_result_multi_element_list_succeeds(self, simple_tokenset, user_tokenset):
         """Test that NumListToken cannot be used as a final token."""
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=5)
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -402,7 +402,7 @@ class TestSampleValueValidation:
         regular_token = FinalToken("Result")
         
         # Test with FinalNumToken
-        instruction_input1 = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input1 = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output1 = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
         instruction1 = Instruction(input=instruction_input1, output=instruction_output1)
         
@@ -420,7 +420,7 @@ class TestSampleValueValidation:
         
         # Test with NumListToken - cannot be used as final token
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
-        instruction_input2 = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input2 = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         # NumListToken is not a FinalToken, but InstructionOutput doesn't validate at init
         instruction_output2 = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
         instruction2 = Instruction(input=instruction_input2, output=instruction_output2)
@@ -433,7 +433,7 @@ class TestSampleValueValidation:
             )
         
         # Test with regular Token
-        instruction_input3 = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input3 = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output3 = InstructionOutput(tokenset=simple_tokenset, final=regular_token)
         instruction3 = Instruction(input=instruction_input3, output=instruction_output3)
         
@@ -459,7 +459,7 @@ class TestInstructionValidation:
     def test_simple_instruction_wrong_context_snippet_count_raises_error(self, simple_tokenset, user_tokenset):
         """Test that Instruction raises error when context snippet count doesn't match."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -476,7 +476,7 @@ class TestInstructionValidation:
     def test_simple_instruction_wrong_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
         """Test that Instruction raises error when snippet doesn't match expected token set."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -494,7 +494,7 @@ class TestInstructionValidation:
     def test_simple_instruction_wrong_output_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
         """Test that Instruction raises error when output snippet doesn't match response token set."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -512,7 +512,7 @@ class TestInstructionValidation:
     def test_user_instruction_wrong_context_snippet_count_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when context snippet count doesn't match."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -529,7 +529,7 @@ class TestInstructionValidation:
     def test_user_instruction_wrong_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when snippet doesn't match expected token set."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -548,7 +548,7 @@ class TestInstructionValidation:
     def test_user_instruction_wrong_output_snippet_token_set_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when output snippet doesn't match user token set."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -566,7 +566,7 @@ class TestInstructionValidation:
     def test_user_instruction_missing_prompt_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when prompt is missing."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -583,7 +583,7 @@ class TestInstructionValidation:
     def test_user_instruction_invalid_value_type_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when value is not int or float."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -602,7 +602,7 @@ class TestInstructionValidation:
     def test_user_instruction_list_value_raises_error(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction raises error when value is a list."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -622,7 +622,7 @@ class TestInstructionValidation:
         """Test that Instruction succeeds when created with token in response."""
         # This should not raise an error since UserToken no longer exists
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset])
         instruction_output = InstructionOutput(tokenset=user_tokenset, final=final_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
         assert instruction is not None
@@ -631,7 +631,7 @@ class TestInstructionValidation:
         """Test that ExtendedInstruction succeeds when created without user token."""
         # This should not raise an error since UserToken no longer exists
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
         assert instruction is not None
@@ -653,13 +653,13 @@ class TestInstructionValidation:
         test_tokenset = TokenSet(tokens=(Token("Test"),))
         instruction_output = InstructionOutput(tokenset=test_tokenset, final=final_token)
         with pytest.raises(TypeError, match="All items in context must be instances of TokenSet"):
-            instruction_input = InstructionInput(tokensets=[test_tokenset, "not_a_tokenset"], context=None)
+            instruction_input = InstructionInput(tokensets=[test_tokenset, "not_a_tokenset"])
             Instruction(input=instruction_input, output=instruction_output)
 
     def test_instruction_creation_with_invalid_response_type_raises_error(self):
         """Test that Instruction raises error when output is not an InstructionOutput."""
         test_tokenset = TokenSet(tokens=(Token("Test"),))
-        instruction_input = InstructionInput(tokensets=[test_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[test_tokenset])
         with pytest.raises(TypeError, match="Response must be an instance of Response"):
             Instruction(
                 input=instruction_input,
@@ -671,7 +671,7 @@ class TestInstructionValidation:
         test_tokenset = TokenSet(tokens=(Token("Test"),))
         # InstructionOutput doesn't validate final type at initialization
         instruction_output = InstructionOutput(tokenset=test_tokenset, final="not_a_token")  # Wrong type
-        instruction_input = InstructionInput(tokensets=[test_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[test_tokenset])
         instruction = Instruction(input=instruction_input, output=instruction_output)
         
         # It will fail when trying to use it - the error occurs when checking len(self.output.final)
@@ -686,7 +686,7 @@ class TestInstructionValidation:
     def test_simple_instruction_valid_sample_succeeds(self, simple_tokenset, user_tokenset):
         """Test that Instruction accepts valid sample."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -703,7 +703,7 @@ class TestInstructionValidation:
     def test_user_instruction_valid_sample_succeeds(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction accepts valid sample."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -720,7 +720,7 @@ class TestInstructionValidation:
     def test_user_instruction_valid_sample_with_none_value_succeeds(self, simple_tokenset, user_tokenset):
         """Test that ExtendedInstruction accepts valid sample with None value."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         extended_response = ExtendedResponse(final=final_token)
         instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
 
@@ -738,7 +738,7 @@ class TestInstructionValidation:
     def test_simple_instruction_valid_sample_with_none_value_succeeds(self, simple_tokenset, user_tokenset):
         """Test that Instruction accepts valid sample with None value."""
         final_token = FinalToken("Result")
-        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+        instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
         instruction = Instruction(input=instruction_input, output=instruction_output)
 

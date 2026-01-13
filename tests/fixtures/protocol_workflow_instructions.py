@@ -16,7 +16,7 @@ def simple_workflow_instruction_with_samples(simple_tokenset, user_tokenset, sim
                                              content_guardrail) -> Instruction:
     """Simple instruction with 2 context lines for workflow tests."""
     final_token = FinalToken(token_workflow_result.value) if not isinstance(token_workflow_result, FinalToken) else token_workflow_result
-    instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None)
+    instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
     instruction = Instruction(
         input=instruction_input,
@@ -60,7 +60,7 @@ def user_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simpl
                                            safety_guardrail) -> ExtendedInstruction:
     """User instruction with 2 context lines for workflow tests."""
     final_token = FinalToken(token_workflow_end.value) if not isinstance(token_workflow_end, FinalToken) else token_workflow_end
-    instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset, user_tokenset], context=None)
+    instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset, user_tokenset])
     extended_response = ExtendedResponse(final=final_token)
     instruction = ExtendedInstruction(
         input=instruction_input,
@@ -108,7 +108,7 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
         final_token = FinalNumToken(token_workflow_count.value, token_workflow_count.min_value, token_workflow_count.max_value)
     else:
         final_token = FinalToken(token_workflow_count.value) if not isinstance(token_workflow_count, FinalToken) else token_workflow_count
-    instruction_input = InstructionInput(tokensets=[simple_numtoken_tokenset, user_tokenset], context=None)
+    instruction_input = InstructionInput(tokensets=[simple_numtoken_tokenset, user_tokenset])
     # Use simple_tokenset (without NumToken) for output, as InstructionOutput doesn't allow NumTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
     instruction = Instruction(
@@ -148,7 +148,7 @@ def simple_numlisttoken_workflow_instruction_with_samples(
     """Simple NumListToken instruction with 2 context lines for workflow tests."""
     # Note: NumListToken cannot be used as final token, using FinalToken instead
     final_token = FinalToken(token_workflow_coordinates.value) if not isinstance(token_workflow_coordinates, FinalToken) else token_workflow_coordinates
-    instruction_input = InstructionInput(tokensets=[simple_numlisttoken_tokenset, user_tokenset], context=None)
+    instruction_input = InstructionInput(tokensets=[simple_numlisttoken_tokenset, user_tokenset])
     # Use simple_tokenset (without NumListToken) for output, as InstructionOutput doesn't allow NumListTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
     instruction = Instruction(

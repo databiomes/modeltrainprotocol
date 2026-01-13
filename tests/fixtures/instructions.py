@@ -44,19 +44,19 @@ def get_basic_instructions() -> Dict[str, Any]:
     
     return {
         'simple_instruction': Instruction(
-            input=InstructionInput(tokensets=[simple_tokenset], context=None),
+            input=InstructionInput(tokensets=[simple_tokenset]),
             output=InstructionOutput(tokenset=simple_tokenset, final=FINAL_TOKEN_RESULT)
         ),
         'user_instruction': ExtendedInstruction(
-            input=InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None),
+            input=InstructionInput(tokensets=[simple_tokenset, user_tokenset]),
             output=ExtendedResponse(final=FINAL_TOKEN_RESULT)
         ),
         'result_instruction': Instruction(
-            input=InstructionInput(tokensets=[result_tokenset], context=None),
+            input=InstructionInput(tokensets=[result_tokenset]),
             output=InstructionOutput(tokenset=result_tokenset, final=FINAL_TOKEN_END)
         ),
         'user_result_instruction': ExtendedInstruction(
-            input=InstructionInput(tokensets=[user_tokenset, user_result_tokenset], context=None),
+            input=InstructionInput(tokensets=[user_tokenset, user_result_tokenset]),
             output=ExtendedResponse(final=FINAL_TOKEN_END)
         ),
     }
@@ -71,19 +71,19 @@ def get_numtoken_instructions() -> Dict[str, Any]:
     
     return {
         'simple_numtoken_instruction': Instruction(
-            input=InstructionInput(tokensets=[simple_numtoken_tokenset], context=None),
+            input=InstructionInput(tokensets=[simple_numtoken_tokenset]),
             output=InstructionOutput(tokenset=simple_numtoken_tokenset, final=FINAL_NUM_TOKEN_COUNT)
         ),
         'user_numtoken_instruction': ExtendedInstruction(
-            input=InstructionInput(tokensets=[simple_numtoken_tokenset, user_numtoken_tokenset], context=None),
+            input=InstructionInput(tokensets=[simple_numtoken_tokenset, user_numtoken_tokenset]),
             output=ExtendedResponse(final=FINAL_NUM_TOKEN_COUNT)
         ),
         'result_numtoken_instruction': Instruction(
-            input=InstructionInput(tokensets=[result_numtoken_tokenset], context=None),
+            input=InstructionInput(tokensets=[result_numtoken_tokenset]),
             output=InstructionOutput(tokenset=result_numtoken_tokenset, final=FINAL_NUM_TOKEN_COUNT)
         ),
         'user_result_numtoken_instruction': ExtendedInstruction(
-            input=InstructionInput(tokensets=[user_numtoken_tokenset, user_result_numtoken_tokenset], context=None),
+            input=InstructionInput(tokensets=[user_numtoken_tokenset, user_result_numtoken_tokenset]),
             output=ExtendedResponse(final=FINAL_NUM_TOKEN_COUNT)
         ),
     }
@@ -101,23 +101,23 @@ def get_numlisttoken_instructions() -> Dict[str, Any]:
     # These instructions will fail when trying to use them, but we keep them for testing error cases
     return {
         'simple_numlisttoken_instruction': Instruction(
-            input=InstructionInput(tokensets=[simple_numlisttoken_tokenset], context=None),
+            input=InstructionInput(tokensets=[simple_numlisttoken_tokenset]),
             output=InstructionOutput(tokenset=simple_numlisttoken_tokenset, final=FINAL_TOKEN_RESULT)  # Use regular FinalToken instead
         ),
         'user_numlisttoken_instruction': ExtendedInstruction(
-            input=InstructionInput(tokensets=[simple_numlisttoken_tokenset, user_numlisttoken_tokenset], context=None),
+            input=InstructionInput(tokensets=[simple_numlisttoken_tokenset, user_numlisttoken_tokenset]),
             output=ExtendedResponse(final=FINAL_TOKEN_RESULT)  # Use regular FinalToken instead
         ),
         'result_numlisttoken_instruction': Instruction(
-            input=InstructionInput(tokensets=[result_numlisttoken_tokenset], context=None),
+            input=InstructionInput(tokensets=[result_numlisttoken_tokenset]),
             output=InstructionOutput(tokenset=result_numlisttoken_tokenset, final=FINAL_TOKEN_RESULT)  # Use regular FinalToken instead
         ),
         'user_result_numlisttoken_instruction': ExtendedInstruction(
-            input=InstructionInput(tokensets=[user_numlisttoken_tokenset, user_result_numlisttoken_tokenset], context=None),
+            input=InstructionInput(tokensets=[user_numlisttoken_tokenset, user_result_numlisttoken_tokenset]),
             output=ExtendedResponse(final=FINAL_TOKEN_RESULT)  # Use regular FinalToken instead
         ),
         'scores_instruction': Instruction(
-            input=InstructionInput(tokensets=[scores_tokenset], context=None),
+            input=InstructionInput(tokensets=[scores_tokenset]),
             output=InstructionOutput(tokenset=scores_tokenset, final=FINAL_TOKEN_RESULT)  # Use regular FinalToken instead
         ),
     }
@@ -132,19 +132,19 @@ def get_mixed_numeric_instructions() -> Dict[str, Any]:
     
     return {
         'simple_mixed_instruction': Instruction(
-            input=InstructionInput(tokensets=[simple_mixed_tokenset], context=None),
+            input=InstructionInput(tokensets=[simple_mixed_tokenset]),
             output=InstructionOutput(tokenset=simple_mixed_tokenset, final=FINAL_NUM_TOKEN_COUNT)
         ),
         'user_mixed_instruction': ExtendedInstruction(
-            input=InstructionInput(tokensets=[simple_mixed_tokenset, user_mixed_tokenset], context=None),
+            input=InstructionInput(tokensets=[simple_mixed_tokenset, user_mixed_tokenset]),
             output=ExtendedResponse(final=FINAL_NUM_TOKEN_COUNT)
         ),
         'result_mixed_instruction': Instruction(
-            input=InstructionInput(tokensets=[result_mixed_tokenset], context=None),
+            input=InstructionInput(tokensets=[result_mixed_tokenset]),
             output=InstructionOutput(tokenset=result_mixed_tokenset, final=FINAL_NUM_TOKEN_COUNT)
         ),
         'user_result_mixed_instruction': ExtendedInstruction(
-            input=InstructionInput(tokensets=[user_mixed_tokenset, user_result_mixed_tokenset], context=None),
+            input=InstructionInput(tokensets=[user_mixed_tokenset, user_result_mixed_tokenset]),
             output=ExtendedResponse(final=FINAL_NUM_TOKEN_COUNT)
         ),
     }
@@ -177,7 +177,7 @@ def get_instructions_by_type() -> Dict[str, Dict[str, Any]]:
 def simple_instruction(simple_tokenset) -> Instruction:
     """Basic simple instruction."""
     return Instruction(
-        input=InstructionInput(tokensets=[simple_tokenset], context=None),
+        input=InstructionInput(tokensets=[simple_tokenset]),
         output=InstructionOutput(tokenset=simple_tokenset, final=FINAL_TOKEN_RESULT)
     )
 
@@ -186,7 +186,7 @@ def simple_instruction(simple_tokenset) -> Instruction:
 def user_instruction(simple_tokenset, user_tokenset) -> ExtendedInstruction:
     """Basic user instruction."""
     return ExtendedInstruction(
-        input=InstructionInput(tokensets=[simple_tokenset, user_tokenset], context=None),
+        input=InstructionInput(tokensets=[simple_tokenset, user_tokenset]),
         output=ExtendedResponse(final=FINAL_TOKEN_RESULT)
     )
 
@@ -195,7 +195,7 @@ def user_instruction(simple_tokenset, user_tokenset) -> ExtendedInstruction:
 def result_instruction(result_tokenset) -> Instruction:
     """Result instruction."""
     return Instruction(
-        input=InstructionInput(tokensets=[result_tokenset], context=None),
+        input=InstructionInput(tokensets=[result_tokenset]),
         output=InstructionOutput(tokenset=result_tokenset, final=FINAL_TOKEN_END)
     )
 
@@ -204,7 +204,7 @@ def result_instruction(result_tokenset) -> Instruction:
 def user_result_instruction(user_tokenset, user_result_tokenset) -> ExtendedInstruction:
     """User result instruction."""
     return ExtendedInstruction(
-        input=InstructionInput(tokensets=[user_tokenset, user_result_tokenset], context=None),
+        input=InstructionInput(tokensets=[user_tokenset, user_result_tokenset]),
         output=ExtendedResponse(final=FINAL_TOKEN_END)
     )
 
@@ -214,7 +214,7 @@ def user_result_instruction(user_tokenset, user_result_tokenset) -> ExtendedInst
 def simple_numtoken_instruction(simple_numtoken_tokenset) -> Instruction:
     """Simple instruction with NumToken."""
     return Instruction(
-        input=InstructionInput(tokensets=[simple_numtoken_tokenset], context=None),
+        input=InstructionInput(tokensets=[simple_numtoken_tokenset]),
         output=InstructionOutput(tokenset=simple_numtoken_tokenset, final=FINAL_NUM_TOKEN_COUNT)
     )
 
@@ -223,7 +223,7 @@ def simple_numtoken_instruction(simple_numtoken_tokenset) -> Instruction:
 def user_numtoken_instruction(simple_numtoken_tokenset, user_numtoken_tokenset) -> ExtendedInstruction:
     """User instruction with NumToken."""
     return ExtendedInstruction(
-        input=InstructionInput(tokensets=[simple_numtoken_tokenset, user_numtoken_tokenset], context=None),
+        input=InstructionInput(tokensets=[simple_numtoken_tokenset, user_numtoken_tokenset]),
         output=ExtendedResponse(final=FINAL_NUM_TOKEN_COUNT)
     )
 
@@ -232,7 +232,7 @@ def user_numtoken_instruction(simple_numtoken_tokenset, user_numtoken_tokenset) 
 def result_numtoken_instruction(result_numtoken_tokenset) -> Instruction:
     """Result instruction with NumToken."""
     return Instruction(
-        input=InstructionInput(tokensets=[result_numtoken_tokenset], context=None),
+        input=InstructionInput(tokensets=[result_numtoken_tokenset]),
         output=InstructionOutput(tokenset=result_numtoken_tokenset, final=FINAL_NUM_TOKEN_COUNT)
     )
 
@@ -241,7 +241,7 @@ def result_numtoken_instruction(result_numtoken_tokenset) -> Instruction:
 def user_result_numtoken_instruction(user_numtoken_tokenset, user_result_numtoken_tokenset) -> ExtendedInstruction:
     """User result instruction with NumToken."""
     return ExtendedInstruction(
-        input=InstructionInput(tokensets=[user_numtoken_tokenset, user_result_numtoken_tokenset], context=None),
+        input=InstructionInput(tokensets=[user_numtoken_tokenset, user_result_numtoken_tokenset]),
         output=ExtendedResponse(final=FINAL_NUM_TOKEN_COUNT)
     )
 
@@ -252,7 +252,7 @@ def simple_numlisttoken_instruction(simple_numlisttoken_tokenset) -> Instruction
     """Simple instruction with NumListToken."""
     # Note: NumListToken cannot be used as final token, using FinalToken instead
     return Instruction(
-        input=InstructionInput(tokensets=[simple_numlisttoken_tokenset], context=None),
+        input=InstructionInput(tokensets=[simple_numlisttoken_tokenset]),
         output=InstructionOutput(tokenset=simple_numlisttoken_tokenset, final=FINAL_TOKEN_RESULT)
     )
 
@@ -262,7 +262,7 @@ def user_numlisttoken_instruction(simple_numlisttoken_tokenset, user_numlisttoke
     """User instruction with NumListToken."""
     # Note: NumListToken cannot be used as final token, using FinalToken instead
     return ExtendedInstruction(
-        input=InstructionInput(tokensets=[simple_numlisttoken_tokenset, user_numlisttoken_tokenset], context=None),
+        input=InstructionInput(tokensets=[simple_numlisttoken_tokenset, user_numlisttoken_tokenset]),
         output=ExtendedResponse(final=FINAL_TOKEN_RESULT)
     )
 
@@ -272,7 +272,7 @@ def result_numlisttoken_instruction(result_numlisttoken_tokenset) -> Instruction
     """Result instruction with NumListToken."""
     # Note: NumListToken cannot be used as final token, using FinalToken instead
     return Instruction(
-        input=InstructionInput(tokensets=[result_numlisttoken_tokenset], context=None),
+        input=InstructionInput(tokensets=[result_numlisttoken_tokenset]),
         output=InstructionOutput(tokenset=result_numlisttoken_tokenset, final=FINAL_TOKEN_RESULT)
     )
 
@@ -282,7 +282,7 @@ def user_result_numlisttoken_instruction(user_numlisttoken_tokenset, user_result
     """User result instruction with NumListToken."""
     # Note: NumListToken cannot be used as final token, using FinalToken instead
     return ExtendedInstruction(
-        input=InstructionInput(tokensets=[user_numlisttoken_tokenset, user_result_numlisttoken_tokenset], context=None),
+        input=InstructionInput(tokensets=[user_numlisttoken_tokenset, user_result_numlisttoken_tokenset]),
         output=ExtendedResponse(final=FINAL_TOKEN_RESULT)
     )
 
@@ -293,7 +293,7 @@ def scores_instruction(scores_tokenset, simple_tokenset) -> Instruction:
     # Note: NumListToken cannot be used as final token, using FinalToken instead
     # Use simple_tokenset (without NumListToken) for output, as InstructionOutput doesn't allow NumListTokens in response tokenset
     return Instruction(
-        input=InstructionInput(tokensets=[scores_tokenset], context=None),
+        input=InstructionInput(tokensets=[scores_tokenset]),
         output=InstructionOutput(tokenset=simple_tokenset, final=FINAL_TOKEN_RESULT)
     )
 
@@ -303,7 +303,7 @@ def scores_instruction(scores_tokenset, simple_tokenset) -> Instruction:
 def simple_mixed_instruction(simple_mixed_tokenset) -> Instruction:
     """Simple instruction with mixed numeric tokens."""
     return Instruction(
-        input=InstructionInput(tokensets=[simple_mixed_tokenset], context=None),
+        input=InstructionInput(tokensets=[simple_mixed_tokenset]),
         output=InstructionOutput(tokenset=simple_mixed_tokenset, final=FINAL_NUM_TOKEN_COUNT)
     )
 
@@ -312,7 +312,7 @@ def simple_mixed_instruction(simple_mixed_tokenset) -> Instruction:
 def user_mixed_instruction(simple_mixed_tokenset, user_mixed_tokenset) -> ExtendedInstruction:
     """User instruction with mixed numeric tokens."""
     return ExtendedInstruction(
-        input=InstructionInput(tokensets=[simple_mixed_tokenset, user_mixed_tokenset], context=None),
+        input=InstructionInput(tokensets=[simple_mixed_tokenset, user_mixed_tokenset]),
         output=ExtendedResponse(final=FINAL_NUM_TOKEN_COUNT)
     )
 
@@ -321,7 +321,7 @@ def user_mixed_instruction(simple_mixed_tokenset, user_mixed_tokenset) -> Extend
 def result_mixed_instruction(result_mixed_tokenset) -> Instruction:
     """Result instruction with mixed numeric tokens."""
     return Instruction(
-        input=InstructionInput(tokensets=[result_mixed_tokenset], context=None),
+        input=InstructionInput(tokensets=[result_mixed_tokenset]),
         output=InstructionOutput(tokenset=result_mixed_tokenset, final=FINAL_NUM_TOKEN_COUNT)
     )
 
@@ -330,7 +330,7 @@ def result_mixed_instruction(result_mixed_tokenset) -> Instruction:
 def user_result_mixed_instruction(user_mixed_tokenset, user_result_mixed_tokenset) -> ExtendedInstruction:
     """User result instruction with mixed numeric tokens."""
     return ExtendedInstruction(
-        input=InstructionInput(tokensets=[user_mixed_tokenset, user_result_mixed_tokenset], context=None),
+        input=InstructionInput(tokensets=[user_mixed_tokenset, user_result_mixed_tokenset]),
         output=ExtendedResponse(final=FINAL_NUM_TOKEN_COUNT)
     )
 

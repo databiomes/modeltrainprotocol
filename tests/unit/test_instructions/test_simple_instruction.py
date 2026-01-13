@@ -18,7 +18,7 @@ class TestSimpleInstruction:
     def test_simple_tokenset(self):
         """Test creating a simple instruction with basic tokens."""
         token_continue = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=token_continue)
         instruction: Instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -29,7 +29,7 @@ class TestSimpleInstruction:
     def test_user_tokenset(self):
         """Test that adding a user token in the final tokenset succeeds"""
         token_continue = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[USER_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[USER_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=USER_TOKENSET, final=token_continue)
         # Should not raise error since UserToken validation is no longer required
         instruction = Instruction(input=instruction_input, output=instruction_output)
@@ -38,7 +38,7 @@ class TestSimpleInstruction:
     def test_num_tokensset(self):
         """Test creating an instruction with numeric tokens."""
         token_continue = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_NUMTOKEN_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_NUMTOKEN_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=token_continue)
         instruction: Instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -51,7 +51,7 @@ class TestSimpleInstruction:
         from tests.fixtures.tokens import SIMPLE_NUMTOKEN_NUMLISTTOKEN_TOKENSET
 
         token_continue = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_NUMTOKEN_NUMLISTTOKEN_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_NUMTOKEN_NUMLISTTOKEN_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=token_continue)
         instruction: Instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -64,7 +64,7 @@ class TestSimpleInstruction:
         from tests.fixtures.tokens import SIMPLE_NUMTOKEN_TOKENSET
 
         token_continue = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_NUMTOKEN_TOKENSET, SIMPLE_NUMTOKEN_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_NUMTOKEN_TOKENSET, SIMPLE_NUMTOKEN_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=token_continue)
         instruction: Instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -75,7 +75,7 @@ class TestSimpleInstruction:
     def test_wrong_tokenset_snippet(self):
         """Test that creating a snippet with wrong tokenset raises an error."""
         token_continue = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=token_continue)
         instruction: Instruction = Instruction(input=instruction_input, output=instruction_output)
 
@@ -91,7 +91,7 @@ class TestSimpleInstruction:
     def test_wrong_number_of_snippets(self):
         """Test that creating a snippet with wrong tokenset raises an error."""
         token_continue = FinalToken("Continue")
-        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET], context=None)
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=token_continue)
         instruction: Instruction = Instruction(input=instruction_input, output=instruction_output)
 
