@@ -67,10 +67,20 @@ class BaseInstruction(ABC):
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
 
-    def __init__(self, input: BaseInput, output: BaseOutput, name: str | None = None):
-        """Initializes the common attributes to all Instructions."""
+    def __init__(self, input: BaseInput, output: BaseOutput, context: List[str] | None = None, name: str | None = None):
+        """
+        Initializes the common attributes to all Instructions.
+        
+        :param input: BaseInput instance containing the input structure.
+        :param output: BaseOutput instance containing the output structure.
+        :param context: A list of strings providing background context for the instruction.
+        :param name: Optional name for the Instruction.
+        """
         self.input: BaseInput = input
         self.output: BaseOutput = output
+        if context is None:
+            context = []
+        self.context: List[str] = context
         self.samples: List[Sample] = []
         self.samples: list[Sample] = []
         if not isinstance(input, BaseInput):

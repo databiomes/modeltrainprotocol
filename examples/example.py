@@ -66,10 +66,6 @@ tree_english_dissipate_cat_talk: mtp.TokenSet = mtp.TokenSet(
 # Construct the Input format
 alice_cat_alice_input: mtp.InstructionInput = mtp.InstructionInput(
     tokensets=[tree_english_cat_talk, tree_english_alice_talk],
-    context=[
-        "Alice was beginning to get very tired of sitting by her sister on the bank.",
-        "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”",
-    ]
 )
 
 # Construct the Output format
@@ -82,6 +78,10 @@ tree_english_cat_talk_continue_output: mtp.InstructionOutput = mtp.InstructionOu
 alice_cat_alice_instruction: mtp.Instruction = mtp.Instruction(
     input=alice_cat_alice_input,
     output=tree_english_cat_talk_continue_output,
+    context=[
+        "Alice was beginning to get very tired of sitting by her sister on the bank.",
+        "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself, “ Oh dear! Oh dear! I shall be too late!”",
+    ],
     name="alice_cat_alice_continue",
 )
 
@@ -130,10 +130,6 @@ protocol.add_instruction(alice_cat_alice_instruction)
 
 tree_english_cat_talk_appear_disappear_input: mtp.InstructionInput = mtp.InstructionInput(
     tokensets=[tree_english_dissipate_cat_talk, tree_english_alice_talk],
-    context=[
-        "It was getting late, and Alice was beginning to feel a little anxious about the time.",
-        "The Cheshire Cat had been appearing and disappearing at will, leaving Alice unsure of its presence.",
-    ]
 )
 
 tree_english_cat_talk_appear_disappear_output: mtp.InstructionOutput = mtp.InstructionOutput(
@@ -143,6 +139,10 @@ tree_english_cat_talk_appear_disappear_output: mtp.InstructionOutput = mtp.Instr
 alice_cat_alice_instruction_appear_disappear: mtp.Instruction = mtp.Instruction(
     input=tree_english_cat_talk_appear_disappear_input,
     output=tree_english_cat_talk_appear_disappear_output,
+    context=[
+        "It was getting late, and Alice was beginning to feel a little anxious about the time.",
+        "The Cheshire Cat had been appearing and disappearing at will, leaving Alice unsure of its presence.",
+    ],
     name="alice_cat_alice_appear_disappear"
 )
 
@@ -219,10 +219,6 @@ tree_english_alice_talk_emotion: mtp.TokenSet = mtp.TokenSet(
 
 numeric_input: mtp.InstructionInput = mtp.InstructionInput(
     tokensets=[tree_english_cat_talk_coordinates, tree_english_alice_talk_emotion],
-    context=[
-        "Alice was feeling a mix of curiosity and apprehension as she conversed with the Cheshire Cat.",
-        "The Cat's ability to appear and disappear at will added to the surreal nature of their interaction.",
-    ]
 )
 
 # We define a FinalNumToken to indicate that the model should include a numerical value in the response.
@@ -242,6 +238,10 @@ numeric_response: mtp.InstructionOutput = mtp.InstructionOutput(
 alice_cat_alice_instruction_numbers_continue: mtp.Instruction = mtp.Instruction(
     input=numeric_input,
     output=numeric_response,
+    context=[
+        "Alice was feeling a mix of curiosity and apprehension as she conversed with the Cheshire Cat.",
+        "The Cat's ability to appear and disappear at will added to the surreal nature of their interaction.",
+    ],
     name="alice_cat_alice_instruction_numeric"
 )
 

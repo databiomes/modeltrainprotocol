@@ -20,14 +20,16 @@ class ExtendedInstruction(BaseInstruction):
 
     output: ExtendedResponse
 
-    def __init__(self, input: BaseInput, output: ExtendedResponse, name: str = "extended_instruction"):
+    def __init__(self, input: BaseInput, output: ExtendedResponse, context: List[str] | None = None, name: str = "extended_instruction"):
         """
         Initializes a ExtendedInstruction instance.
 
         :param input: BaseInput instance containing the input structure. This precedes the user input.
+        :param output: ExtendedResponse instance containing the output structure.
+        :param context: A list of strings providing background context for the instruction.
         :param name: Optional name for the Instruction. Defaults to 'extended_instruction'.
         """
-        super().__init__(input=input, output=output, name=name)
+        super().__init__(input=input, output=output, context=context, name=name)
 
         if not isinstance(output, ExtendedResponse):
             raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(output)}")

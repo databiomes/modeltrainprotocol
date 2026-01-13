@@ -20,15 +20,16 @@ class Instruction(BaseInstruction):
     output: InstructionOutput
     input: InstructionInput
 
-    def __init__(self, input: InstructionInput, output: InstructionOutput, name: str | None = None):
+    def __init__(self, input: InstructionInput, output: InstructionOutput, context: List[str] | None = None, name: str | None = None):
         f"""
         Initializes an Instruction instance.
 
         :param input: List of tuples containing Token instances that define the input structure. This precedes the model's response.
         :param output: A TokenSet instance that does not include any user tokens.
+        :param context: A list of strings providing background context for the instruction.
         :param name: Optional name for the Instruction. Defaults to 'instruction'.
         """
-        super().__init__(input=input, output=output, name=name)
+        super().__init__(input=input, output=output, context=context, name=name)
         if not isinstance(self.output, InstructionOutput):
             raise TypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
         self._validate_context_snippets()

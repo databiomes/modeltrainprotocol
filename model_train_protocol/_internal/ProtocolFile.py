@@ -84,7 +84,7 @@ class ProtocolFile:
         for instruction in instructions:
             instruction_set: ProtocolFile.ProtocolInstructionSet = ProtocolFile.ProtocolInstructionSet(
                 guardrails=instruction.serialize_guardrails(),
-                context=instruction.input.context,
+                context=instruction.context,
                 set=instruction.serialize_memory_set(),
                 samples=instruction.serialize_samples(),
                 ppo=instruction.serialize_ppo(),

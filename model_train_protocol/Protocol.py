@@ -82,7 +82,6 @@ class Protocol:
                                       number_lists=sample["number_lists"], result=result_token, value=sample["value"]))
 
             instr_input: InstructionInput = InstructionInput(
-                context=context,
                 tokensets=tokensets[:-1],
             )
 
@@ -93,7 +92,8 @@ class Protocol:
 
             protocol_instruction: Instruction = Instruction(
                 input=instr_input,
-                output=instr_output
+                output=instr_output,
+                context=context
             )
 
             for sample in samples:
@@ -321,7 +321,7 @@ class Protocol:
         """Validates that the total context/background lines across all instructions is at least equal to MINIMUM_TOTAL_CONTEXT_LINES."""
         total_context_lines: int = len(self.context)
         for instruction in self.instructions:
-            total_context_lines += len(instruction.input.context)
+            total_context_lines += len(instruction.context)
 
         if total_context_lines < MINIMUM_TOTAL_CONTEXT_LINES:
             raise ValueError(
