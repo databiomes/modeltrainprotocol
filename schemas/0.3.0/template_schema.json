@@ -4,49 +4,26 @@
   "description": "Main model for MTP Template JSON structure.",
   "$defs": {
     "ExampleUsageModel": {
-      "additionalProperties": {
-        "description": "Example usage string (e.g., instruction_input, valid_model_output, guardrail_model_output)",
-        "type": "string"
-      },
       "description": "Model for example usage in template.",
       "properties": {
         "instruction_input": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Instruction Input"
+          "title": "Instruction Input",
+          "type": "string"
         },
         "valid_model_output": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Valid Model Output"
+          "title": "Valid Model Output",
+          "type": "string"
         },
         "guardrail_model_output": {
-          "anyOf": [
-            {
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "title": "Guardrail Model Output"
+          "title": "Guardrail Model Output",
+          "type": "string"
         }
       },
+      "required": [
+        "instruction_input",
+        "valid_model_output",
+        "guardrail_model_output"
+      ],
       "title": "ExampleUsageModel",
       "type": "object"
     },

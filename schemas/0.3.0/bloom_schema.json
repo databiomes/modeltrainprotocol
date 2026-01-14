@@ -309,6 +309,45 @@
           "title": "Num List",
           "type": "integer"
         },
+        "min_value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Min Value"
+        },
+        "max_value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Max Value"
+        },
+        "length": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Length"
+        },
         "desc": {
           "anyOf": [
             {
@@ -330,14 +369,22 @@
             }
           ],
           "title": "Special"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
         }
       },
       "required": [
         "key",
         "num",
         "num_list",
+        "min_value",
+        "max_value",
+        "length",
         "desc",
-        "special"
+        "special",
+        "type"
       ],
       "title": "TokenInfoModel",
       "type": "object"
@@ -351,6 +398,18 @@
     "name": {
       "title": "Name",
       "type": "string"
+    },
+    "inputs": {
+      "title": "Inputs",
+      "type": "integer"
+    },
+    "encrypted": {
+      "title": "Encrypted",
+      "type": "boolean"
+    },
+    "valid": {
+      "title": "Valid",
+      "type": "boolean"
     },
     "context": {
       "items": {
@@ -386,6 +445,9 @@
   "required": [
     "version",
     "name",
+    "inputs",
+    "encrypted",
+    "valid",
     "context",
     "tokens",
     "special_tokens",
