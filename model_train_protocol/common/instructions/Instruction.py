@@ -95,6 +95,7 @@ class Instruction(BaseInstruction):
         self.output.validate_sample(snippet=output_snippet, value=output_value, final=final)
         self._assert_input_snippet_count(inputs=input_snippets)
         self._validate_snippets_match(inputs=input_snippets, response_snippet=output_snippet)
+        self._validate_snippet_length(inputs=input_snippets, response_snippet=output_snippet)
 
         sample: Sample = self._create_sample(inputs=input_snippets, response_snippet=output_snippet,
                                              value=output_value, final=final)

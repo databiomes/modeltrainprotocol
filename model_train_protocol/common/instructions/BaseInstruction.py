@@ -4,7 +4,8 @@ from typing import List, Optional, Union
 
 from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
-from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_CONTEXT_LINE
+from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_CONTEXT_LINE, \
+    MAXIMUM_CHARACTERS_PER_SNIPPET
 from ..pydantic.protocol import GuardrailModel
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
@@ -126,6 +127,18 @@ class BaseInstruction(ABC):
         """Validates the Instruction meets required Protocol standards."""
         self._validate_input_snippets()
         self._validate_minimum_samples()
+
+    @classmethod
+    def _validate_snippet_length(cls, inputs: List[Snippet], response_snippet: Snippet):
+        """Validates that all snippets in the samples are within the max length"""
+        all_snippets: List[Snippet] = inputs + [response_snippet]
+
+        for snippet in all_snippets:
+            if len(snippet.string) > MAXIMUM_CHARACTERS_PER_SNIPPET:
+                raise ValueError(
+                    f"Snippet length {len(snippet.string)} exceeds maximum allowed length of "
+                    f"{MAXIMUM_CHARACTERS_PER_SNIPPET} characters for snippet: {snippet.string}"
+                )
 
     def get_tokens(self) -> List[Token]:
         """Returns all tokens in the instruction as a flat list."""
