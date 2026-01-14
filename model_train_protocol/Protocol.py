@@ -6,7 +6,8 @@ from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, Instr
 from ._internal.ProtocolFile import ProtocolFile
 from ._internal.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
-    MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM, TokenTypeEnum
+    MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM, TokenTypeEnum, \
+    MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE
 from .common.instructions.BaseInstruction import BaseInstruction, Sample
 from .common.tokens import TokenSet
 from .common.tokens.SpecialToken import SpecialToken
@@ -139,6 +140,10 @@ class Protocol:
         """Adds a line of context to the model."""
         if not isinstance(context, str):
             raise TypeError("Context must be a string.")
+
+        if len(context) > MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE:
+            raise ValueError(
+                f"Context line exceeds maximum character limit of {MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE} characters. Found {len(context)} characters.")
 
         self.context.append(context)
 
@@ -329,6 +334,8 @@ class Protocol:
                 f"which is less than the minimum required of {MINIMUM_TOTAL_CONTEXT_LINES}. Please add more context lines using protocol.add_context() "
                 f"or by adding background lines to instructions."
             )
+
+
 
     def _prep_protocol(self):
         """

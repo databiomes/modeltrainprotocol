@@ -4,7 +4,7 @@ from typing import List, Optional, Union
 
 from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
-from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_CONTEXT_LINE, \
+from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE, \
     MAXIMUM_CHARACTERS_PER_SNIPPET
 from ..pydantic.protocol import GuardrailModel
 from ..tokens.FinalToken import FinalToken
@@ -223,8 +223,8 @@ class BaseInstruction(ABC):
                              f"Current lines: {len(self.context)}")
 
         for i, line in enumerate(self.context):
-            if len(line) > MAXIMUM_CHARACTERS_PER_CONTEXT_LINE:
-                raise ValueError(f"Context line {i} exceeds maximum allowed length of {MAXIMUM_CHARACTERS_PER_CONTEXT_LINE} characters. "
+            if len(line) > MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE:
+                raise ValueError(f"Context line {i} exceeds maximum allowed length of {MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE} characters. "
                                  f"Current length: {len(line)}")
 
     def _validate_input_snippets(self):
