@@ -122,7 +122,7 @@ class BaseInstruction(ABC):
 
     def validate_instruction(self):
         """Validates the Instruction meets required Protocol standards."""
-        self._validate_context_snippets()
+        self._validate_input_snippets()
         self._validate_minimum_samples()
 
     def get_tokens(self) -> List[Token]:
@@ -201,8 +201,8 @@ class BaseInstruction(ABC):
             value=value
         )
 
-    def _validate_context_snippets(self):
-        """Validates that context snippets do not contain any final tokens."""
+    def _validate_input_snippets(self):
+        """Validates that input snippets do not contain any final tokens."""
         for token_set in self.input.tokensets:
             for token in token_set:
                 if isinstance(token, FinalToken):
@@ -252,8 +252,8 @@ class BaseInstruction(ABC):
         if snippet.token_set_key != expected_token_set.key:
             raise ValueError(f"Snippet {snippet} does not match expected token set {expected_token_set}.")
 
-    def _assert_context_snippet_count(self, inputs: List[Snippet]):
-        """Assert the number of context snippets matches the number of context token sets."""
+    def _assert_input_snippet_count(self, inputs: List[Snippet]):
+        """Assert the number of input snippets matches the number of context token sets."""
         if len(inputs) != len(self.input.tokensets):
             raise ValueError(
                 f"Number of context snippets ({len(inputs)}) must match number of context token sets ({len(self.input.tokensets)}).")

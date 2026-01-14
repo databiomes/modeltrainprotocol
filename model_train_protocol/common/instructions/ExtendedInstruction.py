@@ -34,7 +34,7 @@ class ExtendedInstruction(BaseInstruction):
         if not isinstance(output, ExtendedResponse):
             raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(output)}")
 
-        self._validate_context_snippets()
+        self._validate_input_snippets()
 
     @property
     def has_guardrails(self) -> bool:
@@ -73,7 +73,7 @@ class ExtendedInstruction(BaseInstruction):
         """
         final: FinalToken = self._assign_final_token(final=final)
         self.output.validate_sample(string=response_string, value=value, final=final)
-        self._assert_context_snippet_count(inputs=inputs) # exclude last snippet for special case
+        self._assert_input_snippet_count(inputs=inputs) # exclude last snippet for special case
         self._validate_snippets_match(inputs=inputs)
 
         sample: Sample = self._create_sample(inputs=inputs,

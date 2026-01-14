@@ -32,7 +32,7 @@ class Instruction(BaseInstruction):
         super().__init__(input=input, output=output, context=context, name=name)
         if not isinstance(self.output, InstructionOutput):
             raise TypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
-        self._validate_context_snippets()
+        self._validate_input_snippets()
 
     def _validate_snippets_match(self, inputs: List[Snippet], response_snippet: Snippet):
         """Validates that all snippets in the samples match their expected token sets."""
@@ -93,7 +93,7 @@ class Instruction(BaseInstruction):
         output_snippet: Snippet = self._enforce_response_snippet(output_snippet)
         final: FinalToken = self._assign_final_token(final=final)
         self.output.validate_sample(snippet=output_snippet, value=output_value, final=final)
-        self._assert_context_snippet_count(inputs=input_snippets)
+        self._assert_input_snippet_count(inputs=input_snippets)
         self._validate_snippets_match(inputs=input_snippets, response_snippet=output_snippet)
 
         sample: Sample = self._create_sample(inputs=input_snippets, response_snippet=output_snippet,
