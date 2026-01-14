@@ -4,6 +4,7 @@ from typing import List, Optional, Union
 
 from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
+from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_CONTEXT_LINE
 from ..pydantic.protocol import GuardrailModel
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
@@ -87,6 +88,7 @@ class BaseInstruction(ABC):
             raise TypeError("Context must be a sequence of TokenSet instances.")
         if not all(isinstance(ts, TokenSet) for ts in input.tokensets):
             raise TypeError("All items in context must be instances of TokenSet.")
+        self._validate_context()
         if name is None:
             name = str(self.input) + str(self.output)
         self.name: str = name
@@ -200,6 +202,17 @@ class BaseInstruction(ABC):
             result=final,
             value=value
         )
+
+    def _validate_context(self):
+        """Validates the total context lines and the length of each context line."""
+        if len(self.context) > MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION:
+            raise ValueError(f"Context exceeds maximum allowed lines of {MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION}. "
+                             f"Current lines: {len(self.context)}")
+
+        for i, line in enumerate(self.context):
+            if len(line) > MAXIMUM_CHARACTERS_PER_CONTEXT_LINE:
+                raise ValueError(f"Context line {i} exceeds maximum allowed length of {MAXIMUM_CHARACTERS_PER_CONTEXT_LINE} characters. "
+                                 f"Current length: {len(line)}")
 
     def _validate_input_snippets(self):
         """Validates that input snippets do not contain any final tokens."""

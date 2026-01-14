@@ -11,6 +11,11 @@ UNK_TOKEN: SpecialToken = SpecialToken(value="<UNK>", key="<UNK>", special="unkn
 MINIMUM_TOTAL_CONTEXT_LINES = 10
 PER_FINAL_TOKEN_SAMPLE_MINIMUM = 3
 
+MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION: int = 10
+MAXIMUM_CHARACTERS_PER_CONTEXT_LINE: int = 300
+
+MAXIMUM_CHARACTERS_PER_SNIPPET: int = 300
+
 TokenTypeEnum: dict = {
     "Token": Token,
     "SpecialToken": SpecialToken,
