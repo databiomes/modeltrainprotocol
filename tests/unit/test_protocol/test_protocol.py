@@ -125,7 +125,7 @@ class TestProtocol:
         # Create context line with 301 characters (should fail)
         long_context = "a" * (MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE + 1)
 
-        with pytest.raises(ValueError, match=f"Context line exceeds maximum character limit of {MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE} characters"):
+        with pytest.raises(ValueError, match=f"Context line exceeds maximum length of {MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE} characters"):
             protocol.add_context(long_context)
 
     def test_protocol_add_context_line_length_at_limit_succeeds(self):
@@ -1095,10 +1095,97 @@ class TestProtocol:
         # Validation happens in save() and template()
         protocol._prep_protocol()
         
-        # But validate_protocol() should return False
+        # But validate_protocol() should raise ValueError
+        with pytest.raises(ValueError, match="No instructions have been added"):
+            protocol.validate_protocol()
+
+    def test_protocol_validate_context_count_less_than_minimum_raises_error(self):
+        """Test that protocol validation fails when total context lines is less than minimum."""
+        from model_train_protocol.common.constants import MINIMUM_TOTAL_CONTEXT_LINES
+        
+        protocol = Protocol("test_protocol", inputs=2)
+        
+        # Add protocol context lines that are less than minimum (subtract 5 from minimum)
+        insufficient_context_lines = MINIMUM_TOTAL_CONTEXT_LINES - 5
+        for i in range(insufficient_context_lines):
+            protocol.add_context(f"Protocol context line {i+1}")
+        
+        # Create and add an instruction with no context
+        token1 = Token("Token1")
+        token2 = Token("Token2")
+        token3 = Token("Token3")
+        context_set1 = TokenSet(tokens=(token1,))
+        context_set2 = TokenSet(tokens=(token2,))
+        response_set = TokenSet(tokens=(token3,))
+        
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
+        instruction = Instruction(
+            input=instruction_input,
+            output=instruction_output,
+            context=[]  # No instruction context
+        )
+        
+        # Add samples
+        for i in range(3):
+            instruction.add_sample(
+                input_snippets=[f"Input 1 sample {i}", f"Input 2 sample {i}"],
+                output_snippet=f"Output sample {i}"
+            )
+        
+        protocol.add_instruction(instruction)
+        
+        # Total context: insufficient_context_lines protocol + 0 instruction (less than minimum)
+        # Validation should raise ValueError
+        with pytest.raises(ValueError, match=f"less than the minimum required of {MINIMUM_TOTAL_CONTEXT_LINES}"):
+            protocol.validate_protocol()
+
+    def test_protocol_validate_context_count_with_instruction_context_meets_minimum(self):
+        """Test that protocol validation succeeds when protocol + instruction contexts total minimum or more."""
+        from model_train_protocol.common.constants import MINIMUM_TOTAL_CONTEXT_LINES
+        
+        protocol = Protocol("test_protocol", inputs=2)
+        
+        # Split minimum context lines between protocol and instruction (half each)
+        protocol_context_lines = MINIMUM_TOTAL_CONTEXT_LINES // 2
+        instruction_context_lines = MINIMUM_TOTAL_CONTEXT_LINES // 2
+        
+        # Add protocol context lines
+        for i in range(protocol_context_lines):
+            protocol.add_context(f"Protocol context line {i+1}")
+        
+        # Create and add an instruction with context lines
+        token1 = Token("Token1")
+        token2 = Token("Token2")
+        token3 = Token("Token3")
+        context_set1 = TokenSet(tokens=(token1,))
+        context_set2 = TokenSet(tokens=(token2,))
+        response_set = TokenSet(tokens=(token3,))
+        
+        final_token = FinalToken("Result")
+        instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
+        instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
+        instruction = Instruction(
+            input=instruction_input,
+            output=instruction_output,
+            context=[f"Instruction context line {i+1}" for i in range(instruction_context_lines)]
+        )
+        
+        # Add samples
+        for i in range(3):
+            instruction.add_sample(
+                input_snippets=[f"Input 1 sample {i}", f"Input 2 sample {i}"],
+                output_snippet=f"Output sample {i}"
+            )
+        
+        protocol.add_instruction(instruction)
+        
+        # Total context: protocol_context_lines + instruction_context_lines = MINIMUM_TOTAL_CONTEXT_LINES (meets minimum)
+        # Validation should succeed
         valid, error_msg = protocol.validate_protocol()
-        assert not valid
-        assert "No instructions have been added" in error_msg
+        assert valid
+        assert error_msg is None
 
     @pytest.mark.parametrize("instruction_context_snippets", [2, 3, 5, 10])
     def test_protocol_various_instruction_context_snippets(self, instruction_context_snippets):
