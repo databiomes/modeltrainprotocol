@@ -127,17 +127,26 @@ class BaseInstruction(ABC):
         """Validates the Instruction meets required Protocol standards."""
         self._validate_input_snippets()
         self._validate_minimum_samples()
+        self._validate_context()
+        for sample in self.samples:
+            all_snippet_strings: List[str] = sample.strings
+            self.___enforce_max_chars(all_snippet_strings)
 
     @classmethod
     def _validate_snippet_length(cls, inputs: List[Snippet], response_snippet: Snippet):
         """Validates that all snippets in the samples are within the max length"""
         all_snippets: List[Snippet] = inputs + [response_snippet]
+        all_snippet_strings: List[str] = [snippet.string for snippet in all_snippets]
+        cls.___enforce_max_chars(all_snippet_strings)
 
-        for snippet in all_snippets:
-            if len(snippet.string) > MAXIMUM_CHARACTERS_PER_SNIPPET:
+    @classmethod
+    def ___enforce_max_chars(cls, snippet_strings: List[str]):
+        """Validates that all snippet strings are within the max length"""
+        for snippet_string in snippet_strings:
+            if len(snippet_string) > MAXIMUM_CHARACTERS_PER_SNIPPET:
                 raise ValueError(
-                    f"Snippet length {len(snippet.string)} exceeds maximum allowed length of "
-                    f"{MAXIMUM_CHARACTERS_PER_SNIPPET} characters for snippet: {snippet.string}"
+                    f"Snippet length {len(snippet_string)} exceeds maximum allowed length of "
+                    f"{MAXIMUM_CHARACTERS_PER_SNIPPET} characters for snippet: {snippet_string}"
                 )
 
     def get_tokens(self) -> List[Token]:
@@ -254,7 +263,7 @@ class BaseInstruction(ABC):
                     f"Each final token must have at least 3 samples."
                 )
 
-    def _enforce_snippets(self, inputs: List[Union[Snippet, str]]) -> List[Snippet]:
+    def _enforce_input_snippets(self, inputs: List[Union[Snippet, str]]) -> List[Snippet]:
         """Converts regular strings to snippets if provided as a list of strings."""
         if len(inputs) != len(self.input.tokensets):
             raise ValueError(
@@ -271,6 +280,18 @@ class BaseInstruction(ABC):
                         f"Create a Snippet from the tokenset and add associated information: {e}")
 
         return inputs
+
+    def _enforce_response_snippet(self, snippet: Union[Snippet, str]) -> Snippet:
+        """Converts a regular string to a snippet if provided as a string."""
+        if isinstance(snippet, str):
+            associated_tokenset: TokenSet = self.output.tokenset
+            try:
+                snippet = associated_tokenset.create_snippet(string=snippet)
+            except Exception as e:
+                raise ValueError(
+                    f"Failed to create Snippet from string '{snippet}' for TokenSet {associated_tokenset}.\n"
+                    f"Create a Snippet from the tokenset and add associated information: {e}")
+        return snippet
 
     @classmethod
     def _validate_snippet_matches_set(cls, snippet: Snippet, expected_token_set: TokenSet):

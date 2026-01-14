@@ -66,18 +66,6 @@ class Instruction(BaseInstruction):
         """Indicates whether the Instruction has any guardrails defined."""
         return len(self.input.guardrails) > 0
 
-    def _enforce_response_snippet(self, snippet: Union[Snippet, str]) -> Snippet:
-        """Converts a regular string to a snippet if provided as a string."""
-        if isinstance(snippet, str):
-            associated_tokenset: TokenSet = self.output.tokenset
-            try:
-                snippet = associated_tokenset.create_snippet(string=snippet)
-            except Exception as e:
-                raise ValueError(
-                    f"Failed to create Snippet from string '{snippet}' for TokenSet {associated_tokenset}.\n"
-                    f"Create a Snippet from the tokenset and add associated information: {e}")
-        return snippet
-
     # noinspection PyMethodOverriding
     def add_sample(self, input_snippets: List[Union[str | Snippet]], output_snippet: Snippet | str,
                    output_value: Union[int, float, List[Union[int, float]], None] = None, final: FinalToken | None = None):
@@ -89,7 +77,7 @@ class Instruction(BaseInstruction):
         :param output_value: Optional value ascribed to the final Instruction output IF the final Token output is a number.
         :param final: Optional Token instance designating th e final action by the model. Defaults to a non-action Token designated {self.output.default_final}.
         """
-        input_snippets: List[Snippet] = self._enforce_snippets(inputs=input_snippets)
+        input_snippets: List[Snippet] = self._enforce_input_snippets(inputs=input_snippets)
         output_snippet: Snippet = self._enforce_response_snippet(output_snippet)
         final: FinalToken = self._assign_final_token(final=final)
         self.output.validate_sample(snippet=output_snippet, value=output_value, final=final)

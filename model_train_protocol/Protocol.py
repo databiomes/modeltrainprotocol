@@ -106,7 +106,8 @@ class Protocol:
                                                     numbers=sample.numbers[i] if len(sample.numbers[i]) > 0 else None))
 
                 outputs_snippet: Snippet = tokensets[-1].create_snippet(
-                    string=sample.output, number_lists=sample.number_lists[-1] if len(sample.number_lists[-1]) > 0 else None
+                    string=sample.output,
+                    number_lists=sample.number_lists[-1] if len(sample.number_lists[-1]) > 0 else None
                     , numbers=sample.numbers[-1] if len(sample.numbers[-1]) > 0 else None
                 )
 
@@ -141,11 +142,18 @@ class Protocol:
         if not isinstance(context, str):
             raise TypeError("Context must be a string.")
 
-        if len(context) > MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE:
-            raise ValueError(
-                f"Context line exceeds maximum character limit of {MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE} characters. Found {len(context)} characters.")
+        self._validate_context_line_length(context)
 
         self.context.append(context)
+
+    @classmethod
+    def _validate_context_line_length(cls, line: str):
+        """Validates that each context line does not exceed MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE."""
+        if len(line) > MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE:
+            raise ValueError(
+                f"Context line exceeds maximum length of {MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE} characters.\n"
+                f"Line: '{line}' has {len(line)} characters."
+            )
 
     def add_instruction(self, instruction: BaseInstruction):
         """
@@ -335,8 +343,6 @@ class Protocol:
                 f"or by adding background lines to instructions."
             )
 
-
-
     def _prep_protocol(self):
         """
         Sets all elements in the protocol before serialization.
@@ -354,21 +360,25 @@ class Protocol:
         Validates that the protocol meets all requirements for training.
         :return: Tuple of (True if valid, error message if invalid)
         """
-        try:
-            if len(self.instructions) == 0:
-                raise ValueError(
-                    "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
+        # try:
+        if len(self.instructions) == 0:
+            raise ValueError(
+                "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
 
-            self._validate_context_count()
-            used_values: Set[str] = {token.value for token in self.tokens}
-            validate_string_subset(used_values)
-            validate_string_subset(self.used_keys)
+        self._validate_context_count()
+        for line in self.context:
+            self._validate_context_line_length(line)
 
-            for instruction in self.instructions:
-                instruction.validate_instruction()
-        except Exception as e:
-            error_msg = str(e)
-            print(f"Protocol invalid: {error_msg}")
-            return False, error_msg
+        used_values: Set[str] = {token.value for token in self.tokens}
+        validate_string_subset(used_values)
+        validate_string_subset(self.used_keys)
+
+        for instruction in self.instructions:
+            instruction.validate_instruction()
+
+        # except Exception as e:
+        #     error_msg = str(e)
+        #     print(f"Protocol invalid: {error_msg}")
+        #     return False, error_msg
 
         return True, None
