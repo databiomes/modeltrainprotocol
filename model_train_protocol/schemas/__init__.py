@@ -12,7 +12,7 @@ SCHEMA_TEMPLATE: str = "template_schema.json"
 def list_schema_versions() -> list[str]:
     """Return available schema versions bundled with the package."""
     base = resources.files(__package__)
-    return sorted([entry.name for entry in base.iterdir() if entry.is_dir()])
+    return sorted([entry.name for entry in base.iterdir() if entry.is_dir() and not entry.name.startswith("_")])
 
 
 def get_schema_resource(version: str, name: str) -> Traversable:
