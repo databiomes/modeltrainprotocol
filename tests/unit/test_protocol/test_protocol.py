@@ -1094,10 +1094,11 @@ class TestProtocol:
         # _prep_protocol() doesn't validate, so it should succeed
         # Validation happens in save() and template()
         protocol._prep_protocol()
-        
-        # But validate_protocol() should raise ValueError
-        with pytest.raises(ValueError, match="No instructions have been added"):
-            protocol.validate_protocol()
+
+        # But validate_protocol() should return False with error message
+        valid, error_msg = protocol.validate_protocol()
+        assert valid is False
+        assert "No instructions have been added" in error_msg
 
     def test_protocol_validate_context_count_less_than_minimum_raises_error(self):
         """Test that protocol validation fails when total context lines is less than minimum."""
@@ -1137,9 +1138,10 @@ class TestProtocol:
         protocol.add_instruction(instruction)
         
         # Total context: insufficient_context_lines protocol + 0 instruction (less than minimum)
-        # Validation should raise ValueError
-        with pytest.raises(ValueError, match=f"less than the minimum required of {MINIMUM_TOTAL_CONTEXT_LINES}"):
-            protocol.validate_protocol()
+        # Validation should return False with error message
+        valid, error_msg = protocol.validate_protocol()
+        assert valid is False
+        assert f"less than the minimum required of {MINIMUM_TOTAL_CONTEXT_LINES}" in error_msg
 
     def test_protocol_validate_context_count_with_instruction_context_meets_minimum(self):
         """Test that protocol validation succeeds when protocol + instruction contexts total minimum or more."""
