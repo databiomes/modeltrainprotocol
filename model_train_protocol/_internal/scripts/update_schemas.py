@@ -12,12 +12,13 @@ from model_train_protocol.common.pydantic.template import TemplateModel
 
 def save_protocol_schema(base_path: Optional[str] = None) -> str:
     """
-    Generates and saves the JSON Schema for the Model Train Protocol to schemas/{version}/bloom_schema.json.
+    Generates and saves the JSON Schema for the Model Train Protocol to
+    model_train_protocol/schemas/{version}/bloom_schema.json.
 
     This schema can be used by other languages (Go, JavaScript, etc.) to validate
     and understand the structure of the protocol JSON files.
 
-    :param base_path: Base path for the schemas directory. If None, uses the project root.
+    :param base_path: Base path for the schemas directory. If None, uses the package root.
     :return: The path to the saved schema file.
     """
     # Generate JSON Schema from the Pydantic model
@@ -31,20 +32,10 @@ def save_protocol_schema(base_path: Optional[str] = None) -> str:
 
     # Determine base path
     if base_path is None:
-        # Find project root by looking for pyproject.toml
-        current_path = Path(__file__).resolve()
-        project_root = None
-        for parent in current_path.parents:
-            if (parent / "pyproject.toml").exists():
-                project_root = parent
-                break
+        package_root = Path(__file__).resolve().parents[2]
+        base_path = str(package_root)
 
-        if project_root is None:
-            raise FileNotFoundError("Could not find project root (pyproject.toml) in any parent directories.")
-
-        base_path = str(project_root)
-
-    # Create schemas/{version}/ directory
+    # Create model_train_protocol/schemas/{version}/ directory
     schema_dir = Path(base_path) / "schemas" / version
     schema_dir.mkdir(parents=True, exist_ok=True)
 
@@ -67,12 +58,13 @@ def save_protocol_schema(base_path: Optional[str] = None) -> str:
 
 def save_template_schema(base_path: Optional[str] = None) -> str:
     """
-    Generates and saves the JSON Schema for the Model Train Protocol Template to schemas/{version}/template_schema.json.
+    Generates and saves the JSON Schema for the Model Train Protocol Template to
+    model_train_protocol/schemas/{version}/template_schema.json.
 
     This schema can be used by other languages (Go, JavaScript, etc.) to validate
     and understand the structure of the template JSON files.
 
-    :param base_path: Base path for the schemas directory. If None, uses the project root.
+    :param base_path: Base path for the schemas directory. If None, uses the package root.
     :return: The path to the saved schema file.
     """
     # Generate JSON Schema from the Pydantic model
@@ -86,20 +78,10 @@ def save_template_schema(base_path: Optional[str] = None) -> str:
 
     # Determine base path
     if base_path is None:
-        # Find project root by looking for pyproject.toml
-        current_path = Path(__file__).resolve()
-        project_root = None
-        for parent in current_path.parents:
-            if (parent / "pyproject.toml").exists():
-                project_root = parent
-                break
+        package_root = Path(__file__).resolve().parents[2]
+        base_path = str(package_root)
 
-        if project_root is None:
-            raise FileNotFoundError("Could not find project root (pyproject.toml) in any parent directories.")
-
-        base_path = str(project_root)
-
-    # Create schemas/{version}/ directory
+    # Create model_train_protocol/schemas/{version}/ directory
     schema_dir = Path(base_path) / "schemas" / version
     schema_dir.mkdir(parents=True, exist_ok=True)
 

@@ -7,6 +7,9 @@ where = ["."]
 include = ["model_train_protocol*"]
 exclude = ["assets", "examples"]
 
+[tool.setuptools.package-data]
+model_train_protocol = ["schemas/**/*.json"]
+
 [project]
 name = "model-train-protocol"
 version = "0.3.0"
