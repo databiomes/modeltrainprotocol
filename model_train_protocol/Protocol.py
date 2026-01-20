@@ -360,25 +360,25 @@ class Protocol:
         Validates that the protocol meets all requirements for training.
         :return: Tuple of (True if valid, error message if invalid)
         """
-        # try:
-        if len(self.instructions) == 0:
-            raise ValueError(
-                "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
+        try:
+            if len(self.instructions) == 0:
+                raise ValueError(
+                    "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
 
-        self._validate_context_count()
-        for line in self.context:
-            self._validate_context_line_length(line)
+            self._validate_context_count()
+            for line in self.context:
+                self._validate_context_line_length(line)
 
-        used_values: Set[str] = {token.value for token in self.tokens}
-        validate_string_subset(used_values)
-        validate_string_subset(self.used_keys)
+            used_values: Set[str] = {token.value for token in self.tokens}
+            validate_string_subset(used_values)
+            validate_string_subset(self.used_keys)
 
-        for instruction in self.instructions:
-            instruction.validate_instruction()
+            for instruction in self.instructions:
+                instruction.validate_instruction()
 
-        # except Exception as e:
-        #     error_msg = str(e)
-        #     print(f"Protocol invalid: {error_msg}")
-        #     return False, error_msg
+        except Exception as e:
+            error_msg = str(e)
+            print(f"Protocol invalid: {error_msg}")
+            return False, error_msg
 
         return True, None
