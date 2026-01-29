@@ -38,7 +38,7 @@ class CSVConversion:
         :param csv_data: A dictionary where keys are column names and values are lists of column data.
         """
         self.csv_data = csv_data
-        self.csv_data.index += 1 # Adjust index to start from 1 to match CSV index
+        self.csv_data.index += 1  # Adjust index to start from 1 to match CSV index
         self.instruction_idx: dict[str, list[int]] = self._summarize_instructions()
         self.line_by_id: dict[int, CSVLine] = self._identify_lines()
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
@@ -138,9 +138,6 @@ class CSVConversion:
             )
 
         self.protocol.add_instruction(instruction)
-
-
-
 
     def _get_unique_outputs(self, idxs: list[int]) -> set[FinalToken]:
         """
