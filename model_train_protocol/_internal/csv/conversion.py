@@ -38,6 +38,7 @@ class CSVConversion:
         :param csv_data: A dictionary where keys are column names and values are lists of column data.
         """
         self.csv_data = csv_data
+        self.csv_data.index += 1 # Adjust index to start from 1 to match CSV index
         self.instruction_idx: dict[str, list[int]] = self._summarize_instructions()
         self.line_by_id: dict[int, CSVLine] = self._identify_lines()
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
@@ -57,6 +58,7 @@ class CSVConversion:
         instruction_counts: dict[str, list[int]] = {}
         groups: pd.Series = self.csv_data[self.group_col]
         for idx, instruction in enumerate(groups):
+            idx += 1  # Adjust index to match CSV line numbering
             if instruction not in instruction_counts:
                 instruction_counts[str(instruction)] = []
             instruction_counts[str(instruction)].append(idx)
@@ -76,6 +78,7 @@ class CSVConversion:
         requires_column: pd.Series = self.csv_data[self.required_col]
 
         for idx in range(len(inputs_column)):
+            idx += 1  # Adjust index to match CSV line numbering
             line_id: int = idx
             line_by_id[line_id] = CSVLine(
                 id=line_id,
