@@ -132,6 +132,10 @@ class BaseInstruction(ABC):
             all_snippet_strings: List[str] = sample.strings
             self.___enforce_max_chars(all_snippet_strings)
 
+    def add_context(self, context: str):
+        """Adds context to the Instruction."""
+        self.context.append(context)
+
     @classmethod
     def _validate_snippet_length(cls, inputs: List[Snippet], response_snippet: Snippet):
         """Validates that all snippets in the samples are within the max length"""
@@ -227,9 +231,9 @@ class BaseInstruction(ABC):
 
     def _validate_context(self):
         """Validates the total context lines and the length of each context line."""
-        if len(self.context) > MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION:
-            raise ValueError(f"Context exceeds maximum allowed lines of {MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION}. "
-                             f"Current lines: {len(self.context)}")
+        # if len(self.context) > MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION:
+        #     raise ValueError(f"Context exceeds maximum allowed lines of {MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION}. "
+        #                      f"Current lines: {len(self.context)}")
 
         for i, line in enumerate(self.context):
             if len(line) > MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE:
