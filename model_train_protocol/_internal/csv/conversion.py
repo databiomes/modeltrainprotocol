@@ -9,7 +9,7 @@ from model_train_protocol.common.constants import NON_TOKEN
 @dataclass
 class CSVLine:
     """This class represents a single line in the CSV data."""
-    id: int
+    id: str
     group: str
     input_str: str
     output_str: str
@@ -37,8 +37,7 @@ class CSVConversion:
 
         :param csv_data: A dictionary where keys are column names and values are lists of column data.
         """
-        self.csv_data = csv_data
-        self.csv_data.index += 1  # Adjust index to start from 1 to match CSV index
+        self.csv_data = self._process_dataframe(csv_data)
         self.instruction_idx: dict[str, list[int]] = self._summarize_instructions()
         self.line_by_id: dict[int, CSVLine] = self._identify_lines()
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
@@ -48,6 +47,21 @@ class CSVConversion:
         for instruction, idxs in self.instruction_idx.items():
             self._process_instruction(instruction, idxs)
         return self.protocol
+
+    def _process_dataframe(self, dataframe: pd.DataFrame) -> pd.DataFrame:
+        """
+        Processes the input DataFrame to match expected format.
+
+        :param dataframe: The input DataFrame.
+        :return: Processed DataFrame
+        """
+        # Remove the descriptions row from the DataFrame
+        dataframe = dataframe.drop(0)
+
+        # Remove rows with empty Group values
+        dataframe = dataframe[dataframe[self.group_col].notna()]
+        dataframe.reset_index(drop=True)
+        return dataframe
 
     def _summarize_instructions(self) -> dict[str, list[int]]:
         """
@@ -81,7 +95,7 @@ class CSVConversion:
             idx += 1  # Adjust index to match CSV line numbering
             line_id: int = idx
             line_by_id[line_id] = CSVLine(
-                id=line_id,
+                id=groups_column[idx],
                 group=groups_column[idx],
                 input_str=inputs_column[idx],
                 output_str=outputs_column[idx],
