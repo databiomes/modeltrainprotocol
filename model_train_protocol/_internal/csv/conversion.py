@@ -19,6 +19,7 @@ class CSVLine:
 
 class CSVConversion:
     """This class provides methods to convert from CSV into MTP"""
+    id_col: str = "ID"
     group_col: str = "Group"
     input_col: str = "Input"
     output_col: str = "Output"
@@ -26,7 +27,7 @@ class CSVConversion:
     required_col: str = "Requires"
 
     input_token: Token = Token("Input")
-    required_token: Token = Token("Required")
+    required_token: Token = Token("Required", desc="")
     input_tokenset: TokenSet = TokenSet(tokens=[input_token])
     required_tokenset: TokenSet = TokenSet(tokens=[required_token])
     standard_input: InstructionInput = InstructionInput(tokensets=[input_tokenset, required_tokenset])
@@ -37,9 +38,10 @@ class CSVConversion:
 
         :param csv_data: A dictionary where keys are column names and values are lists of column data.
         """
+        self.first_id: str | None = None
         self.csv_data = self._process_dataframe(csv_data)
         self.instruction_idx: dict[str, list[int]] = self._summarize_instructions()
-        self.line_by_id: dict[int, CSVLine] = self._identify_lines()
+        self.line_by_id: dict[str, CSVLine] = self._identify_lines() # Todo: make linked list
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
 
     def to_mtp(self) -> Protocol:
@@ -55,8 +57,9 @@ class CSVConversion:
         :param dataframe: The input DataFrame.
         :return: Processed DataFrame
         """
-        # Remove the descriptions row from the DataFrame
-        dataframe = dataframe.drop(0)
+        # Remove the descriptions row from the DataFrame, if present
+        if pd.isna(dataframe.iloc[0][self.id_col]):
+            dataframe = dataframe.drop(0)
 
         # Remove rows with empty Group values
         dataframe = dataframe[dataframe[self.group_col].notna()]
@@ -78,24 +81,26 @@ class CSVConversion:
             instruction_counts[str(instruction)].append(idx)
         return instruction_counts
 
-    def _identify_lines(self) -> dict[int, CSVLine]:
+    def _identify_lines(self) -> dict[str, CSVLine]:
         """
         Maps lines in the CSV data by their ID.
 
         :return: A dictionary mapping line IDs to CSVLine objects.
         """
-        line_by_id: dict[int, CSVLine] = {}
+        line_by_id: dict[str, CSVLine] = {}
+        id_column: pd.Series = self.csv_data[self.id_col]
         groups_column: pd.Series = self.csv_data[self.group_col]
         inputs_column: pd.Series = self.csv_data[self.input_col]
         outputs_column: pd.Series = self.csv_data[self.output_col]
         contexts_column: pd.Series = self.csv_data[self.context_col]
         requires_column: pd.Series = self.csv_data[self.required_col]
 
-        for idx in range(len(inputs_column)):
+        for idx, line_id in enumerate(id_column):
             idx += 1  # Adjust index to match CSV line numbering
-            line_id: int = idx
-            line_by_id[line_id] = CSVLine(
-                id=groups_column[idx],
+            if self.first_id is None:
+                self.first_id = str(line_id)
+            line_by_id[str(line_id)] = CSVLine(
+                id=str(line_id),
                 group=groups_column[idx],
                 input_str=inputs_column[idx],
                 output_str=outputs_column[idx],
@@ -111,7 +116,7 @@ class CSVConversion:
         :param instruction: The instruction name.
         :param idxs: List of indices where this instruction occurs in the CSV data.
         """
-        first_line: CSVLine = self.line_by_id.get(idxs[0])
+        first_line: CSVLine = self.line_by_id[self.first_id]
         instruction_token: Token = Token(first_line.group)
         instruction_tokenset: TokenSet = TokenSet(tokens=[instruction_token])
         instruction_output: InstructionOutput = InstructionOutput(
@@ -138,9 +143,9 @@ class CSVConversion:
 
             # Add any required outputs
             if requires_str != "" and requires_str != "nan":
-                required_idxs: list[int] = [int(i) for i in requires_str.split(",") if i.isdigit()]
-                for req_idx in required_idxs:
-                    required_line: CSVLine = self.line_by_id.get(req_idx)
+                required_ids: list[str] = [i for i in requires_str.split(",")]
+                for req_id in required_ids:
+                    required_line: CSVLine = self.line_by_id.get(req_id)
                     if required_line:
                         required_samples.append(required_line.output_str)
 

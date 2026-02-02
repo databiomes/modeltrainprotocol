@@ -196,6 +196,7 @@ class Protocol:
 
         # Add all tokens
         for token in instruction.get_tokens():
+            self._assign_key(token=token)
             if token not in self.tokens:
                 self._add_token(token)
 
