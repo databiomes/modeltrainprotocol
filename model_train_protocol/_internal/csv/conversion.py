@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from model_train_protocol import FinalToken, Protocol, Token, InstructionInput, TokenSet, Instruction, InstructionOutput
+from model_train_protocol import Protocol, Token, InstructionInput, TokenSet, Instruction, InstructionOutput
 from model_train_protocol.common.constants import NON_TOKEN
 
 
@@ -38,16 +38,15 @@ class CSVConversion:
 
         :param csv_data: A dictionary where keys are column names and values are lists of column data.
         """
-        self.first_id: str | None = None
         self.csv_data = self._process_dataframe(csv_data)
-        self.instruction_idx: dict[str, list[int]] = self._summarize_instructions()
-        self.line_by_id: dict[str, CSVLine] = self._identify_lines() # Todo: make linked list
+        self.rows_by_group: dict[str, list[str]] = self._summarize_instructions()
+        self.line_by_id: dict[str, CSVLine] = self._identify_lines()  # Todo: make linked list
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
 
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
-        for instruction, idxs in self.instruction_idx.items():
-            self._process_instruction(instruction, idxs)
+        for instruction, ids in self.rows_by_group.items():
+            self._process_instruction(instruction, ids)
         return self.protocol
 
     def _process_dataframe(self, dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -66,19 +65,20 @@ class CSVConversion:
         dataframe.reset_index(drop=True)
         return dataframe
 
-    def _summarize_instructions(self) -> dict[str, list[int]]:
+    def _summarize_instructions(self) -> dict[str, list[str]]:
         """
         Summarizes the instructions in the CSV data.
 
         Creates a dictionary with instruction names as keys and their occurrences by index
         """
-        instruction_counts: dict[str, list[int]] = {}
-        groups: pd.Series = self.csv_data[self.group_col]
-        for idx, instruction in enumerate(groups):
-            idx += 1  # Adjust index to match CSV line numbering
+        instruction_counts: dict[str, list[str]] = {}
+        for row in self.csv_data.itertuples():
+            instruction: str = str(getattr(row, self.group_col))
+            if instruction == "" or instruction == "nan":
+                continue
             if instruction not in instruction_counts:
                 instruction_counts[str(instruction)] = []
-            instruction_counts[str(instruction)].append(idx)
+            instruction_counts[str(instruction)].append(str(getattr(row, self.id_col)))
         return instruction_counts
 
     def _identify_lines(self) -> dict[str, CSVLine]:
@@ -109,15 +109,19 @@ class CSVConversion:
             )
         return line_by_id
 
-    def _process_instruction(self, instruction: str, idxs: list[int]) -> None:
+    def _process_instruction(self, instruction: str, ids: list[str]) -> None:
         """
         Processes a single instruction and adds it to the protocol.
 
         :param instruction: The instruction name.
-        :param idxs: List of indices where this instruction occurs in the CSV data.
+        :param ids: List of IDs where the instruction occurs.
         """
-        first_line: CSVLine = self.line_by_id[self.first_id]
-        instruction_token: Token = Token(first_line.group)
+        first_line_in_instruction: CSVLine = self.line_by_id[ids[0]]
+        instruction_outputs: set[str] = self._get_unique_outputs(ids)
+        acceptable_output_string: str = ", ".join(instruction_outputs)
+        instruction_token: Token = Token(first_line_in_instruction.group,
+                                         desc=f"Here are Inputs that are acceptable: {acceptable_output_string}. "
+                                              f"Try to match inputs from examples with the same responses from the examples.")
         instruction_tokenset: TokenSet = TokenSet(tokens=[instruction_token])
         instruction_output: InstructionOutput = InstructionOutput(
             tokenset=instruction_tokenset,
@@ -130,20 +134,16 @@ class CSVConversion:
             name=instruction
         )
 
-        for idx in idxs:
-            input_str: str = str(self.csv_data['Input'][idx])
-            output_str: str = str(self.csv_data['Output'][idx])
-            context_str: str = str(self.csv_data['Output Reference'][idx])
-            requires_str: str = str(self.csv_data['Requires'][idx])
-
+        for _id in ids:
+            line: CSVLine = self.line_by_id[_id]
             required_samples: list[str] = []
 
-            if context_str != "" and context_str != "nan":
-                instruction.add_context(context_str)
+            if line.context_str != "" and not pd.isna(line.context_str):
+                instruction.add_context(line.context_str)
 
             # Add any required outputs
-            if requires_str != "" and requires_str != "nan":
-                required_ids: list[str] = [i for i in requires_str.split(",")]
+            if line.requires_str != "" and not pd.isna(line.requires_str):
+                required_ids: list[str] = [i for i in line.requires_str.split(",")]
                 for req_id in required_ids:
                     required_line: CSVLine = self.line_by_id.get(req_id)
                     if required_line:
@@ -152,22 +152,21 @@ class CSVConversion:
             first_input: str = ", ".join(required_samples) if required_samples else NON_TOKEN.value
 
             instruction.add_sample(
-                input_snippets=[first_input, input_str],
-                output_snippet=output_str
+                input_snippets=[first_input, line.input_str],
+                output_snippet=line.output_str
             )
 
         self.protocol.add_instruction(instruction)
 
-    def _get_unique_outputs(self, idxs: list[int]) -> set[FinalToken]:
+    def _get_unique_outputs(self, ids: list[str]) -> set[str]:
         """
         Retrieves unique outputs for a given instruction.
 
-        :param idxs: List of indices where the instruction occurs.
+        :param ids: List of IDs where the instruction occurs.
         :return: A set of unique outputs.
         """
-        unique_outputs: set[FinalToken] = set()
-        outputs_column: pd.Series = self.csv_data['Output']
-        for idx in idxs:
-            output = outputs_column[idx]
-            unique_outputs.add(FinalToken(output))
+        unique_outputs: set[str] = set()
+        for _id in ids:
+            line: CSVLine = self.line_by_id[_id]
+            unique_outputs.add(line.output_str)
         return unique_outputs
