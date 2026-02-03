@@ -40,7 +40,7 @@ class CSVConversion:
         """
         self.csv_data = self._process_dataframe(csv_data)
         self.rows_by_group: dict[str, list[str]] = self._summarize_instructions()
-        self.line_by_id: dict[str, CSVLine] = self._identify_lines()  # Todo: make linked list
+        self.line_by_id: dict[str, CSVLine] = self._identify_lines()
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
 
     def to_mtp(self) -> Protocol:
