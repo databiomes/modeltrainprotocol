@@ -60,8 +60,8 @@ class CSVConversion:
         if pd.isna(dataframe.iloc[0][self.id_col]):
             dataframe = dataframe.drop(0)
 
-        # Remove rows with empty Group values
-        dataframe = dataframe[dataframe[self.group_col].notna()]
+        # Remove rows where Group and Input are empty
+        dataframe = dataframe[~((dataframe[self.group_col].isna()) & (dataframe[self.input_col].isna()))]
         dataframe.reset_index(drop=True)
         return dataframe
 
@@ -72,13 +72,15 @@ class CSVConversion:
         Creates a dictionary with instruction names as keys and their occurrences by index
         """
         instruction_counts: dict[str, list[str]] = {}
+        latest_group: str = ""
         for row in self.csv_data.itertuples():
-            instruction: str = str(getattr(row, self.group_col))
-            if instruction == "" or instruction == "nan":
+            input_str: str = str(getattr(row, self.input_col))
+            if input_str == "" or input_str == "nan":
                 continue
-            if instruction not in instruction_counts:
-                instruction_counts[str(instruction)] = []
-            instruction_counts[str(instruction)].append(str(getattr(row, self.id_col)))
+            latest_group: str = self._assign_latest(self.csv_data[self.group_col], row.Index, latest_group)
+            if latest_group not in instruction_counts:
+                instruction_counts[str(latest_group)] = []
+            instruction_counts[str(latest_group)].append(str(getattr(row, self.id_col)))
         return instruction_counts
 
     def _identify_lines(self) -> dict[str, CSVLine]:
@@ -87,6 +89,9 @@ class CSVConversion:
 
         :return: A dictionary mapping line IDs to CSVLine objects.
         """
+        latest_group: str = ""
+        latest_output: str = ""
+        latest_context: str = ""
         line_by_id: dict[str, CSVLine] = {}
         id_column: pd.Series = self.csv_data[self.id_col]
         groups_column: pd.Series = self.csv_data[self.group_col]
@@ -97,15 +102,30 @@ class CSVConversion:
 
         for idx, line_id in enumerate(id_column):
             idx += 1  # Adjust index to match CSV line numbering
+            latest_group: str = self._assign_latest(groups_column, idx, latest_group)
+            latest_output: str = self._assign_latest(outputs_column, idx, latest_output)
+            latest_context: str = self._assign_latest(contexts_column, idx, latest_context)
+
             line_by_id[str(line_id)] = CSVLine(
                 id=str(line_id),
-                group=groups_column[idx],
+                group=latest_group,
                 input_str=inputs_column[idx],
-                output_str=outputs_column[idx],
-                context_str=contexts_column[idx],
+                output_str=latest_output,
+                context_str=latest_context,
                 requires_str=requires_column[idx]
             )
         return line_by_id
+
+    @classmethod
+    def _assign_latest(cls, column: pd.Series, idx: int, latest: str) -> str:
+        """Helper function to assign latest non-empty value."""
+        try:
+            value: str = str(column[idx])
+        except KeyError:
+            return latest
+        if value == "" or value == "nan" or pd.isna(value):
+            return latest
+        return value
 
     def _process_instruction(self, instruction: str, ids: list[str]) -> None:
         """
