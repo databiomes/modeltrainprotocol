@@ -97,8 +97,6 @@ class CSVConversion:
 
         for idx, line_id in enumerate(id_column):
             idx += 1  # Adjust index to match CSV line numbering
-            if self.first_id is None:
-                self.first_id = str(line_id)
             line_by_id[str(line_id)] = CSVLine(
                 id=str(line_id),
                 group=groups_column[idx],
