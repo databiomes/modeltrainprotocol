@@ -27,10 +27,7 @@ class CSVConversion:
     required_col: str = "Requires"
 
     input_token: Token = Token("Input")
-    required_token: Token = Token("Required", desc="")
     input_tokenset: TokenSet = TokenSet(tokens=[input_token])
-    required_tokenset: TokenSet = TokenSet(tokens=[required_token])
-    standard_input: InstructionInput = InstructionInput(tokensets=[input_tokenset, required_tokenset])
 
     def __init__(self, csv_data: pd.DataFrame):
         """
@@ -42,6 +39,9 @@ class CSVConversion:
         self.rows_by_group: dict[str, list[str]] = self._summarize_instructions()
         self.line_by_id: dict[str, CSVLine] = self._identify_lines()
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
+        self.required_token: Token = self._generate_required_token()
+        self.required_tokenset: TokenSet = TokenSet(tokens=[self.required_token])
+        self.standard_input: InstructionInput = InstructionInput(tokensets=[self.required_tokenset, self.input_tokenset])
 
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
@@ -115,6 +115,23 @@ class CSVConversion:
                 requires_str=requires_column[idx]
             )
         return line_by_id
+
+    def _generate_required_token(self) -> Token:
+        """Generates the required token for the protocol."""
+        required_outputs: set[str] = set()
+        for line in self.line_by_id.values():
+            if line.requires_str != "" and not pd.isna(line.requires_str):
+                required_ids: list[str] = [i for i in line.requires_str.split(",")]
+                for req_id in required_ids:
+                    required_line: CSVLine = self.line_by_id.get(req_id)
+                    if required_line:
+                        required_outputs.add(required_line.output_str)
+                    else:
+                        raise ValueError(f"Required ID {req_id} not found in CSV data.")
+
+        desc: str = f"Here are previous responses that are acceptable: f{', '.join(required_outputs)}. If a previous response is given then the new response must match the example."
+
+        return Token(value="Required", desc=desc)
 
     @classmethod
     def _assign_latest(cls, column: pd.Series, idx: int, latest: str) -> str:
