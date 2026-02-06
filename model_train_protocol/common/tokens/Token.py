@@ -19,6 +19,10 @@ class Token:
         self.desc: str = desc
         self.num: bool = False
         self.num_list: int = 0
+        self.min_value: Optional[float | int] = None
+        self.max_value: Optional[float | int] = None
+        self.length: Optional[int] = None
+        self.input: bool = True
         self.template_representation: str = ""
         self.special: Optional[str] = None
         self.validate_value()
@@ -95,4 +99,5 @@ class Token:
     def to_dict(self):
         """Convert the token to a dictionary representation."""
         return {'value': self.value, 'key': self.key, 'num': self.num, 'num_list': self.num_list, 'desc': self.desc,
-                'special': self.special}
+                'min_value': self.min_value, 'max_value': self.max_value, 'length': self.length,
+                'special': self.special, "type": self.__class__.__name__}

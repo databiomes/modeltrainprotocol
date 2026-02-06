@@ -14,7 +14,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = 
     :param encrypt: Whether to encrypt the protocol file
     """
     protocol: Protocol = Protocol(name=name if name else prototype_mtp.model_name,
-                                  instruction_context_snippets=2, encrypt=encrypt)
+                                  inputs=2, encrypt=encrypt)
 
     for context_item in prototype_mtp.context:
         protocol.add_context(context_item.context)
@@ -28,21 +28,21 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = 
     response_token: Token = Token("Response", desc="The response from the model.")
     response_tokenset: TokenSet = TokenSet(response_token)
 
-    final: Token = Token("Final", desc="Indicates the end of the model's response.")
+    final: FinalToken = Token("Final", desc="Indicates the end of the model's response.")
 
     for instruction_set in prototype_mtp.instruction_sets:
 
         # Creates tokens dynamically from prototype (needs to account for duplicates still)
         # prompt_tokenset: TokenSet = create_token_set_from_token_model_array(instruction_set.prompt_tokens)
         # response_tokenset: TokenSet = create_token_set_from_token_model_array(instruction_set.response_tokens)
-        # final: Token = create_sanitized_token_from_model(prototype_mtp.final_token)
+        # final: FinalToken = create_sanitized_token_from_model(prototype_mtp.final_token)
 
         simple_instruction: Instruction = Instruction(
-            context=[context_tokenset, prompt_tokenset], response=response_tokenset, final=final
+            input=[context_tokenset, prompt_tokenset], output=response_tokenset, final=final
         )
 
         for sample in instruction_set.samples:
-            context_snippets: List[Snippet] = [
+            inputs: List[Snippet] = [
                 context_tokenset.create_snippet(
                     sample.prompt_context
                 ), prompt_tokenset.create_snippet(
@@ -50,8 +50,8 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = 
                 )
             ]
             simple_instruction.add_sample(
-                context_snippets=context_snippets,
-                response_snippet=response_tokenset.create_snippet(
+                input_snippets=inputs,
+                output_snippet=response_tokenset.create_snippet(
                     sample.response_sample
                 )
             )

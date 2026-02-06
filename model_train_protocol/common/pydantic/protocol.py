@@ -4,7 +4,7 @@ Pydantic models for Protocol JSON structure.
 
 from typing import List, Dict, Any, Optional, Union
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict
 
 
 class TokenInfoModel(BaseModel):
@@ -12,8 +12,12 @@ class TokenInfoModel(BaseModel):
     key: str
     num: bool
     num_list: int
+    min_value: Optional[Union[int, float]]
+    max_value: Optional[Union[int, float]]
+    length: Optional[int]
     desc: Optional[str]
     special: Optional[str]
+    type: str
 
 
 class SampleModel(BaseModel):
@@ -26,13 +30,22 @@ class SampleModel(BaseModel):
     value: Optional[Union[str, int, float, List[int], List[float]]]  # Can be string, int, float, or list
 
 
+class GuardrailModel(BaseModel):
+    """Model for guardrails configuration."""
+    index: int
+    good_prompt: str
+    bad_prompt: str
+    bad_output: str
+    bad_examples: list[str]
+
+
 class InstructionSetModel(BaseModel):
     """Model for instruction sets."""
+    guardrails: List[GuardrailModel]
+    context: List[str]
     set: List[List[str]]
-    result: str
     samples: List[SampleModel]
-    ppo: List[Any]
-
+    ppo: List[Dict[str, Any]]
 
 class InstructionModel(BaseModel):
     """Model for instruction configuration."""
@@ -40,33 +53,21 @@ class InstructionModel(BaseModel):
     sets: List[InstructionSetModel]
 
 
-class GuardrailModel(BaseModel):
-    """Model for guardrails configuration."""
-    model_config = {"extra": "allow"}
-
-    def __getitem__(self, key: str) -> Any:
-        """Get a guardrail rule by key."""
-        return getattr(self, key, None)
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        """Set a guardrail rule by key."""
-        setattr(self, key, value)
-
-    def get_guardrail_rules(self) -> Dict[str, Any]:
-        """Get all guardrail rules as a dictionary."""
-        return {k: v for k, v in self.__dict__.items()}
-
-    def set_guardrail_rule(self, key: str, value: Union[str, List[Union[str, List[str]]]]) -> None:
-        """Set a guardrail rule with proper validation."""
-        if not isinstance(value, (str, list)):
-            raise ValueError(f"Guardrail value must be string or list, got {type(value)}")
-        setattr(self, key, value)
+def _number_model_json_schema_extra(schema: dict, model_class) -> None:
+    """Customize JSON schema to specify that additionalProperties must be strings."""
+    schema["additionalProperties"] = {
+        "type": "string",
+        "description": "Number rule value (must be a string)"
+    }
 
 
 class NumberModel(BaseModel):
     """Model for numbers configuration."""
-    class ConfigDict:
-        extra = "allow"  # Allow extra fields for dynamic attributes
+
+    model_config = ConfigDict(
+        extra="allow",  # Allow extra fields for dynamic attributes
+        json_schema_extra=_number_model_json_schema_extra
+    )
 
     def __getitem__(self, key: str) -> Any:
         """Get a number rule by key."""
@@ -89,67 +90,22 @@ class NumberModel(BaseModel):
 
 class BatchModel(BaseModel):
     """Model for batches configuration."""
-    pretrain: List[Any]
-    instruct: List[Any]
-    judge: List[Any]
-    ppo: List[Any]
+    pretrain: List[Dict[str, Any]]
+    instruct: List[Dict[str, Any]]
+    judge: List[Dict[str, Any]]
+    ppo: List[Dict[str, Any]]
 
 
 class ProtocolModel(BaseModel):
     """Main model for MTP Protocol JSON structure."""
+    version: str
     name: str
+    inputs: int
+    encrypted: bool
+    valid: bool
     context: List[str]
     tokens: Dict[str, TokenInfoModel]
     special_tokens: List[str]
     instruction: InstructionModel
-    guardrails: GuardrailModel
     numbers: NumberModel
     batches: BatchModel
-
-    class ConfigDict:
-        json_schema_extra = {
-            "example": {
-                "name": "cat",
-                "context": [
-                    "ALICE was beginning to get very tired of sitting by her sister on the bank...",
-                    "So she was considering in her own mind, as well as she could..."
-                ],
-                "tokens": {
-                    "English_": {
-                        "emoji": "🇨",
-                        "num": False,
-                        "num_list": [],
-                        "user": False,
-                        "desc": None,
-                        "special": None
-                    },
-                    "Alice_": {
-                        "emoji": "😁",
-                        "num": False,
-                        "num_list": [],
-                        "user": True,
-                        "desc": None,
-                        "special": None
-                    }
-                },
-                "special_tokens": [
-                    "🪾🇨😁🗣",
-                    "🔄",
-                    "🪾🇨🐱🗣"
-                ],
-                "instruction": {
-                    "memory": 3,
-                    "sets": []
-                },
-                "guardrails": {
-                },
-                "numbers": {
-                },
-                "batches": {
-                    "pretrain": [],
-                    "instruct": [],
-                    "judge": [],
-                    "ppo": []
-                }
-            }
-        }

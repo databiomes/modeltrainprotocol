@@ -28,10 +28,10 @@ The first step in creating a model training protocol is to initialize the Protoc
 import model_train_protocol as mtp
 
 # Initialize the protocol
-protocol = mtp.Protocol(name="my_model", instruction_context_snippets=3)
+protocol = mtp.Protocol(name="my_model", inputs=2)
 ```
 
-The parameter `instruction_context_snippets` is the number of lines in each instruction sample. This is required and must be at least 3.
+The parameter `inputs` is the number of lines in each Instruction's Input. Must be at least 2.
 
 ## System Architecture
 
@@ -152,22 +152,22 @@ cat_pondering_instruction_disappear = mtp.Instruction(
 #### Adding Samples
 
 - **add_sample() parameters**:
-  - **context_snippets**: List of context snippets that will be added to the Instruction
+  - **inputs**: List of context snippets that will be added to the Instruction
   - **response_snippet**: The model's output snippet
   - **value**: Optional numerical value (required if final Token is a NumToken)
 
 ```python
 # Samples must be made on their associated TokenSets
 sample_context = cat_pondering.create_snippet(
-  string="Why do I keep vanishing and reappearing so suddenly?"
+    string="Why do I keep vanishing and reappearing so suddenly?"
 )
 sample_output = cat_grinning.create_snippet(
-  string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
+    string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
 )
 
 cat_pondering_instruction_disappear.add_sample(
-  context_snippets=[sample_context],
-  response_snippet=sample_output
+    input_snippets=[sample_context],
+    output_snippet=sample_output
 )
 ```
 
@@ -199,25 +199,25 @@ alice_cat_instruction_leave = mtp.ExtendedInstruction(
 #### Adding Samples
 
 - **add_sample() parameters**:
-  - **context_snippets**: List of context snippets that will be added to the Instruction (must match the context TokenSets)
+  - **inputs**: List of context snippets that will be added to the Instruction (must match the context TokenSets)
   - **response_string**: The response provided by the model as a string
   - **value**: Optional numerical value (required if final Token is a NumToken)
 
 ```python
 # Samples must be made on their associated TokenSets
 sample_context_1 = alice_talk.create_snippet(
-  string="I don't much care where—"
+    string="I don't much care where—"
 )
 sample_context_2 = cat_talk.create_snippet(
-  string="Then it doesn't matter which way you go."
+    string="Then it doesn't matter which way you go."
 )
 sample_context_3 = alice_talk.create_snippet(
-  string="Can you tell me which way I ought to go?"
+    string="Can you tell me which way I ought to go?"
 )
 
 alice_cat_instruction_leave.add_sample(
-  context_snippets=[sample_context_1, sample_context_2, sample_context_3],
-  response_string="Then I'll do it twice as much, since nervousness is such a curious flavor."
+    input_snippets=[sample_context_1, sample_context_2, sample_context_3],
+    response_string="Then I'll do it twice as much, since nervousness is such a curious flavor."
 )
 ```
 
@@ -292,11 +292,8 @@ This is a reference file that shows:
 
 Use this file to understand how your model expects to receive and format data.
 
-### File Structure Example
+### Schema Files
 
-```
-my_model_model.json     # Main training protocol
-my_model_template.json  # Reference and examples
-```
+JSON Schema files are available in `schemas/{version}/` directories for protocol and template validation.
 
 The template file helps you understand the expected format when using your trained model, while the model file contains all the training data needed to create your specialized language model.

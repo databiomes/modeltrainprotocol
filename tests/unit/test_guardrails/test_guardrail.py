@@ -383,42 +383,497 @@ class TestGuardrail:
         assert formatted[3] == ["Modified bad sample one", "Bad sample two", "Bad sample three", "Additional bad sample"]
 
     def test_guardrail_assignment_simple_tokenset(self):
-        """Tests adding a guardrail to a simple tokenset"""
+        """Tests adding a guardrail to an instruction with a simple tokenset"""
         from tests.fixtures.tokens import SIMPLE_TOKENSET
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
 
         guardrail = Guardrail(
             good_prompt="Good prompt description",
             bad_prompt="Bad prompt description",
             bad_output="Bad output response"
         )
-        # Should not raise error since UserToken validation is no longer required
-        SIMPLE_TOKENSET.set_guardrail(guardrail)
-        assert SIMPLE_TOKENSET.guardrail is not None
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+
+        # Create instruction with the tokenset
+        instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET])
+        instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Add guardrail to instruction
+        instruction.add_guardrail(guardrail, tokenset_index=0)
+        assert 0 in instruction.input.guardrails
+        assert instruction.input.guardrails[0] == guardrail
 
     def test_guardrail_assignment_user_tokenset(self):
-        """Tests adding a guardrail to a user tokenset"""
+        """Tests adding a guardrail to an instruction with a user tokenset"""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         guardrail = Guardrail(
             good_prompt="Good prompt description",
             bad_prompt="Bad prompt description",
             bad_output="Bad output response"
         )
-        user_token_set.set_guardrail(guardrail)
-        assert user_token_set.guardrail == guardrail
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
 
-    def test_multiple_guardrails_raises_error(self):
-        """Tests that adding multiple guardrails to the same tokenset raises an error"""
+        # Create instruction with the tokenset
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Add guardrail to instruction
+        instruction.add_guardrail(guardrail, tokenset_index=0)
+        assert 0 in instruction.input.guardrails
+        assert instruction.input.guardrails[0] == guardrail
+
+    def test_multiple_guardrails_same_index_raises_error(self):
+        """Tests that adding multiple guardrails to the same tokenset_index raises an error"""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         guardrail_one = Guardrail(
             good_prompt="Good prompt description",
             bad_prompt="Bad prompt description",
             bad_output="Bad output response"
         )
+        guardrail_one.add_sample("Bad sample one")
+        guardrail_one.add_sample("Bad sample two")
+        guardrail_one.add_sample("Bad sample three")
+
         guardrail_two = Guardrail(
             good_prompt="Another good prompt description",
             bad_prompt="Another bad prompt description",
             bad_output="Another bad output response"
         )
-        user_token_set.set_guardrail(guardrail_one)
-        with pytest.raises(ValueError):
-            user_token_set.set_guardrail(guardrail_two)
+        guardrail_two.add_sample("Another bad sample one")
+        guardrail_two.add_sample("Another bad sample two")
+        guardrail_two.add_sample("Another bad sample three")
+
+        # Create instruction with the tokenset
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Add first guardrail
+        instruction.add_guardrail(guardrail_one, tokenset_index=0)
+        # Try to add second guardrail to the same index - should raise error
+        with pytest.raises(ValueError, match="A guardrail is already defined for tokenset_index 0"):
+            instruction.add_guardrail(guardrail_two, tokenset_index=0)
+
+
+class TestInstructionAddGuardrailValidation:
+    """Test cases for Instruction.add_guardrail validation."""
+
+    def test_add_guardrail_with_insufficient_samples(self):
+        """Test that adding a guardrail with less than 3 samples raises an error."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        # Create guardrail with only 2 samples (should fail)
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        # Only 2 samples - should fail
+
+        # Create instruction
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Try to add guardrail - should raise error
+        with pytest.raises(ValueError, match="Guardrail must have at least 3 samples"):
+            instruction.add_guardrail(guardrail, tokenset_index=0)
+
+    def test_add_guardrail_with_exactly_three_samples(self):
+        """Test that adding a guardrail with exactly 3 samples succeeds."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        # Create guardrail with exactly 3 samples (should succeed)
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+
+        # Create instruction
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Add guardrail - should succeed
+        instruction.add_guardrail(guardrail, tokenset_index=0)
+        assert 0 in instruction.input.guardrails
+        assert instruction.input.guardrails[0] == guardrail
+
+    def test_add_guardrail_with_more_than_three_samples(self):
+        """Test that adding a guardrail with more than 3 samples succeeds."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        # Create guardrail with 5 samples (should succeed)
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+        guardrail.add_sample("Bad sample four")
+        guardrail.add_sample("Bad sample five")
+
+        # Create instruction
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Add guardrail - should succeed
+        instruction.add_guardrail(guardrail, tokenset_index=0)
+        assert 0 in instruction.input.guardrails
+        assert instruction.input.guardrails[0] == guardrail
+
+    def test_add_guardrail_with_invalid_tokenset_index_negative(self):
+        """Test that adding a guardrail with negative tokenset_index raises an error."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        # Create guardrail with 3 samples
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+
+        # Create instruction with 1 tokenset (index 0)
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Try to add guardrail with negative index - should raise error
+        with pytest.raises(ValueError, match="tokenset_index -1 is out of range"):
+            instruction.add_guardrail(guardrail, tokenset_index=-1)
+
+    def test_add_guardrail_with_invalid_tokenset_index_too_large(self):
+        """Test that adding a guardrail with tokenset_index beyond range raises an error."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        # Create guardrail with 3 samples
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+
+        # Create instruction with 2 tokensets (indices 0 and 1)
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
+        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Try to add guardrail with index 2 (out of range) - should raise error
+        with pytest.raises(ValueError, match="tokenset_index 2 is out of range"):
+            instruction.add_guardrail(guardrail, tokenset_index=2)
+
+    def test_add_guardrail_with_valid_tokenset_index(self):
+        """Test that adding a guardrail with valid tokenset_index succeeds."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        # Create guardrail with 3 samples
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+
+        # Create instruction with 3 tokensets (indices 0, 1, 2)
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
+        third_token_set: TokenSet = TokenSet(tokens=(TOKEN_TALK,))
+        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set, third_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Add guardrail at index 1 - should succeed
+        instruction.add_guardrail(guardrail, tokenset_index=1)
+        assert 1 in instruction.input.guardrails
+        assert instruction.input.guardrails[1] == guardrail
+
+    def test_add_multiple_guardrails_different_indexes_succeeds(self):
+        """Test that adding guardrails to different tokenset_indexes succeeds."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        # Create two guardrails with 3 samples each
+        guardrail_one = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail_one.add_sample("Bad sample one")
+        guardrail_one.add_sample("Bad sample two")
+        guardrail_one.add_sample("Bad sample three")
+
+        guardrail_two = Guardrail(
+            good_prompt="Another good prompt description",
+            bad_prompt="Another bad prompt description",
+            bad_output="Another bad output response"
+        )
+        guardrail_two.add_sample("Another bad sample one")
+        guardrail_two.add_sample("Another bad sample two")
+        guardrail_two.add_sample("Another bad sample three")
+
+        # Create instruction with 2 tokensets
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
+        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Add first guardrail at index 0 - should succeed
+        instruction.add_guardrail(guardrail_one, tokenset_index=0)
+        assert 0 in instruction.input.guardrails
+        assert instruction.input.guardrails[0] == guardrail_one
+
+        # Add second guardrail at different index - should succeed
+        instruction.add_guardrail(guardrail_two, tokenset_index=1)
+        assert 1 in instruction.input.guardrails
+        assert instruction.input.guardrails[1] == guardrail_two
+        
+        # Verify both guardrails are present
+        assert len(instruction.input.guardrails) == 2
+        assert 0 in instruction.input.guardrails
+        assert 1 in instruction.input.guardrails
+
+    def test_add_guardrail_same_index_error_message(self):
+        """Test that adding a guardrail to an already used index raises error with correct message."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        guardrail_one = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail_one.add_sample("Bad sample one")
+        guardrail_one.add_sample("Bad sample two")
+        guardrail_one.add_sample("Bad sample three")
+
+        guardrail_two = Guardrail(
+            good_prompt="Another good prompt description",
+            bad_prompt="Another bad prompt description",
+            bad_output="Another bad output response"
+        )
+        guardrail_two.add_sample("Another bad sample one")
+        guardrail_two.add_sample("Another bad sample two")
+        guardrail_two.add_sample("Another bad sample three")
+
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        instruction.add_guardrail(guardrail_one, tokenset_index=0)
+        
+        # Verify the exact error message
+        with pytest.raises(ValueError) as exc_info:
+            instruction.add_guardrail(guardrail_two, tokenset_index=0)
+        assert str(exc_info.value) == "A guardrail is already defined for tokenset_index 0."
+
+    def test_add_guardrail_negative_index_error_message(self):
+        """Test that adding a guardrail with negative index raises error with correct message."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Verify the exact error message for negative index
+        with pytest.raises(ValueError) as exc_info:
+            instruction.add_guardrail(guardrail, tokenset_index=-1)
+        assert str(exc_info.value) == "tokenset_index -1 is out of range for the Instruction input tokensets."
+
+    def test_add_guardrail_too_large_index_error_message(self):
+        """Test that adding a guardrail with too large index raises error with correct message."""
+        from model_train_protocol import Instruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        guardrail = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail.add_sample("Bad sample one")
+        guardrail.add_sample("Bad sample two")
+        guardrail.add_sample("Bad sample three")
+
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
+        instruction = Instruction(input=instruction_input, output=instruction_output)
+
+        # Verify the exact error message for too large index
+        with pytest.raises(ValueError) as exc_info:
+            instruction.add_guardrail(guardrail, tokenset_index=5)
+        assert str(exc_info.value) == "tokenset_index 5 is out of range of the Instruction input tokensets."
+
+    def test_extended_instruction_add_guardrails_different_indexes(self):
+        """Test that ExtendedInstruction can add guardrails to different tokenset_indexes."""
+        from model_train_protocol import ExtendedInstruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.ExtendedResponse import ExtendedResponse
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        guardrail_one = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail_one.add_sample("Bad sample one")
+        guardrail_one.add_sample("Bad sample two")
+        guardrail_one.add_sample("Bad sample three")
+
+        guardrail_two = Guardrail(
+            good_prompt="Another good prompt description",
+            bad_prompt="Another bad prompt description",
+            bad_output="Another bad output response"
+        )
+        guardrail_two.add_sample("Another bad sample one")
+        guardrail_two.add_sample("Another bad sample two")
+        guardrail_two.add_sample("Another bad sample three")
+
+        # Create ExtendedInstruction with 2 tokensets
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
+        instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set])
+        extended_response = ExtendedResponse(final=FinalToken("Result"))
+        instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
+
+        # Add first guardrail at index 0 - should succeed
+        instruction.add_guardrail(guardrail_one, tokenset_index=0)
+        assert 0 in instruction.input.guardrails
+        assert instruction.input.guardrails[0] == guardrail_one
+
+        # Add second guardrail at different index - should succeed
+        instruction.add_guardrail(guardrail_two, tokenset_index=1)
+        assert 1 in instruction.input.guardrails
+        assert instruction.input.guardrails[1] == guardrail_two
+        
+        # Verify both guardrails are present
+        assert len(instruction.input.guardrails) == 2
+
+    def test_extended_instruction_add_guardrail_same_index_error_message(self):
+        """Test that ExtendedInstruction raises correct error when adding guardrail to same index."""
+        from model_train_protocol import ExtendedInstruction
+        from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+        from model_train_protocol.common.instructions.output.ExtendedResponse import ExtendedResponse
+        from model_train_protocol import FinalToken
+        from tests.fixtures.tokens import TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK
+
+        guardrail_one = Guardrail(
+            good_prompt="Good prompt description",
+            bad_prompt="Bad prompt description",
+            bad_output="Bad output response"
+        )
+        guardrail_one.add_sample("Bad sample one")
+        guardrail_one.add_sample("Bad sample two")
+        guardrail_one.add_sample("Bad sample three")
+
+        guardrail_two = Guardrail(
+            good_prompt="Another good prompt description",
+            bad_prompt="Another bad prompt description",
+            bad_output="Another bad output response"
+        )
+        guardrail_two.add_sample("Another bad sample one")
+        guardrail_two.add_sample("Another bad sample two")
+        guardrail_two.add_sample("Another bad sample three")
+
+        user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
+        instruction_input = InstructionInput(tokensets=[user_token_set])
+        extended_response = ExtendedResponse(final=FinalToken("Result"))
+        instruction = ExtendedInstruction(input=instruction_input, output=extended_response)
+
+        instruction.add_guardrail(guardrail_one, tokenset_index=0)
+        
+        # Verify the exact error message
+        with pytest.raises(ValueError) as exc_info:
+            instruction.add_guardrail(guardrail_two, tokenset_index=0)
+        assert str(exc_info.value) == "A guardrail is already defined for tokenset_index 0."

@@ -6,5 +6,8 @@ recursive-include assets *
 include README.md
 include LICENSE
 
+# Include packaged schemas
+recursive-include model_train_protocol/schemas *.json
+
 # Include examples
 recursive-include examples *

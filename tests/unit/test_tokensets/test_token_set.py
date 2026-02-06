@@ -21,7 +21,6 @@ class TestTokenSet:
         assert len(token_set.tokens) == 2
         assert token1 in token_set.tokens
         assert token2 in token_set.tokens
-        assert token_set.guardrail is None
 
     def test_token_set_creation_single_token(self):
         """Test token set creation with single token."""
@@ -256,6 +255,56 @@ class TestTokenSet:
         assert len(token_set.tokens) == 2
         assert token in token_set.tokens
 
+    def test_token_set_numlist_tokens_length_mismatch_error(self):
+        """Test that _validate_numlist_tokens raises error when _num_list_tokens length doesn't match required_numlists."""
+        # Create a TokenSet with two NumListTokens
+        num_list_token1 = NumListToken("Coordinates1", min_value=1, max_value=100, length=3)
+        num_list_token2 = NumListToken("Coordinates2", min_value=1, max_value=100, length=2)
+        token_set = TokenSet(tokens=(num_list_token1, num_list_token2))
+        
+        # Verify initial state is consistent
+        assert len(token_set._num_list_tokens) == 2
+        assert len([token for token in token_set.tokens if isinstance(token, NumListToken)]) == 2
+        
+        # Manually manipulate _num_list_tokens to create inconsistency
+        # This simulates an internal state bug that shouldn't happen in practice
+        token_set._num_list_tokens = token_set._num_list_tokens[:1]  # Remove one token
+        
+        # Now _num_list_tokens has 1 item, but required_numlists will have 2
+        # This should trigger the error when we try to create a snippet
+        number_lists = [[1, 2, 3], [4, 5]]  # Two lists matching the two NumListTokens
+        
+        with pytest.raises(ValueError) as exc_info:
+            token_set.create_snippet("Test string", number_lists=number_lists)
+        
+        # Verify the exact error message
+        expected_error = f"Number of NumListToken instances (1) does not match required number lists (2)."
+        assert str(exc_info.value) == expected_error
+
+    def test_token_set_numlist_tokens_length_mismatch_error_different_counts(self):
+        """Test that _validate_numlist_tokens raises error with different mismatch scenarios."""
+        # Create a TokenSet with one NumListToken
+        num_list_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
+        token_set = TokenSet(tokens=(num_list_token,))
+        
+        # Verify initial state
+        assert len(token_set._num_list_tokens) == 1
+        
+        # Manually add an extra token to _num_list_tokens to create inconsistency
+        # This simulates an internal state bug
+        extra_token = NumListToken("Extra", min_value=1, max_value=100, length=2)
+        token_set._num_list_tokens.append(extra_token)
+        
+        # Now _num_list_tokens has 2 items, but required_numlists will have 1
+        number_lists = [[1, 2, 3]]  # One list matching the one NumListToken in tokens
+        
+        with pytest.raises(ValueError) as exc_info:
+            token_set.create_snippet("Test string", number_lists=number_lists)
+        
+        # Verify the exact error message
+        expected_error = f"Number of NumListToken instances (2) does not match required number lists (1)."
+        assert str(exc_info.value) == expected_error
+
     def test_token_set_key_with_none_keys(self):
         """Test token set key generation with None keys."""
         token1 = Token("Token1")  # No key
@@ -287,24 +336,11 @@ class TestTokenSet:
             assert token in token_set.tokens
 
     def test_token_set_equality_with_guardrail(self):
-        """Test token set equality with guardrail."""
-        from model_train_protocol.common.guardrails import Guardrail
-        
+        """Test token set equality (guardrails are now stored on instructions, not tokensets)."""
         token = Token("Test")
         token_set1 = TokenSet(tokens=(token,))
         token_set2 = TokenSet(tokens=(token,))
-        
-        # Initially equal
-        assert token_set1 == token_set2
-        
-        # Add guardrail to one
-        guardrail = Guardrail(
-            good_prompt="Good prompt",
-            bad_prompt="Bad prompt",
-            bad_output="Bad output"
-        )
-        token_set1.set_guardrail(guardrail)
-        
-        # Should still be equal (guardrail doesn't affect equality)
+
+        # Should be equal
         assert token_set1 == token_set2
 
