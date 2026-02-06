@@ -170,26 +170,19 @@ class CSVConversion:
 
         for _id in ids:
             line: CSVLine = self.line_by_id[_id]
-            required_samples: list[str] = []
-
             if line.context_str != "" and not pd.isna(line.context_str):
                 instruction.add_context(line.context_str)
 
             # Add any required outputs
-            if line.requires_str != "" and not pd.isna(line.requires_str):
-                required_ids: list[str] = [i for i in line.requires_str.split(",")]
-                for req_id in required_ids:
-                    required_line: CSVLine = self.line_by_id.get(req_id)
-                    if required_line:
-                        required_samples.append(required_line.output_str)
+            previous_response: str = NON_TOKEN.value
 
-            first_input: str = "Based on the prompt, choose an answer that best fits. "
-            if len(required_samples) == 0:
-                first_input += f"Previous answer was {NON_TOKEN.value}."
-            elif len(required_samples) == 1:
-                first_input += f"Previous answer was {required_samples[0]}."
-            else:
-                first_input += f"Previous answers were {', '.join(required_samples)}."
+            if line.requires_str != "" and not pd.isna(line.requires_str):
+                required_id: str = line.requires_str
+                required_line: CSVLine = self.line_by_id.get(required_id)
+                if required_line:
+                    previous_response: str = required_line.output_str
+
+            first_input: str = f"Based on the prompt, choose an answer that best fits. Previous answer was {previous_response}."
 
             instruction.add_sample(
                 input_snippets=[first_input, line.input_str],
