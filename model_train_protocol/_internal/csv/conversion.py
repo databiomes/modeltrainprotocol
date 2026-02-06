@@ -183,7 +183,13 @@ class CSVConversion:
                     if required_line:
                         required_samples.append(required_line.output_str)
 
-            first_input: str = ", ".join(required_samples) if required_samples else NON_TOKEN.value
+            first_input: str = "Based on the prompt, choose an answer that best fits. "
+            if len(required_samples) == 0:
+                first_input += f"Previous answer was {NON_TOKEN.value}."
+            elif len(required_samples) == 1:
+                first_input += f"Previous answer was {required_samples[0]}."
+            else:
+                first_input += f"Previous answers were {', '.join(required_samples)}."
 
             instruction.add_sample(
                 input_snippets=[first_input, line.input_str],
