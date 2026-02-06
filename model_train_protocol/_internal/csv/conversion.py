@@ -155,8 +155,7 @@ class CSVConversion:
         instruction_outputs: set[str] = self._get_unique_outputs(ids)
         acceptable_output_string: str = ", ".join(instruction_outputs)
         instruction_token: Token = Token(first_line_in_instruction.group,
-                                         desc=f"Here are Inputs that are acceptable: {acceptable_output_string}. "
-                                              f"Try to match inputs from examples with the same responses from the examples.")
+                                         desc=f"The responses that are acceptable: {acceptable_output_string}.")
         instruction_tokenset: TokenSet = TokenSet(tokens=[instruction_token])
         instruction_output: InstructionOutput = InstructionOutput(
             tokenset=instruction_tokenset,
