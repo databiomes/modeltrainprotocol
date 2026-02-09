@@ -134,7 +134,8 @@ class BaseInstruction(ABC):
 
     def add_context(self, context: str):
         """Adds context to the Instruction."""
-        self.context.append(context)
+        if context not in self.context:
+            self.context.append(context)
 
     @classmethod
     def _validate_snippet_length(cls, inputs: List[Snippet], response_snippet: Snippet):
