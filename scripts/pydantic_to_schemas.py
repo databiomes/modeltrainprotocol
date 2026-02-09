@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from model_train_protocol.common.utils import get_version
+from model_train_protocol.utils import get_version
 from model_train_protocol.common.pydantic.protocol import ProtocolModel
 from model_train_protocol.common.pydantic.template import TemplateModel
 
