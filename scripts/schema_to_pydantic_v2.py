@@ -3,12 +3,11 @@ Generate Pydantic v2 models from the bloom JSON schema.
 """
 from __future__ import annotations
 
-import shutil
-import subprocess
 from pathlib import Path
 from typing import Optional
 
 import model_train_protocol as mtp
+from datamodel_code_generator import InputFileType, generate
 
 
 def _get_schema_path(base_path: Optional[str]) -> Path:
@@ -24,31 +23,14 @@ def _get_output_path() -> Path:
     return Path(__file__).resolve().parent / "pydantic_models.py"
 
 
-def _resolve_codegen_executable() -> str:
-    """Resolve the datamodel-code-generator CLI path."""
-    executable = shutil.which("datamodel-codegen")
-    if executable is None:
-        raise FileNotFoundError(
-            "datamodel-codegen not found. Install with "
-            "`pip install datamodel-code-generator`."
-        )
-    return executable
-
-
 def _run_codegen(schema_path: Path, output_path: Path) -> None:
     """Run datamodel-code-generator to produce Pydantic v2 models."""
-    command = [
-        _resolve_codegen_executable(),
-        "--input",
-        str(schema_path),
-        "--input-file-type",
-        "jsonschema",
-        "--output",
-        str(output_path),
-        "--output-model-type",
-        "pydantic_v2.BaseModel",
-    ]
-    subprocess.run(command, check=True)
+    generate(
+        input_=schema_path,
+        input_file_type=InputFileType.JsonSchema,
+        output=output_path,
+        output_model_type="pydantic_v2.BaseModel",
+    )
 
 
 def generate_pydantic_models(base_path: Optional[str] = None) -> Path:
