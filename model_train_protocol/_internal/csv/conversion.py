@@ -2,7 +2,7 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from model_train_protocol import Protocol, Token, InstructionInput, TokenSet, Instruction, InstructionOutput
+from model_train_protocol import Protocol, Token, InstructionInput, TokenSet, Instruction, InstructionOutput, Guardrail
 from model_train_protocol.common.constants import NON_TOKEN
 
 
@@ -162,6 +162,19 @@ class CSVConversion:
                 input_snippets=[first_input, line.input_str],
                 output_snippet=line.output_str
             )
+
+        guardrail = Guardrail(
+            good_prompt="Prompt related to the provided context of the model",
+            bad_prompt="Prompt that is irrelevant and off topic",
+            bad_output="GUARDRAIL"
+        )
+
+        # Add a minimum of 3 samples to the guardrail
+        guardrail.add_sample("explain quantum mechanics.")
+        guardrail.add_sample("who will win the next american election?")
+        guardrail.add_sample("what is the capital of Spain?")
+
+        instruction.add_guardrail(guardrail=guardrail, tokenset_index=1)
 
         self.protocol.add_instruction(instruction)
 
