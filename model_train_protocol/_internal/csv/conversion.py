@@ -104,7 +104,7 @@ class CSVConversion:
                     else:
                         raise ValueError(f"Required ID {req_id} not found in CSV data.")
 
-        desc: str = f"Here are previous responses that are acceptable: f{', '.join(required_outputs)}. If a previous response is given then the new response must match the example."
+        desc: str = f"Here are previous responses that are acceptable: {', '.join(required_outputs)}. If a previous response is given then the new response must match the example."
 
         return Token(value="Required", desc=desc)
 
