@@ -3,24 +3,34 @@ Generate Pydantic v2 models from the bloom JSON schema.
 """
 from __future__ import annotations
 
+import tempfile
 from pathlib import Path
-from typing import Optional
+from urllib.request import urlopen
 
 import model_train_protocol as mtp
 from datamodel_code_generator import InputFileType, generate
 
 
-def _get_schema_path(base_path: Optional[str]) -> Path:
-    """Build the path to the versioned bloom schema file."""
-    base = Path(base_path) if base_path is not None else Path(__file__).resolve().parents[1]
+def _get_schema_url() -> str:
+    """Build the URL to the versioned bloom schema file."""
     version_semantic = mtp.utils.get_version()
     version_underscored = version_semantic.replace(".", "_")
-    return base / "schemas" / f"v{version_semantic[0]}" / f"bloom_{version_underscored}.json"
+    schema_path = f"schemas/v{version_semantic[0]}/bloom_{version_underscored}.json"
+    return f"https://raw.githubusercontent.com/databiomes/modeltrainprotocol/main/{schema_path}"
 
 
 def _get_output_path() -> Path:
     """Return the path for the generated Pydantic models module."""
     return Path(__file__).resolve().parent / "pydantic_models.py"
+
+
+def _download_schema(schema_url: str) -> Path:
+    """Download the schema URL to a temporary file."""
+    with urlopen(schema_url) as response:
+        data = response.read()
+    with tempfile.NamedTemporaryFile(delete=False, suffix=".json") as temp_file:
+        temp_file.write(data)
+        return Path(temp_file.name)
 
 
 def _run_codegen(schema_path: Path, output_path: Path) -> None:
@@ -33,9 +43,10 @@ def _run_codegen(schema_path: Path, output_path: Path) -> None:
     )
 
 
-def generate_pydantic_models(base_path: Optional[str] = None) -> Path:
+def generate_pydantic_models() -> Path:
     """Generate Pydantic v2 models from the bloom schema."""
-    schema_path = _get_schema_path(base_path)
+    schema_url = _get_schema_url()
+    schema_path = _download_schema(schema_url)
     output_path = _get_output_path()
     _run_codegen(schema_path, output_path)
     return output_path
