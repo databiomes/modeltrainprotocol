@@ -6,8 +6,8 @@ from pathlib import Path
 from typing import Optional
 
 from model_train_protocol.utils import get_version
-from model_train_protocol.common.pydantic.protocol import ProtocolModel
-from model_train_protocol.common.pydantic.template import TemplateModel
+from model_train_protocol.common.pydantic.protocol import Protocol
+from model_train_protocol.common.pydantic.template import Template
 
 
 def _get_base_path(base_path: Optional[str]) -> Path:
@@ -53,7 +53,7 @@ def save_protocol_schema(base_path: Optional[str] = None) -> str:
     :param base_path: Base path for the schemas directory. If None, uses the repo root.
     :return: The path to the saved schema file.
     """
-    schema = ProtocolModel.model_json_schema(
+    schema = Protocol.model_json_schema(
         mode='serialization',
         by_alias=True
     )
@@ -78,7 +78,7 @@ def save_template_schema(base_path: Optional[str] = None) -> str:
     :param base_path: Base path for the schemas directory. If None, uses the repo root.
     :return: The path to the saved schema file.
     """
-    schema = TemplateModel.model_json_schema(
+    schema = Template.model_json_schema(
         mode='serialization',
         by_alias=True
     )

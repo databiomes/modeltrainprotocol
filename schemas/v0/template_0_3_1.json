@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "TemplateModel",
+  "title": "Template",
   "description": "Main model for MTP Template JSON structure.",
   "$defs": {
-    "ExampleUsageModel": {
+    "ExampleUsage": {
       "description": "Model for example usage in template.",
       "properties": {
         "instruction_input": {
@@ -24,10 +24,10 @@
         "valid_model_output",
         "guardrail_model_output"
       ],
-      "title": "ExampleUsageModel",
+      "title": "ExampleUsage",
       "type": "object"
     },
-    "InstructionDefinitionModel": {
+    "InstructionDefinition": {
       "description": "Model for a single instruction definition in the template.",
       "properties": {
         "type": {
@@ -58,10 +58,10 @@
         "input",
         "output"
       ],
-      "title": "InstructionDefinitionModel",
+      "title": "InstructionDefinition",
       "type": "object"
     },
-    "TokensModel": {
+    "Tokens": {
       "description": "Model for tokens in template (input and output mappings).",
       "properties": {
         "input": {
@@ -83,7 +83,7 @@
         "input",
         "output"
       ],
-      "title": "TokensModel",
+      "title": "Tokens",
       "type": "object"
     }
   },
@@ -97,17 +97,17 @@
       "type": "boolean"
     },
     "tokens": {
-      "$ref": "#/$defs/TokensModel"
+      "$ref": "#/$defs/Tokens"
     },
     "instructions": {
       "additionalProperties": {
-        "$ref": "#/$defs/InstructionDefinitionModel"
+        "$ref": "#/$defs/InstructionDefinition"
       },
       "title": "Instructions",
       "type": "object"
     },
     "example_usage": {
-      "$ref": "#/$defs/ExampleUsageModel"
+      "$ref": "#/$defs/ExampleUsage"
     }
   },
   "required": [

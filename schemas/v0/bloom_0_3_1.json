@@ -1,9 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "title": "ProtocolModel",
+  "title": "Protocol",
   "description": "Main model for MTP Protocol JSON structure.",
   "$defs": {
-    "BatchModel": {
+    "Batch": {
       "description": "Model for batches configuration.",
       "properties": {
         "pretrain": {
@@ -45,10 +45,10 @@
         "judge",
         "ppo"
       ],
-      "title": "BatchModel",
+      "title": "Batch",
       "type": "object"
     },
-    "GuardrailModel": {
+    "Guardrail": {
       "description": "Model for guardrails configuration.",
       "properties": {
         "index": {
@@ -82,10 +82,10 @@
         "bad_output",
         "bad_examples"
       ],
-      "title": "GuardrailModel",
+      "title": "Guardrail",
       "type": "object"
     },
-    "InstructionModel": {
+    "Instruction": {
       "description": "Model for instruction configuration.",
       "properties": {
         "memory": {
@@ -94,7 +94,7 @@
         },
         "sets": {
           "items": {
-            "$ref": "#/$defs/InstructionSetModel"
+            "$ref": "#/$defs/InstructionSet"
           },
           "title": "Sets",
           "type": "array"
@@ -104,15 +104,15 @@
         "memory",
         "sets"
       ],
-      "title": "InstructionModel",
+      "title": "Instruction",
       "type": "object"
     },
-    "InstructionSetModel": {
+    "InstructionSet": {
       "description": "Model for instruction sets.",
       "properties": {
         "guardrails": {
           "items": {
-            "$ref": "#/$defs/GuardrailModel"
+            "$ref": "#/$defs/Guardrail"
           },
           "title": "Guardrails",
           "type": "array"
@@ -136,7 +136,7 @@
         },
         "samples": {
           "items": {
-            "$ref": "#/$defs/SampleModel"
+            "$ref": "#/$defs/Sample"
           },
           "title": "Samples",
           "type": "array"
@@ -157,20 +157,20 @@
         "samples",
         "ppo"
       ],
-      "title": "InstructionSetModel",
+      "title": "InstructionSet",
       "type": "object"
     },
-    "NumberModel": {
+    "Number": {
       "additionalProperties": {
         "description": "Number rule value (must be a string)",
         "type": "string"
       },
       "description": "Model for numbers configuration.",
       "properties": {},
-      "title": "NumberModel",
+      "title": "Number",
       "type": "object"
     },
-    "SampleModel": {
+    "Sample": {
       "description": "Model for instruction samples.",
       "properties": {
         "strings": {
@@ -291,10 +291,10 @@
         "result",
         "value"
       ],
-      "title": "SampleModel",
+      "title": "Sample",
       "type": "object"
     },
-    "TokenInfoModel": {
+    "TokenInfo": {
       "description": "Model for individual token information.",
       "properties": {
         "key": {
@@ -386,7 +386,7 @@
         "special",
         "type"
       ],
-      "title": "TokenInfoModel",
+      "title": "TokenInfo",
       "type": "object"
     }
   },
@@ -420,7 +420,7 @@
     },
     "tokens": {
       "additionalProperties": {
-        "$ref": "#/$defs/TokenInfoModel"
+        "$ref": "#/$defs/TokenInfo"
       },
       "title": "Tokens",
       "type": "object"
@@ -433,13 +433,13 @@
       "type": "array"
     },
     "instruction": {
-      "$ref": "#/$defs/InstructionModel"
+      "$ref": "#/$defs/Instruction"
     },
     "numbers": {
-      "$ref": "#/$defs/NumberModel"
+      "$ref": "#/$defs/Number"
     },
     "batches": {
-      "$ref": "#/$defs/BatchModel"
+      "$ref": "#/$defs/Batch"
     }
   },
   "required": [

@@ -7,7 +7,7 @@ from typing import List, Dict, Any, Optional, Union
 from pydantic import BaseModel, ConfigDict
 
 
-class TokenInfoModel(BaseModel):
+class TokenInfo(BaseModel):
     """Model for individual token information."""
     key: str
     num: bool
@@ -20,7 +20,7 @@ class TokenInfoModel(BaseModel):
     type: str
 
 
-class SampleModel(BaseModel):
+class Sample(BaseModel):
     """Model for instruction samples."""
     strings: List[str]
     prompt: Optional[Union[str]]
@@ -30,7 +30,7 @@ class SampleModel(BaseModel):
     value: Optional[Union[str, int, float, List[int], List[float]]]  # Can be string, int, float, or list
 
 
-class GuardrailModel(BaseModel):
+class Guardrail(BaseModel):
     """Model for guardrails configuration."""
     index: int
     good_prompt: str
@@ -39,18 +39,18 @@ class GuardrailModel(BaseModel):
     bad_examples: list[str]
 
 
-class InstructionSetModel(BaseModel):
+class InstructionSet(BaseModel):
     """Model for instruction sets."""
-    guardrails: List[GuardrailModel]
+    guardrails: List[Guardrail]
     context: List[str]
     set: List[List[str]]
-    samples: List[SampleModel]
+    samples: List[Sample]
     ppo: List[Dict[str, Any]]
 
-class InstructionModel(BaseModel):
+class Instruction(BaseModel):
     """Model for instruction configuration."""
     memory: int
-    sets: List[InstructionSetModel]
+    sets: List[InstructionSet]
 
 
 def _number_model_json_schema_extra(schema: dict, model_class) -> None:
@@ -61,7 +61,7 @@ def _number_model_json_schema_extra(schema: dict, model_class) -> None:
     }
 
 
-class NumberModel(BaseModel):
+class Number(BaseModel):
     """Model for numbers configuration."""
 
     model_config = ConfigDict(
@@ -88,7 +88,7 @@ class NumberModel(BaseModel):
         setattr(self, key, value)
 
 
-class BatchModel(BaseModel):
+class Batch(BaseModel):
     """Model for batches configuration."""
     pretrain: List[Dict[str, Any]]
     instruct: List[Dict[str, Any]]
@@ -96,7 +96,7 @@ class BatchModel(BaseModel):
     ppo: List[Dict[str, Any]]
 
 
-class ProtocolModel(BaseModel):
+class Protocol(BaseModel):
     """Main model for MTP Protocol JSON structure."""
     version: str
     name: str
@@ -104,8 +104,8 @@ class ProtocolModel(BaseModel):
     encrypted: bool
     valid: bool
     context: List[str]
-    tokens: Dict[str, TokenInfoModel]
+    tokens: Dict[str, TokenInfo]
     special_tokens: List[str]
-    instruction: InstructionModel
-    numbers: NumberModel
-    batches: BatchModel
+    instruction: Instruction
+    numbers: Number
+    batches: Batch
