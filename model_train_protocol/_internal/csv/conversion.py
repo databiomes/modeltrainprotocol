@@ -10,7 +10,6 @@ from model_train_protocol.common.constants import NON_TOKEN
 class CSVLine:
     """This class represents a single line in the CSV data."""
     id: str
-    group: str
     input_str: str
     output_str: str
     context_str: str
@@ -19,8 +18,8 @@ class CSVLine:
 
 class CSVConversion:
     """This class provides methods to convert from CSV into MTP"""
+    instruction_name: str = "Output"
     id_col: str = "ID"
-    group_col: str = "Group"
     input_col: str = "Input"
     output_col: str = "Output"
     context_col: str = "Output Reference"
@@ -36,7 +35,6 @@ class CSVConversion:
         :param csv_data: A dictionary where keys are column names and values are lists of column data.
         """
         self.csv_data = self._process_dataframe(csv_data)
-        self.rows_by_group: dict[str, list[str]] = self._summarize_instructions()
         self.line_by_id: dict[str, CSVLine] = self._identify_lines()
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
         self.required_token: Token = self._generate_required_token()
@@ -45,8 +43,8 @@ class CSVConversion:
 
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
-        for instruction, ids in self.rows_by_group.items():
-            self._process_instruction(instruction, ids)
+        ids: list[str] = list(self.line_by_id.keys())
+        self._process_instruction(self.instruction_name, ids)
         return self.protocol
 
     def _process_dataframe(self, dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -60,28 +58,10 @@ class CSVConversion:
         if pd.isna(dataframe.iloc[0][self.id_col]):
             dataframe = dataframe.drop(0)
 
-        # Remove rows where Group and Input are empty
-        dataframe = dataframe[~((dataframe[self.group_col].isna()) & (dataframe[self.input_col].isna()))]
+        # Remove rows where Input is empty
+        dataframe = dataframe[~(dataframe[self.input_col].isna())]
         dataframe.reset_index(drop=True)
         return dataframe
-
-    def _summarize_instructions(self) -> dict[str, list[str]]:
-        """
-        Summarizes the instructions in the CSV data.
-
-        Creates a dictionary with instruction names as keys and their occurrences by index
-        """
-        instruction_counts: dict[str, list[str]] = {}
-        latest_group: str = ""
-        for row in self.csv_data.itertuples():
-            input_str: str = str(getattr(row, self.input_col))
-            if input_str == "" or input_str == "nan":
-                continue
-            latest_group: str = self._assign_latest(self.csv_data[self.group_col], row.Index, latest_group)
-            if latest_group not in instruction_counts:
-                instruction_counts[str(latest_group)] = []
-            instruction_counts[str(latest_group)].append(str(getattr(row, self.id_col)))
-        return instruction_counts
 
     def _identify_lines(self) -> dict[str, CSVLine]:
         """
@@ -89,31 +69,26 @@ class CSVConversion:
 
         :return: A dictionary mapping line IDs to CSVLine objects.
         """
-        latest_group: str = ""
         latest_output: str = ""
-        latest_context: str = ""
         line_by_id: dict[str, CSVLine] = {}
         id_column: pd.Series = self.csv_data[self.id_col]
-        groups_column: pd.Series = self.csv_data[self.group_col]
         inputs_column: pd.Series = self.csv_data[self.input_col]
         outputs_column: pd.Series = self.csv_data[self.output_col]
-        contexts_column: pd.Series = self.csv_data[self.context_col]
+        context_column: pd.Series = self.csv_data[self.context_col]
         requires_column: pd.Series = self.csv_data[self.required_col]
 
         for idx, line_id in enumerate(id_column):
             idx += 1  # Adjust index to match CSV line numbering
-            latest_group: str = self._assign_latest(groups_column, idx, latest_group)
             latest_output: str = self._assign_latest(outputs_column, idx, latest_output)
-            latest_context: str = self._assign_latest(contexts_column, idx, latest_context)
 
             line_by_id[str(line_id)] = CSVLine(
                 id=str(line_id),
-                group=latest_group,
                 input_str=inputs_column[idx],
                 output_str=latest_output,
-                context_str=latest_context,
+                context_str=context_column[idx],
                 requires_str=requires_column[idx]
             )
+
         return line_by_id
 
     def _generate_required_token(self) -> Token:
@@ -151,10 +126,9 @@ class CSVConversion:
         :param instruction: The instruction name.
         :param ids: List of IDs where the instruction occurs.
         """
-        first_line_in_instruction: CSVLine = self.line_by_id[ids[0]]
         instruction_outputs: set[str] = self._get_unique_outputs(ids)
         acceptable_output_string: str = ", ".join(instruction_outputs)
-        instruction_token: Token = Token(first_line_in_instruction.group,
+        instruction_token: Token = Token(self.instruction_name,
                                          desc=f"The responses that are acceptable: {acceptable_output_string}.")
         instruction_tokenset: TokenSet = TokenSet(tokens=[instruction_token])
         instruction_output: InstructionOutput = InstructionOutput(
