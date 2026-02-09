@@ -1,5 +1,6 @@
 import tomllib
 from pathlib import Path
+import emoji
 
 
 def clean_token_key(key: str) -> str:
@@ -37,4 +38,28 @@ def get_version():
         pyproject = tomllib.load(f)
 
     return str(pyproject["project"]["version"])
+
+
+def validate_string_subset(string_set: set[str]):
+    """
+    Checks if any string in a set is a perfect substring of another.
+
+    :param string_set: A set of strings.
+    :raises ValueError: If any string is a perfect substring of another (case insensitive).
+    """
+    # Sort the list by length, longest to shortest.
+    sorted_strings = sorted(list(string_set), key=len, reverse=False)
+
+    # Iterate through the strings and check for perfect subsets.
+    for i in range(len(sorted_strings)):
+        for j in range(i + 1, len(sorted_strings)):
+            # If a shorter string is a perfect substring of a longer one, return False.
+
+            # Only keep alphanumeric characters for comparison
+            first_string: str = ''.join(c.lower() for c in sorted_strings[i] if c.isalnum() or emoji.purely_emoji(c))
+            second_string: str = ''.join(c.lower() for c in sorted_strings[j] if c.isalnum() or emoji.purely_emoji(c))
+
+            if first_string in second_string:
+                raise ValueError(
+                    f"'{sorted_strings[i]}' is a substring of '{sorted_strings[j]}' (alphanumeric characters only, case insensitive).")
 
