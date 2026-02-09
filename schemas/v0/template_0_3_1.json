@@ -1,5 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/databiomes/modeltrainprotocol/main/schemas/v0/template_0_3_1.json",
   "title": "Template",
   "description": "Main model for MTP Template JSON structure.",
   "$defs": {

@@ -28,14 +28,19 @@ def _save_schema(
     schema_dir = _get_base_path(base_path) / "schemas" / f"v{version_semantic[0]}"
     schema_dir.mkdir(parents=True, exist_ok=True)
 
+    schema_path = schema_dir / filename_pattern.format(version=version_underscored)
+    schema_id = (
+        "https://raw.githubusercontent.com/databiomes/modeltrainprotocol/main/"
+        f"schemas/v{version_semantic[0]}/{filename_pattern.format(version=version_underscored)}"
+    )
+
     final_schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
+        "$id": schema_id,
         "title": title,
         "description": description,
         **schema,
     }
-
-    schema_path = schema_dir / filename_pattern.format(version=version_underscored)
     with open(schema_path, 'w', encoding='utf-8') as f:
         json.dump(final_schema, f, indent=2, ensure_ascii=False)
 
