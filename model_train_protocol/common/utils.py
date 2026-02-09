@@ -1,3 +1,4 @@
+import hashlib
 import tomllib
 from pathlib import Path
 import emoji
@@ -63,3 +64,9 @@ def validate_string_subset(string_set: set[str]):
                 raise ValueError(
                     f"'{sorted_strings[i]}' is a substring of '{sorted_strings[j]}' (alphanumeric characters only, case insensitive).")
 
+
+def hash_string(key: str, output_char: int = 6) -> str:
+    """
+    Hashes a string into.
+    """
+    return hashlib.sha256(key.encode()).hexdigest()[:output_char]
