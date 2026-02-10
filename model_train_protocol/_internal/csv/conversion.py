@@ -47,6 +47,18 @@ class CSVConversion:
         self._process_instruction(self.instruction_name, ids)
         return self.protocol
 
+    def get_required_map(self) -> dict:
+        """Creates a map of the required tokens"""
+        required_map: dict[str, str] = {}
+        for line in self.line_by_id.values():
+            if line.requires_str != "" and not pd.isna(line.requires_str):
+                required_id: str = line.requires_str
+                required_line: CSVLine = self.line_by_id.get(required_id)
+                if not required_line:
+                    raise ValueError(f"Required ID {required_id} not found in CSV data.")
+                required_map[line.output_str] = required_line.output_str
+        return required_map
+
     def _process_dataframe(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         """
         Processes the input DataFrame to match expected format.
