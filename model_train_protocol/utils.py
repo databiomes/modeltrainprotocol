@@ -21,3 +21,13 @@ def get_version():
         pyproject = tomllib.load(f)
 
     return str(pyproject["project"]["version"])
+
+
+def get_schema_url():
+    """
+    Retrieves the schema URL for the current version of the Model Train Protocol.
+    """
+    # Add conventional schema tag to JSON for validation purposes
+    version_semantic: str = get_version()
+    schema_url = f"https://mtp.schemas.databiomes.com/v{version_semantic[0]}/bloom_{version_semantic.replace('.', '_')}.json"
+    return schema_url
