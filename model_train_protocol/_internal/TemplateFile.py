@@ -7,7 +7,7 @@ from model_train_protocol import Instruction, ExtendedInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN, UNK_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
-from model_train_protocol.utils import get_version
+from model_train_protocol.utils import get_schema_url
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
 
@@ -293,7 +293,7 @@ class TemplateFile:
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
         json_dict: dict = {
-            "version": get_version(),
+            "$schema": get_schema_url(),
             "encrypt": self.encrypt,
             "tokens": self.tokens.to_json(),
             "instructions": self.instructions.to_json(),

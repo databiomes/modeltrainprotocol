@@ -38,7 +38,6 @@ class ExampleUsage(BaseModel):
 
 class Template(BaseModel):
     """Main model for MTP Template JSON structure."""
-    version: str
     encrypt: bool
     tokens: Tokens
     instructions: Dict[str, InstructionDefinition]  # Instruction name -> instruction definition
