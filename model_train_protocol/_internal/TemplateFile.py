@@ -7,9 +7,15 @@ from model_train_protocol import Instruction, ExtendedInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN, UNK_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
-from model_train_protocol.utils import get_schema_url
+from model_train_protocol.common.pydantic.template import (
+    Template as TemplateModel,
+    Tokens as TokensModel,
+    InstructionDefinition,
+    ExampleUsage,
+)
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
+from model_train_protocol.utils import get_template_schema_url
 
 
 class InstructionTypeEnum(Enum):
@@ -288,15 +294,36 @@ class TemplateFile:
             guardrailed_instruction: BaseInstruction = next(instruction for instruction in self.instructions_list if instruction.has_guardrails)
             examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{UNK_TOKEN.key}\n{EOS_TOKEN.key}"
 
+        if "guardrail_model_output" not in examples:
+            examples["guardrail_model_output"] = ""
+
         return examples
 
     def to_json(self) -> dict:
         """Converts the entire template to a JSON-serializable dictionary."""
-        json_dict: dict = {
-            "$schema": get_schema_url(),
-            "encrypt": self.encrypt,
-            "tokens": self.tokens.to_json(),
-            "instructions": self.instructions.to_json(),
-            "example_usage": self._create_examples()
+        tokens_dict: dict[str, dict[str, str]] = self.tokens.to_json()
+        tokens: TokensModel = TokensModel(
+            input=tokens_dict["input"],
+            output=tokens_dict["output"],
+        )
+
+        instructions_dict: dict[str, dict[str, object]] = self.instructions.to_json()
+        instruction_models: dict[str, InstructionDefinition] = {
+            name: InstructionDefinition(**instruction_definition)
+            for name, instruction_definition in instructions_dict.items()
         }
-        return json_dict
+
+        example_usage_dict: dict[str, str] = self._create_examples()
+        example_usage: ExampleUsage = ExampleUsage(**example_usage_dict)
+
+        template: TemplateModel = TemplateModel(
+            encrypt=self.encrypt,
+            tokens=tokens,
+            instructions=instruction_models,
+            example_usage=example_usage,
+        )
+
+        json_dict: dict[str, object] = template.model_dump()
+        final_json: dict[str, object] = {"$schema": get_template_schema_url()}
+        final_json.update(json_dict)
+        return final_json

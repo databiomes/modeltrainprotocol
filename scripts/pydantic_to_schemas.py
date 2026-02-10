@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from model_train_protocol.utils import get_version, get_schema_url
+from model_train_protocol.utils import get_version, get_bloom_schema_url
 from model_train_protocol.common.pydantic.protocol import Protocol
 from model_train_protocol.common.pydantic.template import Template
 
@@ -32,7 +32,7 @@ def _save_schema(
 
     final_schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "$id": get_schema_url(),
+        "$id": get_bloom_schema_url(),
         "title": title,
         "description": description,
         **schema,

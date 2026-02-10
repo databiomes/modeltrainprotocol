@@ -7,7 +7,7 @@ from model_train_protocol.common.pydantic.protocol import Instruction, TokenInfo
     InstructionSet, Number, \
     Batch, Protocol, Guardrail
 from model_train_protocol.common.tokens import SpecialToken
-from model_train_protocol.utils import get_schema_url
+from model_train_protocol.utils import get_bloom_schema_url
 
 
 class ProtocolFile:
@@ -270,7 +270,7 @@ class ProtocolFile:
                     )
 
         # Reconstruct the dictionary with $schema at the top
-        final_json = {"$schema": get_schema_url()}
+        final_json = {"$schema": get_bloom_schema_url()}
         final_json.update(json_dict)
 
         return final_json
