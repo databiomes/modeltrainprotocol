@@ -30,8 +30,8 @@ def _save_schema(
 
     schema_path = schema_dir / filename_pattern.format(version=version_underscored)
     schema_id = (
-        "https://raw.githubusercontent.com/databiomes/modeltrainprotocol/main/"
-        f"schemas/v{version_semantic[0]}/{filename_pattern.format(version=version_underscored)}"
+        "https://mtp.schemas.databiomes.com"
+        f"/v{version_semantic[0]}/{filename_pattern.format(version=version_underscored)}"
     )
 
     final_schema = {

@@ -15,8 +15,8 @@ def _get_schema_url() -> str:
     """Build the URL to the versioned bloom schema file."""
     version_semantic = mtp.utils.get_version()
     version_underscored = version_semantic.replace(".", "_")
-    schema_path = f"schemas/v{version_semantic[0]}/bloom_{version_underscored}.json"
-    return f"https://raw.githubusercontent.com/databiomes/modeltrainprotocol/main/{schema_path}"
+    schema_path = f"/v{version_semantic[0]}/bloom_{version_underscored}.json"
+    return f"https://mtp.schemas.databiomes.com{schema_path}"
 
 
 def _get_output_path() -> Path:
