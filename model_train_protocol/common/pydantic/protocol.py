@@ -98,7 +98,6 @@ class Batch(BaseModel):
 
 class Protocol(BaseModel):
     """Main model for MTP Protocol JSON structure."""
-    version: str
     name: str
     inputs: int
     encrypted: bool
@@ -109,3 +108,7 @@ class Protocol(BaseModel):
     instruction: Instruction
     numbers: Number
     batches: Batch
+
+    # allow for extra schema tag
+    class ConfigDict:
+        extra = "allow"

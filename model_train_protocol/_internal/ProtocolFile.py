@@ -168,7 +168,7 @@ class ProtocolFile:
         # Non-dictionary items are placed at the end
         return sorted_dict_items + non_dict_items
 
-    def to_json(self):
+    def to_json(self) -> dict:
         """Converts the template to a JSON-compatible dictionary using Pydantic models."""
 
         # Create TokenInfo objects for each token
@@ -222,7 +222,6 @@ class ProtocolFile:
 
         # Create ProtocolModel
         protocol = Protocol(
-            version=get_version(),
             name=self._name,
             context=self._context,
             inputs=self._inputs,
@@ -261,4 +260,13 @@ class ProtocolFile:
                         json_dict["batches"][batch_key], "result"
                     )
 
-        return json_dict
+        # Add conventional schema tag to JSON for validation purposes
+        version_semantic: str = get_version()
+        schema_path = f"https://mtp.schemas.databiomes.com/v{version_semantic[0]}/bloom_{version_semantic.replace('.', '_')}.json"
+        json_dict["$schema"] = schema_path
+
+        # Reconstruct the dictionary with $schema at the top
+        final_json = {"$schema": schema_path}
+        final_json.update(json_dict)
+
+        return final_json
