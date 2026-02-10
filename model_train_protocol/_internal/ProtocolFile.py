@@ -114,9 +114,18 @@ class ProtocolFile:
         """
         Returns a sorted list of tokens that should be under 'special_tokens' in the JSON.
 
+        Guarantees that <BOS> and <EOS> are always the first two tokens in the list, followed by other special tokens sorted alphabetically.
+
         :return: A sorted list of special token keys.
         """
-        return sorted(set(sorted(self._special_token_keys | self._instruction_token_keys)))
+        all_keys = self._special_token_keys | self._instruction_token_keys
+
+        def sort_priority(key):
+            if key == "<BOS>": return 0, key
+            if key == "<EOS>": return 1, key
+            return 2, key
+
+        return sorted(list(all_keys), key=sort_priority)
 
     @classmethod
     def _alphabetize_dicts_by_keys_after_layer_n(cls, data: dict, n: int = 1):
