@@ -3,7 +3,7 @@ Unit tests for the Token class.
 """
 import pytest
 from model_train_protocol.common.tokens.Token import Token
-from model_train_protocol.common.util import validate_string_subset
+from model_train_protocol.common.utils import validate_string_subset
 
 
 class TestToken:

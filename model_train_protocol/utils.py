@@ -2,22 +2,6 @@ import tomllib
 from pathlib import Path
 
 
-def clean_token_key(key: str) -> str:
-    """Removes non-alphanumeric characters from a token key."""
-    return ''.join(char for char in key if char.isalnum() or char == '_')
-
-
-def convert_str_to_camel_case(snake_str: str) -> str:
-    """
-    Converts a snake_case string to camelCase.
-
-    :param snake_str: The input string in snake_case format.
-    :return: The converted string in camelCase format.
-    """
-    components = snake_str.split('_')
-    return components[0] + ''.join(x.title() for x in components[1:])
-
-
 def get_version():
     # Start from this file: .../model_train_protocol/common/prototyping/utils.py
     current_path = Path(__file__).resolve()
@@ -38,3 +22,19 @@ def get_version():
 
     return str(pyproject["project"]["version"])
 
+
+def get_bloom_schema_url():
+    """
+    Retrieves the schema URL for the current version of the Model Train Protocol.
+    """
+    version_semantic: str = get_version()
+    schema_url = f"https://mtp.schemas.databiomes.com/v{version_semantic[0]}/bloom_{version_semantic.replace('.', '_')}.json"
+    return schema_url
+
+def get_template_schema_url():
+    """
+    Retrieves the schema URL for the current version of the MTP Template.
+    """
+    version_semantic: str = get_version()
+    schema_url = f"https://mtp.schemas.databiomes.com/v{version_semantic[0]}/template_{version_semantic.replace('.', '_')}.json"
+    return schema_url

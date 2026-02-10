@@ -6,7 +6,7 @@ from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
 from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE, \
     MAXIMUM_CHARACTERS_PER_SNIPPET
-from ..pydantic.protocol import GuardrailModel
+from ..pydantic.protocol import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
@@ -166,7 +166,7 @@ class BaseInstruction(ABC):
 
         return serialized_samples
 
-    def serialize_guardrails(self) -> List[GuardrailModel]:
+    def serialize_guardrails(self) -> List[Guardrail]:
         """Serialize the Instruction guardrails."""
         guardrails = []
         for index, guardrail in self.input.guardrails.items():

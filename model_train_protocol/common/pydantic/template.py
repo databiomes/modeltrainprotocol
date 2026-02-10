@@ -7,13 +7,13 @@ from typing import Dict, List, Literal
 from pydantic import BaseModel
 
 
-class TokensModel(BaseModel):
+class Tokens(BaseModel):
     """Model for tokens in template (input and output mappings)."""
     input: Dict[str, str]  # Maps token values to token keys with template representations
     output: Dict[str, str]  # Maps token values to token keys
 
 
-class InstructionDefinitionModel(BaseModel):
+class InstructionDefinition(BaseModel):
     """Model for a single instruction definition in the template."""
     type: Literal["basic", "extended"]  # Instruction type: "basic" or "extended"
     input: List[str]  # List of input strings with token keys and placeholders
@@ -28,7 +28,7 @@ def _example_usage_json_schema_extra(schema: dict, model_class) -> None:
     }
 
 
-class ExampleUsageModel(BaseModel):
+class ExampleUsage(BaseModel):
     """Model for example usage in template."""
     
     instruction_input: str
@@ -36,10 +36,9 @@ class ExampleUsageModel(BaseModel):
     guardrail_model_output: str
 
 
-class TemplateModel(BaseModel):
+class Template(BaseModel):
     """Main model for MTP Template JSON structure."""
-    version: str
     encrypt: bool
-    tokens: TokensModel
-    instructions: Dict[str, InstructionDefinitionModel]  # Instruction name -> instruction definition
-    example_usage: ExampleUsageModel
+    tokens: Tokens
+    instructions: Dict[str, InstructionDefinition]  # Instruction name -> instruction definition
+    example_usage: ExampleUsage

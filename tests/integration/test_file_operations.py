@@ -63,12 +63,13 @@ class TestFileOperations:
         # Clean up
         template_file.unlink()
 
-    def test_protocol_template(self, temp_directory, user_workflow_instruction_with_samples):
+    def test_protocol_template(self, temp_directory, simple_workflow_instruction_with_samples, user_workflow_instruction_with_samples):
         """Test protocol template with guardrails."""
         protocol = Protocol("guardrail_test", inputs=2)
         # Add context (minimum 10 lines total required)
         for i in range(10):
             protocol.add_context(f"Context line {i+1}")
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
         protocol.add_instruction(user_workflow_instruction_with_samples)
 
         # Create template

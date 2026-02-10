@@ -1,0 +1,460 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mtp.schemas.databiomes.com/v0/bloom_0_3_1.json",
+  "title": "Protocol",
+  "description": "Main model for MTP Protocol JSON structure.",
+  "$defs": {
+    "Batch": {
+      "description": "Model for batches configuration.",
+      "properties": {
+        "pretrain": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Pretrain",
+          "type": "array"
+        },
+        "instruct": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Instruct",
+          "type": "array"
+        },
+        "judge": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Judge",
+          "type": "array"
+        },
+        "ppo": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Ppo",
+          "type": "array"
+        }
+      },
+      "required": [
+        "pretrain",
+        "instruct",
+        "judge",
+        "ppo"
+      ],
+      "title": "Batch",
+      "type": "object"
+    },
+    "Guardrail": {
+      "description": "Model for guardrails configuration.",
+      "properties": {
+        "index": {
+          "title": "Index",
+          "type": "integer"
+        },
+        "good_prompt": {
+          "title": "Good Prompt",
+          "type": "string"
+        },
+        "bad_prompt": {
+          "title": "Bad Prompt",
+          "type": "string"
+        },
+        "bad_output": {
+          "title": "Bad Output",
+          "type": "string"
+        },
+        "bad_examples": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Bad Examples",
+          "type": "array"
+        }
+      },
+      "required": [
+        "index",
+        "good_prompt",
+        "bad_prompt",
+        "bad_output",
+        "bad_examples"
+      ],
+      "title": "Guardrail",
+      "type": "object"
+    },
+    "Instruction": {
+      "description": "Model for instruction configuration.",
+      "properties": {
+        "memory": {
+          "title": "Memory",
+          "type": "integer"
+        },
+        "sets": {
+          "items": {
+            "$ref": "#/$defs/InstructionSet"
+          },
+          "title": "Sets",
+          "type": "array"
+        }
+      },
+      "required": [
+        "memory",
+        "sets"
+      ],
+      "title": "Instruction",
+      "type": "object"
+    },
+    "InstructionSet": {
+      "description": "Model for instruction sets.",
+      "properties": {
+        "guardrails": {
+          "items": {
+            "$ref": "#/$defs/Guardrail"
+          },
+          "title": "Guardrails",
+          "type": "array"
+        },
+        "context": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Context",
+          "type": "array"
+        },
+        "set": {
+          "items": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array"
+          },
+          "title": "Set",
+          "type": "array"
+        },
+        "samples": {
+          "items": {
+            "$ref": "#/$defs/Sample"
+          },
+          "title": "Samples",
+          "type": "array"
+        },
+        "ppo": {
+          "items": {
+            "additionalProperties": true,
+            "type": "object"
+          },
+          "title": "Ppo",
+          "type": "array"
+        }
+      },
+      "required": [
+        "guardrails",
+        "context",
+        "set",
+        "samples",
+        "ppo"
+      ],
+      "title": "InstructionSet",
+      "type": "object"
+    },
+    "Number": {
+      "additionalProperties": {
+        "description": "Number rule value (must be a string)",
+        "type": "string"
+      },
+      "description": "Model for numbers configuration.",
+      "properties": {},
+      "title": "Number",
+      "type": "object"
+    },
+    "Sample": {
+      "description": "Model for instruction samples.",
+      "properties": {
+        "strings": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Strings",
+          "type": "array"
+        },
+        "prompt": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Prompt"
+        },
+        "numbers": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Numbers"
+        },
+        "number_lists": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "items": {
+                  "type": "integer"
+                },
+                "type": "array"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "items": {
+                  "items": {
+                    "type": "integer"
+                  },
+                  "type": "array"
+                },
+                "type": "array"
+              },
+              "type": "array"
+            }
+          ],
+          "title": "Number Lists"
+        },
+        "result": {
+          "title": "Result",
+          "type": "string"
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "items": {
+                "type": "integer"
+              },
+              "type": "array"
+            },
+            {
+              "items": {
+                "type": "number"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Value"
+        }
+      },
+      "required": [
+        "strings",
+        "prompt",
+        "numbers",
+        "number_lists",
+        "result",
+        "value"
+      ],
+      "title": "Sample",
+      "type": "object"
+    },
+    "TokenInfo": {
+      "description": "Model for individual token information.",
+      "properties": {
+        "key": {
+          "title": "Key",
+          "type": "string"
+        },
+        "num": {
+          "title": "Num",
+          "type": "boolean"
+        },
+        "num_list": {
+          "title": "Num List",
+          "type": "integer"
+        },
+        "min_value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Min Value"
+        },
+        "max_value": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Max Value"
+        },
+        "length": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Length"
+        },
+        "desc": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Desc"
+        },
+        "special": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Special"
+        },
+        "type": {
+          "title": "Type",
+          "type": "string"
+        }
+      },
+      "required": [
+        "key",
+        "num",
+        "num_list",
+        "min_value",
+        "max_value",
+        "length",
+        "desc",
+        "special",
+        "type"
+      ],
+      "title": "TokenInfo",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "version": {
+      "title": "Version",
+      "type": "string"
+    },
+    "name": {
+      "title": "Name",
+      "type": "string"
+    },
+    "inputs": {
+      "title": "Inputs",
+      "type": "integer"
+    },
+    "encrypted": {
+      "title": "Encrypted",
+      "type": "boolean"
+    },
+    "valid": {
+      "title": "Valid",
+      "type": "boolean"
+    },
+    "context": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Context",
+      "type": "array"
+    },
+    "tokens": {
+      "additionalProperties": {
+        "$ref": "#/$defs/TokenInfo"
+      },
+      "title": "Tokens",
+      "type": "object"
+    },
+    "special_tokens": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Special Tokens",
+      "type": "array"
+    },
+    "instruction": {
+      "$ref": "#/$defs/Instruction"
+    },
+    "numbers": {
+      "$ref": "#/$defs/Number"
+    },
+    "batches": {
+      "$ref": "#/$defs/Batch"
+    }
+  },
+  "required": [
+    "version",
+    "name",
+    "inputs",
+    "encrypted",
+    "valid",
+    "context",
+    "tokens",
+    "special_tokens",
+    "instruction",
+    "numbers",
+    "batches"
+  ],
+  "type": "object"
+}

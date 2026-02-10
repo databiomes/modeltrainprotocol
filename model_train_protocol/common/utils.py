@@ -1,36 +1,25 @@
-import emoji
+"""
+Internal utils. Not intended to be publicly exposed. Use root-level utils.py for any functions that should be public.
+"""
+
 import hashlib
+import emoji
 
 
-def get_possible_emojis() -> set[str]:
+def clean_token_key(key: str) -> str:
+    """Removes non-alphanumeric characters from a token key."""
+    return ''.join(char for char in key if char.isalnum() or char == '_')
+
+
+def convert_str_to_camel_case(snake_str: str) -> str:
     """
-    Generate a comprehensive set of emojis using the emoji library for cross-platform compatibility.
+    Converts a snake_case string to camelCase.
 
-    Uses the emoji library, which uses the official Unicode emoji database to ensure compatibility across different OS.
+    :param snake_str: The input string in snake_case format.
+    :return: The converted string in camelCase format.
     """
-    emojis: set[str] = set()
-
-    # Get all emoji names and their corresponding Unicode characters
-    for emoji_char in emoji.EMOJI_DATA.keys():
-        if len(emoji_char) > 1:  # Grants roughly 1400 emojis when 1 character long
-            continue
-        emojis.add(emoji_char)
-
-    return emojis
-
-
-def get_extended_possible_emojis() -> set[str]:
-    """
-    Generate an extended set of emojis including multi-character emojis using the emoji library for cross-platform compatibility.
-    """
-    return set(emoji.EMOJI_DATA.keys())  # Returns roughly 5000 emojis that can be multi-character
-
-
-def hash_string(key: str, output_char: int = 6) -> str:
-    """
-    Hashes a string into.
-    """
-    return hashlib.sha256(key.encode()).hexdigest()[:output_char]
+    components = snake_str.split('_')
+    return components[0] + ''.join(x.title() for x in components[1:])
 
 
 def validate_string_subset(string_set: set[str]):
@@ -55,3 +44,10 @@ def validate_string_subset(string_set: set[str]):
             if first_string in second_string:
                 raise ValueError(
                     f"'{sorted_strings[i]}' is a substring of '{sorted_strings[j]}' (alphanumeric characters only, case insensitive).")
+
+
+def hash_string(key: str, output_char: int = 6) -> str:
+    """
+    Hashes a string into.
+    """
+    return hashlib.sha256(key.encode()).hexdigest()[:output_char]
