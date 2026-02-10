@@ -15,6 +15,11 @@ class CSVLine:
     context_str: str
     requires_str: str
 
+    @property
+    def is_guardrail(self) -> bool:
+        """Determines if the line is a guardrail based on its content."""
+        return self.output_str == "GUARDRAIL"
+
 
 class CSVConversion:
     """This class provides methods to convert from CSV into MTP"""
@@ -39,7 +44,8 @@ class CSVConversion:
         self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
         self.required_token: Token = self._generate_required_token()
         self.required_tokenset: TokenSet = TokenSet(tokens=[self.required_token])
-        self.standard_input: InstructionInput = InstructionInput(tokensets=[self.required_tokenset, self.input_tokenset])
+        self.standard_input: InstructionInput = InstructionInput(
+            tokensets=[self.required_tokenset, self.input_tokenset])
 
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
@@ -148,6 +154,12 @@ class CSVConversion:
             final=NON_TOKEN
         )
 
+        guardrail = Guardrail(
+            good_prompt="Prompt related to the provided context of the model",
+            bad_prompt="Prompt that is irrelevant and off topic",
+            bad_output="GUARDRAIL"
+        )
+
         instruction: Instruction = Instruction(
             input=self.standard_input,
             output=instruction_output,
@@ -156,6 +168,11 @@ class CSVConversion:
 
         for _id in ids:
             line: CSVLine = self.line_by_id[_id]
+
+            if line.is_guardrail:
+                guardrail.add_sample(line.input_str)
+                continue
+
             if line.context_str != "" and not pd.isna(line.context_str):
                 instruction.add_context(line.context_str)
 
@@ -175,18 +192,11 @@ class CSVConversion:
                 output_snippet=line.output_str
             )
 
-        guardrail = Guardrail(
-            good_prompt="Prompt related to the provided context of the model",
-            bad_prompt="Prompt that is irrelevant and off topic",
-            bad_output="GUARDRAIL"
-        )
-
-        # Add a minimum of 3 samples to the guardrail
-        guardrail.add_sample("explain quantum mechanics.")
-        guardrail.add_sample("who will win the next american election?")
-        guardrail.add_sample("what is the capital of Spain?")
-
-        instruction.add_guardrail(guardrail=guardrail, tokenset_index=1)
+        if 0 < len(guardrail.samples) < 3:
+            raise ValueError(
+                "At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
+        elif len(guardrail.samples) >= 3:
+            instruction.add_guardrail(guardrail=guardrail, tokenset_index=1)
 
         self.protocol.add_instruction(instruction)
 
