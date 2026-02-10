@@ -5,7 +5,7 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from model_train_protocol.utils import get_version
+from model_train_protocol.utils import get_version, get_schema_url
 from model_train_protocol.common.pydantic.protocol import Protocol
 from model_train_protocol.common.pydantic.template import Template
 
@@ -29,14 +29,10 @@ def _save_schema(
     schema_dir.mkdir(parents=True, exist_ok=True)
 
     schema_path = schema_dir / filename_pattern.format(version=version_underscored)
-    schema_id = (
-        "https://mtp.schemas.databiomes.com"
-        f"/v{version_semantic[0]}/{filename_pattern.format(version=version_underscored)}"
-    )
 
     final_schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "$id": schema_id,
+        "$id": get_schema_url(),
         "title": title,
         "description": description,
         **schema,

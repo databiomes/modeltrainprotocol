@@ -3,7 +3,7 @@ from typing import Collection, List, Dict, Set
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.instructions import BaseInstruction
-from model_train_protocol.utils import get_version
+from model_train_protocol.utils import get_version, get_schema_url
 from model_train_protocol.common.pydantic.protocol import Instruction, TokenInfo, Sample, \
     InstructionSet, Number, \
     Batch, Protocol, Guardrail
@@ -269,13 +269,8 @@ class ProtocolFile:
                         json_dict["batches"][batch_key], "result"
                     )
 
-        # Add conventional schema tag to JSON for validation purposes
-        version_semantic: str = get_version()
-        schema_path = f"https://mtp.schemas.databiomes.com/v{version_semantic[0]}/bloom_{version_semantic.replace('.', '_')}.json"
-        json_dict["$schema"] = schema_path
-
         # Reconstruct the dictionary with $schema at the top
-        final_json = {"$schema": schema_path}
+        final_json = {"$schema": get_schema_url()}
         final_json.update(json_dict)
 
         return final_json
