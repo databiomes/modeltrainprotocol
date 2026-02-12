@@ -72,10 +72,7 @@ class CSVConversion:
         :param dataframe: The input DataFrame.
         :return: Processed DataFrame
         """
-        # Remove the descriptions row from the DataFrame, if present
-        if pd.isna(dataframe.iloc[0][self.id_col]):
-            dataframe = dataframe.drop(0)
-
+        dataframe = dataframe.drop(0)
         # Remove rows where Input is empty
         dataframe = dataframe[~(dataframe[self.input_col].isna())]
         dataframe.reset_index(drop=True)
