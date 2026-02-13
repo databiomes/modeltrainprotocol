@@ -13,7 +13,6 @@ class CSVLine:
     input_str: str
     output_str: str
     context_str: str
-    required_str: str
 
     @property
     def is_guardrail(self) -> bool:
@@ -40,25 +39,15 @@ class CSVConversion:
         """
         self.csv_data: pd.DataFrame = self._process_dataframe(csv_data)
         self.ordered_lines: List[CSVLine] = self._format_lines()
-        self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=2, encrypt=False)
-        self.required_token: Token = self._generate_required_token()
-        self.required_tokenset: TokenSet = TokenSet(tokens=[self.required_token])
+        self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=1, encrypt=False)
         self.standard_input: InstructionInput = InstructionInput(
-            tokensets=[self.required_tokenset, self.input_tokenset])
+            tokensets=[self.input_tokenset])
         self.unique_outputs: set[str] = self._get_unique_outputs()
 
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
         self._process_instruction(self.instruction_name)
         return self.protocol
-
-    def get_required_output_list(self) -> list[str]:
-        """Creates a list of the required outputs"""
-        required_outputs: set[str] = set()
-        for line in self.ordered_lines:
-            if line.required_str != "" and not pd.isna(line.required_str):
-                required_outputs.add(line.required_str)
-        return list(required_outputs)
 
     def _get_unique_outputs(self) -> set[str]:
         """
@@ -118,17 +107,8 @@ class CSVConversion:
         return CSVLine(
             input_str=str(line[self.input_col]),
             output_str=output_str,
-            context_str=str(line[self.context_col]),
-            required_str=str(line[self.required_col])
+            context_str=str(line[self.context_col])
         )
-
-    def _generate_required_token(self) -> Token:
-        """Generates the required token for the protocol."""
-        required_outputs: list[str] = self.get_required_output_list()
-
-        desc: str = f"Here are previous responses that are acceptable: {', '.join(required_outputs)}. If a previous response is given then the new response must match the example."
-
-        return Token(value="Required", desc=desc)
 
     @classmethod
     def _assign_latest(cls, column: pd.Series, idx: int, latest: str) -> str:
@@ -178,16 +158,8 @@ class CSVConversion:
             if line.context_str != "" and not pd.isna(line.context_str):
                 instruction.add_context(line.context_str)
 
-            # Add any required outputs
-            required_prior_output: str = NON_TOKEN.value
-
-            if line.required_str != "" and not pd.isna(line.required_str):
-                required_prior_output: str = line.required_str
-
-            first_input: str = f"Based on the prompt, choose an answer that best fits. Previous answer was {required_prior_output}."
-
             instruction.add_sample(
-                input_snippets=[first_input, line.input_str],
+                input_snippets=[line.input_str],
                 output_snippet=line.output_str
             )
 
@@ -195,6 +167,6 @@ class CSVConversion:
             raise ValueError(
                 "At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
         elif len(guardrail.samples) >= 3:
-            instruction.add_guardrail(guardrail=guardrail, tokenset_index=1)
+            instruction.add_guardrail(guardrail=guardrail, tokenset_index=0)
 
         self.protocol.add_instruction(instruction)
