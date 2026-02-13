@@ -25,7 +25,6 @@ class CSVConversion:
     instruction_name: str = "Output"
     input_col: str = "Input"
     output_col: str = "Output"
-    required_col: str = "Required"
     context_col: str = "Output Reference"
 
     input_token: Token = Token("Input")
