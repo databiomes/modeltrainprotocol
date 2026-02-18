@@ -226,7 +226,7 @@ class Protocol:
         """
         return TemplateFile(
             instructions=list(self.instructions),
-            instruction_context_snippets=self.input_count,
+            inputs=self.input_count,
             encrypt=self.encrypt,
             has_guardrails=self.has_guardrails,
         )

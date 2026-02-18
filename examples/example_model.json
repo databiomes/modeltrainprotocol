@@ -1,5 +1,5 @@
 {
-    "$schema": "https://mtp.schemas.databiomes.com/v0/bloom_0_3_1.json",
+    "$schema": "https://mtp.schemas.databiomes.com/v0/bloom_0_3_3.json",
     "name": "example",
     "inputs": 2,
     "encrypted": false,
