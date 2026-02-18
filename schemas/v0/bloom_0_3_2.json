@@ -73,9 +73,11 @@
           "type": "string"
         },
         "bad_examples": {
+          "description": "At least 3 bad examples per guardrail.",
           "items": {
             "type": "string"
           },
+          "minItems": 3,
           "title": "Bad Examples",
           "type": "array"
         }
