@@ -123,6 +123,11 @@ class BaseInstruction(ABC):
         """Returns True if the Instruction has any guardrails added."""
         raise NotImplementedError("Subclasses must implement has_guardrails method.")
 
+    @abc.abstractmethod
+    def get_guardrails(self) -> list[Guardrail]:
+        """Returns a list of the guardrails attached to the instruction added."""
+        raise NotImplementedError("Subclasses must implement get_guardrails method.")
+
     def validate_instruction(self):
         """Validates the Instruction meets required Protocol standards."""
         self._validate_input_snippets()

@@ -375,6 +375,8 @@ class Protocol:
 
             for instruction in self.instructions:
                 instruction.validate_instruction()
+                for guardrail in instruction.get_guardrails():
+                    guardrail.validate_guardrail()
 
         except Exception as e:
             error_msg = str(e)

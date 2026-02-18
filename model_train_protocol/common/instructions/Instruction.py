@@ -66,6 +66,10 @@ class Instruction(BaseInstruction):
         """Indicates whether the Instruction has any guardrails defined."""
         return len(self.input.guardrails) > 0
 
+    def get_guardrails(self) -> list[Guardrail]:
+        """Gets the guardrails attached to the instruction"""
+        return list(self.input.guardrails.values())
+
     # noinspection PyMethodOverriding
     def add_sample(self, input_snippets: List[Union[str | Snippet]], output_snippet: Snippet | str,
                    output_value: Union[int, float, List[Union[int, float]], None] = None, final: FinalToken | None = None):
