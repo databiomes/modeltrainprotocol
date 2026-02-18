@@ -154,7 +154,7 @@ class CSVConversion:
                 guardrail.add_sample(line.input_str)
                 continue
 
-            if line.context_str != "" and not pd.isna(line.context_str):
+            if line.context_str != "" and line.context_str != "nan" and not pd.isna(line.context_str):
                 instruction.add_context(line.context_str)
 
             instruction.add_sample(
