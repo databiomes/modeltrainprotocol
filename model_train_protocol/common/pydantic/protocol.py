@@ -11,6 +11,7 @@ from model_train_protocol.common.constants import (
     MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE,
     MAXIMUM_CHARACTERS_PER_SNIPPET,
     MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION,
+    MIN_SAMPLES_PER_GUARDRAIL,
     PER_FINAL_TOKEN_SAMPLE_MINIMUM,
 )
 
@@ -64,7 +65,11 @@ class Guardrail(BaseModel):
     good_prompt: str = Field(..., min_length=1)
     bad_prompt: str = Field(..., min_length=1)
     bad_output: str = Field(..., min_length=1)
-    bad_examples: List[str] = Field(default_factory=list)
+    bad_examples: List[str] = Field(
+        default_factory=lambda: [],
+        min_length=MIN_SAMPLES_PER_GUARDRAIL,
+        description=f"At least {MIN_SAMPLES_PER_GUARDRAIL} bad examples per guardrail.",
+    )
 
 
 class InstructionSet(BaseModel):
