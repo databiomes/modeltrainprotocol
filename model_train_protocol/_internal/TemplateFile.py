@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Union
 
 from model_train_protocol import Instruction, ExtendedInstruction
-from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN, UNK_TOKEN
+from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN, UNK_TOKEN, NON_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
 from model_train_protocol.common.pydantic.template import (
@@ -133,9 +133,13 @@ class TemplateFile:
                     for sample in instruction.samples
                     ]
 
-                # add guardrail output if guardrail exists
+                # add guardrail outputs if guardrails present
                 if instruction.has_guardrails:
-                    output_strs.append(f"<string>\n{UNK_TOKEN.key}\n{EOS_TOKEN.key}")
+                    outputs: list[str] = [token.key for token in instruction.output.final]
+                    if outputs is None:
+                        outputs: list[str] = [NON_TOKEN.key + '_']
+                    for output in outputs:
+                        output_strs.append(f"<string>\n{output}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}")
 
                 instructions_dict[instruction.name] = {
                     "type": InstructionTypeEnum.get_instruction_type_by_class(instruction).value,
@@ -145,12 +149,12 @@ class TemplateFile:
 
             return instructions_dict
 
-    def __init__(self, instruction_context_snippets: int, instructions: list[BaseInstruction], encrypt: bool, has_guardrails: bool):
+    def __init__(self, inputs: int, instructions: list[BaseInstruction], encrypt: bool, has_guardrails: bool):
         """Initializes the template"""
 
         self.tokens: TemplateFile.Tokens = TemplateFile.Tokens()
         self.instructions: TemplateFile.Instructions = TemplateFile.Instructions()
-        self.instruction_context_snippets: int = instruction_context_snippets
+        self.inputs: int = inputs
         self.instructions_list: list[BaseInstruction] = instructions
         self.encrypt: bool = encrypt
         self.has_guardrails: bool = has_guardrails
@@ -285,14 +289,14 @@ class TemplateFile:
         #     extended_instruction_input += RUN_TOKEN.key + "\n"
         #     examples["extended_instruction_input"] = extended_instruction_input
 
-        first_instruction = instruction or extended_instruction
+        first_instruction: BaseInstruction = instruction or extended_instruction
         if first_instruction and first_instruction.samples:
             sample = first_instruction.samples[0]
             examples["valid_model_output"] = self._create_sample_model_output(first_instruction, sample)
 
         if self.has_guardrails:
             guardrailed_instruction: BaseInstruction = next(instruction for instruction in self.instructions_list if instruction.has_guardrails)
-            examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{UNK_TOKEN.key}\n{EOS_TOKEN.key}"
+            examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{guardrailed_instruction.example_final_token.key}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}"
 
         if "guardrail_model_output" not in examples:
             examples["guardrail_model_output"] = ""
@@ -318,6 +322,7 @@ class TemplateFile:
 
         template: TemplateModel = TemplateModel(
             encrypt=self.encrypt,
+            inputs=self.inputs,
             tokens=tokens,
             instructions=instruction_models,
             example_usage=example_usage,

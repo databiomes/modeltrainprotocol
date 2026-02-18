@@ -1,0 +1,117 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://mtp.schemas.databiomes.com/v0/bloom_0_3_2.json",
+  "title": "Template",
+  "description": "Main model for MTP Template JSON structure.",
+  "$defs": {
+    "ExampleUsage": {
+      "description": "Model for example usage in template.",
+      "properties": {
+        "instruction_input": {
+          "title": "Instruction Input",
+          "type": "string"
+        },
+        "valid_model_output": {
+          "title": "Valid Model Output",
+          "type": "string"
+        },
+        "guardrail_model_output": {
+          "title": "Guardrail Model Output",
+          "type": "string"
+        }
+      },
+      "required": [
+        "instruction_input",
+        "valid_model_output",
+        "guardrail_model_output"
+      ],
+      "title": "ExampleUsage",
+      "type": "object"
+    },
+    "InstructionDefinition": {
+      "description": "Model for a single instruction definition in the template.",
+      "properties": {
+        "type": {
+          "enum": [
+            "basic",
+            "extended"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "input": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Input",
+          "type": "array"
+        },
+        "output": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Output",
+          "type": "array"
+        }
+      },
+      "required": [
+        "type",
+        "input",
+        "output"
+      ],
+      "title": "InstructionDefinition",
+      "type": "object"
+    },
+    "Tokens": {
+      "description": "Model for tokens in template (input and output mappings).",
+      "properties": {
+        "input": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Input",
+          "type": "object"
+        },
+        "output": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Output",
+          "type": "object"
+        }
+      },
+      "required": [
+        "input",
+        "output"
+      ],
+      "title": "Tokens",
+      "type": "object"
+    }
+  },
+  "properties": {
+    "encrypt": {
+      "title": "Encrypt",
+      "type": "boolean"
+    },
+    "tokens": {
+      "$ref": "#/$defs/Tokens"
+    },
+    "instructions": {
+      "additionalProperties": {
+        "$ref": "#/$defs/InstructionDefinition"
+      },
+      "title": "Instructions",
+      "type": "object"
+    },
+    "example_usage": {
+      "$ref": "#/$defs/ExampleUsage"
+    }
+  },
+  "required": [
+    "encrypt",
+    "tokens",
+    "instructions",
+    "example_usage"
+  ],
+  "type": "object"
+}

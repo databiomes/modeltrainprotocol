@@ -1,6 +1,7 @@
 {
-    "$schema": "https://mtp.schemas.databiomes.com/v0/template_0_3_1.json",
+    "$schema": "https://mtp.schemas.databiomes.com/v0/template_0_3_3.json",
     "encrypt": false,
+    "inputs": 2,
     "tokens": {
         "input": {
             "Tree_English_Alice_Talk_": "Tree_English_Alice_Talk_",
@@ -41,8 +42,8 @@
                 "<RUN>"
             ],
             "output": [
-                "<string>\nVanish_\n<EOS>",
-                "<string>\nAppear_\n<EOS>"
+                "<string>\nAppear_\n<EOS>",
+                "<string>\nVanish_\n<EOS>"
             ]
         },
         "alice_cat_alice_continue": {
@@ -55,14 +56,14 @@
                 "<RUN>"
             ],
             "output": [
-                "<string>\nContinue_\n<EOS>",
-                "<string>\n<UNK>\n<EOS>"
+                "<string>\nContinue_<UNK>_\n<EOS>",
+                "<string>\nContinue_\n<EOS>"
             ]
         }
     },
     "example_usage": {
-        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[-505, -908, 297]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_0\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[586, -736, -974]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_0\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
         "valid_model_output": "Then it doesnt matter which way you go.\nMadness_\n<EOS>",
-        "guardrail_model_output": "Are you as mad as me?\n<UNK>\n<EOS>"
+        "guardrail_model_output": "Are you as mad as me?\nContinue_<UNK>_\n<EOS>"
     }
 }
