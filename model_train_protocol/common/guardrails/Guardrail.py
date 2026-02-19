@@ -43,8 +43,6 @@ class Guardrail:
         if not isinstance(sample, str) or not sample.strip():
             raise ValueError("Sample prompt must be a non-empty string.")
 
-        if not all(not char.isdigit() for char in sample):
-            raise ValueError("Sample prompt cannot contain digits.")
         self.samples.append(sample)
 
     def format_samples(self) -> List[str]:
