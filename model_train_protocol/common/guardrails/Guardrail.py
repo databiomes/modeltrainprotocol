@@ -1,5 +1,7 @@
 from typing import List
 
+from model_train_protocol.common.constants import MIN_SAMPLES_PER_GUARDRAIL
+
 
 class Guardrail:
     """
@@ -49,9 +51,14 @@ class Guardrail:
 
     def format_samples(self) -> List[str]:
         """Return the guardrails as a list of strings for JSON formatting."""
-        if len(self.samples) < 3:
+        if len(self.samples) < MIN_SAMPLES_PER_GUARDRAIL:
             raise ValueError("At least 3 sample prompts are required. Call add_sample() to add more.")
         return [self.bad_output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.samples]
+
+    def validate_guardrail(self):
+        """Validates the guardrail"""
+        if len(self.samples) < MIN_SAMPLES_PER_GUARDRAIL:
+            raise ValueError("At least 3 sample prompts are required. Call add_sample() to add more.")
 
     def to_dict(self) -> dict:
         """Return the guardrails as a dictionary for JSON formatting."""

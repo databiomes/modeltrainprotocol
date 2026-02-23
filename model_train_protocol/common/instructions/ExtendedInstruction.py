@@ -41,6 +41,10 @@ class ExtendedInstruction(BaseInstruction):
         """Indicates whether the Instruction has any guardrails defined."""
         return len(self.input.guardrails) > 0
 
+    def get_guardrails(self) -> list[Guardrail]:
+        """Gets the guardrails attached to the instruction"""
+        return list(self.input.guardrails.values())
+
     def get_token_sets(self) -> List[TokenSet]:
         """Returns all tokens in the instruction as a list of tuples."""
         all_tokens_sets: List = []

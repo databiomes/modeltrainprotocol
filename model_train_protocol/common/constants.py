@@ -17,6 +17,8 @@ MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE: int = 300
 
 MAXIMUM_CHARACTERS_PER_SNIPPET: int = 300
 
+MIN_SAMPLES_PER_GUARDRAIL: int = 3
+
 TokenTypeEnum: dict = {
     "Token": Token,
     "SpecialToken": SpecialToken,
