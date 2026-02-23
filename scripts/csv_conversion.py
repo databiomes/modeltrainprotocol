@@ -6,7 +6,7 @@ from model_train_protocol._internal.csv.conversion import CSVConversion
 
 def main():
 
-    local_path: str = f"C:\\Users\\Nikita\\Downloads\\ruby(3).csv"
+    local_path: str = f"C:\\Users\\Nikita\\Downloads\\ruby(4).csv"
     # local_path: str = "D:\\Nikita\\Documents\\work\\databiomes\\repos\\models\\landing_page_model\\landing_page_model_csv.csv"
 
     if local_path.endswith('.xlsx'):
