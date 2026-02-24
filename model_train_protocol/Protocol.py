@@ -28,8 +28,8 @@ class Protocol:
         self.name: str = name
         self.input_count: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
-        if self.input_count < 2:
-            raise ValueError("A minimum of 2 inputs is required for all instructions.")
+        if self.input_count < 1:
+            raise ValueError("A minimum of 1 inputs is required for all instructions.")
         self.context: List[str] = []
         self.tokens: Set[Token] = set()
         self.instructions: Set[BaseInstruction] = set()
@@ -196,6 +196,7 @@ class Protocol:
 
         # Add all tokens
         for token in instruction.get_tokens():
+            self._assign_key(token=token)
             if token not in self.tokens:
                 self._add_token(token)
 
