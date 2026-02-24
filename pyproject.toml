@@ -12,7 +12,7 @@ model_train_protocol = ["schemas/**/*.json"]
 
 [project]
 name = "model-train-protocol"
-version = "0.3.3"
+version = "0.4.0"
 description = "Standardized protocol to train models on Databiomes"
 requires-python = ">=3.9"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -37,6 +37,7 @@ test = [
     "pytest-cov>=4.0.0",
     "pytest-mock>=3.10.0",
     "pytest-xdist>=3.0.0",
+    "pandas>=2.0.0",
 ]
 
 [tool.pytest.ini_options]
