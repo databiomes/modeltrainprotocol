@@ -1,21 +1,33 @@
 import tomllib
+from importlib import metadata
 from pathlib import Path
+from typing import Optional
 
 
-def get_version():
-    # Start from this file: .../model_train_protocol/common/prototyping/utils.py
-    current_path = Path(__file__).resolve()
-
-    # Search upwards until we find pyproject.toml
-    pyproject_path = None
+def _find_pyproject_path(current_path: Path) -> Optional[Path]:
     for parent in current_path.parents:
         check_path = parent / "pyproject.toml"
         if check_path.exists():
-            pyproject_path = check_path
-            break
+            return check_path
+    return None
 
+
+def get_version() -> str:
+    """
+    Return the installed package version when available.
+    Falls back to the local pyproject.toml for editable/dev usage.
+    """
+    try:
+        return metadata.version("model-train-protocol")
+    except metadata.PackageNotFoundError:
+        pass
+
+    current_path: Path = Path(__file__).resolve()
+    pyproject_path: Optional[Path] = _find_pyproject_path(current_path)
     if pyproject_path is None:
-        raise FileNotFoundError("Could not find pyproject.toml in any parent directories.")
+        raise FileNotFoundError(
+            "Could not find installed package metadata or pyproject.toml in any parent directories."
+        )
 
     with open(pyproject_path, "rb") as f:
         pyproject = tomllib.load(f)
