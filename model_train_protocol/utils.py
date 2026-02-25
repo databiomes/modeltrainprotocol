@@ -49,7 +49,7 @@ def get_schema_version() -> str:
     with open(pyproject_path, "rb") as f:
         pyproject = tomllib.load(f)
 
-    return str(pyproject["project"]["schema-version"])
+    return str(pyproject["tool"]["model-train-protocol"]["schema-version"])
 
 
 def get_bloom_schema_url():
