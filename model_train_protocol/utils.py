@@ -12,7 +12,7 @@ def _find_pyproject_path(current_path: Path) -> Optional[Path]:
     return None
 
 
-def get_version() -> str:
+def get_mtp_version() -> str:
     """
     Return the installed package version when available.
     Falls back to the local pyproject.toml for editable/dev usage.
@@ -35,11 +35,28 @@ def get_version() -> str:
     return str(pyproject["project"]["version"])
 
 
+def get_schema_version() -> str:
+    """
+    Gets the schema version from the local pyproject.toml for editable/dev usage.
+    """
+    current_path: Path = Path(__file__).resolve()
+    pyproject_path: Optional[Path] = _find_pyproject_path(current_path)
+    if pyproject_path is None:
+        raise FileNotFoundError(
+            "Could not find pyproject.toml in any parent directories."
+        )
+
+    with open(pyproject_path, "rb") as f:
+        pyproject = tomllib.load(f)
+
+    return str(pyproject["project"]["schema-version"])
+
+
 def get_bloom_schema_url():
     """
     Retrieves the schema URL for the current version of the Model Train Protocol.
     """
-    version_semantic: str = get_version()
+    version_semantic: str = get_schema_version()
     schema_url = f"https://mtp.schemas.databiomes.com/v{version_semantic[0]}/bloom_{version_semantic.replace('.', '_')}.json"
     return schema_url
 
@@ -47,6 +64,6 @@ def get_template_schema_url():
     """
     Retrieves the schema URL for the current version of the MTP Template.
     """
-    version_semantic: str = get_version()
+    version_semantic: str = get_schema_version()
     schema_url = f"https://mtp.schemas.databiomes.com/v{version_semantic[0]}/template_{version_semantic.replace('.', '_')}.json"
     return schema_url
