@@ -141,7 +141,7 @@ class Batch(BaseModel):
 class Protocol(BaseModel):
     """Main model for MTP Protocol JSON structure."""
     name: str = Field(..., min_length=1)
-    inputs: int = Field(..., ge=2, description="Number of input lines per sample; must be at least 2.")
+    inputs: int = Field(...)
     encrypted: bool
     valid: bool
     context: List[ContextLine] = Field(
