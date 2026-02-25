@@ -13,6 +13,7 @@ model_train_protocol = ["schemas/**/*.json"]
 [project]
 name = "model-train-protocol"
 version = "0.4.0"
+schema-version = "1.0.0"
 description = "Standardized protocol to train models on Databiomes"
 requires-python = ">=3.9"
 readme = { file = "README.md", content-type = "text/markdown" }
