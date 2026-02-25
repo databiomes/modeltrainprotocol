@@ -5,9 +5,9 @@ import json
 from pathlib import Path
 from typing import Optional
 
-from model_train_protocol.utils import get_version, get_bloom_schema_url
 from model_train_protocol.common.pydantic.protocol import Protocol
 from model_train_protocol.common.pydantic.template import Template
+from model_train_protocol.utils import get_bloom_schema_url, get_schema_version
 
 
 def _get_base_path(base_path: Optional[str]) -> Path:
@@ -23,7 +23,7 @@ def _save_schema(
     filename_pattern: str,
     base_path: Optional[str] = None,
 ) -> str:
-    version_semantic: str = get_version()
+    version_semantic: str = get_schema_version()
     version_underscored: str = version_semantic.replace('.', '_')
     schema_dir = _get_base_path(base_path) / "schemas" / f"v{version_semantic[0]}"
     schema_dir.mkdir(parents=True, exist_ok=True)
