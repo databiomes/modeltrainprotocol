@@ -11,7 +11,6 @@ from .common.instructions import Instruction, ExtendedInstruction
 from .common.guardrails import Guardrail
 from . import utils as utils
 from .Protocol import Protocol
-import schemas
 
 __all__ = [
     "Protocol",
@@ -28,6 +27,5 @@ __all__ = [
     "InstructionOutput",
     "ExtendedResponse",
     "Guardrail",
-    "utils",
-    "schemas"
+    "utils"
 ]
