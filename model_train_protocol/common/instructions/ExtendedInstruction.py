@@ -6,6 +6,7 @@ from .input.BaseInput import BaseInput
 from ..guardrails import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
+from model_train_protocol.errors import InstructionError, InstructionTypeError
 
 
 class ExtendedInstruction(BaseInstruction):
@@ -32,7 +33,9 @@ class ExtendedInstruction(BaseInstruction):
         super().__init__(input=input, output=output, context=context, name=name)
 
         if not isinstance(output, ExtendedResponse):
-            raise TypeError(f"response must be an instance of ExtendedResponse. Got: {type(output)}")
+            raise InstructionTypeError(
+                f"response must be an instance of ExtendedResponse. Got: {type(output)}"
+            )
 
         self._validate_input_snippets()
 
@@ -115,7 +118,7 @@ class ExtendedInstruction(BaseInstruction):
         :param tokenset_index: The index of the TokenSet the guardrail applies to.
         """
         if len(guardrail.samples) < 3:
-            raise ValueError(
+            raise InstructionError(
                 "Guardrail must have at least 3 samples of bad inputs before being added to an Instruction.")
 
         self.input.add_guardrail(guardrail=guardrail, tokenset_index=tokenset_index)

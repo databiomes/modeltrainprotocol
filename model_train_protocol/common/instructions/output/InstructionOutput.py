@@ -4,6 +4,7 @@ from .BaseOutput import BaseOutput
 from ...tokens.FinalNumToken import FinalNumToken
 from ...tokens.FinalToken import FinalToken
 from ...tokens.TokenSet import TokenSet, Snippet
+from model_train_protocol.errors import OutputError, OutputTypeError
 
 
 class InstructionOutput(BaseOutput):
@@ -28,20 +29,20 @@ class InstructionOutput(BaseOutput):
         :param final: The FinalToken to validate.
         """
         if not isinstance(snippet, Snippet):
-            raise TypeError(f"Snippet must be an instance of Snippet. Got: {type(snippet)}")
+            raise OutputTypeError(f"Snippet must be an instance of Snippet. Got: {type(snippet)}")
 
         if not final in self.final:
-            raise ValueError(
+            raise OutputError(
                 f"FinalToken {final} is not added to the Response final tokens. Allowed finals: {self.final}")
 
         if not isinstance(final, FinalToken):
-            raise TypeError(f"Final must be an instance of FinalToken. Got: {type(final)}")
+            raise OutputTypeError(f"Final must be an instance of FinalToken. Got: {type(final)}")
 
         if isinstance(final, FinalNumToken):
             if value is None:
-                raise ValueError(f"FinalToken {final} requires a numeric value, but none was provided.")
+                raise OutputError(f"FinalToken {final} requires a numeric value, but none was provided.")
 
             if not isinstance(value, Union[int, float]):
-                raise TypeError(f"Value must be an int or float. Got: {type(value)}")
+                raise OutputTypeError(f"Value must be an int or float. Got: {type(value)}")
 
             final.validate_number(number=value)

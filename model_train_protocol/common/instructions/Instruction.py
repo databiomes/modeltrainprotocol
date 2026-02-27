@@ -6,6 +6,7 @@ from .output.InstructionOutput import InstructionOutput
 from ..guardrails import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
+from model_train_protocol.errors import InstructionError, InstructionTypeError
 
 
 class Instruction(BaseInstruction):
@@ -31,7 +32,7 @@ class Instruction(BaseInstruction):
         """
         super().__init__(input=input, output=output, context=context, name=name)
         if not isinstance(self.output, InstructionOutput):
-            raise TypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
+            raise InstructionTypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
         self._validate_input_snippets()
 
     def _validate_snippets_match(self, inputs: List[Snippet], response_snippet: Snippet):
@@ -43,7 +44,7 @@ class Instruction(BaseInstruction):
             self._validate_snippet_matches_set(snippet=all_snippets[i], expected_token_set=all_token_sets[i])
 
         if not isinstance(self.output, InstructionOutput):
-            raise TypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
+            raise InstructionTypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
 
         # Validate output snippet set matches output token set
         self._validate_snippet_matches_set(snippet=response_snippet, expected_token_set=self.output.tokenset)
@@ -101,7 +102,7 @@ class Instruction(BaseInstruction):
         :param tokenset_index: The index of the TokenSet the guardrail applies to.
         """
         if len(guardrail.samples) < 3:
-            raise ValueError(
+            raise InstructionError(
                 "Guardrail must have at least 3 samples of bad inputs before being added to an Instruction.")
 
         self.input.add_guardrail(guardrail=guardrail, tokenset_index=tokenset_index)

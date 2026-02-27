@@ -5,6 +5,7 @@ from typing import Union, List
 from ...constants import NON_TOKEN
 from ...tokens.FinalToken import FinalToken
 from ...tokens.TokenSet import Snippet, TokenSet
+from model_train_protocol.errors import OutputError, OutputTypeError
 
 
 class BaseOutput(ABC):
@@ -34,10 +35,10 @@ class BaseOutput(ABC):
         :param tokenset: The TokenSet to validate.
         """
         if not isinstance(tokenset, TokenSet):
-            raise TypeError(f"tokenset must be an instance of TokenSet. Got: {type(tokenset)}")
+            raise OutputTypeError(f"tokenset must be an instance of TokenSet. Got: {type(tokenset)}")
 
         if tokenset.has_num_list_tokens or tokenset.has_num_tokens:
-            raise ValueError(
+            raise OutputError(
                 "Response TokenSet cannot contain NumTokens or NumListTokens. To achieve a single numeric output alongside text, use a FinalNumToken as the Response final token.")
 
 

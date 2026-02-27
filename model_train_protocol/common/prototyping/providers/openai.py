@@ -6,6 +6,7 @@ import requests
 from dotenv import load_dotenv
 
 from model_train_protocol.common.pydantic.prototyping import MTPPrototypeModel, GENERATE_MTP_TOOL
+from model_train_protocol.errors import ProviderError
 
 
 def generate_mtp_prototype_file(prompt_id: str, openai_api_key: Optional[str] = None) -> MTPPrototypeModel:
@@ -53,7 +54,7 @@ def generate_mtp_prototype_file(prompt_id: str, openai_api_key: Optional[str] = 
             return MTPPrototypeModel(**prototype_model_json)
 
         except (KeyError, IndexError, json.JSONDecodeError) as e:
-            raise ValueError("Failed to parse function output from response.") from e
+            raise ProviderError("Failed to parse function output from response.") from e
 
     except requests.exceptions.HTTPError as e:
         print(f"HTTP Error {response.status_code}: {e}")

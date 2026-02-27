@@ -12,6 +12,7 @@ from .common.instructions.BaseInstruction import BaseInstruction, Sample
 from .common.tokens import TokenSet
 from .common.tokens.SpecialToken import SpecialToken
 from .common.utils import validate_string_subset, hash_string
+from .errors import ProtocolError, ProtocolTypeError
 
 
 class Protocol:
@@ -29,7 +30,7 @@ class Protocol:
         self.input_count: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
         if self.input_count < 1:
-            raise ValueError("A minimum of 1 inputs is required for all instructions.")
+            raise ProtocolError("A minimum of 1 inputs is required for all instructions.")
         self.context: List[str] = []
         self.tokens: Set[Token] = set()
         self.instructions: Set[BaseInstruction] = set()
@@ -140,7 +141,7 @@ class Protocol:
     def add_context(self, context: str):
         """Adds a line of context to the model."""
         if not isinstance(context, str):
-            raise TypeError("Context must be a string.")
+            raise ProtocolTypeError("Context must be a string.")
 
         self._validate_context_line_length(context)
 
@@ -150,7 +151,7 @@ class Protocol:
     def _validate_context_line_length(cls, line: str):
         """Validates that each context line does not exceed MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE."""
         if len(line) > MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE:
-            raise ValueError(
+            raise ProtocolError(
                 f"Context line exceeds maximum length of {MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE} characters.\n"
                 f"Line: '{line}' has {len(line)} characters."
             )
@@ -162,22 +163,24 @@ class Protocol:
         Asserts that all samples in the instruction match the defined sample line size.
         """
         if instruction in self.instructions:
-            raise ValueError(
+            raise ProtocolError(
                 "Instruction already added to the protocol (or instruction with identical tokensets in the same order).")
 
         for existing_instruction in self.instructions:
             if existing_instruction.name == instruction.name:
-                raise ValueError(f"An instruction with name '{instruction.name}' already exists in the protocol.")
+                raise ProtocolError(f"An instruction with name '{instruction.name}' already exists in the protocol.")
 
         if len(instruction.samples) < 3:
-            raise ValueError(f"Instruction must have at least three samples. Found {len(instruction.samples)} samples.")
+            raise ProtocolError(
+                f"Instruction must have at least three samples. Found {len(instruction.samples)} samples."
+            )
 
         final_sample_table: dict[FinalToken, int] = dict()
 
         # Assert all samples match the defined sample line size
         for sample in instruction.samples:
             if not len(sample.input) == self.input_count:
-                raise ValueError(
+                raise ProtocolError(
                     f"Sample input lines ({len(sample.input)}) does not match defined inputs count ({self.input_count})"
                     f"\n{sample}."
                 )
@@ -189,7 +192,7 @@ class Protocol:
         # Ensure each FinalToken has at least 3 samples
         for final_token, count in final_sample_table.items():
             if count < PER_FINAL_TOKEN_SAMPLE_MINIMUM:
-                raise ValueError(
+                raise ProtocolError(
                     f"Missing minimum {PER_FINAL_TOKEN_SAMPLE_MINIMUM} samples for each FinalToken in the Output of Instruction {instruction.name}.\n"
                     f"FinalToken '{final_token.value}' must have at least 3 samples in the instruction. Found {count} samples."
                 )
@@ -251,7 +254,7 @@ class Protocol:
         error_msg: Optional[str]
         valid, error_msg = self.validate_protocol()
         if not valid:
-            raise ValueError(error_msg)
+            raise ProtocolError(error_msg)
         self._prep_protocol()
 
         with open(filename, 'w', encoding="utf-8") as file:
@@ -275,7 +278,7 @@ class Protocol:
         error_msg: Optional[str]
         valid, error_msg = self.validate_protocol()
         if not valid:
-            raise ValueError(error_msg)
+            raise ProtocolError(error_msg)
         self._prep_protocol()
 
         with open(filename, 'w', encoding="utf-8") as file:
@@ -308,10 +311,10 @@ class Protocol:
         self._assign_key(token=token)
 
         if token in self.tokens:
-            raise ValueError(f"Token value {token.value} already used. Duplicate tokens are not allowed.")
+            raise ProtocolError(f"Token value {token.value} already used. Duplicate tokens are not allowed.")
 
         if token.key in self.used_keys:
-            raise ValueError(
+            raise ProtocolError(
                 f"Duplicate token key '{token.key}' is already used in another token. Duplicate keys are not allowed.")
 
         self.tokens.add(token)
@@ -338,7 +341,7 @@ class Protocol:
             total_context_lines += len(instruction.context)
 
         if total_context_lines < MINIMUM_TOTAL_CONTEXT_LINES:
-            raise ValueError(
+            raise ProtocolError(
                 f"The total number of context lines across all instructions is {total_context_lines}, "
                 f"which is less than the minimum required of {MINIMUM_TOTAL_CONTEXT_LINES}. Please add more context lines using protocol.add_context() "
                 f"or by adding background lines to instructions."
@@ -363,7 +366,7 @@ class Protocol:
         """
         try:
             if len(self.instructions) == 0:
-                raise ValueError(
+                raise ProtocolError(
                     "No instructions have been added to Protocol. Call protocol.add_instruction() to add instructions.")
 
             self._validate_context_count()

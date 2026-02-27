@@ -5,6 +5,8 @@ Internal utils. Not intended to be publicly exposed. Use root-level utils.py for
 import hashlib
 import emoji
 
+from model_train_protocol.errors import UtilsError
+
 
 def clean_token_key(key: str) -> str:
     """Removes non-alphanumeric characters from a token key."""
@@ -42,7 +44,7 @@ def validate_string_subset(string_set: set[str]):
             second_string: str = ''.join(c.lower() for c in sorted_strings[j] if c.isalnum() or emoji.purely_emoji(c))
 
             if first_string in second_string:
-                raise ValueError(
+                raise UtilsError(
                     f"'{sorted_strings[i]}' is a substring of '{sorted_strings[j]}' (alphanumeric characters only, case insensitive).")
 
 

@@ -4,6 +4,7 @@ from typing import List, Sequence, Collection, Union
 from . import NumListToken
 from .NumToken import NumToken
 from .Token import Token
+from model_train_protocol.errors import TokenSetError, TokenSetTypeError
 
 
 @dataclass
@@ -32,12 +33,12 @@ class TokenSet:
         required_numtoken_numbers: int = sum(
             token.num for token in self.tokens if isinstance(token, NumToken))  # Count of NumToken
         if len(numbers) != required_numtoken_numbers:
-            raise ValueError(
+            raise TokenSetError(
                 f"{self} requires {required_numtoken_numbers} numbers but {len(numbers or [])} were provided.")
         for (i, number) in enumerate(numbers):
             corresponding_token = self._num_tokens[i]
             if not (corresponding_token.min_value <= number <= corresponding_token.max_value):
-                raise ValueError(
+                raise TokenSetError(
                     f"Number at index {i} with value {number} is out of bounds for token {corresponding_token}. Must be between {corresponding_token.min_value} and {corresponding_token.max_value}.")
 
     def _validate_numlist_tokens(self, number_lists: Collection[Collection[Union[int, float]]]):
@@ -45,20 +46,20 @@ class TokenSet:
         required_numlists: List[int] = [
             token.num_list for token in self.tokens if isinstance(token, NumListToken)]
         if len(number_lists) != len(required_numlists):
-            raise ValueError(
+            raise TokenSetError(
                 f"{self} requires {len(required_numlists)} number lists but {len(number_lists or [])} lists were provided.")
         if len(self._num_list_tokens) != len(required_numlists):
-            raise ValueError(
+            raise TokenSetError(
                 f"Number of NumListToken instances ({len(self._num_list_tokens)}) does not match required number lists ({len(required_numlists)}).")
         for (i, required_length) in enumerate(required_numlists):
             if len(number_lists[i]) != required_length:
-                raise ValueError(
+                raise TokenSetError(
                     f"Number list at index {i} must be of length {required_length} but is of length {len(number_lists[i])}.")
         for (i, number_list) in enumerate(number_lists):
             corresponding_token = self._num_list_tokens[i]
             for number in number_list:
                 if not (corresponding_token.min_value <= number <= corresponding_token.max_value):
-                    raise ValueError(
+                    raise TokenSetError(
                         f"Number {number} in number list at index {i} is out of bounds for token {corresponding_token}. Must be between {corresponding_token.min_value} and {corresponding_token.max_value}.")
 
     def create_snippet(self, string: str,
@@ -66,7 +67,7 @@ class TokenSet:
                        number_lists: Union[Collection[Union[int, float, Collection[Union[int, float]]]], None] = None) -> Snippet:
         """Create a snippet for the TokenSet"""
         if not isinstance(string, str):
-            raise TypeError("String must be of type str.")
+            raise TokenSetTypeError("String must be of type str.")
 
         if numbers is None:
             numbers = []
@@ -75,7 +76,7 @@ class TokenSet:
         elif isinstance(numbers, Collection):
             numbers = list(numbers)
         else:
-            raise TypeError("Numbers must be an int, an Collection of ints, or None.")
+            raise TokenSetTypeError("Numbers must be an int, an Collection of ints, or None.")
 
         if number_lists is None:
             number_lists = []
@@ -85,7 +86,9 @@ class TokenSet:
         elif isinstance(number_lists, Collection) and all(isinstance(nl, Collection) for nl in number_lists):
             pass
         else:
-            raise TypeError("Number lists must be an Collection of numbers or Collection of Collections or None.")
+            raise TokenSetTypeError(
+                "Number lists must be an Collection of numbers or Collection of Collections or None."
+            )
 
         self._validate_num_tokens(numbers=numbers)
         self._validate_numlist_tokens(number_lists=number_lists)
