@@ -6,7 +6,7 @@ from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.pydantic.protocol import Instruction, TokenInfo, Sample, \
     InstructionSet, Protocol, Guardrail
 from model_train_protocol.common.tokens import SpecialToken
-from model_train_protocol.utils import get_bloom_schema_url
+from utils import get_bloom_schema_url
 
 
 class ProtocolFile:

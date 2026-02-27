@@ -60,6 +60,3 @@ Homepage = "https://pypi.org/project/model-train-protocol/"
 Documentation = "https://modeltrainprotocol.readthedocs.io/"
 Repository = "https://github.com/databiomes/modeltrainprotocol"
 Issues = "https://github.com/databiomes/modeltrainprotocol/issues"
-
-[tool.model-train-protocol]
-schema-version = "1.1.0"

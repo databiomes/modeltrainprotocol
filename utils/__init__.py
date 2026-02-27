@@ -3,6 +3,8 @@ from importlib import metadata
 from pathlib import Path
 from typing import Optional
 
+from model_train_protocol.schema_version import SCHEMA_VERSION
+
 
 def _find_pyproject_path(current_path: Path) -> Optional[Path]:
     for parent in current_path.parents:
@@ -37,19 +39,9 @@ def get_mtp_version() -> str:
 
 def get_schema_version() -> str:
     """
-    Gets the schema version from the local pyproject.toml for editable/dev usage.
+    Gets the schema version bundled with the package.
     """
-    current_path: Path = Path(__file__).resolve()
-    pyproject_path: Optional[Path] = _find_pyproject_path(current_path)
-    if pyproject_path is None:
-        raise FileNotFoundError(
-            "Could not find pyproject.toml in any parent directories."
-        )
-
-    with open(pyproject_path, "rb") as f:
-        pyproject = tomllib.load(f)
-
-    return str(pyproject["tool"]["model-train-protocol"]["schema-version"])
+    return SCHEMA_VERSION
 
 
 def get_bloom_schema_url():
@@ -59,6 +51,7 @@ def get_bloom_schema_url():
     version_semantic: str = get_schema_version()
     schema_url = f"https://mtp.schemas.databiomes.com/v{version_semantic[0]}/bloom_{version_semantic.replace('.', '_')}.json"
     return schema_url
+
 
 def get_template_schema_url():
     """

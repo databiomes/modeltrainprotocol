@@ -15,7 +15,7 @@ from model_train_protocol.common.pydantic.template import (
 )
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
-from model_train_protocol.utils import get_template_schema_url
+from utils import get_template_schema_url
 
 
 class InstructionTypeEnum(Enum):
