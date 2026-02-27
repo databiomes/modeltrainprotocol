@@ -1,5 +1,5 @@
 {
-    "$schema": "https://mtp.schemas.databiomes.com/v0/template_0_3_3.json",
+    "$schema": "https://mtp.schemas.databiomes.com/v1/template_1_1_0.json",
     "encrypt": false,
     "inputs": 2,
     "tokens": {
@@ -19,6 +19,20 @@
         }
     },
     "instructions": {
+        "alice_cat_alice_continue": {
+            "type": "basic",
+            "input": [
+                "<BOS>\n",
+                "Tree_English_Cat_Talk_\n<string>\n",
+                "Tree_English_Alice_Talk_\n<string>\n",
+                "Tree_English_Cat_Talk_\n",
+                "<RUN>"
+            ],
+            "output": [
+                "<string>\nContinue_\n<EOS>",
+                "<string>\nContinue_<UNK>_\n<EOS>"
+            ]
+        },
         "alice_cat_alice_instruction_numeric": {
             "type": "basic",
             "input": [
@@ -45,24 +59,10 @@
                 "<string>\nAppear_\n<EOS>",
                 "<string>\nVanish_\n<EOS>"
             ]
-        },
-        "alice_cat_alice_continue": {
-            "type": "basic",
-            "input": [
-                "<BOS>\n",
-                "Tree_English_Cat_Talk_\n<string>\n",
-                "Tree_English_Alice_Talk_\n<string>\n",
-                "Tree_English_Cat_Talk_\n",
-                "<RUN>"
-            ],
-            "output": [
-                "<string>\nContinue_<UNK>_\n<EOS>",
-                "<string>\nContinue_\n<EOS>"
-            ]
         }
     },
     "example_usage": {
-        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[586, -736, -974]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_0\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
+        "instruction_input": "<BOS>\nTree_English_Cat_Talk_Coordinates_[-58, -353, -700]\nThen it doesnt matter which way you go.\nTree_English_Alice_Talk_Emotion_8\nCan you tell me a way?\nTree_English_Cat_Talk_\n<RUN>\n",
         "valid_model_output": "Then it doesnt matter which way you go.\nMadness_\n<EOS>",
         "guardrail_model_output": "Are you as mad as me?\nContinue_<UNK>_\n<EOS>"
     }

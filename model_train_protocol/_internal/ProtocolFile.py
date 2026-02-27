@@ -4,10 +4,9 @@ from typing import Collection, List, Dict, Set
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.pydantic.protocol import Instruction, TokenInfo, Sample, \
-    InstructionSet, Number, \
-    Batch, Protocol, Guardrail
+    InstructionSet, Protocol, Guardrail
 from model_train_protocol.common.tokens import SpecialToken
-from model_train_protocol.utils import get_bloom_schema_url
+from utils import get_bloom_schema_url
 
 
 class ProtocolFile:
@@ -221,14 +220,6 @@ class ProtocolFile:
             sets=instruction_sets
         )
 
-        # Create Numbers object
-        numbers = Number()
-
-        # Create Batches object
-        batches = Batch(
-            **self._batches.__dict__
-        )
-
         # Create ProtocolModel
         protocol = Protocol(
             name=self._name,
@@ -238,9 +229,7 @@ class ProtocolFile:
             valid=self._valid,
             tokens=token_info_dict,
             special_tokens=self._get_special_token_keys(),
-            instruction=instruction,
-            numbers=numbers,
-            batches=batches
+            instruction=instruction
         )
 
         # Convert to JSON and apply backwards compatibility transformations

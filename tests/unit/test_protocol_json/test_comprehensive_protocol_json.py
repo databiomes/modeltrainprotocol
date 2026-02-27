@@ -36,12 +36,10 @@ class TestComprehensiveProtocolJSON:
         assert "tokens" in json_output
         assert "special_tokens" in json_output
         assert "instruction" in json_output
-        assert "numbers" in json_output
-        assert "batches" in json_output
 
         # Test that no unexpected keys are present
-        expected_keys = {"$schema", "name", "context", "tokens", "special_tokens", "instruction", "numbers",
-                         "batches", "encrypted", "valid", "inputs"}
+        expected_keys = {"$schema", "name", "context", "tokens", "special_tokens", "instruction",
+                         "encrypted", "valid", "inputs"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
@@ -603,68 +601,13 @@ class TestComprehensiveProtocolJSON:
         """Test that numbers are correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
 
-        assert "numbers" in json_output
-        assert isinstance(json_output["numbers"], dict)
-
-        # Comprehensive protocol should have numeric tokens
-        assert len(json_output["numbers"]) >= 0
-
-        # Check specific numeric tokens
-        if "Count" in json_output["numbers"]:
-            count_info = json_output["numbers"]["Count"]
-            assert "min" in count_info
-            assert "max" in count_info
-            assert "desc" in count_info
-            assert count_info["min"] == 1
-            assert count_info["max"] == 100
-            assert count_info["desc"] == "Count token"
-
-        if "Scores" in json_output["numbers"]:
-            scores_info = json_output["numbers"]["Scores"]
-            assert "min" in scores_info
-            assert "max" in scores_info
-            assert "length" in scores_info
-            assert "desc" in scores_info
-            assert scores_info["min"] == 0
-            assert scores_info["max"] == 10
-            assert scores_info["length"] == 5
-            assert scores_info["desc"] == "Scores token"
-
-        if "Coordinates" in json_output["numbers"]:
-            coords_info = json_output["numbers"]["Coordinates"]
-            assert "min" in coords_info
-            assert "max" in coords_info
-            assert "length" in coords_info
-            assert "desc" in coords_info
-            assert coords_info["min"] == -100
-            assert coords_info["max"] == 100
-            assert coords_info["length"] == 3
-            assert coords_info["desc"] == "3D coordinates (x, y, z)"
+        assert "numbers" not in json_output
 
     def test_comprehensive_protocol_batches(self, comprehensive_protocol):
         """Test that batches are correctly included."""
         json_output = self._get_json_output(comprehensive_protocol)
 
-        assert "batches" in json_output
-        batches = json_output["batches"]
-
-        # Test batch structure
-        assert "pretrain" in batches
-        assert "instruct" in batches
-        assert "judge" in batches
-        assert "ppo" in batches
-
-        # Test batch data types
-        assert isinstance(batches["pretrain"], list)
-        assert isinstance(batches["instruct"], list)
-        assert isinstance(batches["judge"], list)
-        assert isinstance(batches["ppo"], list)
-
-        # Comprehensive protocol should have no batches
-        assert len(batches["pretrain"]) == 0
-        assert len(batches["instruct"]) == 0
-        assert len(batches["judge"]) == 0
-        assert len(batches["ppo"]) == 0
+        assert "batches" not in json_output
 
     def test_comprehensive_protocol_token_descriptions(self, comprehensive_protocol):
         """Test that token descriptions are correctly included."""

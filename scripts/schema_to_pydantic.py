@@ -7,8 +7,9 @@ import tempfile
 from pathlib import Path
 from urllib.request import urlopen
 
-import model_train_protocol as mtp
 from datamodel_code_generator import InputFileType, generate
+
+import utils
 
 
 def _get_output_path() -> Path:
@@ -37,7 +38,7 @@ def _run_codegen(schema_path: Path, output_path: Path) -> None:
 
 def generate_pydantic_models() -> Path:
     """Generate Pydantic v2 models from the bloom schema."""
-    schema_url = mtp.utils.get_bloom_schema_url()
+    schema_url = utils.get_bloom_schema_url()
     schema_path = _download_schema(schema_url)
     output_path = _get_output_path()
     _run_codegen(schema_path, output_path)

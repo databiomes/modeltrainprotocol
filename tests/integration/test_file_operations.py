@@ -111,7 +111,7 @@ class TestFileOperations:
             data = json.load(f)
 
         assert data["name"] == "numeric_test"
-        assert len(data["numbers"]) >= 0
+        assert "numbers" not in data
         
         # Clean up
         model_file.unlink()

@@ -103,41 +103,6 @@ def _number_model_json_schema_extra(schema: dict, model_class) -> None:
     }
 
 
-class Number(BaseModel):
-    """Model for numbers configuration."""
-
-    model_config = ConfigDict(
-        extra="allow",  # Allow extra fields for dynamic attributes
-        json_schema_extra=_number_model_json_schema_extra
-    )
-
-    def __getitem__(self, key: str) -> Any:
-        """Get a number rule by key."""
-        return getattr(self, key, None)
-
-    def __setitem__(self, key: str, value: Any) -> None:
-        """Set a number rule by key."""
-        setattr(self, key, value)
-
-    def get_number_rules(self) -> Dict[str, Any]:
-        """Get all number rules as a dictionary."""
-        return {k: v for k, v in self.__dict__.items()}
-
-    def set_number_rule(self, key: str, value: str) -> None:
-        """Set a number rule with proper validation."""
-        if not isinstance(value, str):
-            raise ValueError(f"Number value must be string, got {type(value)}")
-        setattr(self, key, value)
-
-
-class Batch(BaseModel):
-    """Model for batches configuration."""
-    pretrain: List[Dict[str, Any]]
-    instruct: List[Dict[str, Any]]
-    judge: List[Dict[str, Any]]
-    ppo: List[Dict[str, Any]]
-
-
 class Protocol(BaseModel):
     """Main model for MTP Protocol JSON structure."""
     name: str = Field(..., min_length=1)
@@ -151,7 +116,5 @@ class Protocol(BaseModel):
     tokens: Dict[str, TokenInfo]
     special_tokens: List[str] = Field(default_factory=list)
     instruction: Instruction
-    numbers: Number
-    batches: Batch
 
     model_config = ConfigDict(extra="allow")

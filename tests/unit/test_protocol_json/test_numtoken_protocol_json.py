@@ -35,12 +35,10 @@ class TestNumTokenProtocolJSON:
         assert "tokens" in json_output
         assert "special_tokens" in json_output
         assert "instruction" in json_output
-        assert "numbers" in json_output
-        assert "batches" in json_output
 
         # Test that no unexpected keys are present
-        expected_keys = {"$schema", "name", "context", "tokens", "special_tokens", "instruction", "numbers",
-                         "batches", "encrypted", "valid", "inputs"}
+        expected_keys = {"$schema", "name", "context", "tokens", "special_tokens", "instruction",
+                         "encrypted", "valid", "inputs"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
@@ -219,46 +217,13 @@ class TestNumTokenProtocolJSON:
         """Test that numbers are correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
 
-        assert "numbers" in json_output
-        assert isinstance(json_output["numbers"], dict)
-
-        # NumToken protocol should have numeric tokens
-        assert len(json_output["numbers"]) >= 0
-
-        # Check that Count token is in numbers
-        if "Count" in json_output["numbers"]:
-            count_info = json_output["numbers"]["Count"]
-            assert "min" in count_info
-            assert "max" in count_info
-            assert "desc" in count_info
-            assert count_info["min"] == 1
-            assert count_info["max"] == 100
-            assert count_info["desc"] == "Count token"
+        assert "numbers" not in json_output
 
     def test_numtoken_protocol_batches(self, numtoken_protocol):
         """Test that batches are correctly included."""
         json_output = self._get_json_output(numtoken_protocol)
 
-        assert "batches" in json_output
-        batches = json_output["batches"]
-
-        # Test batch structure
-        assert "pretrain" in batches
-        assert "instruct" in batches
-        assert "judge" in batches
-        assert "ppo" in batches
-
-        # Test batch data types
-        assert isinstance(batches["pretrain"], list)
-        assert isinstance(batches["instruct"], list)
-        assert isinstance(batches["judge"], list)
-        assert isinstance(batches["ppo"], list)
-
-        # NumToken protocol should have no batches
-        assert len(batches["pretrain"]) == 0
-        assert len(batches["instruct"]) == 0
-        assert len(batches["judge"]) == 0
-        assert len(batches["ppo"]) == 0
+        assert "batches" not in json_output
 
     def test_numtoken_protocol_token_descriptions(self, numtoken_protocol):
         """Test that token descriptions are correctly included."""
