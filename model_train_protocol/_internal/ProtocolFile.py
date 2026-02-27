@@ -221,14 +221,6 @@ class ProtocolFile:
             sets=instruction_sets
         )
 
-        # Create Numbers object
-        numbers = Number()
-
-        # Create Batches object
-        batches = Batch(
-            **self._batches.__dict__
-        )
-
         # Create ProtocolModel
         protocol = Protocol(
             name=self._name,
@@ -238,9 +230,7 @@ class ProtocolFile:
             valid=self._valid,
             tokens=token_info_dict,
             special_tokens=self._get_special_token_keys(),
-            instruction=instruction,
-            numbers=numbers,
-            batches=batches
+            instruction=instruction
         )
 
         # Convert to JSON and apply backwards compatibility transformations
