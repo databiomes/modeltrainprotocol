@@ -35,11 +35,9 @@ class TestBasicUserProtocolJSON:
         assert "tokens" in json_output
         assert "special_tokens" in json_output
         assert "instruction" in json_output
-        assert "numbers" in json_output
-        assert "batches" in json_output
         
         # Test that no unexpected keys are present
-        expected_keys = {"$schema", "name", "context", "tokens", "special_tokens", "instruction", "numbers", "batches", "encrypted", "valid", "inputs"}
+        expected_keys = {"$schema", "name", "context", "tokens", "special_tokens", "instruction", "encrypted", "valid", "inputs"}
         actual_keys = set(json_output.keys())
         assert actual_keys == expected_keys
 
@@ -226,36 +224,13 @@ class TestBasicUserProtocolJSON:
         """Test that numbers are correctly included."""
         json_output = self._get_json_output(basic_user_protocol)
         
-        assert "numbers" in json_output
-        assert isinstance(json_output["numbers"], dict)
-        
-        # Basic user protocol should have no numeric tokens   
-        assert len(json_output["numbers"]) == 0
+        assert "numbers" not in json_output
 
     def test_basic_user_protocol_batches(self, basic_user_protocol):
         """Test that batches are correctly included."""
         json_output = self._get_json_output(basic_user_protocol)
         
-        assert "batches" in json_output
-        batches = json_output["batches"]
-        
-        # Test batch structure
-        assert "pretrain" in batches
-        assert "instruct" in batches
-        assert "judge" in batches
-        assert "ppo" in batches
-        
-        # Test batch data types
-        assert isinstance(batches["pretrain"], list)
-        assert isinstance(batches["instruct"], list)
-        assert isinstance(batches["judge"], list)
-        assert isinstance(batches["ppo"], list)
-        
-        # Basic protocol should have no batches
-        assert len(batches["pretrain"]) == 0
-        assert len(batches["instruct"]) == 0
-        assert len(batches["judge"]) == 0
-        assert len(batches["ppo"]) == 0
+        assert "batches" not in json_output
 
     def test_basic_user_protocol_token_descriptions(self, basic_user_protocol):
         """Test that token descriptions are correctly included."""
