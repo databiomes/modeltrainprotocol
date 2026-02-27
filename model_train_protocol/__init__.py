@@ -9,6 +9,7 @@ from .common.tokens import Token, NumToken, NumListToken, FinalToken, Snippet, T
 from .common.instructions.output import InstructionOutput, ExtendedResponse
 from .common.instructions import Instruction, ExtendedInstruction
 from .common.guardrails import Guardrail
+from .csv import conversion
 from .Protocol import Protocol
 from .errors import (
     MTPError,
@@ -51,6 +52,7 @@ __all__ = [
     "InstructionOutput",
     "ExtendedResponse",
     "Guardrail",
+    "conversion",
     "MTPError",
     "MTPValueError",
     "MTPTypeError",
