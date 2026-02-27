@@ -33,7 +33,6 @@ from .errors import (
     OutputTypeError,
     ProtocolError,
     ProtocolTypeError,
-    UtilsError,
     ProviderError,
 )
 
@@ -74,6 +73,5 @@ __all__ = [
     "OutputTypeError",
     "ProtocolError",
     "ProtocolTypeError",
-    "UtilsError",
     "ProviderError",
 ]

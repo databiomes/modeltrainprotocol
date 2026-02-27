@@ -10,13 +10,9 @@ class TokenError(MTPValueError):
 class TokenTypeError(MTPTypeError, TokenError):
     """Errors raised for token type validation."""
 
-
 class TokenSetError(MTPValueError):
     """Errors raised for token set validation."""
 
 
 class TokenSetTypeError(MTPTypeError, TokenSetError):
     """Errors raised for token set type validation."""
-
-class TokenMatchingSubsetError(MTPValueError, TokenSetError):
-    """Errors raised when a token is a subset of another token."""
