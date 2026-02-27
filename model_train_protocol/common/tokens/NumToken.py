@@ -1,6 +1,7 @@
 from typing import Optional, Union
 
 from .Token import Token
+from model_train_protocol.errors import TokenError
 
 
 class NumToken(Token):
@@ -19,7 +20,7 @@ class NumToken(Token):
         :param desc: Optional description of the token. Extends the value to contextualize its use.
         """
         if max_value < min_value:
-            raise ValueError("Num value must be greater than or equal to max_value.")
+            raise TokenError("Num value must be greater than or equal to max_value.")
 
         super().__init__(value, key, desc)
         self.num: bool = True
@@ -45,5 +46,5 @@ class NumToken(Token):
         :raises ValueError: If the number is out of bounds.
         """
         if not (self.min_value <= number <= self.max_value):
-            raise ValueError(
+            raise TokenError(
                 f"Number {number} is out of bounds for token {self}. Must be between {self.min_value} and {self.max_value} (inclusive).")

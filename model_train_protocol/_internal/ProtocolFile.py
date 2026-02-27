@@ -6,6 +6,7 @@ from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.pydantic.protocol import Instruction, TokenInfo, Sample, \
     InstructionSet, Protocol, Guardrail
 from model_train_protocol.common.tokens import SpecialToken
+from model_train_protocol.errors import ProtocolFileLayerDepthError
 from utils import get_bloom_schema_url
 
 
@@ -133,7 +134,7 @@ class ProtocolFile:
         :param n: The layer depth after which to alphabetize keys. Default is 1.
         """
         if n < 1:
-            raise ValueError("Layer depth n must be at least 1.")
+            raise ProtocolFileLayerDepthError("Layer depth n must be at least 1.")
 
         def _recursively_alphabetize(data, current_layer):
             if isinstance(data, dict):

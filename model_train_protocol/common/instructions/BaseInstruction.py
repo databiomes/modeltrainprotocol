@@ -10,6 +10,7 @@ from ..pydantic.protocol import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet
+from model_train_protocol.errors import InstructionError, InstructionTypeError
 
 
 class Sample:
@@ -86,9 +87,9 @@ class BaseInstruction(ABC):
         self.samples: List[Sample] = []
         self.samples: list[Sample] = []
         if not isinstance(input, BaseInput):
-            raise TypeError("Context must be a sequence of TokenSet instances.")
+            raise InstructionTypeError("Context must be a sequence of TokenSet instances.")
         if not all(isinstance(ts, TokenSet) for ts in input.tokensets):
-            raise TypeError("All items in context must be instances of TokenSet.")
+            raise InstructionTypeError("All items in context must be instances of TokenSet.")
         self._validate_context()
         if name is None:
             name = str(self.input) + str(self.output)
@@ -154,7 +155,7 @@ class BaseInstruction(ABC):
         """Validates that all snippet strings are within the max length"""
         for snippet_string in snippet_strings:
             if len(snippet_string) > MAXIMUM_CHARACTERS_PER_SNIPPET:
-                raise ValueError(
+                raise InstructionError(
                     f"Snippet length {len(snippet_string)} exceeds maximum allowed length of "
                     f"{MAXIMUM_CHARACTERS_PER_SNIPPET} characters for snippet: {snippet_string}"
                 )
@@ -243,20 +244,24 @@ class BaseInstruction(ABC):
 
         for i, line in enumerate(self.context):
             if len(line) > MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE:
-                raise ValueError(f"Context line {i} exceeds maximum allowed length of {MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE} characters. "
-                                 f"Current length: {len(line)}")
+                raise InstructionError(
+                    f"Context line {i} exceeds maximum allowed length of {MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE} characters. "
+                    f"Current length: {len(line)}"
+                )
 
     def _validate_input_snippets(self):
         """Validates that input snippets do not contain any final tokens."""
         for token_set in self.input.tokensets:
             for token in token_set:
                 if isinstance(token, FinalToken):
-                    raise ValueError(f"Context TokenSet cannot contain FinalToken instances. Found: {token}")
+                    raise InstructionError(
+                        f"Context TokenSet cannot contain FinalToken instances. Found: {token}"
+                    )
 
     def _validate_minimum_samples(self):
         """Validates that each instruction has at least 3 samples for each FinalToken"""
         if len(self.samples) < 3:
-                raise ValueError(
+                raise InstructionError(
                     f"Instruction '{self.name}' has only {len(self.samples)} samples. "
                     f"Each instruction must have at least 3 samples."
                 )
@@ -268,7 +273,7 @@ class BaseInstruction(ABC):
 
         for final_token, count in final_token_counts.items():
             if count < 3:
-                raise ValueError(
+                raise InstructionError(
                     f"Instruction '{self.name}' has only {count} samples for final token '{final_token.value}'. "
                     f"Each final token must have at least 3 samples."
                 )
@@ -276,7 +281,7 @@ class BaseInstruction(ABC):
     def _enforce_input_snippets(self, inputs: List[Union[Snippet, str]]) -> List[Snippet]:
         """Converts regular strings to snippets if provided as a list of strings."""
         if len(inputs) != len(self.input.tokensets):
-            raise ValueError(
+            raise InstructionError(
                 f"Number of context snippets ({len(inputs)}) must match number of context token sets ({len(self.input.tokensets)}).")
 
         for i, snippet in enumerate(inputs):
@@ -285,7 +290,7 @@ class BaseInstruction(ABC):
                 try:
                     inputs[i] = associated_tokenset.create_snippet(string=snippet)
                 except Exception as e:
-                    raise ValueError(
+                    raise InstructionError(
                         f"Failed to create Snippet from string '{snippet}' for TokenSet {associated_tokenset}.\n"
                         f"Create a Snippet from the tokenset and add associated information: {e}")
 
@@ -298,7 +303,7 @@ class BaseInstruction(ABC):
             try:
                 snippet = associated_tokenset.create_snippet(string=snippet)
             except Exception as e:
-                raise ValueError(
+                raise InstructionError(
                     f"Failed to create Snippet from string '{snippet}' for TokenSet {associated_tokenset}.\n"
                     f"Create a Snippet from the tokenset and add associated information: {e}")
         return snippet
@@ -307,12 +312,14 @@ class BaseInstruction(ABC):
     def _validate_snippet_matches_set(cls, snippet: Snippet, expected_token_set: TokenSet):
         """Validates that the snippet matches the expected token set."""
         if snippet.token_set_key != expected_token_set.key:
-            raise ValueError(f"Snippet {snippet} does not match expected token set {expected_token_set}.")
+            raise InstructionError(
+                f"Snippet {snippet} does not match expected token set {expected_token_set}."
+            )
 
     def _assert_input_snippet_count(self, inputs: List[Snippet]):
         """Assert the number of input snippets matches the number of context token sets."""
         if len(inputs) != len(self.input.tokensets):
-            raise ValueError(
+            raise InstructionError(
                 f"Number of context snippets ({len(inputs)}) must match number of context token sets ({len(self.input.tokensets)}).")
 
     def _assign_final_token(self, final: Optional[FinalToken]) -> FinalToken:
@@ -330,7 +337,7 @@ class BaseInstruction(ABC):
         If no final token is provided in the sample, and multiple final tokens are defined in the response, raise an error requiring clarification.
         """
         if final is not None and not isinstance(final, FinalToken):
-            raise TypeError("Final must be a FinalToken instance or None.")
+            raise InstructionTypeError("Final must be a FinalToken instance or None.")
 
         if final is not None:  # Use the specified final token if provided
             return final
@@ -341,7 +348,7 @@ class BaseInstruction(ABC):
         if len(self.output.final) == 1:  # If we only have one final token, use it
             return self.output.final[0]
 
-        raise ValueError(
+        raise InstructionError(
             "Multiple final tokens are allowed in the Response. Specify which final token to use for this sample.")
 
     def __str__(self) -> str:

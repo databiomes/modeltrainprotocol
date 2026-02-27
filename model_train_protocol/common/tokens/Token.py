@@ -2,6 +2,7 @@ from typing import Optional
 
 import emoji
 
+from model_train_protocol.errors import TokenError, TokenTypeError
 
 class Token:
     """The lowest level unit for a model. Represents a word, symbol, or concept."""
@@ -47,17 +48,17 @@ class Token:
         """
 
         if not isinstance(self.key, str) and self.key is not None:
-            raise TypeError("Key must be a string or None.")
+            raise TokenTypeError("Key must be a string or None.")
 
         if self.key == "":
-            raise ValueError("Key cannot be an empty string.")
+            raise TokenError("Key cannot be an empty string.")
 
         if self.key is None:
             return
 
         for c in self.key:
             if not (c == '_' or c.isalnum() or emoji.is_emoji(c)):
-                raise ValueError(
+                raise TokenError(
                     f"Invalid character '{c}' found in key '{self.key}'. Only alphanumeric characters, underscores, and emojis recommended for general interchange by Unicode.org are allowed.")
 
     def validate_value(self):
@@ -67,14 +68,14 @@ class Token:
         :return: True if all characters in the string are valid characters or emojis, False otherwise.
         """
         if self.value is None:
-            raise ValueError("Value cannot be None.")
+            raise TokenError("Value cannot be None.")
 
         if self.value == "" or self.value == "_":
-            raise ValueError("Value cannot be an empty string.")
+            raise TokenError("Value cannot be an empty string.")
 
         for c in self.value:
             if not (c == '_' or c.isalnum() or emoji.is_emoji(c)):
-                raise ValueError(
+                raise TokenError(
                     f"Invalid character '{c}' found in value '{self.value}'. Only alphanumeric characters, underscores, and emojis are allowed.")
 
     def __str__(self):

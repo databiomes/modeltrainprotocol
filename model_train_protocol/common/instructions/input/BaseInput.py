@@ -3,6 +3,7 @@ from typing import List
 
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.tokens import TokenSet
+from model_train_protocol.errors import DuplicateGuardrailError, GuardrailIndexError
 
 
 class BaseInput(ABC):
@@ -25,11 +26,17 @@ class BaseInput(ABC):
         :param tokenset_index: The index of the TokenSet the guardrail applies to.
         """
         if tokenset_index < 0:
-            raise ValueError(f"tokenset_index {tokenset_index} is out of range for the Instruction input tokensets.")
+            raise GuardrailIndexError(
+                f"tokenset_index {tokenset_index} is out of range for the Instruction input tokensets."
+            )
         if tokenset_index > len(self.tokensets) - 1:
-            raise ValueError(f"tokenset_index {tokenset_index} is out of range of the Instruction input tokensets.")
+            raise GuardrailIndexError(
+                f"tokenset_index {tokenset_index} is out of range of the Instruction input tokensets."
+            )
         if tokenset_index in self.guardrails:
-            raise ValueError(f"A guardrail is already defined for tokenset_index {tokenset_index}.")
+            raise DuplicateGuardrailError(
+                f"A guardrail is already defined for tokenset_index {tokenset_index}."
+            )
 
         self.guardrails[tokenset_index] = guardrail
 

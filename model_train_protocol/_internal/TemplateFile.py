@@ -15,6 +15,7 @@ from model_train_protocol.common.pydantic.template import (
 )
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
+from model_train_protocol.errors import TemplateFileError
 from utils import get_template_schema_url
 
 
@@ -32,7 +33,7 @@ class InstructionTypeEnum(Enum):
         elif isinstance(instruction, ExtendedInstruction):
             return cls.EXTENDED
         else:
-            raise ValueError("Unknown instruction type.")
+            raise TemplateFileError("Unknown instruction type.")
 
 
 class TemplateFile:
