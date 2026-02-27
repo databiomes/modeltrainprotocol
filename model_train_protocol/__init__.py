@@ -9,7 +9,6 @@ from .common.tokens import Token, NumToken, NumListToken, FinalToken, Snippet, T
 from .common.instructions.output import InstructionOutput, ExtendedResponse
 from .common.instructions import Instruction, ExtendedInstruction
 from .common.guardrails import Guardrail
-from . import utils as utils
 from .Protocol import Protocol
 
 __all__ = [
@@ -26,6 +25,5 @@ __all__ = [
     "ExtendedInstruction",
     "InstructionOutput",
     "ExtendedResponse",
-    "Guardrail",
-    "utils"
+    "Guardrail"
 ]
