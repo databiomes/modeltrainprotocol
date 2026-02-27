@@ -1,7 +1,7 @@
 import pandas as pd  # add to pyproject
 
 from model_train_protocol import Protocol
-from csv import CSVConversion
+from model_train_protocol.csv import CSVConversion
 
 
 def main():
