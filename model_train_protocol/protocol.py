@@ -3,8 +3,8 @@ import os
 from typing import List, Optional, Set, Dict
 
 from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
-from ._internal.ProtocolFile import ProtocolFile
-from ._internal.TemplateFile import TemplateFile
+from .integration.ProtocolFile import ProtocolFile
+from .integration.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
     MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM, TokenTypeEnum, \
     MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE
