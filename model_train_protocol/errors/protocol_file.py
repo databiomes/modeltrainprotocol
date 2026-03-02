@@ -9,3 +9,4 @@ class ProtocolFileError(MTPValueError):
 
 class ProtocolFileLayerDepthError(ProtocolFileError):
     """Errors raised for invalid alphabetization layer depth."""
+
