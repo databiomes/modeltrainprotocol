@@ -11,7 +11,7 @@ from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TO
 from .common.instructions.BaseInstruction import BaseInstruction, Sample
 from .common.tokens import TokenSet
 from .common.tokens.SpecialToken import SpecialToken
-from .common.utils import validate_string_subset, hash_string
+from model_train_protocol.utils._protected import validate_string_subset, hash_string
 from .errors import ProtocolError, ProtocolTypeError
 
 

@@ -3,8 +3,13 @@ from typing import List
 
 import pandas as pd
 
-from model_train_protocol import Protocol, Token, InstructionInput, TokenSet, Instruction, InstructionOutput, Guardrail
 from model_train_protocol.common.constants import NON_TOKEN
+from model_train_protocol.common.guardrails import Guardrail
+from model_train_protocol.common.instructions import Instruction
+from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
+from model_train_protocol.common.instructions.output import InstructionOutput
+from model_train_protocol.common.tokens import Token, TokenSet
+from model_train_protocol.protocol import Protocol
 
 
 @dataclass
