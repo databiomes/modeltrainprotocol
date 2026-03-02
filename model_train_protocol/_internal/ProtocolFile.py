@@ -7,7 +7,7 @@ from model_train_protocol.common.pydantic.protocol import Instruction, TokenInfo
     InstructionSet, Protocol, Guardrail
 from model_train_protocol.common.tokens import SpecialToken
 from model_train_protocol.errors import ProtocolFileLayerDepthError
-from utils import get_bloom_schema_url
+from model_train_protocol.utils import get_bloom_schema_url
 
 
 class ProtocolFile:

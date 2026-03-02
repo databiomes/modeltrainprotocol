@@ -3,10 +3,45 @@ Internal utils. Not intended to be publicly exposed. Use root-level utils.py for
 """
 
 import hashlib
+import tomllib
+from importlib import metadata
+from pathlib import Path
+from typing import Optional
 
 import emoji
 
 from model_train_protocol.errors.tokens import TokenError
+
+
+def _find_pyproject_path(current_path: Path) -> Optional[Path]:
+    for parent in current_path.parents:
+        check_path = parent / "pyproject.toml"
+        if check_path.exists():
+            return check_path
+    return None
+
+
+def get_mtp_version() -> str:
+    """
+    Return the installed package version when available.
+    Falls back to the local pyproject.toml for editable/dev usage.
+    """
+    try:
+        return metadata.version("model-train-protocol")
+    except metadata.PackageNotFoundError:
+        pass
+
+    current_path: Path = Path(__file__).resolve()
+    pyproject_path: Optional[Path] = _find_pyproject_path(current_path)
+    if pyproject_path is None:
+        raise FileNotFoundError(
+            "Could not find installed package metadata or pyproject.toml in any parent directories."
+        )
+
+    with open(pyproject_path, "rb") as f:
+        pyproject = tomllib.load(f)
+
+    return str(pyproject["project"]["version"])
 
 
 def clean_token_key(key: str) -> str:

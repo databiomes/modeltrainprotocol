@@ -16,4 +16,3 @@ class TokenSetError(MTPValueError):
 
 class TokenSetTypeError(MTPTypeError, TokenSetError):
     """Errors raised for token set type validation."""
-

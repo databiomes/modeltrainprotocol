@@ -1,8 +1,6 @@
 """
 Test JSON creation for workflow protocol.
 """
-import pytest
-from model_train_protocol import Protocol
 from tests.utils.protocol_json_utils import assert_special_tokens_in_tokens
 
 

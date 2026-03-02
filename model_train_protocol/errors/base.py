@@ -16,3 +16,4 @@ class MTPTypeError(TypeError, MTPError):
 class MTPKeyError(KeyError, MTPError):
     """Base key error for model_train_protocol."""
 
+
