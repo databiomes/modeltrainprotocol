@@ -6,6 +6,7 @@ from .base import (
     MTPTypeError,
     MTPValueError,
 )
+from .conversion import ConversionError
 from .guardrails import GuardrailError, GuardrailTypeError
 from .instruction_input import DuplicateGuardrailError, GuardrailIndexError, InstructionInputError
 from .instructions import InstructionError, InstructionTypeError
@@ -21,6 +22,7 @@ __all__ = [
     "MTPValueError",
     "MTPTypeError",
     "MTPKeyError",
+    "ConversionError",
     "InstructionInputError",
     "GuardrailIndexError",
     "DuplicateGuardrailError",
@@ -38,7 +40,7 @@ __all__ = [
     "OutputError",
     "OutputTypeError",
     "ProtocolError",
-    "ProtocolTypeError"
+    "ProtocolTypeError",
     "ProviderError",
 ]
 
