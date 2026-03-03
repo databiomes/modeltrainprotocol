@@ -3,12 +3,14 @@ from typing import List
 
 import pandas as pd
 
+from model_train_protocol import GuardrailError
 from model_train_protocol.common.constants import NON_TOKEN
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.instructions import Instruction
 from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
 from model_train_protocol.common.instructions.output import InstructionOutput
 from model_train_protocol.common.tokens import Token, TokenSet
+from model_train_protocol.errors.conversion import ConversionError
 from model_train_protocol.protocol import Protocol
 
 
@@ -52,7 +54,7 @@ class CSVConversion:
         """Converts the CSV data to MTP format."""
         self._process_instruction(self.instruction_name)
         if not self.protocol.has_guardrails:
-            raise ValueError("At least 3 guardrail samples are required to convert to MTP. Please add more guardrail samples to the CSV data.")
+            raise GuardrailError("At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
         return self.protocol
 
     def _get_unique_outputs(self) -> set[str]:
@@ -106,7 +108,7 @@ class CSVConversion:
 
         if output_str == "nan" or output_str == "" or pd.isna(output_str):
             if previous_line is None:
-                raise ValueError("The first line of the CSV cannot have an empty output.")
+                raise ConversionError("The first line of the CSV cannot have an empty output.")
             output_str = str(previous_line.output_str)
 
         return CSVLine(
@@ -169,7 +171,7 @@ class CSVConversion:
             )
 
         if 0 < len(guardrail.samples) < 3:
-            raise ValueError(
+            raise GuardrailError(
                 "At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
         elif len(guardrail.samples) >= 3:
             instruction.add_guardrail(guardrail=guardrail, tokenset_index=0)
