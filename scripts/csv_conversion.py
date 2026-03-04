@@ -1,4 +1,4 @@
-import pandas as pd  # add to pyproject
+import pandas as pd
 
 from model_train_protocol import Protocol
 from model_train_protocol.csv import CSVConversion
@@ -6,8 +6,7 @@ from model_train_protocol.csv import CSVConversion
 
 def main():
 
-    local_path: str = f"C:\\Users\\Nikita\\Downloads\\ruby(4).csv"
-    # local_path: str = "D:\\Nikita\\Documents\\work\\databiomes\\repos\\models\\landing_page_model\\landing_page_model_csv.csv"
+    local_path: str = f"C:\\Users\\Nikita\\Downloads\\ruby.csv"
 
     if local_path.endswith('.xlsx'):
         csv_data: pd.DataFrame = pd.read_excel(local_path)
