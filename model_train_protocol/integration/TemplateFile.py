@@ -81,7 +81,7 @@ class TemplateFile:
                 for sample in instruction.samples:
                     output_token_mapping[sample.result.value] = sample.result.key
 
-            # Add UNK token if Guardrails:
+                # Add UNK token if Guardrails:
                 if instruction.has_guardrails:
                     output_token_mapping[UNK_TOKEN.value] = UNK_TOKEN.key
 
@@ -132,15 +132,19 @@ class TemplateFile:
                 output_strs: list[str] = [
                     "<string>\n" + sample.result.key + "\n" + EOS_TOKEN.key
                     for sample in instruction.samples
-                    ]
+                ]
 
                 # add guardrail outputs if guardrails present
                 if instruction.has_guardrails:
                     outputs: list[str] = [token.key for token in instruction.output.final]
                     if outputs is None:
                         outputs: list[str] = [NON_TOKEN.key + '_']
-                    for output in outputs:
-                        output_strs.append(f"<string>\n{output}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}")
+                    # Edge case for CSV conversion - if NON TOKEN + UNK TOKEN we need to add underscore to NON
+                    if outputs == [NON_TOKEN.key] and len(outputs) == 1:
+                        output_strs.append(f"<string>\n{NON_TOKEN.key}_{UNK_TOKEN.key}_\n{EOS_TOKEN.key}")
+                    else:
+                        for output in outputs:
+                            output_strs.append(f"<string>\n{output}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}")
 
                 instructions_dict[instruction.name] = {
                     "type": InstructionTypeEnum.get_instruction_type_by_class(instruction).value,
@@ -296,8 +300,13 @@ class TemplateFile:
             examples["valid_model_output"] = self._create_sample_model_output(first_instruction, sample)
 
         if self.has_guardrails:
-            guardrailed_instruction: BaseInstruction = next(instruction for instruction in self.instructions_list if instruction.has_guardrails)
-            examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{guardrailed_instruction.example_final_token.key}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}"
+            guardrailed_instruction: BaseInstruction = next(
+                instruction for instruction in self.instructions_list if instruction.has_guardrails)
+            guardrail_full_output: str = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{guardrailed_instruction.example_final_token.key}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}"
+            # Edge case for CSV conversion - if NON TOKEN + UNK TOKEN we need to add underscore to NON
+            if NON_TOKEN.key in guardrail_full_output and NON_TOKEN.key + "_" not in guardrail_full_output:
+                guardrail_full_output = guardrail_full_output.replace(NON_TOKEN.key, NON_TOKEN.key + "_")
+            examples["guardrail_model_output"] = guardrail_full_output
 
         if "guardrail_model_output" not in examples:
             examples["guardrail_model_output"] = ""
