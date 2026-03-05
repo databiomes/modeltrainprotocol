@@ -14,7 +14,7 @@ class InstructionOutput(BaseOutput):
         """
         Initializes a InstructionOutput instance.
 
-        :param tokenset: The TokenSet associated with the model's response. Not used in
+        :param tokenset: The TokenSet associated with the model's response.
         :param final: A FinalToken or list of FinalToken designating the allowed final action by the model.
         """
         super().__init__(tokenset=tokenset, final=final)
