@@ -6,6 +6,8 @@ MTP is an open-source protocol for training custom Language Models on Databiomes
 
 ## Getting Started
 
+Note Python 3.11 or higher is required.
+
 Install the package:
 
 For Linux and macOs
@@ -28,10 +30,11 @@ The first step in creating a model training protocol is to initialize the Protoc
 import model_train_protocol as mtp
 
 # Initialize the protocol
-protocol = mtp.Protocol(name="my_model", inputs=2)
+protocol = mtp.Protocol(name="my_model", inputs=2, encrypt=False)
 ```
 
 The parameter `inputs` is the number of lines in each Instruction's Input. Must be at least 2.
+`encrypt` is an optional flag depending on how you plan to export and use the protocol.
 
 ## System Architecture
 
@@ -62,12 +65,13 @@ add = mtp.Token("Add")
 disappear = mtp.Token("Disappear", key="🫥")
 ```
 
-#### UserToken
-A specialized token that represents user input. These tokens are used when the model needs to respond to user prompts:
+#### FinalToken
+A token that represents a model response choice:
 
 ```python
-# Create a user token
-alice = mtp.UserToken("Alice")
+# Create final tokens
+token_continue = mtp.FinalToken("Continue")
+token_appear = mtp.FinalToken("Appear")
 ```
 
 #### NumToken
@@ -76,6 +80,21 @@ A token that can be associated with numerical values:
 ```python
 # Create a number token for sentence length
 sentence_length = mtp.NumToken(value="SentenceLength", min_value=5, max_value=20)
+```
+
+#### NumListToken
+A token that represents a list of numbers:
+
+```python
+# Create a list-of-numbers token
+coordinates = mtp.NumListToken(value="Coordinates", min_value=-1000, max_value=1000, length=3)
+```
+
+#### FinalNumToken
+A final token that requires a numerical value in the output:
+
+```python
+final_emotion = mtp.FinalNumToken(value="Madness", min_value=0, max_value=10)
 ```
 
 ### Token Properties
@@ -108,14 +127,24 @@ character_context_sentence = mtp.TokenSet(tokens=(character, context, sentence_l
 
 Snippets are created on TokenSets to create training samples.
 
-A Snippet is a example of a TokenSet. Snippets tell the model the context of the input patters.
+A Snippet is an example of a TokenSet. Snippets tell the model the context of the input patterns.
 
 ```python
 # Create a snippet with just text
 snippet = tree_alice_talk.create_snippet(string="Where am I?")
 
-# Create a snippet with text and sentence length
-snippet_with_length = character_context_sentence.create_snippet(string="The enemy must be here somewhere.", numbers=[11])
+# Create a snippet with text and numbers
+snippet_with_length = character_context_sentence.create_snippet(
+    string="The enemy must be here somewhere.",
+    numbers=11
+)
+
+# Create a snippet with a list of numbers
+coordinates_token_set = mtp.TokenSet(tokens=(tree, cat, coordinates))
+snippet_with_list = coordinates_token_set.create_snippet(
+    string="The location is locked.",
+    number_lists=[100, 200, -50]
+)
 ```
 
 ## Instructions: Training Patterns
@@ -126,98 +155,63 @@ Instructions define how the model should respond to different input patterns. Th
 
 #### Parameters
 
-- **context**: Sequence of TokenSets that provide background information
-- **response**: The TokenSet that defines the model's response pattern (cannot contain UserTokens)
-- **final**: A Token that represents the final action or result
+- **input**: An `InstructionInput` that lists the input TokenSets (order matters)
+- **output**: An `InstructionOutput` that specifies the output TokenSet and final token(s)
+- **context**: Background text that sets the scene for the instruction
 - **name**: A unique name for the instruction (required)
 
 #### Create the Instruction
 
-For scenarios where the model responds without user input:
-
 ```python
 # Create TokenSets
-cat_pondering = mtp.TokenSet(tokens=(tree, cat, ponder))
-cat_grinning = mtp.TokenSet(tokens=(tree, cat, grin))
+tree_cat_talk = mtp.TokenSet(tokens=(tree, cat, talk))
+tree_alice_talk = mtp.TokenSet(tokens=(tree, alice, talk))
 
-# Create a simple instruction for the Cat's internal thoughts
-cat_pondering_instruction_disappear = mtp.Instruction(
-    context=[cat_pondering],
-    response=cat_grinning,
-    final=disappear,
-    name="cat_pondering_instruction_disappear"
+# Construct the input format
+alice_cat_input = mtp.InstructionInput(tokensets=[tree_cat_talk, tree_alice_talk])
+
+# Construct the output format
+cat_continue_output = mtp.InstructionOutput(tokenset=tree_cat_talk, final=token_continue)
+
+# Create the instruction
+alice_cat_instruction_continue = mtp.Instruction(
+    input=alice_cat_input,
+    output=cat_continue_output,
+    context=[
+        "Alice was beginning to get very tired of sitting by her sister on the bank.",
+        "There was nothing so very remarkable in that; nor did Alice think it so very much out of the way to hear the Rabbit say to itself."
+    ],
+    name="alice_cat_continue"
 )
 ```
 
 #### Adding Samples
 
 - **add_sample() parameters**:
-  - **inputs**: List of context snippets that will be added to the Instruction
-  - **response_snippet**: The model's output snippet
-  - **value**: Optional numerical value (required if final Token is a NumToken)
+  - **input_snippets**: List of input snippets or strings (must match the input TokenSets)
+  - **output_snippet**: The model's output snippet or string
+  - **final**: Required if the output allows multiple final tokens
+  - **output_value**: Required if the final token is a `FinalNumToken`
 
 ```python
-# Samples must be made on their associated TokenSets
-sample_context = cat_pondering.create_snippet(
-    string="Why do I keep vanishing and reappearing so suddenly?"
-)
-sample_output = cat_grinning.create_snippet(
-    string="Because it amuses me, and it keeps everyone wondering whether I'm truly here at all."
+# Text-only samples can be passed as strings
+alice_cat_instruction_continue.add_sample(
+    input_snippets=["Then it doesnt matter which way you go.", "Can you tell me a way?"],
+    output_snippet="Oh sure, if you only walk long enough that is a way."
 )
 
-cat_pondering_instruction_disappear.add_sample(
-    input_snippets=[sample_context],
+# When numbers are involved, create snippets using the TokenSet
+tree_cat_talk_coordinates = mtp.TokenSet(tokens=(tree, cat, talk, coordinates))
+sample_input = tree_cat_talk_coordinates.create_snippet(
+    string="Then it doesnt matter which way you go.",
+    number_lists=[100, 200, -50]
+)
+sample_output = tree_cat_talk.create_snippet(
+    string="Oh sure, if you only walk long enough that is a way."
+)
+alice_cat_instruction_continue.add_sample(
+    input_snippets=[sample_input, "Can you tell me a way?"],
     output_snippet=sample_output
-)
-```
-
-### ExtendedInstruction
-
-#### Parameters
-
-- **context**: Sequence of TokenSets that provide background information (the last TokenSet must include at least one UserToken)
-- **final**: A Token that represents the final action or result
-- **name**: A unique name for the instruction (required)
-
-#### Create the ExtendedInstruction
-
-For scenarios where the model responds to user prompts:
-
-```python
-# Create TokenSets for Alice and Cat interaction
-alice_talk = mtp.TokenSet(tokens=(tree, alice, talk))
-cat_talk = mtp.TokenSet(tokens=(tree, cat, talk))
-
-# Create a user instruction for Alice asking the Cat questions
-alice_cat_instruction_leave = mtp.ExtendedInstruction(
-    context=[alice_talk, cat_talk, alice_talk],  # Last TokenSet must contain at least one UserToken
-    final=disappear,
-    name="alice_cat_instruction_leave"
-)
-```
-
-#### Adding Samples
-
-- **add_sample() parameters**:
-  - **inputs**: List of context snippets that will be added to the Instruction (must match the context TokenSets)
-  - **response_string**: The response provided by the model as a string
-  - **value**: Optional numerical value (required if final Token is a NumToken)
-
-```python
-# Samples must be made on their associated TokenSets
-sample_context_1 = alice_talk.create_snippet(
-    string="I don't much care where—"
-)
-sample_context_2 = cat_talk.create_snippet(
-    string="Then it doesn't matter which way you go."
-)
-sample_context_3 = alice_talk.create_snippet(
-    string="Can you tell me which way I ought to go?"
-)
-
-alice_cat_instruction_leave.add_sample(
-    input_snippets=[sample_context_1, sample_context_2, sample_context_3],
-    response_string="Then I'll do it twice as much, since nervousness is such a curious flavor."
 )
 ```
 
@@ -243,13 +237,11 @@ guardrail.add_sample("what is the capital of Spain?")
 
 ### Applying Guardrails
 
-Guardrails are applied to TokenSets that contain user tokens. 
-
-A TokenSet can have at most one guardrail, but guardrails can be reused.
+Guardrails are applied to a specific input TokenSet within an Instruction.
 
 ```python
-# Apply guardrails to a user TokenSet
-tree_alice_talk.set_guardrail(guardrail)
+# Apply guardrails to the 2nd TokenSet in the instruction input
+alice_cat_instruction_continue.add_guardrail(guardrail=guardrail, tokenset_index=1)
 ```
 
 ### Guardrail Requirements

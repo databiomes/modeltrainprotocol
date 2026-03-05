@@ -34,6 +34,8 @@ class CSVConversion:
     output_col: str = "Output"
     context_col: str = "Reference"
 
+    REQUIRED_COLUMNS: List[str] = [input_col, output_col, context_col]
+
     input_token: Token = Token("Input")
     input_tokenset: TokenSet = TokenSet(tokens=[input_token])
 
