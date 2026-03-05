@@ -18,6 +18,11 @@ class BaseInput(ABC):
         self.tokensets = tokensets
         self.guardrails: dict[int, Guardrail] = {}
 
+    @property
+    def has_num_tokens(self) -> bool:
+        """Checks if any TokenSet in the Input contains NumTokens."""
+        return any(tokenset.has_num_tokens for tokenset in self.tokensets)
+
     def add_guardrail(self, guardrail: Guardrail, tokenset_index: int):
         """
         Adds a guardrail to the InstructionInput.

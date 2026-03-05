@@ -5,7 +5,7 @@ from typing import List, Optional, Union
 from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
 from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE, \
-    MAXIMUM_CHARACTERS_PER_SNIPPET
+    MAXIMUM_CHARACTERS_PER_SNIPPET, GENERAL_MINIMUM_INSTRUCTION_SAMPLES
 from ..pydantic.protocol import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
@@ -69,6 +69,7 @@ class BaseInstruction(ABC):
         final = Token("End")
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
+    minimum_samples: int = GENERAL_MINIMUM_INSTRUCTION_SAMPLES
 
     def __init__(self, input: BaseInput, output: BaseOutput, context: List[str] | None = None, name: str | None = None):
         """
@@ -260,10 +261,10 @@ class BaseInstruction(ABC):
 
     def _validate_minimum_samples(self):
         """Validates that each instruction has at least 3 samples for each FinalToken"""
-        if len(self.samples) < 3:
+        if len(self.samples) < self.minimum_samples:
                 raise InstructionError(
                     f"Instruction '{self.name}' has only {len(self.samples)} samples. "
-                    f"Each instruction must have at least 3 samples."
+                    f"Each instruction must have at least {self.minimum_samples} samples."
                 )
 
         # Enforce there are 3 samples for each FinalToken in the response
