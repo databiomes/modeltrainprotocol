@@ -12,7 +12,7 @@ class InstructionOutput(BaseOutput):
 
     def __init__(self, tokenset: TokenSet, final: FinalToken | List[FinalToken] | None = None):
         """
-        Initializes a Response instance.
+        Initializes a InstructionOutput instance.
 
         :param tokenset: The TokenSet associated with the model's response. Not used in
         :param final: A FinalToken or list of FinalToken designating the allowed final action by the model.
