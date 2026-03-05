@@ -10,7 +10,7 @@ class InstructionInput(BaseInput):
 
     def __init__(self, tokensets: List[TokenSet]):
         """
-        Initializes the InstructionInput with an instruction and optional input data.
+        Initializes the InstructionInput with tokensets.
 
         :param tokensets: A list of TokenSet in the order that they appear in the instruction.
         """
