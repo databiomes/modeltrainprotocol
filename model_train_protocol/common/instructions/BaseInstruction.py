@@ -238,9 +238,9 @@ class BaseInstruction(ABC):
 
     def _validate_context(self):
         """Validates the total context lines and the length of each context line."""
-        # if len(self.context) > MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION:
-        #     raise ValueError(f"Context exceeds maximum allowed lines of {MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION}. "
-        #                      f"Current lines: {len(self.context)}")
+        if len(self.context) > MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION:
+            raise ValueError(f"Context exceeds maximum allowed lines of {MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION}. "
+                             f"Current lines: {len(self.context)}")
 
         for i, line in enumerate(self.context):
             if len(line) > MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE:
