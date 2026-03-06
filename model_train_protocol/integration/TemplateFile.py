@@ -1,9 +1,9 @@
 import random
 from dataclasses import dataclass
 from enum import Enum
-from typing import Union
+from typing import Union, List
 
-from model_train_protocol import Instruction, ExtendedInstruction
+from model_train_protocol import Instruction, ExtendedInstruction, StateMachineInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN, UNK_TOKEN, NON_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
@@ -154,7 +154,8 @@ class TemplateFile:
 
             return instructions_dict
 
-    def __init__(self, inputs: int, instructions: list[BaseInstruction], encrypt: bool, has_guardrails: bool):
+    def __init__(self, inputs: int, instructions: list[BaseInstruction], encrypt: bool, has_guardrails: bool,
+                 state_machine: bool):
         """Initializes the template"""
 
         self.tokens: TemplateFile.Tokens = TemplateFile.Tokens()
@@ -162,6 +163,7 @@ class TemplateFile:
         self.inputs: int = inputs
         self.instructions_list: list[BaseInstruction] = instructions
         self.encrypt: bool = encrypt
+        self.state_machine: bool = state_machine
         self.has_guardrails: bool = has_guardrails
         self._add_io_from_instructions()
 
@@ -330,8 +332,18 @@ class TemplateFile:
         example_usage_dict: dict[str, str] = self._create_examples()
         example_usage: ExampleUsage = ExampleUsage(**example_usage_dict)
 
+        samples: List[str] = []
+        if self.state_machine:
+            state_machine_instruction: BaseInstruction = self.instructions_list[0]
+            if not isinstance(state_machine_instruction, StateMachineInstruction):
+                raise TemplateFileError(
+                    "For state machine templates, the provided instruction must be a StateMachineInstruction.")
+            samples = state_machine_instruction.get_states()
+
         template: TemplateModel = TemplateModel(
             encrypt=self.encrypt,
+            state_machine=self.state_machine,
+            states=samples,
             inputs=self.inputs,
             tokens=tokens,
             instructions=instruction_models,

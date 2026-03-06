@@ -67,6 +67,10 @@ class StateMachineInstruction(BaseInstruction):
         """Gets the guardrails attached to the instruction"""
         return list(self.input.guardrails.values())
 
+    def get_states(self) -> list[str]:
+        """Returns the list of states defined in the TokenSet."""
+        return [sample.output for sample in self.samples]
+
     # noinspection PyMethodOverriding
     def add_sample(self, input_snippets: List[Union[str | Snippet]], output_snippet: Snippet | str):
         f"""

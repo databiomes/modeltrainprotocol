@@ -39,7 +39,9 @@ class ExampleUsage(BaseModel):
 class Template(BaseModel):
     """Main model for MTP Template JSON structure."""
     encrypt: bool
+    state_machine: bool
     inputs: int
+    states: List[str]
     tokens: Tokens
     instructions: Dict[str, InstructionDefinition]  # Instruction name -> instruction definition
     example_usage: ExampleUsage
