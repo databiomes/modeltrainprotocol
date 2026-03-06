@@ -8,6 +8,7 @@ from ..constants import NON_TOKEN, STATE_MACHINE_MINIMUM_INSTRUCTION_SAMPLES
 from ..guardrails import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.TokenSet import TokenSet, Snippet
+from ... import Token
 
 
 class StateMachineInstruction(BaseInstruction):
@@ -21,15 +22,17 @@ class StateMachineInstruction(BaseInstruction):
 
     minimum_samples: int = STATE_MACHINE_MINIMUM_INSTRUCTION_SAMPLES
 
-    def __init__(self, input: StateMachineInput, output: StateMachineOutput, context: List[str] | None = None):
+    def __init__(self, input: StateMachineInput):
         f"""
         Initializes an Instruction instance.
 
         :param input: List of tuples containing Token instances that define the input structure. This precedes the model's response.
-        :param output: A TokenSet instance that does not include any user tokens.
-        :param context: A list of strings providing background context for the instruction.
         """
-        super().__init__(input=input, output=output, context=context, name="StateMachineInstruction")
+        state_tokenset: TokenSet = TokenSet(tokens=Token("state", desc="The state the model should respond with."))
+        instruction_output: StateMachineOutput = StateMachineOutput(
+            tokenset=state_tokenset,
+        )
+        super().__init__(input=input, output=instruction_output, context=[], name="StateMachineInstruction")
         if not isinstance(self.output, StateMachineOutput):
             raise InstructionTypeError(f"Output must be an instance of StateMachineOutput. Got: {type(self.output)}")
         self._validate_input_snippets()
@@ -72,15 +75,15 @@ class StateMachineInstruction(BaseInstruction):
         return [sample.output for sample in self.samples]
 
     # noinspection PyMethodOverriding
-    def add_sample(self, input_snippets: List[Union[str | Snippet]], output_snippet: Snippet | str):
+    def add_sample(self, input_snippets: List[Union[str | Snippet]], state: str):
         f"""
         Add a sample to the Instruction.
 
         :param input_snippets: List of context snippets or strings that will be added to the Instruction.
-        :param output_snippet: The model's response snippet.
+        :param state: The model's response state.
         """
         input_snippets: List[Snippet] = self._enforce_input_snippets(inputs=input_snippets)
-        output_snippet: Snippet = self._enforce_response_snippet(output_snippet)
+        output_snippet: Snippet = self._enforce_response_snippet(state)
         final: FinalToken = NON_TOKEN
         self.output.validate_sample(snippet=output_snippet)
         self._assert_input_snippet_count(inputs=input_snippets)
