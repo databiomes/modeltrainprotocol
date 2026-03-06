@@ -41,7 +41,7 @@ class Template(BaseModel):
     encrypt: bool
     state_machine: bool
     inputs: int
-    states: List[str]
     tokens: Tokens
     instructions: Dict[str, InstructionDefinition]  # Instruction name -> instruction definition
+    states: List[str]
     example_usage: ExampleUsage
