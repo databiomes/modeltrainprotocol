@@ -15,7 +15,7 @@ class Tokens(BaseModel):
 
 class InstructionDefinition(BaseModel):
     """Model for a single instruction definition in the template."""
-    type: Literal["basic", "extended"]  # Instruction type: "basic" or "extended"
+    type: Literal["basic", "extended", "state_machine"]  # Instruction type
     input: List[str]  # List of input strings with token keys and placeholders
     output: List[str]  # List of output strings with token keys and placeholders
 
