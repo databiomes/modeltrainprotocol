@@ -7,7 +7,7 @@ from typing import Optional
 
 from model_train_protocol.common.pydantic.protocol import Protocol
 from model_train_protocol.common.pydantic.template import Template
-from utils import get_schema_version, get_bloom_schema_url
+from model_train_protocol.utils import get_schema_version, get_bloom_schema_url
 
 
 def _get_base_path(base_path: Optional[str]) -> Path:
