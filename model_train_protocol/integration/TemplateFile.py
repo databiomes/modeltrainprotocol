@@ -24,6 +24,7 @@ class InstructionTypeEnum(Enum):
 
     BASIC = "basic"
     EXTENDED = "extended"
+    STATE_MACHINE = "state_machine"
 
     @classmethod
     def get_instruction_type_by_class(cls, instruction: BaseInstruction) -> 'InstructionTypeEnum':
@@ -32,6 +33,8 @@ class InstructionTypeEnum(Enum):
             return cls.BASIC
         elif isinstance(instruction, ExtendedInstruction):
             return cls.EXTENDED
+        elif isinstance(instruction, StateMachineInstruction):
+            return cls.STATE_MACHINE
         else:
             raise TemplateFileError("Unknown instruction type.")
 
@@ -248,6 +251,9 @@ class TemplateFile:
                             extended_instruction = instr
                     else:
                         extended_instruction = instr
+            elif isinstance(instr, StateMachineInstruction) and instr.samples:
+                if basic_instruction is None:
+                    basic_instruction = instr
 
             if basic_instruction and extended_instruction:
                 break
@@ -312,6 +318,12 @@ class TemplateFile:
 
         if "guardrail_model_output" not in examples:
             examples["guardrail_model_output"] = ""
+
+        if "instruction_input" not in examples:
+            examples["instruction_input"] = ""
+
+        if "valid_model_output" not in examples:
+            examples["valid_model_output"] = ""
 
         return examples
 
