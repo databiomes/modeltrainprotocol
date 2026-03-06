@@ -29,7 +29,7 @@ class StateMachineInstruction(BaseInstruction):
         :param output: A TokenSet instance that does not include any user tokens.
         :param context: A list of strings providing background context for the instruction.
         """
-        super().__init__(input=input, output=output, context=context)
+        super().__init__(input=input, output=output, context=context, name="StateMachineInstruction")
         if not isinstance(self.output, StateMachineOutput):
             raise InstructionTypeError(f"Output must be an instance of StateMachineOutput. Got: {type(self.output)}")
         self._validate_input_snippets()
