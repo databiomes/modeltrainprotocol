@@ -245,6 +245,7 @@ class Protocol:
             inputs=self.input_count,
             encrypt=self.encrypt,
             has_guardrails=self.has_guardrails,
+            state_machine=self.state_machine,
         )
 
     def save(self, name: Optional[str] = None, path: Optional[str] = None):
