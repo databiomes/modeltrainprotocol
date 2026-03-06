@@ -3,12 +3,8 @@ from typing import List
 
 import pandas as pd
 
-from model_train_protocol import GuardrailError
-from model_train_protocol.common.constants import NON_TOKEN
+from model_train_protocol import GuardrailError, StateMachineInstruction, StateMachineInput, StateMachineOutput
 from model_train_protocol.common.guardrails import Guardrail
-from model_train_protocol.common.instructions import Instruction
-from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
-from model_train_protocol.common.instructions.output import InstructionOutput
 from model_train_protocol.common.tokens import Token, TokenSet
 from model_train_protocol.errors.conversion import ConversionError
 from model_train_protocol.protocol import Protocol
@@ -47,8 +43,8 @@ class CSVConversion:
         """
         self.csv_data: pd.DataFrame = self._process_dataframe(csv_data)
         self.ordered_lines: List[CSVLine] = self._format_lines()
-        self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=1, encrypt=False)
-        self.standard_input: InstructionInput = InstructionInput(
+        self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=1, encrypt=False, state_machine=True)
+        self.standard_input: StateMachineInput = StateMachineInput(
             tokensets=[self.input_tokenset])
         self.unique_outputs: set[str] = self._get_unique_outputs()
 
@@ -141,9 +137,8 @@ class CSVConversion:
         instruction_token: Token = Token(self.instruction_name,
                                          desc=f"The responses that are acceptable: {acceptable_output_string}.")
         instruction_tokenset: TokenSet = TokenSet(tokens=[instruction_token])
-        instruction_output: InstructionOutput = InstructionOutput(
-            tokenset=instruction_tokenset,
-            final=NON_TOKEN
+        instruction_output: StateMachineOutput = StateMachineOutput(
+            tokenset=instruction_tokenset
         )
 
         guardrail = Guardrail(
@@ -152,10 +147,9 @@ class CSVConversion:
             bad_output="GUARDRAIL"
         )
 
-        instruction: Instruction = Instruction(
+        instruction: StateMachineInstruction = StateMachineInstruction(
             input=self.standard_input,
-            output=instruction_output,
-            name=instruction
+            output=instruction_output
         )
 
         for line in self.ordered_lines:
