@@ -33,7 +33,7 @@ class InstructionOutput(BaseOutput):
 
         if not final in self.final:
             raise OutputError(
-                f"FinalToken {final} is not added to the Response final tokens. Allowed finals: {self.final}")
+                f"FinalToken {final} is not added to the Output final tokens. Allowed finals: {self.final}")
 
         if not isinstance(final, FinalToken):
             raise OutputTypeError(f"Final must be an instance of FinalToken. Got: {type(final)}")

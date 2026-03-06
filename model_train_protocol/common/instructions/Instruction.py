@@ -32,7 +32,7 @@ class Instruction(BaseInstruction):
         """
         super().__init__(input=input, output=output, context=context, name=name)
         if not isinstance(self.output, InstructionOutput):
-            raise InstructionTypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
+            raise InstructionTypeError(f"Output must be an instance of Output. Got: {type(self.output)}")
         self._validate_input_snippets()
 
     def _validate_snippets_match(self, inputs: List[Snippet], response_snippet: Snippet):
@@ -44,7 +44,7 @@ class Instruction(BaseInstruction):
             self._validate_snippet_matches_set(snippet=all_snippets[i], expected_token_set=all_token_sets[i])
 
         if not isinstance(self.output, InstructionOutput):
-            raise InstructionTypeError(f"Response must be an instance of Response. Got: {type(self.output)}")
+            raise InstructionTypeError(f"Output must be an instance of Output. Got: {type(self.output)}")
 
         # Validate output snippet set matches output token set
         self._validate_snippet_matches_set(snippet=response_snippet, expected_token_set=self.output.tokenset)

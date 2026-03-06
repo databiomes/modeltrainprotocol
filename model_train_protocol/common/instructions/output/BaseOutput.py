@@ -17,7 +17,7 @@ class BaseOutput(ABC):
 
     def __init__(self, tokenset: TokenSet, final: FinalToken | List[FinalToken] | None = None):
         """
-        Initializes a Response instance.
+        Initializes a Output instance.
 
         :param tokenset: The TokenSet associated with the model's response. Not used in
         :param final: A FinalToken or list of FinalToken designating the allowed final action by the model.
@@ -45,7 +45,7 @@ class BaseOutput(ABC):
 
         if tokenset.has_num_list_tokens or tokenset.has_num_tokens:
             raise OutputError(
-                "Response TokenSet cannot contain NumTokens or NumListTokens. To achieve a single numeric output alongside text, use a FinalNumToken as the Response final token.")
+                "Output TokenSet cannot contain NumTokens or NumListTokens. To achieve a single numeric output alongside text, use a FinalNumToken as the Output final token.")
 
     @abc.abstractmethod
     def validate_sample(self, snippet: Snippet, value: Union[int, float, None], final: Union[FinalToken, None]):

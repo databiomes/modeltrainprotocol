@@ -660,7 +660,7 @@ class TestInstructionValidation:
         """Test that Instruction raises error when output is not an InstructionOutput."""
         test_tokenset = TokenSet(tokens=(Token("Test"),))
         instruction_input = InstructionInput(tokensets=[test_tokenset])
-        with pytest.raises(TypeError, match="Response must be an instance of Response"):
+        with pytest.raises(TypeError, match="Output must be an instance of Output"):
             Instruction(
                 input=instruction_input,
                 output="not_an_instruction_output",  # Wrong type

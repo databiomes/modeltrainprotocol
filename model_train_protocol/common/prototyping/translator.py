@@ -25,7 +25,7 @@ def translate_prototype(prototype_mtp: MTPPrototypeModel, name: Optional[str] = 
     prompt_token: Token = Token("Prompt", desc="The prompt to the model.")
     prompt_tokenset: TokenSet = TokenSet(prompt_token)
 
-    response_token: Token = Token("Response", desc="The response from the model.")
+    response_token: Token = Token("Output", desc="The response from the model.")
     response_tokenset: TokenSet = TokenSet(response_token)
 
     final: FinalToken = Token("Final", desc="Indicates the end of the model's response.")

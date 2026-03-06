@@ -17,6 +17,7 @@ from tests.fixtures.workflow_context_instructions import *
 from tests.fixtures.tokens import *
 from tests.fixtures.protocol_fixtures import *
 from tests.fixtures.guardrails import *
+from tests.fixtures.state_machine_protocols import *
 
 
 @pytest.fixture

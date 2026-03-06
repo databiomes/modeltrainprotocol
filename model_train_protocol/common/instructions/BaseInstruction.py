@@ -48,7 +48,7 @@ class Sample:
         result_str = self.result.value
         if self.value is not None:
             result_str += f"{self.value}"
-        return f"Sample(Context: {self.input}, Response: {self.output}, Result: {result_str})"
+        return f"Sample(Context: {self.input}, Output: {self.output}, Result: {result_str})"
 
 
 class BaseInstruction(ABC):
@@ -350,7 +350,7 @@ class BaseInstruction(ABC):
             return self.output.final[0]
 
         raise InstructionError(
-            "Multiple final tokens are allowed in the Response. Specify which final token to use for this sample.")
+            "Multiple final tokens are allowed in the Output. Specify which final token to use for this sample.")
 
     def __str__(self) -> str:
         """String representation of the Instruction."""

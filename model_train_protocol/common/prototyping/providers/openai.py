@@ -58,7 +58,7 @@ def generate_mtp_prototype_file(prompt_id: str, openai_api_key: Optional[str] = 
 
     except requests.exceptions.HTTPError as e:
         print(f"HTTP Error {response.status_code}: {e}")
-        print(f"Response body: {response.text}")
+        print(f"Output body: {response.text}")
         raise e
     except requests.exceptions.RequestException as e:
         print(f"An error occurred during the request: {e}")

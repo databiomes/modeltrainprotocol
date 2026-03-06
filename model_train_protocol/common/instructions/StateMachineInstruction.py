@@ -31,7 +31,7 @@ class StateMachineInstruction(BaseInstruction):
         """
         super().__init__(input=input, output=output, context=context)
         if not isinstance(self.output, StateMachineOutput):
-            raise InstructionTypeError(f"Response must be an instance of StateMachineOutput. Got: {type(self.output)}")
+            raise InstructionTypeError(f"Output must be an instance of StateMachineOutput. Got: {type(self.output)}")
         self._validate_input_snippets()
 
     def _validate_snippets_match(self, inputs: List[Snippet], response_snippet: Snippet):
