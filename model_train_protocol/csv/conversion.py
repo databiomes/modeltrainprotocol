@@ -35,7 +35,7 @@ class CSVConversion:
     input_token: Token = Token("Input")
     input_tokenset: TokenSet = TokenSet(tokens=[input_token])
 
-    def __init__(self, csv_data: pd.DataFrame):
+    def __init__(self, csv_data: pd.DataFrame, protocol_name: str = "CSV Protocol"):
         """
         Initializes the CSVConversion instance.
 
@@ -43,7 +43,7 @@ class CSVConversion:
         """
         self.csv_data: pd.DataFrame = self._process_dataframe(csv_data)
         self.ordered_lines: List[CSVLine] = self._format_lines()
-        self.protocol: Protocol = Protocol(name="CSV Protocol", inputs=1, encrypt=False, state_machine=True)
+        self.protocol: Protocol = Protocol(name=protocol_name, inputs=1, encrypt=False, state_machine=True)
         self.standard_input: StateMachineInput = StateMachineInput(
             tokensets=[self.input_tokenset])
         self.unique_outputs: set[str] = self._get_unique_outputs()
