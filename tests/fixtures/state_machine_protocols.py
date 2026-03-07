@@ -19,24 +19,20 @@ def _build_state_machine_instruction(sample_count: int, token_prefix: str) -> mt
 
     state_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=(machine_token, state_token))
     event_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=(machine_token, event_token))
-    action_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=(machine_token, action_token))
 
     instruction_input: mtp.StateMachineInput = mtp.StateMachineInput(
         tokensets=[state_tokenset, event_tokenset],
     )
-    instruction_output: mtp.StateMachineOutput = mtp.StateMachineOutput(
-        tokenset=action_tokenset,
-    )
+
 
     instruction: mtp.StateMachineInstruction = mtp.StateMachineInstruction(
-        input=instruction_input,
-        output=instruction_output,
+        input=instruction_input
     )
 
     for i in range(sample_count):
         instruction.add_sample(
             input_snippets=[f"State {i}", f"Event {i}"],
-            output_snippet=f"Action {i}",
+            state=f"Action {i}",
         )
 
     return instruction

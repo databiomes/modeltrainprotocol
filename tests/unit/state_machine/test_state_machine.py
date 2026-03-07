@@ -13,29 +13,23 @@ def _add_context_lines(protocol: mtp.Protocol, total_lines: int = 10) -> None:
 
 def _build_state_machine_instruction(sample_count: int, token_prefix: str) -> mtp.StateMachineInstruction:
     machine_token: mtp.Token = mtp.Token(f"{token_prefix}Machine")
-    state_token: mtp.Token = mtp.Token(f"{token_prefix}State")
     event_token: mtp.Token = mtp.Token(f"{token_prefix}Event")
-    action_token: mtp.Token = mtp.Token(f"{token_prefix}Action")
 
-    state_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=(machine_token, state_token))
-    event_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=(machine_token, event_token))
-    action_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=(machine_token, action_token))
+    state_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=machine_token)
+    event_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=event_token)
 
     instruction_input: mtp.StateMachineInput = mtp.StateMachineInput(
         tokensets=[state_tokenset, event_tokenset],
     )
-    instruction_output: mtp.StateMachineOutput = mtp.StateMachineOutput(
-        tokenset=action_tokenset,
-    )
+
     instruction: mtp.StateMachineInstruction = mtp.StateMachineInstruction(
-        input=instruction_input,
-        output=instruction_output,
+        input=instruction_input
     )
 
     for i in range(sample_count):
         instruction.add_sample(
             input_snippets=[f"State {i}", f"Event {i}"],
-            output_snippet=f"Action {i}",
+            state=f"Action {i}",
         )
 
     return instruction
@@ -108,36 +102,6 @@ class TestStateMachine:
         with pytest.raises(mtp.StateMachineError, match="cannot have a generated numeric output"):
             protocol.add_instruction(instruction)
 
-    def test_state_machine_instruction_requires_state_machine_output(self) -> None:
-        token_one: mtp.Token = mtp.Token("InputOne")
-        token_two: mtp.Token = mtp.Token("InputTwo")
-        token_out: mtp.Token = mtp.Token("Output")
-
-        input_one_set: mtp.TokenSet = mtp.TokenSet(tokens=(token_one,))
-        input_two_set: mtp.TokenSet = mtp.TokenSet(tokens=(token_two,))
-        output_set: mtp.TokenSet = mtp.TokenSet(tokens=(token_out,))
-
-        instruction_input: mtp.StateMachineInput = mtp.StateMachineInput(
-            tokensets=[input_one_set, input_two_set],
-        )
-        instruction_output: mtp.InstructionOutput = mtp.InstructionOutput(
-            tokenset=output_set,
-            final=mtp.FinalToken("Done"),
-        )
-
-        with pytest.raises(mtp.InstructionTypeError, match="Output must be an instance of StateMachineOutput"):
-            mtp.StateMachineInstruction(
-                input=instruction_input,
-                output=instruction_output,
-            )
-
-    def test_state_machine_output_requires_snippet(self) -> None:
-        token_out: mtp.Token = mtp.Token("Output")
-        output_set: mtp.TokenSet = mtp.TokenSet(tokens=(token_out,))
-        output: mtp.StateMachineOutput = mtp.StateMachineOutput(tokenset=output_set)
-
-        with pytest.raises(mtp.OutputTypeError, match="Snippet must be an instance of Snippet"):
-            output.validate_sample("not a snippet")
 
     def test_state_machine_instruction_minimum_samples(self) -> None:
         protocol: mtp.Protocol = mtp.Protocol("state_machine", inputs=2, encrypt=False, state_machine=True)
@@ -162,6 +126,6 @@ class TestStateMachine:
         with pytest.raises(mtp.InstructionError, match="Number of context snippets"):
             instruction.add_sample(
                 input_snippets=["Only one input"],
-                output_snippet="Action",
+                state="Action",
             )
 
