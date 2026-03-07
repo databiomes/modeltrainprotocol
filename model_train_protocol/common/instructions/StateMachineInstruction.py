@@ -72,7 +72,7 @@ class StateMachineInstruction(BaseInstruction):
 
     def get_states(self) -> list[str]:
         """Returns the list of states defined in the TokenSet."""
-        return [sample.output for sample in self.samples]
+        return list(set([sample.output for sample in self.samples]))
 
     # noinspection PyMethodOverriding
     def add_sample(self, input_snippets: List[Union[str | Snippet]], state: str):
