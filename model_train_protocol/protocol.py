@@ -2,33 +2,36 @@ import json
 import os
 from typing import List, Optional, Set, Dict
 
+from model_train_protocol.utils._protected import validate_string_subset, hash_string
 from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
-from .integration.ProtocolFile import ProtocolFile
-from .integration.TemplateFile import TemplateFile
 from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
     MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM, TokenTypeEnum, \
     MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE
 from .common.instructions.BaseInstruction import BaseInstruction, Sample
+from .common.instructions.StateMachineInstruction import StateMachineInstruction
 from .common.tokens import TokenSet
 from .common.tokens.SpecialToken import SpecialToken
-from model_train_protocol.utils._protected import validate_string_subset, hash_string
-from .errors import ProtocolError, ProtocolTypeError
+from .errors import ProtocolError, ProtocolTypeError, StateMachineError
+from .integration.ProtocolFile import ProtocolFile
+from .integration.TemplateFile import TemplateFile
 
 
 class Protocol:
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, inputs: int, encrypt: bool = True):
+    def __init__(self, name: str, inputs: int, encrypt: bool = True, state_machine: bool = False):
         """
         Initialize the Model Train Protocol (MTP)
 
         :param name: The name of the protocol.
-        :param inputs: The number of lines in each Instruction input. Must be at least 2.
+        :param inputs: The number of lines in each Instruction input. Must be at least 1.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
+        :param state_machine: Whether this Protocol is training a state machine with defined states / outputs.
         """
         self.name: str = name
         self.input_count: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
+        self.state_machine: bool = state_machine
         if self.input_count < 1:
             raise ProtocolError("A minimum of 1 inputs is required for all instructions.")
         self.context: List[str] = []
@@ -162,6 +165,19 @@ class Protocol:
 
         Asserts that all samples in the instruction match the defined sample line size.
         """
+        if self.state_machine:
+            if not isinstance(instruction, StateMachineInstruction):
+                raise StateMachineError(
+                    f"Instructions in a state machine protocol must be of type StateMachineInstruction. Found instruction of type {type(instruction)}.")
+
+            if len(self.instructions) >= 1:
+                raise StateMachineError(
+                    f"A state machine protocol can only have one instruction.")
+
+            if instruction.output.has_output_numtoken:
+                raise StateMachineError(
+                    f"Instructions in a state machine protocol cannot have a generated numeric output. Found numeric output tokens in instruction '{instruction.name}'.")
+
         if instruction in self.instructions:
             raise ProtocolError(
                 "Instruction already added to the protocol (or instruction with identical tokensets in the same order).")
@@ -233,6 +249,7 @@ class Protocol:
             inputs=self.input_count,
             encrypt=self.encrypt,
             has_guardrails=self.has_guardrails,
+            state_machine=self.state_machine,
         )
 
     def save(self, name: Optional[str] = None, path: Optional[str] = None):
@@ -347,6 +364,16 @@ class Protocol:
                 f"or by adding background lines to instructions."
             )
 
+    def _validate_state_machine_requirements(self):
+        """Validates that the protocol meets the requirements for training a state machine."""
+        if len(self.instructions) != 1:
+            raise StateMachineError(
+                f"A state machine protocol must have exactly one instruction. Found {len(self.instructions)} instructions.")
+
+        if not isinstance(list(self.instructions)[0], StateMachineInstruction):
+            raise StateMachineError(
+                f"The instruction in a state machine protocol must be a StateMachineInstruction. Found instruction of type {type(list(self.instructions)[0])}.")
+
     def _prep_protocol(self):
         """
         Sets all elements in the protocol before serialization.
@@ -381,6 +408,9 @@ class Protocol:
                 instruction.validate_instruction()
                 for guardrail in instruction.get_guardrails():
                     guardrail.validate_guardrail()
+
+            if self.state_machine:
+                self._validate_state_machine_requirements()
 
         except Exception as e:
             error_msg = str(e)

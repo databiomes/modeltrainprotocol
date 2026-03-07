@@ -51,7 +51,7 @@ token_tree: mtp.Token = mtp.Token("Tree",
 token_talk: mtp.Token = mtp.Token("Talk")
 token_dissipate: mtp.Token = mtp.Token("Dissipate")
 
-# Game Functions / Model Response Tokens
+# Game Functions / Model Output Tokens
 token_continue: mtp.FinalToken = mtp.FinalToken("Continue")
 token_appear: mtp.FinalToken = mtp.FinalToken("Appear")
 token_vanish: mtp.FinalToken = mtp.FinalToken("Vanish")
@@ -154,7 +154,7 @@ alice_cat_alice_instruction_appear_disappear: mtp.Instruction = mtp.Instruction(
 alice_cat_alice_instruction_appear_disappear.add_sample(
     input_snippets=["Then it doesnt matter which way you go.", "Can you tell me a way?"],
     output_snippet="Oh sure, if you only walk long enough that is a way.",
-    final=token_appear,  # Must specify final token, as multiple options are permitted in the Response
+    final=token_appear,  # Must specify final token, as multiple options are permitted in the Output
 )
 
 # 2nd Sample
@@ -171,7 +171,7 @@ alice_cat_alice_instruction_appear_disappear.add_sample(
     final=token_appear,
 )
 
-# A minimum of 3 samples are required for each Response final token
+# A minimum of 3 samples are required for each Output final token
 
 # 4th Sample
 alice_cat_alice_instruction_appear_disappear.add_sample(

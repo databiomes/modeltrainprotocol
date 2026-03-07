@@ -5,7 +5,7 @@ from typing import List, Optional, Union
 from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
 from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE, \
-    MAXIMUM_CHARACTERS_PER_SNIPPET
+    MAXIMUM_CHARACTERS_PER_SNIPPET, GENERAL_MINIMUM_INSTRUCTION_SAMPLES
 from ..pydantic.protocol import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
@@ -48,7 +48,7 @@ class Sample:
         result_str = self.result.value
         if self.value is not None:
             result_str += f"{self.value}"
-        return f"Sample(Context: {self.input}, Response: {self.output}, Result: {result_str})"
+        return f"Sample(Context: {self.input}, Output: {self.output}, Result: {result_str})"
 
 
 class BaseInstruction(ABC):
@@ -69,6 +69,7 @@ class BaseInstruction(ABC):
         final = Token("End")
         instruction = Instruction(context=context, response=response, final=final, name="example_instruction")
     """
+    minimum_samples: int = GENERAL_MINIMUM_INSTRUCTION_SAMPLES
 
     def __init__(self, input: BaseInput, output: BaseOutput, context: List[str] | None = None, name: str | None = None):
         """
@@ -238,9 +239,9 @@ class BaseInstruction(ABC):
 
     def _validate_context(self):
         """Validates the total context lines and the length of each context line."""
-        # if len(self.context) > MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION:
-        #     raise ValueError(f"Context exceeds maximum allowed lines of {MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION}. "
-        #                      f"Current lines: {len(self.context)}")
+        if len(self.context) > MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION:
+            raise ValueError(f"Context exceeds maximum allowed lines of {MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION}. "
+                             f"Current lines: {len(self.context)}")
 
         for i, line in enumerate(self.context):
             if len(line) > MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE:
@@ -260,10 +261,10 @@ class BaseInstruction(ABC):
 
     def _validate_minimum_samples(self):
         """Validates that each instruction has at least 3 samples for each FinalToken"""
-        if len(self.samples) < 3:
+        if len(self.samples) < self.minimum_samples:
                 raise InstructionError(
                     f"Instruction '{self.name}' has only {len(self.samples)} samples. "
-                    f"Each instruction must have at least 3 samples."
+                    f"Each instruction must have at least {self.minimum_samples} samples."
                 )
 
         # Enforce there are 3 samples for each FinalToken in the response
@@ -349,7 +350,7 @@ class BaseInstruction(ABC):
             return self.output.final[0]
 
         raise InstructionError(
-            "Multiple final tokens are allowed in the Response. Specify which final token to use for this sample.")
+            "Multiple final tokens are allowed in the Output. Specify which final token to use for this sample.")
 
     def __str__(self) -> str:
         """String representation of the Instruction."""

@@ -87,7 +87,7 @@ GENERATE_MTP_TOOL: dict = {
                         },
                         "response": {
                             "type": "string",
-                            "description": "Response that uses the developer message context to answer the prompt."
+                            "description": "Output that uses the developer message context to answer the prompt."
                         },
                         "samples": {
                             "type": "array",
@@ -162,7 +162,7 @@ class InstructionSetModel(BaseModel):
     # prompt_tokens: List[TokenInfoPrototypeModel] = Field(...,
     #                                             description="Array of tokens that defines the context of the prompt.",
     #                                             min_length=1)
-    response: str = Field(..., description="Response that uses the developer message context.")
+    response: str = Field(..., description="Output that uses the developer message context.")
     # response_tokens: List[TokenInfoPrototypeModel] = Field(...,
     #                                               description="Array of tokens that defines the context of the response.",
     #                                               min_length=1)

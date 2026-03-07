@@ -1,9 +1,9 @@
 import random
 from dataclasses import dataclass
 from enum import Enum
-from typing import Union
+from typing import Union, List
 
-from model_train_protocol import Instruction, ExtendedInstruction
+from model_train_protocol import Instruction, ExtendedInstruction, StateMachineInstruction
 from model_train_protocol.common.constants import BOS_TOKEN, RUN_TOKEN, EOS_TOKEN, UNK_TOKEN, NON_TOKEN
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.common.instructions.BaseInstruction import Sample
@@ -24,6 +24,7 @@ class InstructionTypeEnum(Enum):
 
     BASIC = "basic"
     EXTENDED = "extended"
+    STATE_MACHINE = "state_machine"
 
     @classmethod
     def get_instruction_type_by_class(cls, instruction: BaseInstruction) -> 'InstructionTypeEnum':
@@ -32,6 +33,8 @@ class InstructionTypeEnum(Enum):
             return cls.BASIC
         elif isinstance(instruction, ExtendedInstruction):
             return cls.EXTENDED
+        elif isinstance(instruction, StateMachineInstruction):
+            return cls.STATE_MACHINE
         else:
             raise TemplateFileError("Unknown instruction type.")
 
@@ -81,7 +84,7 @@ class TemplateFile:
                 for sample in instruction.samples:
                     output_token_mapping[sample.result.value] = sample.result.key
 
-            # Add UNK token if Guardrails:
+                # Add UNK token if Guardrails:
                 if instruction.has_guardrails:
                     output_token_mapping[UNK_TOKEN.value] = UNK_TOKEN.key
 
@@ -132,15 +135,19 @@ class TemplateFile:
                 output_strs: list[str] = [
                     "<string>\n" + sample.result.key + "\n" + EOS_TOKEN.key
                     for sample in instruction.samples
-                    ]
+                ]
 
                 # add guardrail outputs if guardrails present
                 if instruction.has_guardrails:
                     outputs: list[str] = [token.key for token in instruction.output.final]
                     if outputs is None:
                         outputs: list[str] = [NON_TOKEN.key + '_']
-                    for output in outputs:
-                        output_strs.append(f"<string>\n{output}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}")
+                    # Edge case for CSV conversion - if NON TOKEN + UNK TOKEN we need to add underscore to NON
+                    if outputs == [NON_TOKEN.key] and len(outputs) == 1:
+                        output_strs.append(f"<string>\n{NON_TOKEN.key}_{UNK_TOKEN.key}_\n{EOS_TOKEN.key}")
+                    else:
+                        for output in outputs:
+                            output_strs.append(f"<string>\n{output}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}")
 
                 instructions_dict[instruction.name] = {
                     "type": InstructionTypeEnum.get_instruction_type_by_class(instruction).value,
@@ -150,7 +157,8 @@ class TemplateFile:
 
             return instructions_dict
 
-    def __init__(self, inputs: int, instructions: list[BaseInstruction], encrypt: bool, has_guardrails: bool):
+    def __init__(self, inputs: int, instructions: list[BaseInstruction], encrypt: bool, has_guardrails: bool,
+                 state_machine: bool):
         """Initializes the template"""
 
         self.tokens: TemplateFile.Tokens = TemplateFile.Tokens()
@@ -158,6 +166,7 @@ class TemplateFile:
         self.inputs: int = inputs
         self.instructions_list: list[BaseInstruction] = instructions
         self.encrypt: bool = encrypt
+        self.state_machine: bool = state_machine
         self.has_guardrails: bool = has_guardrails
         self._add_io_from_instructions()
 
@@ -242,6 +251,9 @@ class TemplateFile:
                             extended_instruction = instr
                     else:
                         extended_instruction = instr
+            elif isinstance(instr, StateMachineInstruction) and instr.samples:
+                if basic_instruction is None:
+                    basic_instruction = instr
 
             if basic_instruction and extended_instruction:
                 break
@@ -296,11 +308,22 @@ class TemplateFile:
             examples["valid_model_output"] = self._create_sample_model_output(first_instruction, sample)
 
         if self.has_guardrails:
-            guardrailed_instruction: BaseInstruction = next(instruction for instruction in self.instructions_list if instruction.has_guardrails)
-            examples["guardrail_model_output"] = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{guardrailed_instruction.example_final_token.key}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}"
+            guardrailed_instruction: BaseInstruction = next(
+                instruction for instruction in self.instructions_list if instruction.has_guardrails)
+            guardrail_full_output: str = f"{list(guardrailed_instruction.input.guardrails.values()).pop().bad_output}\n{guardrailed_instruction.example_final_token.key}{UNK_TOKEN.key}_\n{EOS_TOKEN.key}"
+            # Edge case for CSV conversion - if NON TOKEN + UNK TOKEN we need to add underscore to NON
+            if NON_TOKEN.key in guardrail_full_output and NON_TOKEN.key + "_" not in guardrail_full_output:
+                guardrail_full_output = guardrail_full_output.replace(NON_TOKEN.key, NON_TOKEN.key + "_")
+            examples["guardrail_model_output"] = guardrail_full_output
 
         if "guardrail_model_output" not in examples:
             examples["guardrail_model_output"] = ""
+
+        if "instruction_input" not in examples:
+            examples["instruction_input"] = ""
+
+        if "valid_model_output" not in examples:
+            examples["valid_model_output"] = ""
 
         return examples
 
@@ -321,8 +344,18 @@ class TemplateFile:
         example_usage_dict: dict[str, str] = self._create_examples()
         example_usage: ExampleUsage = ExampleUsage(**example_usage_dict)
 
+        samples: List[str] = []
+        if self.state_machine:
+            state_machine_instruction: BaseInstruction = self.instructions_list[0]
+            if not isinstance(state_machine_instruction, StateMachineInstruction):
+                raise TemplateFileError(
+                    "For state machine templates, the provided instruction must be a StateMachineInstruction.")
+            samples = state_machine_instruction.get_states()
+
         template: TemplateModel = TemplateModel(
             encrypt=self.encrypt,
+            state_machine=self.state_machine,
+            states=samples,
             inputs=self.inputs,
             tokens=tokens,
             instructions=instruction_models,

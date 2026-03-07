@@ -4,8 +4,9 @@ from typing import Union, List
 
 from ...constants import NON_TOKEN
 from ...tokens.FinalToken import FinalToken
+from ...tokens.FinalNumToken import FinalNumToken
 from ...tokens.TokenSet import Snippet, TokenSet
-from model_train_protocol.errors import OutputError, OutputTypeError
+from ....errors import OutputError, OutputTypeError
 
 
 class BaseOutput(ABC):
@@ -16,7 +17,7 @@ class BaseOutput(ABC):
 
     def __init__(self, tokenset: TokenSet, final: FinalToken | List[FinalToken] | None = None):
         """
-        Initializes a Response instance.
+        Initializes a Output instance.
 
         :param tokenset: The TokenSet associated with the model's response. Not used in
         :param final: A FinalToken or list of FinalToken designating the allowed final action by the model.
@@ -26,6 +27,11 @@ class BaseOutput(ABC):
         if isinstance(final, FinalToken):
             final = [final]
         self.final: List[FinalToken] | None = final
+
+    @property
+    def has_output_numtoken(self) -> bool:
+        """Checks if any TokenSet in the Input contains NumTokens."""
+        return any(isinstance(token, FinalNumToken) for token in self.final)
 
     @classmethod
     def validate_tokenset(cls, tokenset: TokenSet):
@@ -39,8 +45,7 @@ class BaseOutput(ABC):
 
         if tokenset.has_num_list_tokens or tokenset.has_num_tokens:
             raise OutputError(
-                "Response TokenSet cannot contain NumTokens or NumListTokens. To achieve a single numeric output alongside text, use a FinalNumToken as the Response final token.")
-
+                "Output TokenSet cannot contain NumTokens or NumListTokens. To achieve a single numeric output alongside text, use a FinalNumToken as the Output final token.")
 
     @abc.abstractmethod
     def validate_sample(self, snippet: Snippet, value: Union[int, float, None], final: Union[FinalToken, None]):

@@ -1,0 +1,4 @@
+"""
+State machine unit tests.
+"""
+

@@ -63,6 +63,46 @@ class TestFileOperations:
         # Clean up
         template_file.unlink()
 
+    def test_protocol_template_non_state_machine_states_empty(
+        self,
+        temp_directory,
+        simple_workflow_instruction_with_samples,
+    ):
+        """Test non-state machine protocol template has empty states."""
+        protocol: Protocol = Protocol(name="non_state_machine", inputs=2, encrypt=False)
+        for i in range(10):
+            protocol.add_context(f"Context line {i+1}")
+        protocol.add_instruction(simple_workflow_instruction_with_samples)
+
+        protocol.template(path=str(temp_directory))
+
+        template_file = temp_directory / "non_state_machine_template.json"
+        assert template_file.exists()
+
+        with open(template_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        assert data["state_machine"] is False
+        assert data["states"] == []
+
+        template_file.unlink()
+
+    def test_protocol_template_state_machine_includes_states(self, temp_directory, state_machine_protocol):
+        """Test state machine protocol templating includes states."""
+        state_machine_protocol.template(path=str(temp_directory))
+
+        template_file = temp_directory / "state_machine_protocol_template.json"
+        assert template_file.exists()
+
+        with open(template_file, 'r', encoding='utf-8') as f:
+            data = json.load(f)
+
+        assert data["state_machine"] is True
+        assert data["states"]
+        assert "Action 0" in data["states"]
+
+        template_file.unlink()
+
     def test_protocol_template(self, temp_directory, simple_workflow_instruction_with_samples, user_workflow_instruction_with_samples):
         """Test protocol template with guardrails."""
         protocol = Protocol("guardrail_test", inputs=2)

@@ -16,6 +16,7 @@ from .protocol_file import ProtocolFileError, ProtocolFileLayerDepthError
 from .providers import ProviderError
 from .template_file import TemplateFileError
 from .tokens import TokenError, TokenSetError, TokenSetTypeError, TokenTypeError
+from .state_machine import StateMachineError
 
 __all__ = [
     "MTPError",
@@ -42,6 +43,8 @@ __all__ = [
     "ProtocolError",
     "ProtocolTypeError",
     "ProviderError",
+    "StateMachineError"
 ]
+
 
 
