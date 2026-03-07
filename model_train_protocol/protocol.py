@@ -170,6 +170,10 @@ class Protocol:
                 raise StateMachineError(
                     f"Instructions in a state machine protocol must be of type StateMachineInstruction. Found instruction of type {type(instruction)}.")
 
+            if len(self.instructions) >= 1:
+                raise StateMachineError(
+                    f"A state machine protocol can only have one instruction.")
+
             if instruction.output.has_output_numtoken:
                 raise StateMachineError(
                     f"Instructions in a state machine protocol cannot have a generated numeric output. Found numeric output tokens in instruction '{instruction.name}'.")

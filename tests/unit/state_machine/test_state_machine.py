@@ -55,8 +55,8 @@ class TestStateMachine:
     """Test cases for state machine protocol requirements."""
 
     def test_state_machine_protocol_no_instructions_invalid(
-        self,
-        empty_state_machine_protocol: mtp.Protocol,
+            self,
+            empty_state_machine_protocol: mtp.Protocol,
     ) -> None:
         valid, error_msg = empty_state_machine_protocol.validate_protocol()
 
@@ -65,23 +65,29 @@ class TestStateMachine:
         assert "No instructions have been added" in error_msg
 
     def test_state_machine_protocol_single_instruction_valid(
-        self,
-        state_machine_protocol: mtp.Protocol,
+            self,
+            state_machine_protocol: mtp.Protocol,
     ) -> None:
         valid, error_msg = state_machine_protocol.validate_protocol()
 
         assert valid
         assert error_msg is None
 
-    def test_state_machine_protocol_two_instructions_invalid(
-        self,
-        state_machine_protocol_two_instructions: mtp.Protocol,
+    def test_state_machine_protocol_two_instructions_rejected(
+            self,
+            state_machine_instruction_with_samples: mtp.Instruction,
     ) -> None:
-        valid, error_msg = state_machine_protocol_two_instructions.validate_protocol()
+        protocol: mtp.Protocol = mtp.Protocol("state_machine_two_instructions", inputs=2, encrypt=False,
+                                              state_machine=True)
+        _add_context_lines(protocol)
+        protocol.add_instruction(state_machine_instruction_with_samples)
 
-        assert not valid
-        assert error_msg is not None
-        assert "exactly one instruction" in error_msg
+        second_instruction: mtp.StateMachineInstruction = _build_state_machine_instruction(
+            sample_count=10,
+            token_prefix="SM2",
+        )
+        with pytest.raises(mtp.StateMachineError, match="A state machine protocol can only have one instruction."):
+            protocol.add_instruction(second_instruction)
 
     def test_state_machine_protocol_rejects_non_state_machine_instruction(self) -> None:
         protocol: mtp.Protocol = mtp.Protocol("state_machine", inputs=2, encrypt=False, state_machine=True)
@@ -101,7 +107,6 @@ class TestStateMachine:
 
         with pytest.raises(mtp.StateMachineError, match="cannot have a generated numeric output"):
             protocol.add_instruction(instruction)
-
 
     def test_state_machine_instruction_minimum_samples(self) -> None:
         protocol: mtp.Protocol = mtp.Protocol("state_machine", inputs=2, encrypt=False, state_machine=True)
@@ -128,4 +133,3 @@ class TestStateMachine:
                 input_snippets=["Only one input"],
                 state="Action",
             )
-

@@ -13,17 +13,14 @@ def _add_context_lines(protocol: mtp.Protocol, total_lines: int = 10) -> None:
 
 def _build_state_machine_instruction(sample_count: int, token_prefix: str) -> mtp.StateMachineInstruction:
     machine_token: mtp.Token = mtp.Token(f"{token_prefix}Machine")
-    state_token: mtp.Token = mtp.Token(f"{token_prefix}State")
     event_token: mtp.Token = mtp.Token(f"{token_prefix}Event")
-    action_token: mtp.Token = mtp.Token(f"{token_prefix}Action")
 
-    state_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=(machine_token, state_token))
-    event_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=(machine_token, event_token))
+    state_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=machine_token)
+    event_tokenset: mtp.TokenSet = mtp.TokenSet(tokens=event_token)
 
     instruction_input: mtp.StateMachineInput = mtp.StateMachineInput(
         tokensets=[state_tokenset, event_tokenset],
     )
-
 
     instruction: mtp.StateMachineInstruction = mtp.StateMachineInstruction(
         input=instruction_input
@@ -61,20 +58,3 @@ def state_machine_protocol(state_machine_instruction_with_samples: mtp.StateMach
     _add_context_lines(protocol)
     protocol.add_instruction(state_machine_instruction_with_samples)
     return protocol
-
-
-@pytest.fixture
-def state_machine_protocol_two_instructions(
-    state_machine_instruction_with_samples: mtp.StateMachineInstruction,
-) -> mtp.Protocol:
-    protocol: mtp.Protocol = mtp.Protocol("state_machine_two_instructions", inputs=2, encrypt=False, state_machine=True)
-    _add_context_lines(protocol)
-    protocol.add_instruction(state_machine_instruction_with_samples)
-
-    second_instruction: mtp.StateMachineInstruction = _build_state_machine_instruction(
-        sample_count=10,
-        token_prefix="SM2",
-    )
-    protocol.add_instruction(second_instruction)
-    return protocol
-
