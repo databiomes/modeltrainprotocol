@@ -3,7 +3,7 @@ from typing import List
 
 import pandas as pd
 
-from model_train_protocol import GuardrailError, StateMachineInstruction, StateMachineInput, StateMachineOutput
+from model_train_protocol import GuardrailError, StateMachineInstruction, StateMachineInput
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.tokens import Token, TokenSet
 from model_train_protocol.errors.conversion import ConversionError
@@ -46,7 +46,7 @@ class CSVConversion:
         self.protocol: Protocol = Protocol(name=protocol_name, inputs=1, encrypt=False, state_machine=True)
         self.standard_input: StateMachineInput = StateMachineInput(
             tokensets=[self.input_tokenset])
-        self.unique_outputs: set[str] = self._get_unique_outputs()
+        self.unique_states: set[str] = self._get_unique_states()
 
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
@@ -55,7 +55,7 @@ class CSVConversion:
             raise GuardrailError("At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
         return self.protocol
 
-    def _get_unique_outputs(self) -> set[str]:
+    def _get_unique_states(self) -> set[str]:
         """
         Retrieves unique outputs from the CSV data.
 
@@ -132,15 +132,7 @@ class CSVConversion:
 
         :param instruction: The instruction name.
         """
-        instruction_outputs: set[str] = self._get_unique_outputs()
-        acceptable_output_string: str = ", ".join(instruction_outputs)
-        instruction_token: Token = Token(self.instruction_name,
-                                         desc=f"The responses that are acceptable: {acceptable_output_string}.")
-        instruction_tokenset: TokenSet = TokenSet(tokens=[instruction_token])
-        instruction_output: StateMachineOutput = StateMachineOutput(
-            tokenset=instruction_tokenset
-        )
-
+        instruction_outputs: set[str] = self._get_unique_states()
         guardrail = Guardrail(
             good_prompt="Prompt related to the provided context of the model",
             bad_prompt="Prompt that is irrelevant and off topic",
@@ -148,8 +140,7 @@ class CSVConversion:
         )
 
         instruction: StateMachineInstruction = StateMachineInstruction(
-            input=self.standard_input,
-            output=instruction_output
+            input=self.standard_input, states=list(instruction_outputs)
         )
 
         for line in self.ordered_lines:
@@ -163,7 +154,7 @@ class CSVConversion:
 
             instruction.add_sample(
                 input_snippets=[line.input_str],
-                output_snippet=line.output_str
+                state=line.output_str
             )
 
         if 0 < len(guardrail.samples) < 3:
