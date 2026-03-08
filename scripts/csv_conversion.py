@@ -6,7 +6,7 @@ from model_train_protocol.csv import CSVConversion
 
 def main():
     file_name: str = "cat_csv(1)"
-    local_path: str = f"C:\\Users\\Nikita\\Downloads\\f{file_name}.csv"
+    local_path: str = f"C:\\Users\\Nikita\\Downloads\\{file_name}.csv"
 
     if local_path.endswith('.xlsx'):
         csv_data: pd.DataFrame = pd.read_excel(local_path)
