@@ -22,13 +22,15 @@ class StateMachineInstruction(BaseInstruction):
 
     minimum_samples: int = STATE_MACHINE_MINIMUM_INSTRUCTION_SAMPLES
 
-    def __init__(self, input: StateMachineInput):
+    def __init__(self, input: StateMachineInput, states: List[str]):
         f"""
         Initializes an Instruction instance.
 
         :param input: List of tuples containing Token instances that define the input structure. This precedes the model's response.
+        :param states: List of possible states that the model can respond with. These will be added to the response TokenSet.
         """
-        state_tokenset: TokenSet = TokenSet(tokens=Token("state", desc="The state the model should respond with."))
+        state_token: Token = Token("state", desc=f"The responses that are acceptable: {states}.")
+        state_tokenset= TokenSet(tokens=[state_token])
         instruction_output: StateMachineOutput = StateMachineOutput(
             tokenset=state_tokenset,
         )
