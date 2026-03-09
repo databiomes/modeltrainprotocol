@@ -1,6 +1,8 @@
 """
 Unit tests for state machine protocol requirements.
 """
+from typing import List
+
 import pytest
 
 import model_train_protocol as mtp
@@ -22,8 +24,11 @@ def _build_state_machine_instruction(sample_count: int, token_prefix: str) -> mt
         tokensets=[state_tokenset, event_tokenset],
     )
 
+    states: List[str] = [f"Action {i}" for i in range(sample_count)]
+
     instruction: mtp.StateMachineInstruction = mtp.StateMachineInstruction(
-        input=instruction_input
+        input=instruction_input,
+        states=states
     )
 
     for i in range(sample_count):
