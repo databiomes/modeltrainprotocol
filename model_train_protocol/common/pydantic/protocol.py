@@ -107,6 +107,7 @@ class Protocol(BaseModel):
     """Main model for MTP Protocol JSON structure."""
     name: str = Field(..., min_length=1)
     inputs: int = Field(...)
+    state_machine: bool
     encrypted: bool
     valid: bool
     context: List[ContextLine] = Field(

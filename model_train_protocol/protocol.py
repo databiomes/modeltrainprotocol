@@ -240,7 +240,7 @@ class Protocol:
         """
         return ProtocolFile(
             name=self.name, context=self.context, inputs=self.input_count, encrypted=self.encrypt,
-            valid=valid,
+            valid=valid, state_machine=self.state_machine,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
