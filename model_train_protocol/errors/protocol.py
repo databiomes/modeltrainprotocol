@@ -9,5 +9,3 @@ class ProtocolError(MTPValueError):
 
 class ProtocolTypeError(MTPTypeError, ProtocolError):
     """Errors raised for protocol type validation."""
-
-
