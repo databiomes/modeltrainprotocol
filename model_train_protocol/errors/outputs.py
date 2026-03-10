@@ -9,3 +9,4 @@ class OutputError(MTPValueError):
 
 class OutputTypeError(MTPTypeError, OutputError):
     """Errors raised for output type validation."""
+

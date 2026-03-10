@@ -9,3 +9,4 @@ class InstructionError(MTPValueError):
 
 class InstructionTypeError(MTPTypeError, InstructionError):
     """Errors raised for instruction type validation."""
+
