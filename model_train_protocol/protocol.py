@@ -52,9 +52,13 @@ class Protocol:
         :param protocol_file: The JSON representation of the Protocol.
         :return: A Protocol instance.
         """
-        name: str = protocol_file["name"]
-        inputs: int = protocol_file["inputs"]
-        encrypt: bool = protocol_file["encrypted"]
+        try:
+            name: str = protocol_file["name"]
+            inputs: int = protocol_file["inputs"]
+            encrypt: bool = protocol_file["encrypted"]
+        except KeyError as e:
+            raise ProtocolError(f"Missing required field in protocol JSON: {str(e)}")
+
         protocol = Protocol(name=name, inputs=inputs, encrypt=encrypt)
         protocol.context = protocol_file["context"]
 
