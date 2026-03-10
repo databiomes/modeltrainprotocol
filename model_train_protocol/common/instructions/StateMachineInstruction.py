@@ -74,7 +74,10 @@ class StateMachineInstruction(BaseInstruction):
 
     def get_states(self) -> list[str]:
         """Returns the list of states defined in the TokenSet."""
-        return list(set([sample.output for sample in self.samples]))
+        states: list[str] = list(set([sample.output for sample in self.samples]))
+        if self.has_guardrails:
+            states.append("GUARDRAIL")
+        return states
 
     # noinspection PyMethodOverriding
     def add_sample(self, input_snippets: List[Union[str | Snippet]], state: str):
