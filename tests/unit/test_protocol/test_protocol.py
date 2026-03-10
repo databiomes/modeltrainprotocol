@@ -6,7 +6,7 @@ from pathlib import Path
 import pytest
 
 from model_train_protocol import Protocol, Token, TokenSet, Instruction, ExtendedInstruction, \
-    Guardrail, FinalToken
+    Guardrail, FinalToken, ProtocolError
 from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
 from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
 from model_train_protocol.common.instructions.output.ExtendedResponse import ExtendedResponse
@@ -1212,3 +1212,25 @@ class TestProtocol:
         for name in names:
             protocol = Protocol(name, inputs=3)
             assert protocol.name == name
+
+    def test_protocol_from_json_round_trip(self, basic_simple_protocol: Protocol):
+        """Test Protocol.from_json round trip with a valid protocol JSON."""
+        basic_simple_protocol._prep_protocol()
+        protocol_json: dict[str, object] = basic_simple_protocol.get_protocol_file(valid=True).to_json()
+
+        loaded_protocol: Protocol = Protocol.from_json(protocol_json)
+
+        assert loaded_protocol.name == basic_simple_protocol.name
+        assert loaded_protocol.input_count == basic_simple_protocol.input_count
+        assert loaded_protocol.encrypt == basic_simple_protocol.encrypt
+        assert len(loaded_protocol.instructions) == len(basic_simple_protocol.instructions)
+        assert len(loaded_protocol.tokens) > 0
+
+    def test_protocol_from_json_missing_required_field(self, basic_simple_protocol: Protocol):
+        """Test Protocol.from_json raises when a required field is missing."""
+        basic_simple_protocol._prep_protocol()
+        protocol_json: dict[str, object] = basic_simple_protocol.get_protocol_file(valid=True).to_json()
+        protocol_json.pop("name")
+
+        with pytest.raises(ProtocolError, match="Missing required field 'name'"):
+            Protocol.from_json(protocol_json)

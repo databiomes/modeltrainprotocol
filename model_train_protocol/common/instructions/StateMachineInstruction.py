@@ -29,7 +29,7 @@ class StateMachineInstruction(BaseInstruction):
         :param input: List of tuples containing Token instances that define the input structure. This precedes the model's response.
         :param states: List of possible states that the model can respond with. These will be added to the response TokenSet.
         """
-        state_token: Token = Token("state", desc=f"The responses that are acceptable: {states}.")
+        state_token: Token = Token("State", desc=f"The responses that are acceptable: {states}.")
         state_tokenset= TokenSet(tokens=[state_token])
         instruction_output: StateMachineOutput = StateMachineOutput(
             tokenset=state_tokenset,

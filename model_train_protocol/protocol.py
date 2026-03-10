@@ -12,6 +12,7 @@ from .common.instructions.StateMachineInstruction import StateMachineInstruction
 from .common.tokens import TokenSet
 from .common.tokens.SpecialToken import SpecialToken
 from .errors import ProtocolError, ProtocolTypeError, StateMachineError
+from model_train_protocol.common.pydantic.protocol import Protocol as PydanticProtocol
 from .integration.ProtocolFile import ProtocolFile
 from .integration.TemplateFile import TemplateFile
 
@@ -52,9 +53,14 @@ class Protocol:
         :param protocol_file: The JSON representation of the Protocol.
         :return: A Protocol instance.
         """
+        for field in PydanticProtocol.model_fields.keys():
+            if field not in protocol_file:
+                raise ProtocolError(f"Missing required field '{field}' in protocol JSON.")
+
         name: str = protocol_file["name"]
         inputs: int = protocol_file["inputs"]
         encrypt: bool = protocol_file["encrypted"]
+
         protocol = Protocol(name=name, inputs=inputs, encrypt=encrypt)
         protocol.context = protocol_file["context"]
 
