@@ -238,6 +238,8 @@ class Protocol:
 
         :return: The ProtocolFile instance representing the protocol.
         """
+        self._prep_protocol()
+
         return ProtocolFile(
             name=self.name, context=self.context, inputs=self.input_count, encrypted=self.encrypt,
             valid=valid,
