@@ -51,8 +51,6 @@ class CSVConversion:
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
         self._process_instruction(self.instruction_name)
-        if not self.protocol.has_guardrails:
-            raise GuardrailError("At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
         return self.protocol
 
     def _get_unique_states(self) -> set[str]:
