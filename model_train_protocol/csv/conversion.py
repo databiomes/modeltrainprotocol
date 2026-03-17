@@ -155,7 +155,7 @@ class CSVConversion:
                 state=line.output_str
             )
 
-        if 0 < len(guardrail.samples) < 3:
+        if instruction.has_guardrails and 0 < len(guardrail.samples) < 3:
             raise GuardrailError(
                 "At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
         elif len(guardrail.samples) >= 3:
