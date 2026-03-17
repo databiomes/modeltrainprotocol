@@ -50,7 +50,7 @@ class CSVConversion:
 
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
-        self._process_instruction(self.instruction_name)
+        self._process_instruction()
         return self.protocol
 
     def _get_unique_states(self) -> set[str]:
@@ -124,7 +124,7 @@ class CSVConversion:
             return latest
         return value
 
-    def _process_instruction(self, instruction: str) -> None:
+    def _process_instruction(self) -> None:
         """
         Processes a single instruction and adds it to the protocol.
 
