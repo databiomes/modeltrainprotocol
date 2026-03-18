@@ -252,6 +252,8 @@ class Protocol:
 
         :return: The TemplateFile instance representing the protocol template.
         """
+        self._prep_protocol()
+
         return TemplateFile(
             instructions=list(self.instructions),
             inputs=self.input_count,
