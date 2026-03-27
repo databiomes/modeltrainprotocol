@@ -8,6 +8,7 @@ from typing import Optional
 from model_train_protocol.common.pydantic.protocol import Protocol
 from model_train_protocol.common.pydantic.template import Template
 from model_train_protocol.utils import get_schema_version, get_bloom_schema_url
+from model_train_protocol.utils.public import get_template_version, get_template_schema_url
 
 
 def _get_base_path(base_path: Optional[str]) -> Path:
@@ -18,21 +19,22 @@ def _get_base_path(base_path: Optional[str]) -> Path:
 
 def _save_schema(
     schema: dict,
+        version: str,
+        schema_url: str,
     title: str,
     description: str,
     filename_pattern: str,
     base_path: Optional[str] = None,
 ) -> str:
-    version_semantic: str = get_schema_version()
-    version_underscored: str = version_semantic.replace('.', '_')
-    schema_dir = _get_base_path(base_path) / "schemas" / f"v{version_semantic[0]}"
+    version_underscored: str = version.replace('.', '_')
+    schema_dir = _get_base_path(base_path) / "schemas" / f"v{version[0]}"
     schema_dir.mkdir(parents=True, exist_ok=True)
 
     schema_path = schema_dir / filename_pattern.format(version=version_underscored)
 
     final_schema = {
         "$schema": "https://json-schema.org/draft/2020-12/schema",
-        "$id": get_bloom_schema_url(),
+        "$id": schema_url,
         "title": title,
         "description": description,
         **schema,
@@ -61,6 +63,8 @@ def save_protocol_schema(base_path: Optional[str] = None) -> str:
 
     return _save_schema(
         schema=schema,
+        version=get_schema_version(),
+        schema_url=get_bloom_schema_url(),
         title="Model Train Protocol Schema",
         description="JSON Schema for Model Train Protocol (MTP) model files",
         filename_pattern="bloom_{version}.json",
@@ -86,6 +90,8 @@ def save_template_schema(base_path: Optional[str] = None) -> str:
 
     return _save_schema(
         schema=schema,
+        version=get_template_version(),
+        schema_url=get_template_schema_url(),
         title="Model Train Protocol Template Schema",
         description="JSON Schema for Model Train Protocol (MTP) template files",
         filename_pattern="template_{version}.json",
