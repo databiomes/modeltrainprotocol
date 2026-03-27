@@ -18,6 +18,38 @@ from .integration.ProtocolFile import ProtocolFile
 from .integration.TemplateFile import TemplateFile
 
 
+class BloomUtils:
+    """Helper class for converting bloom files into Protocol objects"""
+
+    @classmethod
+    def add_guardrails(self, protocol: Protocol, protocol_instruction: Instruction | StateMachineInstruction,
+                       instruction: dict):
+        for guardrail_set in instruction["guardrails"]:
+            guardrail: Guardrail = Guardrail(
+                good_prompt=guardrail_set["good_prompt"],
+                bad_prompt=guardrail_set["bad_prompt"],
+                bad_output=guardrail_set["bad_output"]
+            )
+
+            for sample in guardrail_set["bad_examples"]:
+                guardrail.add_sample(sample)
+
+            protocol_instruction.add_guardrail(guardrail=guardrail, tokenset_index=guardrail_set["index"])
+
+        protocol.add_instruction(protocol_instruction)
+
+    @classmethod
+    def add_tokens(cls, protocol_file: dict, protocol: Protocol, tokens: dict[str, Token]):
+        """Adds tokens to instructions"""
+        # Add tokens
+        for token_value, token_info in protocol_file["tokens"].items():
+            token_value = token_value[:-1] if token_value[-1] == "_" else token_value
+            token_class: type[Token] = TokenTypeEnum[token_info["type"]]
+            token: Token = token_class(value=token_value, **token_info)
+            protocol._add_token(token)
+            tokens[token.value] = token
+
+
 class Protocol:
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
@@ -72,12 +104,7 @@ class Protocol:
             return cls._load_state_machine_protocol(protocol_file=protocol_file, protocol=protocol, tokens=tokens)
 
         # Add tokens
-        for token_value, token_info in protocol_file["tokens"].items():
-            token_value = token_value[:-1] if token_value[-1] == "_" else token_value
-            token_class: type[Token] = TokenTypeEnum[token_info["type"]]
-            token: Token = token_class(value=token_value, **token_info)
-            protocol._add_token(token)
-            tokens[token.value] = token
+        BloomUtils.add_tokens(protocol_file=protocol_file, protocol=protocol, tokens=tokens)
 
         # Add instructions
         instruction_info = protocol_file["instruction"]
@@ -136,19 +163,8 @@ class Protocol:
                 )
 
             # Add guardrails
-            for guardrail_set in instruction["guardrails"]:
-                guardrail: Guardrail = Guardrail(
-                    good_prompt=guardrail_set["good_prompt"],
-                    bad_prompt=guardrail_set["bad_prompt"],
-                    bad_output=guardrail_set["bad_output"]
-                )
-
-                for sample in guardrail_set["bad_examples"]:
-                    guardrail.add_sample(sample)
-
-                protocol_instruction.add_guardrail(guardrail=guardrail, tokenset_index=guardrail_set["index"])
-
-            protocol.add_instruction(protocol_instruction)
+            BloomUtils.add_guardrails(protocol=protocol, protocol_instruction=protocol_instruction,
+                                      instruction=instruction)
 
         return protocol
 
@@ -390,31 +406,11 @@ class Protocol:
                 f"The instruction in a state machine protocol must be a StateMachineInstruction. Found instruction of type {type(list(self.instructions)[0])}.")
 
     @classmethod
-    def _load_state_machine_protocol(self, protocol_file: dict, protocol: 'Protocol', tokens: dict[str, Token]) -> 'Protocol':
+    def _load_state_machine_protocol(cls, protocol_file: dict, protocol: 'Protocol',
+                                     tokens: dict[str, Token]) -> 'Protocol':
         """Loads a state machine protocol from a JSON representation."""
-        input_token: Token = Token("Input")
-        input_tokenset: TokenSet = TokenSet(tokens=[input_token])
-        standard_input: StateMachineInput = StateMachineInput(
-            tokensets=[input_tokenset])
-
-        instruction_outputs: set[str] = self._get_unique_states()
-        guardrail = Guardrail(
-            good_prompt="Prompt related to the provided context of the model",
-            bad_prompt="Prompt that is irrelevant and off topic",
-            bad_output="GUARDRAIL"
-        )
-
-        instruction: StateMachineInstruction = StateMachineInstruction(
-            input=self.standard_input, states=list(instruction_outputs)
-        )
-
         # Add tokens
-        for token_value, token_info in protocol_file["tokens"].items():
-            token_value = token_value[:-1] if token_value[-1] == "_" else token_value
-            token_class: type[Token] = TokenTypeEnum[token_info["type"]]
-            token: Token = token_class(value=token_value, **token_info)
-            protocol._add_token(token)
-            tokens[token.value] = token
+        BloomUtils.add_tokens(protocol_file=protocol_file, protocol=protocol, tokens=tokens)
 
         instruction_info = protocol_file["instruction"]
         for instruction in instruction_info["sets"]:
@@ -457,19 +453,8 @@ class Protocol:
                 )
 
             # Add guardrails
-            for guardrail_set in instruction["guardrails"]:
-                guardrail: Guardrail = Guardrail(
-                    good_prompt=guardrail_set["good_prompt"],
-                    bad_prompt=guardrail_set["bad_prompt"],
-                    bad_output=guardrail_set["bad_output"]
-                )
-
-                for sample in guardrail_set["bad_examples"]:
-                    guardrail.add_sample(sample)
-
-                protocol_instruction.add_guardrail(guardrail=guardrail, tokenset_index=guardrail_set["index"])
-
-            protocol.add_instruction(protocol_instruction)
+            BloomUtils.add_guardrails(protocol=protocol, protocol_instruction=protocol_instruction,
+                                      instruction=instruction)
 
         return protocol
 
