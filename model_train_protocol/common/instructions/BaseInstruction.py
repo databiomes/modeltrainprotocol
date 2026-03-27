@@ -6,7 +6,7 @@ from .input.BaseInput import BaseInput
 from .output.BaseOutput import BaseOutput
 from ..constants import MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION, MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE, \
     MAXIMUM_CHARACTERS_PER_SNIPPET, GENERAL_MINIMUM_INSTRUCTION_SAMPLES
-from ..pydantic.protocol import Guardrail
+from ..guardrails import Guardrail
 from ..tokens.FinalToken import FinalToken
 from ..tokens.Token import Token
 from ..tokens.TokenSet import TokenSet, Snippet

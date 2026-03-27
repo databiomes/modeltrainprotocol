@@ -51,13 +51,13 @@ class Guardrail:
     def format_samples(self) -> List[str]:
         """Return the guardrails as a list of strings for JSON formatting."""
         if len(self.samples) < MIN_SAMPLES_PER_GUARDRAIL:
-            raise GuardrailError("At least 3 sample prompts are required. Call add_sample() to add more.")
+            raise GuardrailError(f"At least {MIN_SAMPLES_PER_GUARDRAIL} sample prompts are required. Call add_sample() to add more.")
         return [self.bad_output, f"<{self.bad_prompt}>", f"<{self.good_prompt}>", self.samples]
 
     def validate_guardrail(self):
         """Validates the guardrail"""
         if len(self.samples) < MIN_SAMPLES_PER_GUARDRAIL:
-            raise GuardrailError("At least 3 sample prompts are required. Call add_sample() to add more.")
+            raise GuardrailError(f"At least {MIN_SAMPLES_PER_GUARDRAIL} sample prompts are required. Call add_sample() to add more.")
 
     def to_dict(self) -> dict:
         """Return the guardrails as a dictionary for JSON formatting."""

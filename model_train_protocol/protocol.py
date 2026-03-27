@@ -243,6 +243,8 @@ class Protocol:
 
         :return: The ProtocolFile instance representing the protocol.
         """
+        self._prep_protocol()
+
         return ProtocolFile(
             name=self.name, context=self.context, inputs=self.input_count, encrypted=self.encrypt,
             valid=valid, state_machine=self.state_machine,
@@ -255,6 +257,8 @@ class Protocol:
 
         :return: The TemplateFile instance representing the protocol template.
         """
+        self._prep_protocol()
+
         return TemplateFile(
             instructions=list(self.instructions),
             inputs=self.input_count,

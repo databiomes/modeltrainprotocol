@@ -51,8 +51,6 @@ class CSVConversion:
     def to_mtp(self) -> Protocol:
         """Converts the CSV data to MTP format."""
         self._process_instruction()
-        if not self.protocol.has_guardrails:
-            raise GuardrailError("At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
         return self.protocol
 
     def _get_unique_states(self) -> set[str]:
@@ -65,6 +63,8 @@ class CSVConversion:
         for line in self.ordered_lines:
             if line.output_str != "" and not pd.isna(line.output_str):
                 unique_outputs.add(line.output_str)
+        if "GUARDRAIL" in unique_outputs:
+            unique_outputs.remove("GUARDRAIL")
         return unique_outputs
 
     def _process_dataframe(self, dataframe: pd.DataFrame) -> pd.DataFrame:
@@ -127,6 +127,8 @@ class CSVConversion:
     def _process_instruction(self) -> None:
         """
         Processes a single instruction and adds it to the protocol.
+
+        :param instruction: The instruction name.
         """
         instruction_outputs: set[str] = self._get_unique_states()
         guardrail = Guardrail(
@@ -153,7 +155,7 @@ class CSVConversion:
                 state=line.output_str
             )
 
-        if 0 < len(guardrail.samples) < 3:
+        if instruction.has_guardrails and 0 < len(guardrail.samples) < 3:
             raise GuardrailError(
                 "At least 3 guardrail samples are required. Please add more guardrail samples to the CSV data.")
         elif len(guardrail.samples) >= 3:
