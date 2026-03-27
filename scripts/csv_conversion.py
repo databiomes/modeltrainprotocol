@@ -5,8 +5,9 @@ from model_train_protocol.csv import CSVConversion
 
 
 def main():
-    file_name: str = "cat_csv(1)"
-    local_path: str = f"C:\\Users\\Nikita\\Downloads\\{file_name}.csv"
+    file_name: str = "databiomes_chat"
+    # local_path: str = f"C:\\Users\\Nikita\\Downloads\\{file_name}.csv"
+    local_path: str = f"D:\\Nikita\\Documents\\work\\databiomes\\repos\\models\\models\\landing_page_model\\{file_name}.csv"
 
     if local_path.endswith('.xlsx'):
         csv_data: pd.DataFrame = pd.read_excel(local_path)

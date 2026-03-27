@@ -30,7 +30,7 @@ class StateMachineInstruction(BaseInstruction):
         :param states: List of possible states that the model can respond with. These will be added to the response TokenSet.
         """
         state_token: Token = Token("State", desc=f"The responses that are acceptable: {states}.")
-        state_tokenset= TokenSet(tokens=[state_token])
+        state_tokenset = TokenSet(tokens=[state_token])
         instruction_output: StateMachineOutput = StateMachineOutput(
             tokenset=state_tokenset,
         )
@@ -74,7 +74,10 @@ class StateMachineInstruction(BaseInstruction):
 
     def get_states(self) -> list[str]:
         """Returns the list of states defined in the TokenSet."""
-        return list(set([sample.output for sample in self.samples]))
+        states: list[str] = list(set([sample.output for sample in self.samples]))
+        if self.has_guardrails:
+            states.append("GUARDRAIL")
+        return states
 
     # noinspection PyMethodOverriding
     def add_sample(self, input_snippets: List[Union[str | Snippet]], state: str):

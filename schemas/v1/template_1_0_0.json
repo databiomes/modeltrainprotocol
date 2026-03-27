@@ -1,6 +1,6 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://mtp.schemas.databiomes.com/v1/bloom_1_0_0.json",
+  "$id": "https://mtp.schemas.databiomes.com/v1/template_1_0_0.json",
   "title": "Template",
   "description": "Main model for MTP Template JSON structure.",
   "$defs": {

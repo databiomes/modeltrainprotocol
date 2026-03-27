@@ -28,7 +28,7 @@ class Instruction(BaseInstruction):
         :param input: List of tuples containing Token instances that define the input structure. This precedes the model's response.
         :param output: A TokenSet instance that does not include any user tokens.
         :param context: A list of strings providing background context for the instruction.
-        :param name: Optional name for the Instruction. Defaults to 'instruction'.
+        :param name: Optional name for the Instruction.
         """
         super().__init__(input=input, output=output, context=context, name=name)
         if not isinstance(self.output, InstructionOutput):

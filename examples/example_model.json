@@ -1,7 +1,8 @@
 {
-    "$schema": "https://mtp.schemas.databiomes.com/v1/bloom_1_1_0.json",
+    "$schema": "https://mtp.schemas.databiomes.com/v1/bloom_1_2_0.json",
     "name": "example",
     "inputs": 2,
+    "state_machine": false,
     "encrypted": false,
     "valid": true,
     "context": [

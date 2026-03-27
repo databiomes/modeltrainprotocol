@@ -39,7 +39,7 @@ class ProtocolFile:
         judge: List = field(default_factory=list)
         ppo: List = field(default_factory=list)
 
-    def __init__(self, name: str, context: List[str], inputs: int, encrypted: bool, valid: bool,
+    def __init__(self, name: str, context: List[str], inputs: int, encrypted: bool, valid: bool, state_machine: bool,
                  tokens: Collection[Token], special_tokens: Collection[Token], instructions: Collection[BaseInstruction]):
         """Initializes the Template with a name and context."""
         self._name: str = name
@@ -47,6 +47,7 @@ class ProtocolFile:
         self._context: List[str] = context
         self._encrypted: bool = encrypted
         self._valid: bool = valid
+        self._state_machine: bool = state_machine
         self._tokens: Dict[str, dict] = {}
         self._special_token_keys: Set[str] = set()
         self._instruction_token_keys: Set[str] = set()
@@ -225,6 +226,7 @@ class ProtocolFile:
         protocol = Protocol(
             name=self._name,
             context=self._context,
+            state_machine=self._state_machine,
             inputs=self._inputs,
             encrypted=self._encrypted,
             valid=self._valid,
