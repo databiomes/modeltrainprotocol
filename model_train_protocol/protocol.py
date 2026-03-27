@@ -1,6 +1,6 @@
 import json
 import os
-from typing import List, Optional, Set, Dict
+from typing import List, Optional, Set, Dict, Union
 
 from model_train_protocol.utils._protected import validate_string_subset, hash_string
 from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
@@ -22,7 +22,7 @@ class BloomUtils:
     """Helper class for converting bloom files into Protocol objects"""
 
     @classmethod
-    def add_guardrails(self, protocol: Protocol, protocol_instruction: Instruction | StateMachineInstruction,
+    def add_guardrails(cls, protocol: Protocol, protocol_instruction: Union[Instruction, StateMachineInstruction],
                        instruction: dict):
         for guardrail_set in instruction["guardrails"]:
             guardrail: Guardrail = Guardrail(
