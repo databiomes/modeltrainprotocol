@@ -24,8 +24,8 @@ class BloomUtils:
     """Helper class for converting bloom files into Protocol objects"""
 
     @classmethod
-    def add_guardrails(cls, protocol: Protocol, protocol_instruction: Union[Instruction, StateMachineInstruction],
-                       instruction: dict):
+    def add_guardrails_to_instruction(cls, protocol_instruction: Union[Instruction, StateMachineInstruction],
+                                      instruction: dict):
         for guardrail_set in instruction["guardrails"]:
             guardrail: Guardrail = Guardrail(
                 good_prompt=guardrail_set["good_prompt"],
@@ -37,8 +37,6 @@ class BloomUtils:
                 guardrail.add_sample(sample)
 
             protocol_instruction.add_guardrail(guardrail=guardrail, tokenset_index=guardrail_set["index"])
-
-        protocol.add_instruction(protocol_instruction)
 
     @classmethod
     def add_tokens(cls, protocol_file: dict, protocol: Protocol, tokens: dict[str, Token]):
@@ -165,8 +163,8 @@ class Protocol:
                 )
 
             # Add guardrails
-            BloomUtils.add_guardrails(protocol=protocol, protocol_instruction=protocol_instruction,
-                                      instruction=instruction)
+            BloomUtils.add_guardrails_to_instruction(protocol_instruction=protocol_instruction, instruction=instruction)
+            protocol.add_instruction(protocol_instruction)
 
         return protocol
 
@@ -455,8 +453,8 @@ class Protocol:
                 )
 
             # Add guardrails
-            BloomUtils.add_guardrails(protocol=protocol, protocol_instruction=protocol_instruction,
-                                      instruction=instruction)
+            BloomUtils.add_guardrails_to_instruction(protocol_instruction=protocol_instruction, instruction=instruction)
+            protocol.add_instruction(protocol_instruction)
 
         return protocol
 
