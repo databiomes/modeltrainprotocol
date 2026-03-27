@@ -9,6 +9,7 @@ from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TO
     MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE
 from .common.instructions.BaseInstruction import BaseInstruction, Sample
 from .common.instructions.StateMachineInstruction import StateMachineInstruction
+from .common.instructions.input.StateMachineInput import StateMachineInput
 from .common.tokens import TokenSet
 from .common.tokens.SpecialToken import SpecialToken
 from .errors import ProtocolError, ProtocolTypeError, StateMachineError
@@ -61,10 +62,14 @@ class Protocol:
         inputs: int = protocol_file["inputs"]
         encrypt: bool = protocol_file["encrypted"]
 
-        protocol = Protocol(name=name, inputs=inputs, encrypt=encrypt)
+        state_machine: bool = protocol_file["state_machine"]
+        protocol = Protocol(name=name, inputs=inputs, encrypt=encrypt, state_machine=state_machine)
         protocol.context = protocol_file["context"]
 
         tokens: dict[str, Token] = {}
+
+        if state_machine:
+            return cls._load_state_machine_protocol(protocol_file=protocol_file, protocol=protocol, tokens=tokens)
 
         # Add tokens
         for token_value, token_info in protocol_file["tokens"].items():
@@ -379,6 +384,90 @@ class Protocol:
         if not isinstance(list(self.instructions)[0], StateMachineInstruction):
             raise StateMachineError(
                 f"The instruction in a state machine protocol must be a StateMachineInstruction. Found instruction of type {type(list(self.instructions)[0])}.")
+
+    @classmethod
+    def _load_state_machine_protocol(self, protocol_file: dict, protocol: 'Protocol', tokens: dict[str, Token]) -> 'Protocol':
+        """Loads a state machine protocol from a JSON representation."""
+        input_token: Token = Token("Input")
+        input_tokenset: TokenSet = TokenSet(tokens=[input_token])
+        standard_input: StateMachineInput = StateMachineInput(
+            tokensets=[input_tokenset])
+
+        instruction_outputs: set[str] = self._get_unique_states()
+        guardrail = Guardrail(
+            good_prompt="Prompt related to the provided context of the model",
+            bad_prompt="Prompt that is irrelevant and off topic",
+            bad_output="GUARDRAIL"
+        )
+
+        instruction: StateMachineInstruction = StateMachineInstruction(
+            input=self.standard_input, states=list(instruction_outputs)
+        )
+
+        # Add tokens
+        for token_value, token_info in protocol_file["tokens"].items():
+            token_value = token_value[:-1] if token_value[-1] == "_" else token_value
+            token_class: type[Token] = TokenTypeEnum[token_info["type"]]
+            token: Token = token_class(value=token_value, **token_info)
+            protocol._add_token(token)
+            tokens[token.value] = token
+
+        instruction_info = protocol_file["instruction"]
+        for instruction in instruction_info["sets"]:
+            context: List[str] = instruction["context"]
+            tokensets: List[TokenSet] = []
+            for token_set in instruction["set"]:
+                tokensets.append(TokenSet([tokens[token_value] for token_value in token_set]))
+
+            samples: List[Sample] = []
+            for sample in instruction["samples"]:
+                input_lines: List[str] = sample["strings"][:-1]
+                output_line: str = sample["strings"][-1]
+                result_token: FinalToken = tokens[sample["result"]]  # type: ignore
+                samples.append(Sample(input=input_lines, output=output_line, prompt=None, numbers=sample["numbers"],
+                                      number_lists=sample["number_lists"], result=result_token, value=sample["value"]))
+
+            instr_input: StateMachineInput = StateMachineInput(
+                tokensets=tokensets[:-1],
+            )
+
+            states: list[str] = list(dict.fromkeys([sample.output for sample in samples]))
+            protocol_instruction: StateMachineInstruction = StateMachineInstruction(
+                input=instr_input,
+                states=states,
+            )
+            protocol_instruction.output.tokenset = tokensets[-1]
+            protocol_instruction.context = context
+
+            for sample in samples:
+                inputs_snippets: List[Snippet] = []
+                for i, sample_input in enumerate(sample.input):
+                    inputs_snippets.append(
+                        tokensets[i].create_snippet(string=sample_input, number_lists=sample.number_lists[i] if len(
+                            sample.number_lists[i]) > 0 else None,
+                                                    numbers=sample.numbers[i] if len(sample.numbers[i]) > 0 else None))
+
+                protocol_instruction.add_sample(
+                    input_snippets=inputs_snippets,
+                    state=sample.output,
+                )
+
+            # Add guardrails
+            for guardrail_set in instruction["guardrails"]:
+                guardrail: Guardrail = Guardrail(
+                    good_prompt=guardrail_set["good_prompt"],
+                    bad_prompt=guardrail_set["bad_prompt"],
+                    bad_output=guardrail_set["bad_output"]
+                )
+
+                for sample in guardrail_set["bad_examples"]:
+                    guardrail.add_sample(sample)
+
+                protocol_instruction.add_guardrail(guardrail=guardrail, tokenset_index=guardrail_set["index"])
+
+            protocol.add_instruction(protocol_instruction)
+
+        return protocol
 
     def _prep_protocol(self):
         """
