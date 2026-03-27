@@ -1,4 +1,4 @@
-View the full package documentation at: https://docs.databiomes.com/mtp/intro
+View the full package documentation at: https://docs.databiomes.com/training/mtp/getting-started/
 
 # Model Train Protocol (MTP)
 
