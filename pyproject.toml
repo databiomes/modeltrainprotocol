@@ -12,7 +12,7 @@ model_train_protocol = ["schemas/**/*.json"]
 
 [project]
 name = "model-train-protocol"
-version = "0.6.0"
+version = "0.6.1"
 description = "Standardized protocol to train models on Databiomes"
 requires-python = ">=3.11"
 readme = { file = "README.md", content-type = "text/markdown" }
@@ -57,6 +57,6 @@ markers = [
 
 [project.urls]
 Homepage = "https://pypi.org/project/model-train-protocol/"
-Documentation = "https://modeltrainprotocol.readthedocs.io/"
+Documentation = "https://docs.databiomes.com/training/mtp/intro/"
 Repository = "https://github.com/databiomes/modeltrainprotocol"
 Issues = "https://github.com/databiomes/modeltrainprotocol/issues"
