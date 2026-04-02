@@ -344,23 +344,29 @@ class TemplateFile:
         example_usage_dict: dict[str, str] = self._create_examples()
         example_usage: ExampleUsage = ExampleUsage(**example_usage_dict)
 
-        samples: List[str] = []
+        states: List[str] = []
         if self.state_machine:
             state_machine_instruction: BaseInstruction = self.instructions_list[0]
             if not isinstance(state_machine_instruction, StateMachineInstruction):
                 raise TemplateFileError(
                     "For state machine templates, the provided instruction must be a StateMachineInstruction.")
-            samples = state_machine_instruction.get_states()
+            states = state_machine_instruction.get_states()
 
         template: TemplateModel = TemplateModel(
             encrypt=self.encrypt,
             state_machine=self.state_machine,
-            states=samples,
+            states=states,
             inputs=self.inputs,
             tokens=tokens,
             instructions=instruction_models,
             example_usage=example_usage,
         )
+
+        # Hotfix: if state machine, replace the <NON> output token with <NON>_<UNK>_
+        if self.has_guardrails and self.state_machine:
+            non_unk_combined: str = NON_TOKEN.key + "_" + UNK_TOKEN.key + "_"
+            template.tokens.output[non_unk_combined] = non_unk_combined
+            del template.tokens.output[UNK_TOKEN.key]
 
         json_dict: dict[str, object] = template.model_dump()
         final_json: dict[str, object] = {"$schema": get_template_schema_url()}
