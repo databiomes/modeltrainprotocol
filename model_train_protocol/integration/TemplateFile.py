@@ -17,7 +17,7 @@ from mtp_schemas.structures.template import (
 from model_train_protocol.common.tokens import FinalToken
 from model_train_protocol.common.tokens import NumToken, NumListToken
 from model_train_protocol.errors import TemplateFileError
-from model_train_protocol.utils.public import get_template_schema_url
+from mtp_schemas.utils import get_template_schema_url
 
 
 class InstructionTypeEnum(Enum):

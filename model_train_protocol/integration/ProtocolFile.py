@@ -3,12 +3,12 @@ from typing import Collection, List, Dict, Set
 
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.instructions import BaseInstruction
-from model_train_protocol.common.pydantic.protocol import Instruction, TokenInfo, Sample, \
+from mtp_schemas.structures.protocol import Instruction, TokenInfo, Sample, \
     InstructionSet, Guardrail
 from mtp_schemas.structures.protocol import Protocol
 from model_train_protocol.common.tokens import SpecialToken
 from model_train_protocol.errors import ProtocolFileLayerDepthError
-from model_train_protocol.utils import get_bloom_schema_url
+from mtp_schemas.utils import get_bloom_schema_url
 
 
 class ProtocolFile:
