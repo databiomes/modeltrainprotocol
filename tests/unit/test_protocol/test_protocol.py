@@ -240,7 +240,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -309,7 +309,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -375,10 +375,9 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction1 = Instruction(
+        instruction1 = Instruction(name='instruction_1', 
             input=instruction_input1,
-            output=instruction_output1,
-            name="same_name"
+            output=instruction_output1
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -394,10 +393,9 @@ class TestProtocol:
         # Create second instruction with the same name
         instruction_input2 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output2 = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction2 = Instruction(
+        instruction2 = Instruction(name='instruction_1', 
             input=instruction_input2,
-            output=instruction_output2,
-            name="same_name"  # Same name as instruction1
+            output=instruction_output2
         )
 
         for _ in range(3):
@@ -411,7 +409,7 @@ class TestProtocol:
         assert len(protocol.instructions) == 1
 
         # Try to add second instruction with same name - should raise ValueError and stop
-        with pytest.raises(ValueError, match="An instruction with name 'same_name' already exists"):
+        with pytest.raises(ValueError, match="An instruction with name 'instruction_1' already exists"):
             protocol.add_instruction(instruction2)
 
         # Verify only the first instruction was added (error stopped execution)
@@ -434,10 +432,9 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction1 = Instruction(
+        instruction1 = Instruction(name='instruction_1', 
             input=instruction_input1,
-            output=instruction_output1,
-            name="conflicting_name"
+            output=instruction_output1
         )
 
         context_snippet1 = context_set1.create_snippet("Context 1")
@@ -458,10 +455,9 @@ class TestProtocol:
 
         instruction_input2 = InstructionInput(tokensets=[context_set1, context_set3])
         instruction_output2 = InstructionOutput(tokenset=response_set2, final=final_token)
-        instruction2 = Instruction(
+        instruction2 = Instruction(name='instruction_1', 
             input=instruction_input2,
-            output=instruction_output2,
-            name="conflicting_name"  # Same name as instruction1
+            output=instruction_output2
         )
 
         context_snippet3 = context_set3.create_snippet("Context 3")
@@ -477,7 +473,7 @@ class TestProtocol:
         assert len(protocol.instructions) == 1
 
         # Try to add second instruction with same name - should raise ValueError
-        with pytest.raises(ValueError, match="An instruction with name 'conflicting_name' already exists"):
+        with pytest.raises(ValueError, match="An instruction with name 'instruction_1' already exists"):
             protocol.add_instruction(instruction2)
 
         # Verify only the first instruction was added
@@ -505,10 +501,9 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input1 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output1 = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction1 = Instruction(
+        instruction1 = Instruction(name='instruction_1', 
             input=instruction_input1,
-            output=instruction_output1,
-            name="first_instruction"
+            output=instruction_output1
         )
 
         for _ in range(3):
@@ -525,10 +520,9 @@ class TestProtocol:
 
         instruction_input2 = InstructionInput(tokensets=[context_set1, context_set3])
         instruction_output2 = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction2 = Instruction(
+        instruction2 = Instruction(name='instruction_2',
             input=instruction_input2,
-            output=instruction_output2,
-            name="second_instruction"
+            output=instruction_output2
         )
 
         context_snippet3 = context_set3.create_snippet("Context 3")
@@ -544,10 +538,9 @@ class TestProtocol:
         # Add third instruction with different name
         instruction_input3 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output3 = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction3 = Instruction(
+        instruction3 = Instruction(name='instruction_3',
             input=instruction_input3,
-            output=instruction_output3,
-            name="third_instruction"
+            output=instruction_output3
         )
 
         for _ in range(3):
@@ -564,10 +557,9 @@ class TestProtocol:
         # Try to add fourth instruction with name that conflicts with first
         instruction_input4 = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output4 = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction4 = Instruction(
+        instruction4 = Instruction(name='instruction_1', 
             input=instruction_input4,
-            output=instruction_output4,
-            name="first_instruction"  # Conflicts with instruction1
+            output=instruction_output4
         )
 
         for _ in range(3):
@@ -576,7 +568,7 @@ class TestProtocol:
                 output_snippet=output_snippet
             )
 
-        with pytest.raises(ValueError, match="An instruction with name 'first_instruction' already exists"):
+        with pytest.raises(ValueError, match="An instruction with name 'instruction_1' already exists"):
             protocol.add_instruction(instruction4)
 
         # Verify still only three instructions
@@ -597,7 +589,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])  # Only 2 context sets, but protocol expects 3
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -642,7 +634,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -698,7 +690,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -754,7 +746,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -810,7 +802,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -866,7 +858,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -1051,7 +1043,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
         )
@@ -1124,7 +1116,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
             context=[]  # No instruction context
@@ -1170,7 +1162,7 @@ class TestProtocol:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[context_set1, context_set2])
         instruction_output = InstructionOutput(tokenset=response_set, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
             context=[f"Instruction context line {i+1}" for i in range(instruction_context_lines)]

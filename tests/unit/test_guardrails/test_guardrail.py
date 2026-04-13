@@ -406,7 +406,7 @@ class TestGuardrail:
         # Create instruction with the tokenset
         instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Add guardrail to instruction
         instruction.add_guardrail(guardrail, tokenset_index=0)
@@ -433,7 +433,7 @@ class TestGuardrail:
         # Create instruction with the tokenset
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Add guardrail to instruction
         instruction.add_guardrail(guardrail, tokenset_index=0)
@@ -469,7 +469,7 @@ class TestGuardrail:
         # Create instruction with the tokenset
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Add first guardrail
         instruction.add_guardrail(guardrail_one, tokenset_index=0)
@@ -503,7 +503,7 @@ class TestInstructionAddGuardrailValidation:
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Try to add guardrail - should raise error
         with pytest.raises(ValueError, match="Guardrail must have at least 3 samples"):
@@ -531,7 +531,7 @@ class TestInstructionAddGuardrailValidation:
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Add guardrail - should succeed
         instruction.add_guardrail(guardrail, tokenset_index=0)
@@ -562,7 +562,7 @@ class TestInstructionAddGuardrailValidation:
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Add guardrail - should succeed
         instruction.add_guardrail(guardrail, tokenset_index=0)
@@ -591,7 +591,7 @@ class TestInstructionAddGuardrailValidation:
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Try to add guardrail with negative index - should raise error
         with pytest.raises(ValueError, match="tokenset_index -1 is out of range"):
@@ -620,7 +620,7 @@ class TestInstructionAddGuardrailValidation:
         another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
         instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Try to add guardrail with index 2 (out of range) - should raise error
         with pytest.raises(ValueError, match="tokenset_index 2 is out of range"):
@@ -650,7 +650,7 @@ class TestInstructionAddGuardrailValidation:
         third_token_set: TokenSet = TokenSet(tokens=(TOKEN_TALK,))
         instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set, third_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Add guardrail at index 1 - should succeed
         instruction.add_guardrail(guardrail, tokenset_index=1)
@@ -689,7 +689,7 @@ class TestInstructionAddGuardrailValidation:
         another_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH))
         instruction_input = InstructionInput(tokensets=[user_token_set, another_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Add first guardrail at index 0 - should succeed
         instruction.add_guardrail(guardrail_one, tokenset_index=0)
@@ -735,7 +735,7 @@ class TestInstructionAddGuardrailValidation:
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         instruction.add_guardrail(guardrail_one, tokenset_index=0)
 
@@ -764,7 +764,7 @@ class TestInstructionAddGuardrailValidation:
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Verify the exact error message for negative index
         with pytest.raises(ValueError) as exc_info:
@@ -791,7 +791,7 @@ class TestInstructionAddGuardrailValidation:
         user_token_set: TokenSet = TokenSet(tokens=(TOKEN_TREE, TOKEN_ENGLISH, TOKEN_ALICE, TOKEN_TALK))
         instruction_input = InstructionInput(tokensets=[user_token_set])
         instruction_output = InstructionOutput(tokenset=user_token_set, final=FinalToken("Result"))
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Verify the exact error message for too large index
         with pytest.raises(ValueError) as exc_info:

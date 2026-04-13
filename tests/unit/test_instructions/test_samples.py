@@ -20,7 +20,7 @@ class TestSampleValueValidation:
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -38,7 +38,7 @@ class TestSampleValueValidation:
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -56,7 +56,7 @@ class TestSampleValueValidation:
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -74,7 +74,7 @@ class TestSampleValueValidation:
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -94,7 +94,7 @@ class TestSampleValueValidation:
         # NumListToken is not a FinalToken, but InstructionOutput doesn't validate at init
         # It will fail when trying to use it in add_sample
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -114,7 +114,7 @@ class TestSampleValueValidation:
         # NumListToken is not a FinalToken, but InstructionOutput doesn't validate at init
         # It will fail when trying to use it in add_sample
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -133,7 +133,7 @@ class TestSampleValueValidation:
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -152,7 +152,7 @@ class TestSampleValueValidation:
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -171,7 +171,7 @@ class TestSampleValueValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -207,7 +207,7 @@ class TestSampleValueValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -247,7 +247,7 @@ class TestSampleValueValidation:
         final_num_token = FinalNumToken("Count", min_value=1, max_value=10)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -266,7 +266,7 @@ class TestSampleValueValidation:
         num_token = NumToken("Count", min_value=1, max_value=10)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -292,7 +292,7 @@ class TestSampleValueValidation:
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -318,7 +318,7 @@ class TestSampleValueValidation:
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=3)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -344,7 +344,7 @@ class TestSampleValueValidation:
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=1)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -363,7 +363,7 @@ class TestSampleValueValidation:
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=1)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -382,7 +382,7 @@ class TestSampleValueValidation:
         numlist_token = NumListToken("Coordinates", min_value=1, max_value=100, length=5)
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -404,7 +404,7 @@ class TestSampleValueValidation:
         # Test with FinalNumToken
         instruction_input1 = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output1 = InstructionOutput(tokenset=simple_tokenset, final=final_num_token)
-        instruction1 = Instruction(input=instruction_input1, output=instruction_output1)
+        instruction1 = Instruction(name='instruction_1', input=instruction_input1, output=instruction_output1)
         
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -423,7 +423,7 @@ class TestSampleValueValidation:
         instruction_input2 = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         # NumListToken is not a FinalToken, but InstructionOutput doesn't validate at init
         instruction_output2 = InstructionOutput(tokenset=simple_tokenset, final=numlist_token)
-        instruction2 = Instruction(input=instruction_input2, output=instruction_output2)
+        instruction2 = Instruction(name='instruction_1', input=instruction_input2, output=instruction_output2)
         # It will fail when trying to use it
         with pytest.raises(TypeError, match="object of type 'NumListToken' has no len"):
             instruction2.add_sample(
@@ -435,7 +435,7 @@ class TestSampleValueValidation:
         # Test with regular Token
         instruction_input3 = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output3 = InstructionOutput(tokenset=simple_tokenset, final=regular_token)
-        instruction3 = Instruction(input=instruction_input3, output=instruction_output3)
+        instruction3 = Instruction(name='instruction_1', input=instruction_input3, output=instruction_output3)
         
         # Should allow None
         instruction3.add_sample(
@@ -461,7 +461,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         # Only provide 1 context snippet when 2 are expected
@@ -478,7 +478,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Create snippet with wrong token set
         wrong_snippet = user_tokenset.create_snippet("Wrong context")
@@ -496,7 +496,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -624,7 +624,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset])
         instruction_output = InstructionOutput(tokenset=user_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
         assert instruction is not None
 
     def test_user_instruction_creation_without_user_token_succeeds(self, simple_tokenset):
@@ -642,7 +642,7 @@ class TestInstructionValidation:
         test_tokenset = TokenSet(tokens=(Token("Test"),))
         instruction_output = InstructionOutput(tokenset=test_tokenset, final=final_token)
         with pytest.raises(TypeError, match="Context must be a sequence of TokenSet instances"):
-            Instruction(
+            Instruction(name='instruction_1', 
                 input="not_a_base_input",  # Wrong type
                 output=instruction_output
             )
@@ -654,14 +654,14 @@ class TestInstructionValidation:
         instruction_output = InstructionOutput(tokenset=test_tokenset, final=final_token)
         with pytest.raises(TypeError, match="All items in context must be instances of TokenSet"):
             instruction_input = InstructionInput(tokensets=[test_tokenset, "not_a_tokenset"])
-            Instruction(input=instruction_input, output=instruction_output)
+            Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
     def test_instruction_creation_with_invalid_response_type_raises_error(self):
         """Test that Instruction raises error when output is not an InstructionOutput."""
         test_tokenset = TokenSet(tokens=(Token("Test"),))
         instruction_input = InstructionInput(tokensets=[test_tokenset])
         with pytest.raises(TypeError, match="Output must be an instance of Output"):
-            Instruction(
+            Instruction(name='instruction_1', 
                 input=instruction_input,
                 output="not_an_instruction_output",  # Wrong type
             )
@@ -672,7 +672,7 @@ class TestInstructionValidation:
         # InstructionOutput doesn't validate final type at initialization
         instruction_output = InstructionOutput(tokenset=test_tokenset, final="not_a_token")  # Wrong type
         instruction_input = InstructionInput(tokensets=[test_tokenset])
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
         
         # It will fail when trying to use it - the error occurs when checking len(self.output.final)
         # Since "not_a_token" is a string, len() returns its length, causing a confusing error
@@ -688,7 +688,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -740,7 +740,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -760,7 +760,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Create snippets with exactly 300 characters (should succeed)
         context_snippet1 = simple_tokenset.create_snippet("a" * MAXIMUM_CHARACTERS_PER_SNIPPET)
@@ -780,7 +780,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         # Create snippet with 301 characters (should fail)
         long_snippet = simple_tokenset.create_snippet("a" * (MAXIMUM_CHARACTERS_PER_SNIPPET + 1))
@@ -800,7 +800,7 @@ class TestInstructionValidation:
         final_token = FinalToken("Result")
         instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
         instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-        instruction = Instruction(input=instruction_input, output=instruction_output)
+        instruction = Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
         context_snippet1 = simple_tokenset.create_snippet("Context 1")
         context_snippet2 = user_tokenset.create_snippet("Context 2")
@@ -826,7 +826,7 @@ class TestInstructionValidation:
         context_lines = [f"Context line {i}" for i in range(MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION + 1)]
 
         with pytest.raises(ValueError, match=f"Context exceeds maximum allowed lines of {MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION}"):
-            Instruction(
+            Instruction(name='instruction_1', 
                 input=instruction_input,
                 output=instruction_output,
                 context=context_lines
@@ -843,7 +843,7 @@ class TestInstructionValidation:
         # Create context with exactly 10 lines (should succeed)
         context_lines = [f"Context line {i}" for i in range(MAXIMUM_CONTEXT_LINES_PER_INSTRUCTION)]
 
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
             context=context_lines
@@ -865,7 +865,7 @@ class TestInstructionValidation:
         ]
 
         with pytest.raises(ValueError, match=f"Context line.*exceeds maximum allowed length of {MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE} characters"):
-            Instruction(
+            Instruction(name='instruction_1', 
                 input=instruction_input,
                 output=instruction_output,
                 context=context_lines
@@ -885,7 +885,7 @@ class TestInstructionValidation:
             "b" * MAXIMUM_CHARACTERS_PER_INSTRUCTION_CONTEXT_LINE
         ]
 
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
             context=context_lines
