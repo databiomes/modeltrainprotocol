@@ -5,19 +5,19 @@ import os
 from typing import List, Optional, Set, Dict, Union
 
 from model_train_protocol.utils._protected import validate_string_subset, hash_string
-from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
-from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
+from model_train_protocol import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
+from model_train_protocol.common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
     MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM, TokenTypeEnum, \
     MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE
-from .common.instructions.BaseInstruction import BaseInstruction, Sample
-from .common.instructions.StateMachineInstruction import StateMachineInstruction
-from .common.instructions.input.StateMachineInput import StateMachineInput
-from .common.tokens import TokenSet
-from .common.tokens.SpecialToken import SpecialToken
-from .errors import ProtocolError, ProtocolTypeError, StateMachineError
+from model_train_protocol.common.instructions.BaseInstruction import BaseInstruction, Sample
+from model_train_protocol.common.instructions.StateMachineInstruction import StateMachineInstruction
+from model_train_protocol.common.instructions.input.StateMachineInput import StateMachineInput
+from model_train_protocol.common.tokens import TokenSet
+from model_train_protocol.common.tokens.SpecialToken import SpecialToken
+from model_train_protocol.errors import ProtocolError, ProtocolTypeError, StateMachineError
 from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
-from .integration.ProtocolFile import ProtocolFile
-from .integration.TemplateFile import TemplateFile
+from model_train_protocol.integration.ProtocolFile import ProtocolFile
+from model_train_protocol.integration.TemplateFile import TemplateFile
 
 
 class BloomUtils:
