@@ -21,14 +21,14 @@ class Instruction(BaseInstruction):
     output: InstructionOutput
     input: InstructionInput
 
-    def __init__(self, input: InstructionInput, output: InstructionOutput, context: List[str] | None = None, name: str | None = None):
-        f"""
+    def __init__(self, name: str, input: InstructionInput, output: InstructionOutput, context: List[str] | None = None):
+        """
         Initializes an Instruction instance.
 
-        :param input: List of tuples containing Token instances that define the input structure. This precedes the model's response.
-        :param output: A TokenSet instance that does not include any user tokens.
+        :param name: Name for the Instruction. Must be unique across all instructions.
+        :param input: InstructionInput instance containing the input structure.
+        :param output: InstructionOutput instance containing the output structure.
         :param context: A list of strings providing background context for the instruction.
-        :param name: Optional name for the Instruction.
         """
         super().__init__(input=input, output=output, context=context, name=name)
         if not isinstance(self.output, InstructionOutput):
