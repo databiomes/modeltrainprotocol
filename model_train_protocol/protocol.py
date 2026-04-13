@@ -15,7 +15,7 @@ from .common.instructions.input.StateMachineInput import StateMachineInput
 from .common.tokens import TokenSet
 from .common.tokens.SpecialToken import SpecialToken
 from .errors import ProtocolError, ProtocolTypeError, StateMachineError
-from mtp_schemas.structures.protocol import Protocol as PydanticProtocol
+from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
 from .integration.ProtocolFile import ProtocolFile
 from .integration.TemplateFile import TemplateFile
 
