@@ -17,10 +17,9 @@ def simple_workflow_2context_instruction_with_samples(simple_tokenset, user_toke
     final_token = FinalToken(token_workflow_result.value) if not isinstance(token_workflow_result, FinalToken) else token_workflow_result
     instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-    instruction = Instruction(
+    instruction = Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output,
-        name="simple_workflow_2context_instruction"
     )
     
     # Add samples with 2 context snippets
@@ -85,10 +84,9 @@ def simple_numtoken_workflow_2context_instruction_with_samples(simple_numtoken_t
     instruction_input = InstructionInput(tokensets=[simple_numtoken_tokenset, user_tokenset])
     # Use simple_tokenset (without NumToken) for output, as InstructionOutput doesn't allow NumTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-    instruction = Instruction(
+    instruction = Instruction(name='instruction_1', 
         input=instruction_input,
-        output=instruction_output,
-        name="simple_numtoken_workflow_2context_instruction"
+        output=instruction_output
     )
     
     # Add samples with 2 context snippets
@@ -120,10 +118,9 @@ def simple_workflow_5context_instruction_with_samples(
     final_token = FinalToken(token_workflow_result.value) if not isinstance(token_workflow_result, FinalToken) else token_workflow_result
     instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset, simple_tokenset, user_tokenset, simple_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-    instruction = Instruction(
+    instruction = Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output,
-        name="simple_workflow_5context_instruction"
     )
     
     # Add samples with 5 context snippets
@@ -192,10 +189,9 @@ def simple_numtoken_workflow_5context_instruction_with_samples(
     instruction_input = InstructionInput(tokensets=[simple_numtoken_tokenset, user_tokenset, simple_numtoken_tokenset, user_tokenset, simple_numtoken_tokenset])
     # Use simple_tokenset (without NumToken) for output, as InstructionOutput doesn't allow NumTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-    instruction = Instruction(
+    instruction = Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output,
-        name="simple_numtoken_workflow_5context_instruction"
     )
     
     # Add samples with 5 context snippets

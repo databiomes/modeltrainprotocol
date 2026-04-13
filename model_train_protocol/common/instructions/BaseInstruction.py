@@ -71,15 +71,16 @@ class BaseInstruction(ABC):
     """
     minimum_samples: int = GENERAL_MINIMUM_INSTRUCTION_SAMPLES
 
-    def __init__(self, input: BaseInput, output: BaseOutput, context: List[str] | None = None, name: str | None = None):
+    def __init__(self, name: str, input: BaseInput, output: BaseOutput, context: List[str] | None = None):
         """
         Initializes the common attributes to all Instructions.
         
+        :param name: Name for the Instruction. Must be unique across all instructions.
         :param input: BaseInput instance containing the input structure.
         :param output: BaseOutput instance containing the output structure.
         :param context: A list of strings providing background context for the instruction.
-        :param name: Optional name for the Instruction.
         """
+        self.name: str = name
         self.input: BaseInput = input
         self.output: BaseOutput = output
         if context is None:
@@ -92,9 +93,6 @@ class BaseInstruction(ABC):
         if not all(isinstance(ts, TokenSet) for ts in input.tokensets):
             raise InstructionTypeError("All items in context must be instances of TokenSet.")
         self._validate_context()
-        if name is None:
-            name = str(self.input) + str(self.output)
-        self.name: str = name
 
     @abc.abstractmethod
     def add_sample(self):

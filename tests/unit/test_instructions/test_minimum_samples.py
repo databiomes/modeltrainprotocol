@@ -24,10 +24,9 @@ class TestMinimumSamples:
         final_token = FinalToken("Continue")
         instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
-            output=instruction_output,
-            name="test_instruction"
+            output=instruction_output
         )
         
         # Add only 2 samples (less than minimum of 3)
@@ -56,10 +55,9 @@ class TestMinimumSamples:
         final_token = FinalToken("Continue")
         instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
             output=instruction_output,
-            name="test_instruction"
         )
         
         # Add exactly 3 samples (minimum required)
@@ -92,10 +90,9 @@ class TestMinimumSamples:
         final_token = FinalToken("Continue")
         instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=final_token)
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
-            output=instruction_output,
-            name="test_instruction"
+            output=instruction_output
         )
         
         # Add 5 samples (more than minimum of 3)
@@ -123,10 +120,9 @@ class TestMinimumSamples:
         final_token_2 = FinalToken("Vanish")
         instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=[final_token_1, final_token_2])
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
-            output=instruction_output,
-            name="test_instruction"
+            output=instruction_output
         )
         
         # Add 3 samples for final_token_1 (minimum)
@@ -175,10 +171,9 @@ class TestMinimumSamples:
         final_token_2 = FinalToken("Vanish")
         instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=[final_token_1, final_token_2])
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
-            output=instruction_output,
-            name="test_instruction"
+            output=instruction_output
         )
         
         # Add 3 samples for final_token_1 (minimum)
@@ -232,10 +227,9 @@ class TestMinimumSamples:
         final_token_2 = FinalToken("Vanish")
         instruction_input = InstructionInput(tokensets=[SIMPLE_TOKENSET, SIMPLE_TOKENSET])
         instruction_output = InstructionOutput(tokenset=SIMPLE_TOKENSET, final=[final_token_1, final_token_2])
-        instruction = Instruction(
+        instruction = Instruction(name='instruction_1', 
             input=instruction_input,
-            output=instruction_output,
-            name="test_instruction"
+            output=instruction_output
         )
         
         # Add 5 samples for final_token_1 (more than minimum)

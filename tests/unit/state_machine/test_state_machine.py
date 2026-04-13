@@ -53,7 +53,7 @@ def _build_basic_instruction() -> mtp.Instruction:
     instruction_input: mtp.InstructionInput = mtp.InstructionInput(tokensets=[input_one_set, input_two_set])
     instruction_output: mtp.InstructionOutput = mtp.InstructionOutput(tokenset=output_set, final=final_token)
 
-    return mtp.Instruction(input=instruction_input, output=instruction_output)
+    return mtp.Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
 
 class TestStateMachine:

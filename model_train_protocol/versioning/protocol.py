@@ -134,6 +134,7 @@ class Protocol:
             )
 
             protocol_instruction: Instruction = Instruction(
+                name=name,
                 input=instr_input,
                 output=instr_output,
                 context=context
