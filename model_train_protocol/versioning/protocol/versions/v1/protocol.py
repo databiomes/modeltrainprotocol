@@ -4,7 +4,10 @@ import json
 import os
 from typing import List, Optional, Set, Dict, Union
 
-from model_train_protocol.utils._protected import validate_string_subset, hash_string
+from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
+from model_train_protocol_schemas.utils import get_schema_version
+from packaging.version import Version
+
 from model_train_protocol import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
 from model_train_protocol.common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
     MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM, TokenTypeEnum, \
@@ -15,9 +18,10 @@ from model_train_protocol.common.instructions.input.StateMachineInput import Sta
 from model_train_protocol.common.tokens import TokenSet
 from model_train_protocol.common.tokens.SpecialToken import SpecialToken
 from model_train_protocol.errors import ProtocolError, ProtocolTypeError, StateMachineError
-from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
-from model_train_protocol.integration.ProtocolFile import ProtocolFile
-from model_train_protocol.integration.TemplateFile import TemplateFile
+from model_train_protocol.utils._protected import validate_string_subset, hash_string
+from model_train_protocol.versioning.files.protocol_file.v1.ProtocolFile import ProtocolFile
+from model_train_protocol.versioning.files.template_file.v1.TemplateFile import TemplateFile
+from model_train_protocol.versioning.protocol.versions.base import BaseProtocol
 
 
 class BloomUtils:
@@ -50,10 +54,10 @@ class BloomUtils:
             tokens[token.value] = token
 
 
-class Protocol:
+class Protocol(BaseProtocol):
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, inputs: int, encrypt: bool = True, state_machine: bool = False):
+    def __init__(self, name: str, inputs: int, encrypt: bool = True, state_machine: bool = False, version: Optional[Version] = None):
         """
         Initialize the Model Train Protocol (MTP)
 
@@ -61,11 +65,13 @@ class Protocol:
         :param inputs: The number of lines in each Instruction input. Must be at least 1.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         :param state_machine: Whether this Protocol is training a state machine with defined states / outputs.
+        :param version: The version of the protocol. If None, defaults to the latest version.
         """
         self.name: str = name
         self.input_count: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
         self.state_machine: bool = state_machine
+        self._version: Version = version if version is not None else Version(get_schema_version())
         if self.input_count < 1:
             raise ProtocolError("A minimum of 1 inputs is required for all instructions.")
         self.context: List[str] = []
@@ -76,6 +82,11 @@ class Protocol:
         self.special_tokens: Set[Token] = set()
         self.used_keys: Set[str] = set()
         self.has_guardrails: bool = False
+
+    @property
+    def version(self) -> Version:
+        """Returns the version of the protocol."""
+        return self._version
 
     @classmethod
     def from_json(cls, protocol_file: dict) -> 'Protocol':
