@@ -1,8 +1,6 @@
 """
 Test JSON creation for workflow protocol with 2 context lines.
 """
-import pytest
-from model_train_protocol import Protocol
 
 
 class TestWorkflow2ContextProtocolJSON:
@@ -11,7 +9,7 @@ class TestWorkflow2ContextProtocolJSON:
     def _get_json_output(self, protocol):
         """Helper method to get JSON output from a protocol."""
         protocol._prep_protocol()
-        from model_train_protocol.integration.ProtocolFile import ProtocolFile
+        from model_train_protocol.versioning.files.protocol_file.v1.ProtocolFile import ProtocolFile
         protocol_file = ProtocolFile(
             name=protocol.name,
             context=protocol.context,
@@ -247,7 +245,7 @@ class TestNumTokenWorkflow2ContextProtocolJSON:
     def _get_json_output(self, protocol):
         """Helper method to get JSON output from a protocol."""
         protocol._prep_protocol()
-        from model_train_protocol.integration.ProtocolFile import ProtocolFile
+        from model_train_protocol.versioning.files.protocol_file.v1.ProtocolFile import ProtocolFile
         protocol_file = ProtocolFile(
             name=protocol.name,
             context=protocol.context,
