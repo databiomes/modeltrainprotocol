@@ -11,8 +11,8 @@ from .common.instructions.output import InstructionOutput, ExtendedResponse
 from .common.instructions import Instruction, ExtendedInstruction
 from .common.instructions.StateMachineInstruction import StateMachineInstruction
 from .common.instructions.output.StateMachineOutput import StateMachineOutput
-from .versioning.protocol.versions.v1.protocol import Protocol
 from .common.guardrails import Guardrail
+from .versioning.protocol.versions.v1.protocol import Protocol
 from .errors import (
     MTPError,
     MTPValueError,
