@@ -2,13 +2,13 @@
 Tests for validating the inner structure of guardrails in JSON output.
 """
 import pytest
-from model_train_protocol import Protocol
+from model_train_protocol import ProtocolV1
 
 
 class TestGuardrailJSONStructure:
     """Test cases for validating guardrail structure in JSON output."""
 
-    def _get_json_output(self, protocol: Protocol) -> dict:
+    def _get_json_output(self, protocol: ProtocolV1) -> dict:
         """Helper method to get JSON output from protocol."""
         import json
         import tempfile

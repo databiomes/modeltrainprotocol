@@ -12,7 +12,7 @@ from .common.instructions import Instruction, ExtendedInstruction
 from .common.instructions.StateMachineInstruction import StateMachineInstruction
 from .common.instructions.output.StateMachineOutput import StateMachineOutput
 from .common.guardrails import Guardrail
-from .versioning.protocol.versions.v1.protocol import Protocol
+from .versioning.protocol.versions.v1.protocol import ProtocolV1
 from .errors import (
     MTPError,
     MTPValueError,
@@ -41,7 +41,7 @@ from .errors import (
 )
 
 __all__ = [
-    "Protocol",
+    "ProtocolV1",
     "Token",
     "FinalToken",
     "FinalNumToken",

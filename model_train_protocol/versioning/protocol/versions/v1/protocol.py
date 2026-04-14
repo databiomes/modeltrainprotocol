@@ -19,8 +19,8 @@ from model_train_protocol.common.tokens import TokenSet
 from model_train_protocol.common.tokens.SpecialToken import SpecialToken
 from model_train_protocol.errors import ProtocolError, ProtocolTypeError, StateMachineError
 from model_train_protocol.utils._protected import validate_string_subset, hash_string
-from model_train_protocol.versioning.files.protocol_file.v1.ProtocolFile import ProtocolFile
-from model_train_protocol.versioning.files.template_file.v1.TemplateFile import TemplateFile
+from model_train_protocol.versioning.files.protocol_file.v1.protocol_file import ProtocolFileV1
+from model_train_protocol.versioning.files.template_file.v1.template_file import TemplateFileV1
 from model_train_protocol.versioning.protocol.versions.base import BaseProtocol
 
 
@@ -43,7 +43,7 @@ class BloomUtils:
             protocol_instruction.add_guardrail(guardrail=guardrail, tokenset_index=guardrail_set["index"])
 
     @classmethod
-    def add_tokens(cls, protocol_file: dict, protocol: Protocol, tokens: dict[str, Token]):
+    def add_tokens(cls, protocol_file: dict, protocol: ProtocolV1, tokens: dict[str, Token]):
         """Adds tokens to instructions"""
         # Add tokens
         for token_value, token_info in protocol_file["tokens"].items():
@@ -54,7 +54,7 @@ class BloomUtils:
             tokens[token.value] = token
 
 
-class Protocol(BaseProtocol):
+class ProtocolV1(BaseProtocol):
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
     def __init__(self, name: str, inputs: int, encrypt: bool = True, state_machine: bool = False, version: Optional[Version] = None):
@@ -89,7 +89,7 @@ class Protocol(BaseProtocol):
         return self._version
 
     @classmethod
-    def from_json(cls, protocol_file: dict) -> 'Protocol':
+    def from_json(cls, protocol_file: dict) -> 'ProtocolV1':
         """
         Loads a Protocol from a JSON representation.
 
@@ -106,7 +106,7 @@ class Protocol(BaseProtocol):
         encrypt: bool = protocol_file["encrypted"]
 
         state_machine: bool = protocol_file["state_machine"]
-        protocol = Protocol(name=name, inputs=inputs, encrypt=encrypt, state_machine=state_machine)
+        protocol = ProtocolV1(name=name, inputs=inputs, encrypt=encrypt, state_machine=state_machine)
         protocol.context = protocol_file["context"]
 
         tokens: dict[str, Token] = {}
@@ -265,7 +265,7 @@ class Protocol(BaseProtocol):
         if instruction.has_guardrails:
             self.has_guardrails = True
 
-    def get_protocol_file(self, valid: bool) -> ProtocolFile:
+    def get_protocol_file(self, valid: bool) -> ProtocolFileV1:
         """
         Prepares and returns the ProtocolFile representation of the protocol.
 
@@ -273,13 +273,13 @@ class Protocol(BaseProtocol):
         """
         self._prep_protocol()
 
-        return ProtocolFile(
+        return ProtocolFileV1(
             name=self.name, context=self.context, inputs=self.input_count, encrypted=self.encrypt,
             valid=valid, state_machine=self.state_machine,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
-    def get_template_file(self) -> TemplateFile:
+    def get_template_file(self) -> TemplateFileV1:
         """
         Prepares and returns the TemplateFile representation of the protocol.
 
@@ -287,7 +287,7 @@ class Protocol(BaseProtocol):
         """
         self._prep_protocol()
 
-        return TemplateFile(
+        return TemplateFileV1(
             instructions=list(self.instructions),
             inputs=self.input_count,
             encrypt=self.encrypt,
@@ -418,8 +418,8 @@ class Protocol(BaseProtocol):
                 f"The instruction in a state machine protocol must be a StateMachineInstruction. Found instruction of type {type(list(self.instructions)[0])}.")
 
     @classmethod
-    def _load_state_machine_protocol(cls, protocol_file: dict, protocol: 'Protocol',
-                                     tokens: dict[str, Token]) -> 'Protocol':
+    def _load_state_machine_protocol(cls, protocol_file: dict, protocol: 'ProtocolV1',
+                                     tokens: dict[str, Token]) -> 'ProtocolV1':
         """Loads a state machine protocol from a JSON representation."""
         # Add tokens
         BloomUtils.add_tokens(protocol_file=protocol_file, protocol=protocol, tokens=tokens)

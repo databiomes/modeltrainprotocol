@@ -30,7 +30,7 @@ The first step in creating a model training protocol is to initialize the Protoc
 import model_train_protocol as mtp
 
 # Initialize the protocol
-protocol = mtp.Protocol(name="my_model", inputs=2, encrypt=False)
+protocol = mtp.ProtocolV1(name="my_model", inputs=2, encrypt=False)
 ```
 
 The parameter `inputs` is the number of lines in each Instruction's Input. Must be at least 2.

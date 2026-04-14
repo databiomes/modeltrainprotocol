@@ -1,0 +1,1 @@
+from model_train_protocol.versioning.files.protocol_file.v1.protocol_file import ProtocolFileV1
