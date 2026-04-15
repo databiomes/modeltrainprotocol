@@ -10,7 +10,7 @@ class TestBasicSimpleProtocolJSON:
     def _get_json_output(self, protocol):
         """Helper method to get JSON output from a protocol."""
         protocol._prep_protocol()
-        from model_train_protocol.v1.files.protocol_file.protocol_file_v1 import ProtocolFileV1
+        from model_train_protocol.v1 import ProtocolFileV1
         protocol_file = ProtocolFileV1(
             name=protocol.name,
             context=protocol.context,

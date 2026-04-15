@@ -5,7 +5,6 @@ import os
 from typing import List, Optional, Set, Dict, Union
 
 from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
-from model_train_protocol_schemas.utils import get_schema_version
 from packaging.version import Version
 
 from model_train_protocol import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
@@ -19,9 +18,10 @@ from model_train_protocol.common.tokens import TokenSet
 from model_train_protocol.common.tokens.SpecialToken import SpecialToken
 from model_train_protocol.errors import ProtocolError, ProtocolTypeError, StateMachineError
 from model_train_protocol.utils._protected import validate_string_subset, hash_string
-from model_train_protocol.v1.files.protocol_file.protocol_file_v1 import ProtocolFileV1
-from model_train_protocol.v1.files.template_file.template_file_v1 import TemplateFileV1
+from model_train_protocol.v1.protocol_file.protocol_file_v1 import ProtocolFileV1
+from model_train_protocol.v1.template_file.template_file_v1 import TemplateFileV1
 from model_train_protocol.v1.protocol.base import BaseProtocol
+from model_train_protocol.v1.utils import get_default_protocol_version
 
 
 class BloomUtils:
@@ -71,7 +71,7 @@ class ProtocolV1(BaseProtocol):
         self.input_count: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
         self.state_machine: bool = state_machine
-        self._version: Version = version if version is not None else Version(get_schema_version())
+        self._version: Version = version if version is not None else get_default_protocol_version()
         if self.input_count < 1:
             raise ProtocolError("A minimum of 1 inputs is required for all instructions.")
         self.context: List[str] = []
