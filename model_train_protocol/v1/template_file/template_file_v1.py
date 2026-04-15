@@ -40,7 +40,7 @@ class InstructionTypeEnum(Enum):
             raise TemplateFileError("Unknown instruction type.")
 
 
-class TemplateFile:
+class TemplateFileV1:
     """Manages the model.json file for model training protocols."""
 
     @dataclass
@@ -162,8 +162,8 @@ class TemplateFile:
                  state_machine: bool):
         """Initializes the template"""
 
-        self.tokens: TemplateFile.Tokens = TemplateFile.Tokens()
-        self.instructions: TemplateFile.Instructions = TemplateFile.Instructions()
+        self.tokens: TemplateFileV1.Tokens = TemplateFileV1.Tokens()
+        self.instructions: TemplateFileV1.Instructions = TemplateFileV1.Instructions()
         self.inputs: int = inputs
         self.instructions_list: list[BaseInstruction] = instructions
         self.encrypt: bool = encrypt

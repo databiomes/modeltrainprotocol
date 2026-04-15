@@ -1,6 +1,6 @@
 import pandas as pd
 
-from model_train_protocol import Protocol
+from model_train_protocol import ProtocolV1
 from model_train_protocol.csv import CSVConversion
 
 
@@ -16,7 +16,7 @@ def main():
     else:
         raise ValueError("Unsupported file format. Please provide a .csv or .xlsx file.")
     csv_conversion: CSVConversion = CSVConversion(csv_data=csv_data, protocol_name=file_name)
-    protocol: Protocol = csv_conversion.to_mtp()
+    protocol: ProtocolV1 = csv_conversion.to_mtp()
     protocol.save()
     protocol.template()
 

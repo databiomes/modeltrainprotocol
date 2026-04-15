@@ -83,7 +83,7 @@ class TestStateMachine:
             state_machine_instruction_with_samples: mtp.Instruction,
     ) -> None:
         protocol: mtp.Protocol = mtp.Protocol("state_machine_two_instructions", inputs=2, encrypt=False,
-                                              state_machine=True)
+                                                  state_machine=True)
         _add_context_lines(protocol)
         protocol.add_instruction(state_machine_instruction_with_samples)
 

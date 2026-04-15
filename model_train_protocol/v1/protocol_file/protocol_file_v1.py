@@ -11,7 +11,7 @@ from model_train_protocol.common.tokens import SpecialToken
 from model_train_protocol.errors import ProtocolFileLayerDepthError
 
 
-class ProtocolFile:
+class ProtocolFileV1:
     """Manages the model.json file for model training protocols."""
 
     @dataclass
@@ -52,10 +52,10 @@ class ProtocolFile:
         self._tokens: Dict[str, dict] = {}
         self._special_token_keys: Set[str] = set()
         self._instruction_token_keys: Set[str] = set()
-        self._instruction: ProtocolFile.ProtocolInstruction = ProtocolFile.ProtocolInstruction(
+        self._instruction: ProtocolFileV1.ProtocolInstruction = ProtocolFileV1.ProtocolInstruction(
             inputs=inputs)
         self._numbers: Dict[str, str] = {}
-        self._batches: ProtocolFile.Batches = ProtocolFile.Batches()
+        self._batches: ProtocolFileV1.Batches = ProtocolFileV1.Batches()
 
         # Add regular tokens
         self.add_tokens(tokens)
@@ -84,7 +84,7 @@ class ProtocolFile:
     def add_instructions(self, instructions: Collection[BaseInstruction]):
         """Adds instructions to the template."""
         for instruction in instructions:
-            instruction_set: ProtocolFile.ProtocolInstructionSet = ProtocolFile.ProtocolInstructionSet(
+            instruction_set: ProtocolFileV1.ProtocolInstructionSet = ProtocolFileV1.ProtocolInstructionSet(
                 guardrails=instruction.serialize_guardrails(),
                 context=instruction.context,
                 set=instruction.serialize_memory_set(),
