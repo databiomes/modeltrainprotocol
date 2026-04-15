@@ -18,10 +18,9 @@ def simple_workflow_instruction_with_samples(simple_tokenset, user_tokenset, sim
     final_token = FinalToken(token_workflow_result.value) if not isinstance(token_workflow_result, FinalToken) else token_workflow_result
     instruction_input = InstructionInput(tokensets=[simple_tokenset, user_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-    instruction = Instruction(
+    instruction = Instruction(name='simple_workflow_instruction_with_samples',
         input=instruction_input,
-        output=instruction_output,
-        name="simple_workflow_instruction"
+        output=instruction_output
     )
 
     # Add samples with 2 context snippets - one from each tokenset
@@ -65,7 +64,7 @@ def user_workflow_instruction_with_samples(simple_tokenset, user_tokenset, simpl
     instruction = ExtendedInstruction(
         input=instruction_input,
         output=extended_response,
-        name="user_workflow_instruction"
+        name="user_workflow_instruction_with_samples"
     )
 
     # Add samples with 2 context snippets plus output snippet
@@ -111,10 +110,9 @@ def simple_numtoken_workflow_instruction_with_samples(simple_numtoken_tokenset, 
     instruction_input = InstructionInput(tokensets=[simple_numtoken_tokenset, user_tokenset])
     # Use simple_tokenset (without NumToken) for output, as InstructionOutput doesn't allow NumTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-    instruction = Instruction(
+    instruction = Instruction(name='simple_numtoken_workflow_instruction_with_samples',
         input=instruction_input,
         output=instruction_output,
-        name="simple_numtoken_workflow_instruction"
     )
 
     # Add samples with 2 context snippets - one from each tokenset
@@ -151,7 +149,7 @@ def simple_numlisttoken_workflow_instruction_with_samples(
     instruction_input = InstructionInput(tokensets=[simple_numlisttoken_tokenset, user_tokenset])
     # Use simple_tokenset (without NumListToken) for output, as InstructionOutput doesn't allow NumListTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=final_token)
-    instruction = Instruction(
+    instruction = Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )

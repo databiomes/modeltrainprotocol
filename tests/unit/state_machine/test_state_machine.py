@@ -53,7 +53,7 @@ def _build_basic_instruction() -> mtp.Instruction:
     instruction_input: mtp.InstructionInput = mtp.InstructionInput(tokensets=[input_one_set, input_two_set])
     instruction_output: mtp.InstructionOutput = mtp.InstructionOutput(tokenset=output_set, final=final_token)
 
-    return mtp.Instruction(input=instruction_input, output=instruction_output)
+    return mtp.Instruction(name='instruction_1', input=instruction_input, output=instruction_output)
 
 
 class TestStateMachine:
@@ -83,7 +83,7 @@ class TestStateMachine:
             state_machine_instruction_with_samples: mtp.Instruction,
     ) -> None:
         protocol: mtp.Protocol = mtp.Protocol("state_machine_two_instructions", inputs=2, encrypt=False,
-                                              state_machine=True)
+                                                  state_machine=True)
         _add_context_lines(protocol)
         protocol.add_instruction(state_machine_instruction_with_samples)
 

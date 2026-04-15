@@ -4,20 +4,24 @@ import json
 import os
 from typing import List, Optional, Set, Dict, Union
 
-from model_train_protocol.utils._protected import validate_string_subset, hash_string
-from . import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
-from .common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
+from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
+from packaging.version import Version
+
+from model_train_protocol import Token, FinalToken, Guardrail, Instruction, InstructionInput, InstructionOutput, Snippet
+from model_train_protocol.common.constants import BOS_TOKEN, EOS_TOKEN, RUN_TOKEN, PAD_TOKEN, UNK_TOKEN, NON_TOKEN, \
     MINIMUM_TOTAL_CONTEXT_LINES, PER_FINAL_TOKEN_SAMPLE_MINIMUM, TokenTypeEnum, \
     MAXIMUM_CHARACTERS_PER_MODEL_CONTEXT_LINE
-from .common.instructions.BaseInstruction import BaseInstruction, Sample
-from .common.instructions.StateMachineInstruction import StateMachineInstruction
-from .common.instructions.input.StateMachineInput import StateMachineInput
-from .common.tokens import TokenSet
-from .common.tokens.SpecialToken import SpecialToken
-from .errors import ProtocolError, ProtocolTypeError, StateMachineError
-from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
-from .integration.ProtocolFile import ProtocolFile
-from .integration.TemplateFile import TemplateFile
+from model_train_protocol.common.instructions.BaseInstruction import BaseInstruction, Sample
+from model_train_protocol.common.instructions.StateMachineInstruction import StateMachineInstruction
+from model_train_protocol.common.instructions.input.StateMachineInput import StateMachineInput
+from model_train_protocol.common.tokens import TokenSet
+from model_train_protocol.common.tokens.SpecialToken import SpecialToken
+from model_train_protocol.errors import ProtocolError, ProtocolTypeError, StateMachineError
+from model_train_protocol.utils._protected import validate_string_subset, hash_string
+from model_train_protocol.v1.protocol_file.protocol_file_v1 import ProtocolFileV1
+from model_train_protocol.v1.template_file.template_file_v1 import TemplateFileV1
+from model_train_protocol.v1.protocol.base import BaseProtocol
+from model_train_protocol.v1.utils import get_default_protocol_version
 
 
 class BloomUtils:
@@ -39,7 +43,7 @@ class BloomUtils:
             protocol_instruction.add_guardrail(guardrail=guardrail, tokenset_index=guardrail_set["index"])
 
     @classmethod
-    def add_tokens(cls, protocol_file: dict, protocol: Protocol, tokens: dict[str, Token]):
+    def add_tokens(cls, protocol_file: dict, protocol: ProtocolV1, tokens: dict[str, Token]):
         """Adds tokens to instructions"""
         # Add tokens
         for token_value, token_info in protocol_file["tokens"].items():
@@ -50,10 +54,10 @@ class BloomUtils:
             tokens[token.value] = token
 
 
-class Protocol:
+class ProtocolV1(BaseProtocol):
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, inputs: int, encrypt: bool = True, state_machine: bool = False):
+    def __init__(self, name: str, inputs: int, encrypt: bool = True, state_machine: bool = False, version: Optional[Version] = None):
         """
         Initialize the Model Train Protocol (MTP)
 
@@ -61,11 +65,13 @@ class Protocol:
         :param inputs: The number of lines in each Instruction input. Must be at least 1.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         :param state_machine: Whether this Protocol is training a state machine with defined states / outputs.
+        :param version: The version of the protocol. If None, defaults to the latest version.
         """
         self.name: str = name
         self.input_count: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
         self.state_machine: bool = state_machine
+        self._version: Version = version if version is not None else get_default_protocol_version()
         if self.input_count < 1:
             raise ProtocolError("A minimum of 1 inputs is required for all instructions.")
         self.context: List[str] = []
@@ -77,8 +83,13 @@ class Protocol:
         self.used_keys: Set[str] = set()
         self.has_guardrails: bool = False
 
+    @property
+    def version(self) -> Version:
+        """Returns the version of the protocol."""
+        return self._version
+
     @classmethod
-    def from_json(cls, protocol_file: dict) -> 'Protocol':
+    def from_json(cls, protocol_file: dict) -> 'ProtocolV1':
         """
         Loads a Protocol from a JSON representation.
 
@@ -95,7 +106,7 @@ class Protocol:
         encrypt: bool = protocol_file["encrypted"]
 
         state_machine: bool = protocol_file["state_machine"]
-        protocol = Protocol(name=name, inputs=inputs, encrypt=encrypt, state_machine=state_machine)
+        protocol = ProtocolV1(name=name, inputs=inputs, encrypt=encrypt, state_machine=state_machine)
         protocol.context = protocol_file["context"]
 
         tokens: dict[str, Token] = {}
@@ -134,6 +145,7 @@ class Protocol:
             )
 
             protocol_instruction: Instruction = Instruction(
+                name=name,
                 input=instr_input,
                 output=instr_output,
                 context=context
@@ -253,7 +265,7 @@ class Protocol:
         if instruction.has_guardrails:
             self.has_guardrails = True
 
-    def get_protocol_file(self, valid: bool) -> ProtocolFile:
+    def get_protocol_file(self, valid: bool) -> ProtocolFileV1:
         """
         Prepares and returns the ProtocolFile representation of the protocol.
 
@@ -261,13 +273,13 @@ class Protocol:
         """
         self._prep_protocol()
 
-        return ProtocolFile(
+        return ProtocolFileV1(
             name=self.name, context=self.context, inputs=self.input_count, encrypted=self.encrypt,
             valid=valid, state_machine=self.state_machine,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
         )
 
-    def get_template_file(self) -> TemplateFile:
+    def get_template_file(self) -> TemplateFileV1:
         """
         Prepares and returns the TemplateFile representation of the protocol.
 
@@ -275,7 +287,7 @@ class Protocol:
         """
         self._prep_protocol()
 
-        return TemplateFile(
+        return TemplateFileV1(
             instructions=list(self.instructions),
             inputs=self.input_count,
             encrypt=self.encrypt,
@@ -406,8 +418,8 @@ class Protocol:
                 f"The instruction in a state machine protocol must be a StateMachineInstruction. Found instruction of type {type(list(self.instructions)[0])}.")
 
     @classmethod
-    def _load_state_machine_protocol(cls, protocol_file: dict, protocol: 'Protocol',
-                                     tokens: dict[str, Token]) -> 'Protocol':
+    def _load_state_machine_protocol(cls, protocol_file: dict, protocol: 'ProtocolV1',
+                                     tokens: dict[str, Token]) -> 'ProtocolV1':
         """Loads a state machine protocol from a JSON representation."""
         # Add tokens
         BloomUtils.add_tokens(protocol_file=protocol_file, protocol=protocol, tokens=tokens)

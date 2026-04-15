@@ -48,7 +48,7 @@ def simple_basic_instruction(simple_tokenset) -> Instruction:
     """Basic simple instruction."""
     instruction_input = InstructionInput(tokensets=[simple_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=FINAL_TOKEN_RESULT)
-    return Instruction(
+    return Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )
@@ -71,7 +71,7 @@ def simple_numtoken_instruction(simple_numtoken_tokenset, simple_tokenset) -> In
     instruction_input = InstructionInput(tokensets=[simple_numtoken_tokenset])
     # Use simple_tokenset (without NumToken) for output, as InstructionOutput doesn't allow NumTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=FINAL_NUM_TOKEN_COUNT)
-    return Instruction(
+    return Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )
@@ -94,7 +94,7 @@ def simple_numlisttoken_instruction(simple_numlisttoken_tokenset, simple_tokense
     instruction_input = InstructionInput(tokensets=[simple_numlisttoken_tokenset])
     # Use simple_tokenset (without NumListToken) for output, as InstructionOutput doesn't allow NumListTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=FINAL_TOKEN_COORDINATES)
-    return Instruction(
+    return Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )
@@ -117,7 +117,7 @@ def simple_mixed_instruction(simple_mixed_tokenset, simple_tokenset) -> Instruct
     instruction_input = InstructionInput(tokensets=[simple_mixed_tokenset])
     # Use simple_tokenset (without NumToken/NumListToken) for output, as InstructionOutput doesn't allow numeric tokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=FINAL_NUM_TOKEN_COUNT)
-    return Instruction(
+    return Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )
@@ -141,7 +141,7 @@ def simple_scores_instruction(scores_tokenset, simple_tokenset) -> Instruction:
     instruction_input = InstructionInput(tokensets=[scores_tokenset])
     # Use simple_tokenset (without NumListToken) for output, as InstructionOutput doesn't allow NumListTokens in response tokenset
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=FINAL_TOKEN_SCORES)
-    return Instruction(
+    return Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )
@@ -276,7 +276,7 @@ def simple_instruction_with_none_final(simple_tokenset) -> Instruction:
     """Simple instruction with NON_TOKEN final token."""
     instruction_input = InstructionInput(tokensets=[simple_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=NON_TOKEN)
-    return Instruction(
+    return Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )
@@ -287,7 +287,7 @@ def simple_instruction_with_non_token_final(simple_tokenset) -> Instruction:
     """Simple instruction with NON_TOKEN final."""
     instruction_input = InstructionInput(tokensets=[simple_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=NON_TOKEN)
-    return Instruction(
+    return Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )
@@ -298,7 +298,7 @@ def simple_instruction_with_empty_samples(simple_tokenset) -> Instruction:
     """Simple instruction with no samples."""
     instruction_input = InstructionInput(tokensets=[simple_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=FINAL_TOKEN_RESULT)
-    return Instruction(
+    return Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )
@@ -309,7 +309,7 @@ def simple_instruction_with_multiple_samples(simple_tokenset, simple_context_sam
     """Simple instruction with multiple samples."""
     instruction_input = InstructionInput(tokensets=[simple_tokenset])
     instruction_output = InstructionOutput(tokenset=simple_tokenset, final=FINAL_TOKEN_RESULT)
-    instruction = Instruction(
+    instruction = Instruction(name='instruction_1', 
         input=instruction_input,
         output=instruction_output
     )

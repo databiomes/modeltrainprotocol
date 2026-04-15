@@ -1,8 +1,6 @@
 """
 Test JSON creation for comprehensive protocol.
 """
-import pytest
-from model_train_protocol import Protocol
 from tests.utils.protocol_json_utils import assert_special_tokens_in_tokens
 
 
@@ -12,8 +10,8 @@ class TestComprehensiveProtocolJSON:
     def _get_json_output(self, protocol):
         """Helper method to get JSON output from a protocol."""
         protocol._prep_protocol()
-        from model_train_protocol.integration.ProtocolFile import ProtocolFile
-        protocol_file = ProtocolFile(
+        from model_train_protocol.v1 import ProtocolFileV1
+        protocol_file = ProtocolFileV1(
             name=protocol.name,
             context=protocol.context,
             inputs=protocol.input_count,
