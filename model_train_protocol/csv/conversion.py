@@ -7,7 +7,7 @@ from model_train_protocol import GuardrailError, StateMachineInstruction, StateM
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.tokens import Token, TokenSet
 from model_train_protocol.errors.conversion import ConversionError
-from model_train_protocol.v1.protocol import ProtocolV1
+from model_train_protocol.v1 import ProtocolV1
 
 
 @dataclass
@@ -127,8 +127,6 @@ class CSVConversion:
     def _process_instruction(self) -> None:
         """
         Processes a single instruction and adds it to the protocol.
-
-        :param instruction: The instruction name.
         """
         instruction_outputs: set[str] = self._get_unique_states()
         guardrail = Guardrail(
