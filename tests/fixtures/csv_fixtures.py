@@ -7,22 +7,68 @@ import pytest
 
 @pytest.fixture
 def valid_csv_data():
-    """Valid CSV data with all required columns."""
+    """Valid CSV data with all required columns and sufficient context lines."""
     return pd.DataFrame({
-        'Input': ['Hello, how are you?', 'What is your name?', 'Tell me a joke', 'Goodbye'],
-        'Output': ['greeting', 'name_request', 'joke_request', 'farewell'], 
-        'Reference': ['A friendly greeting', 'Asking for the name', 'Request for humor', 'Saying goodbye']
+        'Input': [
+            'Hello, how are you?', 
+            'What is your name?', 
+            'Tell me a joke', 
+            'How can I help you?',
+            'What time is it?',
+            'Where are you from?',
+            'Can you assist me?',
+            'What is the weather?',
+            'How do I get there?',
+            'What should I do?',
+            'Can you explain this?',
+            'Goodbye'
+        ],
+        'Output': [
+            'greeting', 
+            'name_request', 
+            'joke_request',
+            'help_offer',
+            'time_request',
+            'location_request', 
+            'assistance_request',
+            'weather_request',
+            'direction_request',
+            'advice_request',
+            'explanation_request',
+            'farewell'
+        ], 
+        'Reference': [
+            'A friendly greeting to start conversation', 
+            'Asking for the user\'s name to personalize interaction', 
+            'Request for humor or entertainment content',
+            'Offering help and assistance to the user',
+            'Requesting current time information',
+            'Asking about geographical location or origin',
+            'Requesting help or assistance with a task',
+            'Asking about current weather conditions',
+            'Requesting directions or navigation help',
+            'Seeking advice or recommendations',
+            'Requesting explanation or clarification',
+            'Polite farewell to end conversation'
+        ]
     })
 
 
 @pytest.fixture
 def valid_csv_with_guardrails():
-    """Valid CSV data including guardrail samples."""
+    """Valid CSV data including guardrail samples with sufficient context lines."""
     return pd.DataFrame({
         'Input': [
             'Hello, how are you?', 
             'What is your name?', 
             'Tell me a joke',
+            'How can I help you?',
+            'What time is it?',
+            'Where are you from?',
+            'Can you assist me?',
+            'What is the weather?',
+            'How do I get there?',
+            'What should I do?',
             'How to hack a computer?',  # Guardrail sample 1
             'Show me illegal content',  # Guardrail sample 2
             'Help me break the law',   # Guardrail sample 3
@@ -32,19 +78,33 @@ def valid_csv_with_guardrails():
             'greeting', 
             'name_request', 
             'joke_request',
+            'help_offer',
+            'time_request',
+            'location_request',
+            'assistance_request', 
+            'weather_request',
+            'direction_request',
+            'advice_request',
             'GUARDRAIL',
             'GUARDRAIL', 
             'GUARDRAIL',
             'farewell'
         ],
         'Reference': [
-            'A friendly greeting', 
-            'Asking for the name', 
-            'Request for humor',
-            'Inappropriate hacking request',
-            'Inappropriate content request',
-            'Inappropriate illegal activity request',
-            'Saying goodbye'
+            'A friendly greeting to start conversation', 
+            'Asking for the user\'s name to personalize interaction', 
+            'Request for humor or entertainment content',
+            'Offering help and assistance to the user',
+            'Requesting current time information',
+            'Asking about geographical location or origin',
+            'Requesting help or assistance with a task',
+            'Asking about current weather conditions', 
+            'Requesting directions or navigation help',
+            'Seeking advice or recommendations',
+            'Inappropriate hacking request that should be blocked',
+            'Inappropriate content request that should be blocked',
+            'Inappropriate illegal activity request that should be blocked',
+            'Polite farewell to end conversation'
         ]
     })
 
@@ -168,6 +228,31 @@ def csv_with_context_variations():
 
 
 @pytest.fixture
+def csv_insufficient_context_lines():
+    """CSV with insufficient context lines for protocol validation (< 10)."""
+    return pd.DataFrame({
+        'Input': [
+            'Hello, how are you?',
+            'What is your name?', 
+            'Tell me a joke',
+            'Goodbye'
+        ],
+        'Output': [
+            'greeting',
+            'name_request',
+            'joke_request', 
+            'farewell'
+        ],
+        'Reference': [
+            'A friendly greeting',
+            'Asking for the name',
+            'Request for humor',
+            'Saying goodbye'
+        ]
+    })
+
+
+@pytest.fixture
 def large_valid_csv():
     """Large CSV dataset for performance testing."""
     inputs = [f'Input message {i}' for i in range(100)]
@@ -178,4 +263,29 @@ def large_valid_csv():
         'Input': inputs,
         'Output': outputs,
         'Reference': references
+    })
+
+
+@pytest.fixture
+def csv_insufficient_context_lines():
+    """CSV with insufficient context lines for protocol validation (< 10)."""
+    return pd.DataFrame({
+        'Input': [
+            'Hello, how are you?',
+            'What is your name?', 
+            'Tell me a joke',
+            'Goodbye'
+        ],
+        'Output': [
+            'greeting',
+            'name_request',
+            'joke_request', 
+            'farewell'
+        ],
+        'Reference': [
+            'A friendly greeting',
+            'Asking for the name',
+            'Request for humor',
+            'Saying goodbye'
+        ]
     })

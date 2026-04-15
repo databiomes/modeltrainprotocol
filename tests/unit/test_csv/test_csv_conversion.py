@@ -1,10 +1,9 @@
 """
 Unit tests for CSV conversion functionality.
 """
-import pandas as pd
-import pytest
 
-from model_train_protocol import GuardrailError
+from model_train_protocol import StateMachineInstruction
+from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol.csv.conversion import CSVConversion, CSVLine
 from model_train_protocol.errors.conversion import ConversionError
 from model_train_protocol.errors.protocol import ProtocolError
@@ -56,7 +55,7 @@ class TestCSVConversion:
         assert conversion.protocol.input_count == 1
         assert conversion.protocol.encrypt is False
         assert conversion.protocol.state_machine is True
-        assert len(conversion.ordered_lines) == 4
+        assert len(conversion.ordered_lines) == 12
 
     def test_initialization_default_protocol_name(self, valid_csv_data):
         """Test CSVConversion initialization with default protocol name."""
@@ -84,16 +83,24 @@ class TestCSVConversion:
         assert processed_data.iloc[0]['Input'] == 'Valid input'
         assert processed_data.iloc[1]['Input'] == ''  # Empty string is kept
         assert processed_data.iloc[2]['Input'] == 'Another valid'
+        
+        # Test full conversion works with processed data
+        protocol = conversion.to_mtp()
+        assert isinstance(protocol, ProtocolV1)
 
     def test_format_lines_basic(self, valid_csv_data):
         """Test basic line formatting."""
         conversion = CSVConversion(valid_csv_data)
         lines = conversion.ordered_lines
         
-        assert len(lines) == 4
+        assert len(lines) == 12
         assert lines[0].input_str == "Hello, how are you?"
         assert lines[0].output_str == "greeting"
-        assert lines[0].context_str == "A friendly greeting"
+        assert lines[0].context_str == "A friendly greeting to start conversation"
+        
+        # Test full conversion works with formatted lines
+        protocol = conversion.to_mtp()
+        assert isinstance(protocol, ProtocolV1)
 
     def test_format_line_empty_output_inherits_previous(self, csv_with_empty_outputs):
         """Test that empty outputs inherit from previous line."""
@@ -104,6 +111,10 @@ class TestCSVConversion:
         assert lines[1].output_str == "first_state"  # Inherited
         assert lines[2].output_str == "first_state"  # Inherited
         assert lines[3].output_str == "fourth_state"
+        
+        # Test full conversion works with inherited outputs
+        protocol = conversion.to_mtp()
+        assert isinstance(protocol, ProtocolV1)
 
     def test_format_line_nan_output_inherits_previous(self, csv_with_nan_outputs):
         """Test that NaN outputs inherit from previous line."""
@@ -113,6 +124,10 @@ class TestCSVConversion:
         assert lines[0].output_str == "state1"
         assert lines[1].output_str == "state1"  # Inherited from previous
         assert lines[2].output_str == "state2"
+        
+        # Test full conversion works with NaN output inheritance
+        protocol = conversion.to_mtp()
+        assert isinstance(protocol, ProtocolV1)
 
     def test_format_line_first_row_empty_output_raises_error(self, csv_empty_output_first_row):
         """Test that empty output in first row raises ConversionError."""
@@ -124,9 +139,15 @@ class TestCSVConversion:
         conversion = CSVConversion(valid_csv_with_guardrails)
         unique_states = conversion.unique_states
         
-        expected_states = {"greeting", "name_request", "joke_request", "farewell"}
+        expected_states = {"greeting", "name_request", "joke_request", "help_offer", "time_request", 
+                          "location_request", "assistance_request", "weather_request", 
+                          "direction_request", "advice_request", "farewell"}
         assert unique_states == expected_states
         assert "GUARDRAIL" not in unique_states
+        
+        # Test full conversion works with guardrail exclusion
+        protocol = conversion.to_mtp()
+        assert isinstance(protocol, ProtocolV1)
 
     def test_get_unique_states_handles_empty_and_nan(self, csv_with_context_variations):
         """Test that unique states excludes empty and NaN values."""
@@ -135,6 +156,10 @@ class TestCSVConversion:
         
         expected_states = {"state1", "state2", "state3", "state4"}
         assert unique_states == expected_states
+        
+        # Test full conversion works with context variations
+        protocol = conversion.to_mtp()
+        assert isinstance(protocol, ProtocolV1)
 
     def test_to_mtp_basic_conversion(self, valid_csv_data):
         """Test basic CSV to MTP conversion."""
@@ -146,9 +171,10 @@ class TestCSVConversion:
         assert len(protocol.instructions) == 1
         
         # Check the instruction
-        instruction = list(protocol.instructions)[0]
-        assert len(instruction.get_states()) == 4  # greeting, name_request, joke_request, farewell
-        assert len(instruction.samples) == 4
+        instruction: BaseInstruction = list(protocol.instructions)[0]
+        assert isinstance(instruction, StateMachineInstruction)
+        assert len(instruction.get_states()) == 12  # 12 regular states
+        assert len(instruction.samples) == 12
 
     def test_to_mtp_with_guardrails(self, valid_csv_with_guardrails):
         """Test CSV to MTP conversion with valid guardrails."""
@@ -157,9 +183,10 @@ class TestCSVConversion:
         
         instruction = list(protocol.instructions)[0]
         
-        # Should have 4 regular states (excluding guardrail)
-        assert len(instruction.get_states()) == 5  # 4 regular states + GUARDRAIL
-        
+        # Should have 11 regular states + GUARDRAIL = 12 total states
+        assert isinstance(instruction, StateMachineInstruction)
+        assert len(instruction.get_states()) == 12
+
         # Should have guardrail with 3 samples
         assert instruction.has_guardrails
         guardrails = instruction.get_guardrails()
@@ -176,6 +203,7 @@ class TestCSVConversion:
         # Should succeed but with no guardrails added due to insufficient samples
         instruction = list(protocol.instructions)[0]
         assert not instruction.has_guardrails  # No guardrails should be added
+        assert isinstance(instruction, StateMachineInstruction)
         assert len(instruction.get_states()) == 3  # Only regular states
 
     def test_to_mtp_with_proper_guardrails_success(self, csv_with_proper_guardrails_but_wrong_context):
@@ -188,6 +216,7 @@ class TestCSVConversion:
         assert instruction.has_guardrails
         assert len(instruction.get_guardrails()) == 1
         assert len(instruction.get_guardrails()[0].samples) == 3
+        assert isinstance(instruction, StateMachineInstruction)
         assert len(instruction.get_states()) == 4  # 3 regular states + GUARDRAIL
 
     def test_to_mtp_adds_context(self, csv_with_context_variations):
@@ -228,6 +257,7 @@ class TestCSVConversion:
         
         instruction = list(protocol.instructions)[0]
         assert len(instruction.samples) == 100
+        assert isinstance(instruction, StateMachineInstruction)
         assert len(instruction.get_states()) == 10  # 10 unique states
 
     def test_assign_latest_helper_method(self):
@@ -295,6 +325,7 @@ class TestCSVConversionEdgeCases:
         protocol = conversion.to_mtp()
         
         instruction = list(protocol.instructions)[0]
+        assert isinstance(instruction, StateMachineInstruction)
         assert len(instruction.get_states()) == 2  # Only unique states
         assert set(instruction.get_states()) == {'state1', 'state2'}
         assert len(instruction.samples) == 3  # All samples preserved
@@ -327,3 +358,48 @@ class TestCSVConversionEdgeCases:
         instruction = list(protocol.instructions)[0]
         # All contexts should be preserved with special characters
         assert len(instruction.context) == 3
+
+
+class TestCSVConversionValidation:
+    """Test CSV conversion protocol validation requirements."""
+
+    def test_valid_csv_protocol_save_success(self, valid_csv_data):
+        """Test that valid CSV with sufficient context lines passes validation."""
+        conversion = CSVConversion(valid_csv_data)
+        protocol = conversion.to_mtp()
+        
+        # Should succeed - we have 12 context lines which is > 10
+        try:
+            protocol.save()
+            # If we get here, save succeeded
+            assert True
+        except Exception as e:
+            pytest.fail(f"Protocol save should have succeeded but failed with: {e}")
+    
+    def test_insufficient_context_lines_validation_fails(self, csv_insufficient_context_lines):
+        """Test that CSV with insufficient context lines fails validation."""
+        conversion = CSVConversion(csv_insufficient_context_lines)
+        protocol = conversion.to_mtp()
+        
+        # Should fail validation due to insufficient context lines (4 < 10)
+        try:
+            protocol.save()
+            pytest.fail("Protocol save should have failed due to insufficient context lines")
+        except Exception as e:
+            # Expect validation error mentioning context lines
+            error_message = str(e)
+            assert "context lines" in error_message.lower()
+            assert "minimum required of 10" in error_message
+    
+    def test_valid_csv_with_guardrails_save_success(self, valid_csv_with_guardrails):
+        """Test that valid CSV with guardrails and sufficient context passes validation."""
+        conversion = CSVConversion(valid_csv_with_guardrails)
+        protocol = conversion.to_mtp()
+        
+        # Should succeed - we have 14 context lines which is > 10
+        try:
+            protocol.save()
+            # If we get here, save succeeded
+            assert True
+        except Exception as e:
+            pytest.fail(f"Protocol save should have succeeded but failed with: {e}")
