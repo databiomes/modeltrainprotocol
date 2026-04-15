@@ -3,7 +3,7 @@ Protocol fixtures for testing JSON creation functionality.
 These protocols are built using instruction fixtures to cover various scenarios.
 """
 import pytest
-from model_train_protocol import ProtocolV1
+from model_train_protocol.v1 import ProtocolV1
 
 
 @pytest.fixture

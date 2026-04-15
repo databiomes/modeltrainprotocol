@@ -3,8 +3,8 @@ from typing import Optional
 
 from packaging.version import Version
 
-from model_train_protocol.versioning.files.protocol_file.base import BaseProtocolFile
-from model_train_protocol.versioning.files.template_file.base import BaseTemplateFile
+from model_train_protocol.v1.files.protocol_file.base import BaseProtocolFile
+from model_train_protocol.v1.files.template_file.base import BaseTemplateFile
 
 
 class BaseProtocol(ABC):

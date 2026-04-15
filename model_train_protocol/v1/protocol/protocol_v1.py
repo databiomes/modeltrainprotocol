@@ -19,9 +19,9 @@ from model_train_protocol.common.tokens import TokenSet
 from model_train_protocol.common.tokens.SpecialToken import SpecialToken
 from model_train_protocol.errors import ProtocolError, ProtocolTypeError, StateMachineError
 from model_train_protocol.utils._protected import validate_string_subset, hash_string
-from model_train_protocol.versioning.files.protocol_file.v1.protocol_file import ProtocolFileV1
-from model_train_protocol.versioning.files.template_file.v1.template_file import TemplateFileV1
-from model_train_protocol.versioning.protocol.base import BaseProtocol
+from model_train_protocol.v1.files.protocol_file.protocol_file_v1 import ProtocolFileV1
+from model_train_protocol.v1.files.template_file.template_file_v1 import TemplateFileV1
+from model_train_protocol.v1.protocol.base import BaseProtocol
 
 
 class BloomUtils:

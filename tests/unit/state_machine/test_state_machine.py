@@ -8,7 +8,7 @@ import pytest
 import model_train_protocol as mtp
 
 
-def _add_context_lines(protocol: mtp.ProtocolV1, total_lines: int = 10) -> None:
+def _add_context_lines(protocol: mtp.Protocol, total_lines: int = 10) -> None:
     for i in range(total_lines):
         protocol.add_context(f"State machine context line {i + 1}")
 
@@ -61,7 +61,7 @@ class TestStateMachine:
 
     def test_state_machine_protocol_no_instructions_invalid(
             self,
-            empty_state_machine_protocol: mtp.ProtocolV1,
+            empty_state_machine_protocol: mtp.Protocol,
     ) -> None:
         valid, error_msg = empty_state_machine_protocol.validate_protocol()
 
@@ -71,7 +71,7 @@ class TestStateMachine:
 
     def test_state_machine_protocol_single_instruction_valid(
             self,
-            state_machine_protocol: mtp.ProtocolV1,
+            state_machine_protocol: mtp.Protocol,
     ) -> None:
         valid, error_msg = state_machine_protocol.validate_protocol()
 
@@ -82,7 +82,7 @@ class TestStateMachine:
             self,
             state_machine_instruction_with_samples: mtp.Instruction,
     ) -> None:
-        protocol: mtp.ProtocolV1 = mtp.ProtocolV1("state_machine_two_instructions", inputs=2, encrypt=False,
+        protocol: mtp.Protocol = mtp.Protocol("state_machine_two_instructions", inputs=2, encrypt=False,
                                                   state_machine=True)
         _add_context_lines(protocol)
         protocol.add_instruction(state_machine_instruction_with_samples)
@@ -95,7 +95,7 @@ class TestStateMachine:
             protocol.add_instruction(second_instruction)
 
     def test_state_machine_protocol_rejects_non_state_machine_instruction(self) -> None:
-        protocol: mtp.ProtocolV1 = mtp.ProtocolV1("state_machine", inputs=2, encrypt=False, state_machine=True)
+        protocol: mtp.Protocol = mtp.Protocol("state_machine", inputs=2, encrypt=False, state_machine=True)
         _add_context_lines(protocol)
         instruction: mtp.Instruction = _build_basic_instruction()
 
@@ -103,7 +103,7 @@ class TestStateMachine:
             protocol.add_instruction(instruction)
 
     def test_state_machine_protocol_rejects_numeric_output_tokens(self) -> None:
-        protocol: mtp.ProtocolV1 = mtp.ProtocolV1("state_machine", inputs=2, encrypt=False, state_machine=True)
+        protocol: mtp.Protocol = mtp.Protocol("state_machine", inputs=2, encrypt=False, state_machine=True)
         instruction: mtp.StateMachineInstruction = _build_state_machine_instruction(
             sample_count=0,
             token_prefix="SM",
@@ -114,7 +114,7 @@ class TestStateMachine:
             protocol.add_instruction(instruction)
 
     def test_state_machine_instruction_minimum_samples(self) -> None:
-        protocol: mtp.ProtocolV1 = mtp.ProtocolV1("state_machine", inputs=2, encrypt=False, state_machine=True)
+        protocol: mtp.Protocol = mtp.Protocol("state_machine", inputs=2, encrypt=False, state_machine=True)
         _add_context_lines(protocol)
         instruction: mtp.StateMachineInstruction = _build_state_machine_instruction(
             sample_count=9,

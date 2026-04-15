@@ -3,7 +3,7 @@ Integration tests for complete protocol workflows.
 """
 import pytest
 
-from model_train_protocol import ProtocolV1
+from model_train_protocol.v1 import ProtocolV1
 
 
 class TestProtocolWorkflow:

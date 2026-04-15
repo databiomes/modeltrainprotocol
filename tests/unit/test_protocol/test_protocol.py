@@ -5,11 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from model_train_protocol import ProtocolV1, Token, TokenSet, Instruction, ExtendedInstruction, \
+from model_train_protocol import Token, TokenSet, Instruction, ExtendedInstruction, \
     Guardrail, FinalToken, ProtocolError
 from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
 from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
 from model_train_protocol.common.instructions.output.ExtendedResponse import ExtendedResponse
+from model_train_protocol.v1 import ProtocolV1
 from tests.fixtures.tokens import get_valid_keyless_tokens
 
 

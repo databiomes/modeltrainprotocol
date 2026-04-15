@@ -7,7 +7,7 @@ from model_train_protocol import GuardrailError, StateMachineInstruction, StateM
 from model_train_protocol.common.guardrails import Guardrail
 from model_train_protocol.common.tokens import Token, TokenSet
 from model_train_protocol.errors.conversion import ConversionError
-from model_train_protocol.versioning.protocol import ProtocolV1
+from model_train_protocol.v1.protocol import ProtocolV1
 
 
 @dataclass

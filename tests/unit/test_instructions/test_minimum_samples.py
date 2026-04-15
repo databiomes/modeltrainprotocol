@@ -3,9 +3,10 @@ Unit tests for minimum sample validation in Instructions.
 """
 import pytest
 
-from model_train_protocol import ProtocolV1, Instruction, FinalToken
+from model_train_protocol import Instruction, FinalToken
 from model_train_protocol.common.instructions.input.InstructionInput import InstructionInput
 from model_train_protocol.common.instructions.output.InstructionOutput import InstructionOutput
+from model_train_protocol.v1 import ProtocolV1
 from tests.fixtures.tokens import SIMPLE_TOKENSET
 
 

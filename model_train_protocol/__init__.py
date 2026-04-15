@@ -12,7 +12,7 @@ from .common.instructions import Instruction, ExtendedInstruction
 from .common.instructions.StateMachineInstruction import StateMachineInstruction
 from .common.instructions.output.StateMachineOutput import StateMachineOutput
 from .common.guardrails import Guardrail
-from model_train_protocol.versioning.protocol.v1.protocol import ProtocolV1 as Protocol
+from model_train_protocol.v1.protocol.protocol_v1 import ProtocolV1 as Protocol
 from .errors import (
     MTPError,
     MTPValueError,

@@ -8,7 +8,7 @@ import pytest
 import model_train_protocol as mtp
 
 
-def _add_context_lines(protocol: mtp.ProtocolV1, total_lines: int = 10) -> None:
+def _add_context_lines(protocol: mtp.Protocol, total_lines: int = 10) -> None:
     for i in range(total_lines):
         protocol.add_context(f"State machine context line {i + 1}")
 
@@ -51,15 +51,15 @@ def state_machine_instruction_with_few_samples() -> mtp.StateMachineInstruction:
 
 
 @pytest.fixture
-def empty_state_machine_protocol() -> mtp.ProtocolV1:
-    protocol: mtp.ProtocolV1 = mtp.ProtocolV1("empty_state_machine", inputs=2, encrypt=False, state_machine=True)
+def empty_state_machine_protocol() -> mtp.Protocol:
+    protocol: mtp.Protocol = mtp.Protocol("empty_state_machine", inputs=2, encrypt=False, state_machine=True)
     _add_context_lines(protocol)
     return protocol
 
 
 @pytest.fixture
-def state_machine_protocol(state_machine_instruction_with_samples: mtp.StateMachineInstruction) -> mtp.ProtocolV1:
-    protocol: mtp.ProtocolV1 = mtp.ProtocolV1("state_machine_protocol", inputs=2, encrypt=False, state_machine=True)
+def state_machine_protocol(state_machine_instruction_with_samples: mtp.StateMachineInstruction) -> mtp.Protocol:
+    protocol: mtp.Protocol = mtp.Protocol("state_machine_protocol", inputs=2, encrypt=False, state_machine=True)
     _add_context_lines(protocol)
     protocol.add_instruction(state_machine_instruction_with_samples)
     return protocol

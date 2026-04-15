@@ -2,7 +2,7 @@
 Tests for validating the inner structure of guardrails in JSON output.
 """
 import pytest
-from model_train_protocol import ProtocolV1
+from model_train_protocol.v1 import ProtocolV1
 
 
 class TestGuardrailJSONStructure:

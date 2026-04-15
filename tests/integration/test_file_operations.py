@@ -6,7 +6,7 @@ from pathlib import Path
 
 import pytest
 
-from model_train_protocol import ProtocolV1
+from model_train_protocol.v1 import ProtocolV1
 
 
 class TestFileOperations:
