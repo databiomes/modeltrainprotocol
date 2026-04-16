@@ -5,7 +5,7 @@ MTP is an open-source protocol for training custom Language Models on Databiomes
 MTP contains all the data that a model is trained on.
 """
 from model_train_protocol.v1 import ProtocolFileV1
-from model_train_protocol.v1.template_file import TemplateFileV1
+from model_train_protocol.v1 import TemplateFileV1
 
 __all__ = [
     "ProtocolFileV1",
