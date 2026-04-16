@@ -403,3 +403,74 @@ class TestCSVConversionValidation:
             assert True
         except Exception as e:
             pytest.fail(f"Protocol save should have succeeded but failed with: {e}")
+
+
+class TestCSVConversionInstructionNaming:
+    """Test CSV conversion instruction naming behavior."""
+
+    def test_csv_conversion_creates_state_machine_instruction(self, valid_csv_data):
+        """Test that CSV conversion creates a StateMachineInstruction instance."""
+        conversion = CSVConversion(valid_csv_data)
+        protocol = conversion.to_mtp()
+        
+        assert len(protocol.instructions) == 1
+        instruction = list(protocol.instructions)[0]
+        
+        # Should be a StateMachineInstruction instance
+        assert isinstance(instruction, StateMachineInstruction)
+        assert issubclass(type(instruction), BaseInstruction)
+
+    def test_csv_conversion_instruction_default_name(self, valid_csv_data):
+        """Test that CSV conversion instructions get default name 'StateMachineInstruction'."""
+        conversion = CSVConversion(valid_csv_data)
+        protocol = conversion.to_mtp()
+        
+        instruction = list(protocol.instructions)[0]
+        assert instruction.name == "StateMachineInstruction"
+
+    def test_csv_conversion_instruction_naming_with_guardrails(self, valid_csv_with_guardrails):
+        """Test instruction naming with guardrails present."""
+        conversion = CSVConversion(valid_csv_with_guardrails)
+        protocol = conversion.to_mtp()
+        
+        instruction = list(protocol.instructions)[0]
+        assert isinstance(instruction, StateMachineInstruction)
+        assert instruction.name == "StateMachineInstruction"
+        assert instruction.has_guardrails
+
+    def test_csv_conversion_instruction_naming_different_protocols(self, csv_with_proper_guardrails_but_wrong_context):
+        """Test instruction naming consistency across different CSV configurations."""
+        conversion = CSVConversion(csv_with_proper_guardrails_but_wrong_context, "Custom Protocol Name")
+        protocol = conversion.to_mtp()
+        
+        # Protocol name can be custom
+        assert protocol.name == "Custom Protocol Name"
+        
+        # But instruction name should still be default
+        instruction = list(protocol.instructions)[0]
+        assert isinstance(instruction, StateMachineInstruction)
+        assert instruction.name == "StateMachineInstruction"
+
+    def test_csv_conversion_instruction_naming_edge_cases(self, csv_with_empty_outputs):
+        """Test instruction naming with edge case data."""
+        conversion = CSVConversion(csv_with_empty_outputs)
+        protocol = conversion.to_mtp()
+        
+        instruction = list(protocol.instructions)[0]
+        assert isinstance(instruction, StateMachineInstruction)
+        assert instruction.name == "StateMachineInstruction"
+
+    def test_csv_conversion_multiple_instructions_same_type(self, valid_csv_data):
+        """Test that even if we could have multiple instructions, they would be StateMachineInstructions."""
+        conversion = CSVConversion(valid_csv_data)
+        protocol = conversion.to_mtp()
+        
+        # CSV conversion should only create one instruction for state machine protocols
+        assert len(protocol.instructions) == 1
+        
+        instruction = list(protocol.instructions)[0] 
+        assert isinstance(instruction, StateMachineInstruction)
+        assert instruction.name == "StateMachineInstruction"
+        
+        # Verify it's a state machine protocol
+        assert protocol.state_machine is True
