@@ -24,7 +24,7 @@ class ProtocolFileV1:
     @dataclass
     class ProtocolInstructionSet:
         """Represents an instruction set in the template."""
-
+        name: str
         guardrails: List[Guardrail]
         context: List[str]
         set: List[List[str]]
@@ -85,6 +85,7 @@ class ProtocolFileV1:
         """Adds instructions to the template."""
         for instruction in instructions:
             instruction_set: ProtocolFileV1.ProtocolInstructionSet = ProtocolFileV1.ProtocolInstructionSet(
+                name=instruction.name,
                 guardrails=instruction.serialize_guardrails(),
                 context=instruction.context,
                 set=instruction.serialize_memory_set(),
@@ -209,6 +210,7 @@ class ProtocolFileV1:
 
             # Create InstructionSet
             instruction_set_obj = InstructionSet(
+                name=instruction_set.name,
                 guardrails=instruction_set.guardrails,
                 context=instruction_set.context,
                 set=instruction_set.set,
