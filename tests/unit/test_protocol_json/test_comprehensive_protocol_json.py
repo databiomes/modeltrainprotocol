@@ -305,7 +305,7 @@ class TestComprehensiveProtocolJSON:
         
         for i, instruction_set in enumerate(sets):
             # Check required keys for each instruction set
-            required_keys = {"set", "context", "samples", "ppo", "guardrails"}
+            required_keys = {"set", "name", "context", "samples", "ppo", "guardrails"}
             actual_keys = set(instruction_set.keys())
             assert actual_keys == required_keys, f"instruction.sets[{i}] has keys {actual_keys}, expected {required_keys}"
 
