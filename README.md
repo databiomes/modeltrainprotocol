@@ -6,7 +6,7 @@ MTP is an open-source protocol for training custom Language Models on Databiomes
 
 ## Getting Started
 
-Note Python 3.11 or higher is required.
+Note Python 3.13 or higher is required.
 
 Install the package:
 
