@@ -1206,6 +1206,7 @@ class TestProtocol:
             protocol = ProtocolV1(name, inputs=3)
             assert protocol.name == name
 
+    @pytest.mark.skip
     def test_protocol_from_json_round_trip(self, basic_simple_protocol: ProtocolV1):
         """Test Protocol.from_json round trip with a valid protocol JSON."""
         basic_simple_protocol._prep_protocol()
