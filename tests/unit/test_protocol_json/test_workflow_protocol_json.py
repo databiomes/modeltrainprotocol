@@ -1,8 +1,6 @@
 """
 Test JSON creation for workflow protocol.
 """
-import pytest
-
 from tests.utils.protocol_json_utils import assert_special_tokens_in_tokens
 
 
@@ -295,7 +293,6 @@ class TestWorkflowProtocolJSON:
         for i, instruction_set in enumerate(sets):
             assert isinstance(instruction_set, dict), f"instruction.sets[{i}] should be a dictionary, got {type(instruction_set)}"
 
-    @pytest.mark.skip
     def test_workflow_protocol_instruction_sets_structure(self, workflow_protocol):
         """Test the structure of each instruction set."""
         json_output = self._get_json_output(workflow_protocol)
