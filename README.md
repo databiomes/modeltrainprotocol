@@ -286,6 +286,4 @@ Use this file to understand how your model expects to receive and format data.
 
 ### Schema Files
 
-JSON Schema files are available in `schemas/{version}/` directories for protocol and template validation.
-
-The template file helps you understand the expected format when using your trained model, while the model file contains all the training data needed to create your specialized language model.
+JSON Schema files are available in the supporting [model-train-protocol-schemas package](https://pypi.org/project/model-train-protocol-schemas/)
