@@ -1,8 +1,6 @@
 """
 Test JSON creation for multi-instruction protocol.
 """
-import pytest
-
 from tests.utils.protocol_json_utils import assert_special_tokens_in_tokens
 
 
@@ -22,7 +20,8 @@ class TestMultiInstructionProtocolJSON:
             state_machine=protocol.state_machine,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
-            instructions=protocol.instructions
+            instructions=protocol.instructions,
+            bloom_version=protocol.bloom_version
         )
         return protocol_file.to_json()
 
@@ -294,7 +293,6 @@ class TestMultiInstructionProtocolJSON:
         for i, instruction_set in enumerate(sets):
             assert isinstance(instruction_set, dict), f"instruction.sets[{i}] should be a dictionary, got {type(instruction_set)}"
 
-    @pytest.mark.skip
     def test_multi_instruction_protocol_instruction_sets_structure(self, multi_instruction_protocol):
         """Test the structure of each instruction set."""
         json_output = self._get_json_output(multi_instruction_protocol)

@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 from typing import Collection, List, Dict, Set
 
+from packaging.version import Version
+
 from model_train_protocol import Token, NumToken
 from model_train_protocol.common.instructions import BaseInstruction
 from model_train_protocol_schemas.structures.protocol import Instruction, TokenInfo, Sample, \
@@ -41,21 +43,23 @@ class ProtocolFileV1:
         ppo: List = field(default_factory=list)
 
     def __init__(self, name: str, context: List[str], inputs: int, encrypted: bool, valid: bool, state_machine: bool,
-                 tokens: Collection[Token], special_tokens: Collection[Token], instructions: Collection[BaseInstruction]):
+                 tokens: Collection[Token], special_tokens: Collection[Token],
+                 instructions: Collection[BaseInstruction], bloom_version: Version):
         """Initializes the Template with a name and context."""
-        self._name: str = name
-        self._inputs: int = inputs
-        self._context: List[str] = context
-        self._encrypted: bool = encrypted
-        self._valid: bool = valid
-        self._state_machine: bool = state_machine
-        self._tokens: Dict[str, dict] = {}
-        self._special_token_keys: Set[str] = set()
-        self._instruction_token_keys: Set[str] = set()
-        self._instruction: ProtocolFileV1.ProtocolInstruction = ProtocolFileV1.ProtocolInstruction(
+        self.bloom_version: Version = bloom_version
+        self.name: str = name
+        self.inputs: int = inputs
+        self.context: List[str] = context
+        self.encrypted: bool = encrypted
+        self.valid: bool = valid
+        self.state_machine: bool = state_machine
+        self.tokens: Dict[str, dict] = {}
+        self.special_token_keys: Set[str] = set()
+        self.instruction_token_keys: Set[str] = set()
+        self.instruction: ProtocolFileV1.ProtocolInstruction = ProtocolFileV1.ProtocolInstruction(
             inputs=inputs)
-        self._numbers: Dict[str, str] = {}
-        self._batches: ProtocolFileV1.Batches = ProtocolFileV1.Batches()
+        self.numbers: Dict[str, str] = {}
+        self.batches: ProtocolFileV1.Batches = ProtocolFileV1.Batches()
 
         # Add regular tokens
         self.add_tokens(tokens)
@@ -71,15 +75,15 @@ class ProtocolFileV1:
         for token in tokens:
             token_dict: Dict[str, dict] = token.to_dict()
             token_dict.pop("value")
-            self._tokens[token.value] = token_dict
+            self.tokens[token.value] = token_dict
 
             # Add numbers to the numbers dictionary
             if isinstance(token, NumToken):
-                self._numbers[token.value] = token.template_representation
+                self.numbers[token.value] = token.template_representation
 
             # Add special tokens to the special tokens set
             if isinstance(token, SpecialToken):
-                self._special_token_keys.add(token.key)
+                self.special_token_keys.add(token.key)
 
     def add_instructions(self, instructions: Collection[BaseInstruction]):
         """Adds instructions to the template."""
@@ -92,7 +96,7 @@ class ProtocolFileV1:
                 samples=instruction.serialize_samples(),
                 ppo=instruction.serialize_ppo(),
             )
-            self._instruction.sets.append(instruction_set)
+            self.instruction.sets.append(instruction_set)
 
             # Add instruction token keys
             for token_set in instruction.get_token_sets():
@@ -104,14 +108,14 @@ class ProtocolFileV1:
                 # Add to instruction token keys
                 self._add_instruction_token_key(result_token.key)
                 # Add to tokens dictionary if not already present
-                if result_token.value not in self._tokens:
+                if result_token.value not in self.tokens:
                     token_dict = result_token.to_dict()
                     token_dict.pop("value")
-                    self._tokens[result_token.value] = token_dict
+                    self.tokens[result_token.value] = token_dict
 
     def _add_instruction_token_key(self, key: str):
         """Adds an instruction token key to the template."""
-        self._instruction_token_keys.add(key)
+        self.instruction_token_keys.add(key)
 
     def _get_special_token_keys(self):
         """
@@ -121,7 +125,7 @@ class ProtocolFileV1:
 
         :return: A sorted list of special token keys.
         """
-        all_keys = self._special_token_keys | self._instruction_token_keys
+        all_keys = self.special_token_keys | self.instruction_token_keys
 
         def sort_priority(key):
             if key == "<BOS>": return 0, key
@@ -185,7 +189,7 @@ class ProtocolFileV1:
 
         # Create TokenInfo objects for each token
         token_info_dict = {}
-        for token_value, token_dict in self._tokens.items():
+        for token_value, token_dict in self.tokens.items():
             token_info = TokenInfo(
                 key=token_dict['key'],
                 num=token_dict['num'],
@@ -201,38 +205,37 @@ class ProtocolFileV1:
 
         # Create InstructionSet objects
         instruction_sets = []
-        for instruction_set in self._instruction.sets:
+        for instruction_set in self.instruction.sets:
             # Create Sample objects
             samples = []
             for sample_data in instruction_set.samples:
                 sample = Sample(**sample_data)
                 samples.append(sample)
 
-            # Create InstructionSet
             instruction_set_obj = InstructionSet(
-                name=instruction_set.name,
-                guardrails=instruction_set.guardrails,
-                context=instruction_set.context,
-                set=instruction_set.set,
-                samples=samples,
-                ppo=instruction_set.ppo
-            )
+                    name=instruction_set.name,
+                    guardrails=instruction_set.guardrails,
+                    context=instruction_set.context,
+                    set=instruction_set.set,
+                    samples=samples,
+                    ppo=instruction_set.ppo
+                )
             instruction_sets.append(instruction_set_obj)
 
         # Create Instruction object
         instruction = Instruction(
-            memory=self._instruction.inputs + 1,  # +1 for the response line
+            memory=self.instruction.inputs + 1,  # +1 for the response line
             sets=instruction_sets
         )
 
         # Create ProtocolModel
         protocol = Protocol(
-            name=self._name,
-            context=self._context,
-            state_machine=self._state_machine,
-            inputs=self._inputs,
-            encrypted=self._encrypted,
-            valid=self._valid,
+            name=self.name,
+            context=self.context,
+            state_machine=self.state_machine,
+            inputs=self.inputs,
+            encrypted=self.encrypted,
+            valid=self.valid,
             tokens=token_info_dict,
             special_tokens=self._get_special_token_keys(),
             instruction=instruction
@@ -265,7 +268,7 @@ class ProtocolFileV1:
                     )
 
         # Reconstruct the dictionary with $schema at the top
-        final_json = {"$schema": get_bloom_schema_url()}
+        final_json = {"$schema": get_bloom_schema_url(version=self.bloom_version)}
         final_json.update(json_dict)
 
         return final_json

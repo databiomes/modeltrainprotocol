@@ -1,8 +1,6 @@
 """
 Test JSON creation for basic simple protocol.
 """
-import pytest
-
 from tests.utils.protocol_json_utils import assert_special_tokens_in_tokens
 
 
@@ -22,7 +20,8 @@ class TestBasicSimpleProtocolJSON:
             state_machine=protocol.state_machine,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
-            instructions=protocol.instructions
+            instructions=protocol.instructions,
+            bloom_version=protocol.bloom_version
         )
         return protocol_file.to_json()
 
@@ -278,7 +277,6 @@ class TestBasicSimpleProtocolJSON:
             assert isinstance(instruction_set,
                               dict), f"instruction.sets[{i}] should be a dictionary, got {type(instruction_set)}"
 
-    @pytest.mark.skip
     def test_basic_simple_protocol_instruction_sets_structure(self, basic_simple_protocol):
         """Test the structure of each instruction set."""
         json_output = self._get_json_output(basic_simple_protocol)
