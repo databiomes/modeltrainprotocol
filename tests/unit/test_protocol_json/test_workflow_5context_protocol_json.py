@@ -19,7 +19,8 @@ class TestWorkflow5ContextProtocolJSON:
             state_machine=protocol.state_machine,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
-            instructions=protocol.instructions
+            instructions=protocol.instructions,
+            bloom_version=protocol.bloom_version
         )
         return protocol_file.to_json()
 
@@ -242,7 +243,8 @@ class TestNumTokenWorkflow5ContextProtocolJSON:
             valid=True,
             tokens=protocol.tokens,
             special_tokens=protocol.special_tokens,
-            instructions=protocol.instructions
+            instructions=protocol.instructions,
+            bloom_version=protocol.bloom_version
         )
         return protocol_file.to_json()
 
