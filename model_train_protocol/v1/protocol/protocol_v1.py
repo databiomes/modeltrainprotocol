@@ -57,7 +57,7 @@ class BloomUtils:
 class ProtocolV1(BaseProtocol):
     """Model Train Protocol (MTP) class for creating the training configuration."""
 
-    def __init__(self, name: str, inputs: int, encrypt: bool = True, state_machine: bool = False, version: Optional[Version] = None):
+    def __init__(self, name: str, inputs: int, encrypt: bool = True, state_machine: bool = False, version: Optional[Version | str] = None):
         """
         Initialize the Model Train Protocol (MTP)
 
