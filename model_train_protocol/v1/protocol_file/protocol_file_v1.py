@@ -212,17 +212,7 @@ class ProtocolFileV1:
                 sample = Sample(**sample_data)
                 samples.append(sample)
 
-            # Create InstructionSet
-            if self.bloom_version < Version("1.2.1"):
-                instruction_set_obj = InstructionSet(
-                    guardrails=instruction_set.guardrails,
-                    context=instruction_set.context,
-                    set=instruction_set.set,
-                    samples=samples,
-                    ppo=instruction_set.ppo
-                )
-            else:
-                instruction_set_obj = InstructionSet(
+            instruction_set_obj = InstructionSet(
                     name=instruction_set.name,
                     guardrails=instruction_set.guardrails,
                     context=instruction_set.context,

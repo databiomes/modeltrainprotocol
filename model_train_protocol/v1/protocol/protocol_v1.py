@@ -18,10 +18,10 @@ from model_train_protocol.common.tokens import TokenSet
 from model_train_protocol.common.tokens.SpecialToken import SpecialToken
 from model_train_protocol.errors import ProtocolError, ProtocolTypeError, StateMachineError
 from model_train_protocol.utils._protected import validate_string_subset, hash_string
+from model_train_protocol.v1.protocol.base import BaseProtocol
 from model_train_protocol.v1.protocol_file.protocol_file_v1 import ProtocolFileV1
 from model_train_protocol.v1.template_file.template_file_v1 import TemplateFileV1
-from model_train_protocol.v1.protocol.base import BaseProtocol
-from model_train_protocol.v1.utils import get_default_protocol_version, parse_bloom_file_version
+from model_train_protocol.v1.utils import get_default_protocol_version
 
 
 class BloomUtils:
@@ -119,15 +119,10 @@ class ProtocolV1(BaseProtocol):
         # Add tokens
         BloomUtils.add_tokens(protocol_file=protocol_file, protocol=protocol, tokens=tokens)
 
-        bloom_version: Version = parse_bloom_file_version(protocol_file)
-
         # Add instructions
         instruction_info = protocol_file["instruction"]
         for i, instruction in enumerate(instruction_info["sets"]):
-            if bloom_version < Version("1.2.1"):
-                instruction_name = f"Instruction_{i}"
-            else:
-                instruction_name = instruction["name"]
+            instruction_name = instruction["name"] if instruction["name"] else f"Instruction_{i}"
             context: List[str] = instruction["context"]
             tokensets: List[TokenSet] = []
             final_tokens: List[FinalToken] = []
