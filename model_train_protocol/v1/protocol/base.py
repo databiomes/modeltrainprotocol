@@ -12,8 +12,8 @@ class BaseProtocol(ABC):
 
     @property
     @abstractmethod
-    def version(self) -> Version:
-        """Returns the version protocol, e.g. Version("1.2.0")"""
+    def bloom_version(self) -> Version:
+        """Returns the Bloom version, e.g. Version("1.2.0")"""
 
     @abstractmethod
     def from_json(self, *args, **kwargs) -> 'BaseProtocol':
