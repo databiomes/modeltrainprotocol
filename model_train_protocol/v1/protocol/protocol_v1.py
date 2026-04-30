@@ -71,6 +71,8 @@ class ProtocolV1(BaseProtocol):
         self.input_count: int = inputs  # Number of lines in instruction samples
         self.encrypt: bool = encrypt
         self.state_machine: bool = state_machine
+        if isinstance(version, str):
+            version = Version(version)
         self._version: Version = version if version is not None else get_default_protocol_version()
         if self.input_count < 1:
             raise ProtocolError("A minimum of 1 inputs is required for all instructions.")
