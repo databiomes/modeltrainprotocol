@@ -4,6 +4,7 @@ import json
 import os
 from typing import List, Optional, Set, Dict, Union
 
+from model_train_protocol_schemas import parse_bloom_version
 from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
 from packaging.version import Version
 
@@ -21,7 +22,7 @@ from model_train_protocol.utils._protected import validate_string_subset, hash_s
 from model_train_protocol.v1.protocol_file.protocol_file_v1 import ProtocolFileV1
 from model_train_protocol.v1.template_file.template_file_v1 import TemplateFileV1
 from model_train_protocol.v1.protocol.base import BaseProtocol
-from model_train_protocol.v1.utils import get_default_protocol_version
+from model_train_protocol.v1.utils import get_default_protocol_version, parse_bloom_file_version
 
 
 class BloomUtils:
@@ -65,7 +66,7 @@ class ProtocolV1(BaseProtocol):
         :param inputs: The number of lines in each Instruction input. Must be at least 1.
         :param encrypt: Whether to encrypt Tokens with unspecified with hashed keys. Default is True.
         :param state_machine: Whether this Protocol is training a state machine with defined states / outputs.
-        :param version: The version of the protocol. If None, defaults to the latest version.
+        :param version: The version of the Bloom file. If None, defaults to the latest version.
         """
         self.name: str = name
         self.input_count: int = inputs  # Number of lines in instruction samples
@@ -84,7 +85,7 @@ class ProtocolV1(BaseProtocol):
         self.has_guardrails: bool = False
 
     @property
-    def version(self) -> Version:
+    def bloom_version(self) -> Version:
         """Returns the version of the protocol."""
         return self._version
 
@@ -117,10 +118,15 @@ class ProtocolV1(BaseProtocol):
         # Add tokens
         BloomUtils.add_tokens(protocol_file=protocol_file, protocol=protocol, tokens=tokens)
 
+        bloom_version: Version = parse_bloom_file_version(protocol_file)
+
         # Add instructions
         instruction_info = protocol_file["instruction"]
-        for instruction in instruction_info["sets"]:
-            instruction_name = instruction["name"]
+        for i, instruction in enumerate(instruction_info["sets"]):
+            if bloom_version < Version("1.2.1"):
+                instruction_name = f"Instruction_{i}"
+            else:
+                instruction_name = instruction["name"]
             context: List[str] = instruction["context"]
             tokensets: List[TokenSet] = []
             final_tokens: List[FinalToken] = []
@@ -278,6 +284,7 @@ class ProtocolV1(BaseProtocol):
             name=self.name, context=self.context, inputs=self.input_count, encrypted=self.encrypt,
             valid=valid, state_machine=self.state_machine,
             tokens=self.tokens, special_tokens=self.special_tokens, instructions=self.instructions,
+            bloom_version=self.bloom_version
         )
 
     def get_template_file(self) -> TemplateFileV1:
