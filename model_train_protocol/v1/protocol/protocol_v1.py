@@ -122,7 +122,10 @@ class ProtocolV1(BaseProtocol):
         # Add instructions
         instruction_info = protocol_file["instruction"]
         for i, instruction in enumerate(instruction_info["sets"]):
-            instruction_name = instruction["name"] if instruction["name"] else f"Instruction_{i}"
+            if "name" in instruction:
+                instruction_name = instruction["name"]
+            else:
+                instruction_name = f"Instruction_{i}"
             context: List[str] = instruction["context"]
             tokensets: List[TokenSet] = []
             final_tokens: List[FinalToken] = []
