@@ -4,7 +4,6 @@ import json
 import os
 from typing import List, Optional, Set, Dict, Union
 
-from model_train_protocol_schemas import parse_bloom_version
 from model_train_protocol_schemas.structures.protocol import Protocol as PydanticProtocol
 from packaging.version import Version
 
